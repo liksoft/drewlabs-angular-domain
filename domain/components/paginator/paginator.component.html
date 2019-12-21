@@ -1,0 +1,25 @@
+<div class="pull-right" *ngIf="chunkedList.length > 1">
+  <nav aria-label="paginator">
+    <ul class="pagination">
+      <li class="page-item" *ngIf="currentPaginatorIndex > 0">
+        <a class="page-link" (click)="prev()" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Préc</span>
+        </a>
+      </li>
+      <!-- <li [class]="'page-item'" *ngIf="numberingStartIndex >= 4"><span class="page-link">...</span></li> -->
+      <ng-container *ngFor="let item of paginatorList">
+        <li [class]="(item === currentPaginatorIndex) ? 'page-item active' : 'page-item'"><a class="page-link"
+            (click)="goto(item)">{{ item +
+            1}}</a></li>
+      </ng-container>
+      <!-- <li [class]="'page-item'" *ngIf="numberingStartIndex <= 4"><span class="page-link">...</span></li> -->
+      <li class="page-item" *ngIf="currentPaginatorIndex < chunkedList.length">
+        <a class="page-link" (click)="next()" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Suiv</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

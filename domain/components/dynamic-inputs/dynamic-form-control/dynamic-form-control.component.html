@@ -1,0 +1,162 @@
+<ng-container>
+    <ng-container [ngSwitch]="inputConfig.type">
+        <div *ngSwitchCase="inputTypes.HIDDEN_INPUT">
+            <input type="hidden" [id]="asEmailInput(inputConfig).formControlName" [class]="asEmailInput(inputConfig).classes" [formControl]="control" [required]="asEmailInput(inputConfig).rules?.isRequired ? true : false" />
+        </div>
+        <div *ngSwitchCase="inputTypes.SELECT_INPUT">
+            <div class="clr-form-control">
+                <label class="clr-control-label" [for]="asSelectInput(inputConfig).formControlName">{{ asSelectInput(inputConfig).label }}
+          <small class="required-text" *ngIf="asSelectInput(inputConfig).rules?.isRequired">(*)</small></label>
+                <ng-select class="flat" [virtualScroll]="true" [items]="isArray(listItems) ? listItems : (asObservable(listItems) | async)" [required]="asSelectInput(inputConfig).rules?.isRequired ? true : false" [bindLabel]="asSelectInput(inputConfig).optionsLabel"
+                    [bindValue]="asSelectInput(inputConfig).optionsValueIndex" [multiple]="asSelectInput(inputConfig).multiple" [placeholder]="asSelectInput(inputConfig).placeholder" [formControl]="control" [groupBy]="asSelectInput(inputConfig).groupByKey">
+                </ng-select>
+                <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span></clr-control-error>
+                <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}</clr-control-helper>
+            </div>
+        </div>
+        <div *ngSwitchCase="inputTypes.PHONE_INPUT">
+            <div class="clr-form-control">
+                <label class="clr-control-label" [for]="asPhoneInput(inputConfig).formControlName">{{ asPhoneInput(inputConfig).label }} <span
+            class="required-text" *ngIf="asPhoneInput(inputConfig).rules?.isRequired">(*)</span></label>
+                <div class="clr-control-container">
+                    <div class="clr-input-wrapper">
+                        <app-intl-tel-input [controlClass]="asDateInput(inputConfig).classes" [control]="control" [required]="asPhoneInput(inputConfig).rules?.isRequired ? true : false" [preferredCountries]="['tg', 'bj', 'gh']" [initialCountry]="'tg'">
+                        </app-intl-tel-input>
+                    </div>
+                    <input [id]="asPhoneInput(inputConfig).formControlName" [class]="asPhoneInput(inputConfig).classes" [formControl]="control" type="hidden" [required]="asPhoneInput(inputConfig).rules?.isRequired ? true : false" />
+                </div>
+                <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}</clr-control-helper>
+            </div>
+        </div>
+        <div *ngSwitchCase="inputTypes.DATE_INPUT">
+            <div class="clr-form-control">
+                <label class="clr-control-label" [for]="asDateInput(inputConfig).formControlName">{{ asDateInput(inputConfig).label }} <span
+            class="required-text" *ngIf="asDateInput(inputConfig).rules?.isRequired">(*)</span></label>
+                <div class="clr-control-container">
+                    <div class="clr-input-wrapper">
+                        <input [class]="asDateInput(inputConfig).classes" type="date" [value]="today" [min]="asDateInput(inputConfig).minDate" [max]="asDateInput(inputConfig).maxDate" [attr.date-formatdata-date-format]="'dd/mm/yyyy'" [placeholder]="asDateInput(inputConfig).placeholder"
+                            [formControl]="control" [required]="asDateInput(inputConfig).rules?.isRequired ? true : false" />
+                    </div>
+                </div>
+                <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span></clr-control-error>
+                <clr-control-error class="field-has-error" *ngIf="control.hasError('pattern') && control.touched"><span [translate]="'validation.invalid'"></span></clr-control-error>
+                <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}</clr-control-helper>
+            </div>
+        </div>
+        <div *ngSwitchCase="inputTypes.TEXTAREA_INPUT">
+            <div class="clr-form-control">
+                <label class="clr-control-label" [for]="asTextAreaInput(inputConfig).formControlName">{{ asTextAreaInput(inputConfig).label }}
+          <span class="required-text" *ngIf="asTextAreaInput(inputConfig).rules?.isRequired">(*)</span></label>
+                <div class="clr-control-container">
+                    <div class="clr-textarea-wrapper">
+                        <textarea class="clr-textarea" [id]="asTextAreaInput(inputConfig).formControlName" [class]="asTextAreaInput(inputConfig).classes" [formControl]="control" [placeholder]="asTextAreaInput(inputConfig).placeholder" [required]="asTextAreaInput(inputConfig).rules?.isRequired ? true : false"
+                            [rows]="asTextAreaInput(inputConfig).rows"></textarea>
+                    </div>
+                </div>
+                <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span></clr-control-error>
+                <clr-control-error class="field-has-error" *ngIf="control.hasError('maxLength') && control.touched"><span [translate]="'validation.maxValue'" [translateParams]="{value: asTextAreaInput(inputConfig).maxLength}"></span></clr-control-error>
+                <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}</clr-control-helper>
+            </div>
+        </div>
+        <div *ngSwitchCase="inputTypes.NUMBER_INPUT">
+            <div class="clr-form-control">
+                <label class="clr-control-label" [for]="asNumberInput(inputConfig).formControlName">{{ asNumberInput(inputConfig).label }}
+          <span class="required-text" *ngIf="asNumberInput(inputConfig).rules?.isRequired">(*)</span></label>
+                <div class="clr-control-container">
+                    <div class="clr-input-wrapper">
+                        <input type="number" [max]="asNumberInput(inputConfig).max ? asNumberInput(inputConfig).max : null" [min]="asNumberInput(inputConfig).min ? asNumberInput(inputConfig).min : null" [id]="asNumberInput(inputConfig).formControlName" [class]="asNumberInput(inputConfig).classes"
+                            [formControl]="control" [placeholder]="asNumberInput(inputConfig).placeholder" [required]="asNumberInput(inputConfig).rules?.isRequired ? true : false" />
+                    </div>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span></clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('min') && control.touched"><span [translate]="'validation.min'" [translateParams]="{value: asNumberInput(inputConfig).min}"></span>
+                    </clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('max') && control.touched"><span [translate]="'validation.max'" [translateParams]="{value: asNumberInput(inputConfig).max}"></span>
+                    </clr-control-error>
+                    <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}</clr-control-helper>
+                </div>
+            </div>
+        </div>
+        <div *ngSwitchCase="inputTypes.RADIO_INPUT">
+            <clr-radio-container clrInline>
+                <label [for]="asRadioInput(inputConfig).formControlName">{{ asRadioInput(inputConfig).label }} <span
+            class="required-text" *ngIf="asRadioInput(inputConfig).rules?.isRequired">(*)</span></label>
+                <clr-radio-wrapper *ngFor="let item of asRadioInput(inputConfig).items">
+                    <input type="radio" clrRadio required [value]="item.value" [formControl]="control" />
+                    <label>({{ item.description }})</label>
+                </clr-radio-wrapper>
+                <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span></clr-control-error>
+            </clr-radio-container>
+            <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}</clr-control-helper>
+        </div>
+        <div *ngSwitchCase="inputTypes.CHECKBOX_INPUT">
+            <div class="clr-form-control" *ngIf="inputConfig && (asCheckBoxInput(inputConfig).items.length > 0) && control">
+                <ng-container [formGroup]="formArrayGroup">
+                    <label class="clr-control-label" [for]="asCheckBoxInput(inputConfig).formControlName">{{ asCheckBoxInput(inputConfig).label
+            }}
+            <span class="required-text" *ngIf="asCheckBoxInput(inputConfig).rules?.isRequired">(*)</span></label>
+                    <div class="clr-control-container clr-control-inline">
+                        <ng-container formArrayName="formGroupItems" *ngFor="let order of asFormArray(formArrayGroup.get('formGroupItems')).controls; let i = index">
+                            <div class="clr-checkbox-wrapper">
+                                <input type="checkbox" [formControlName]="i" class="clr-checkbox">
+                                <label for="vertical-checkbox1" class="clr-control-label">
+                  {{asCheckBoxInput(inputConfig).items[i].value}}</label>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+                <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span></clr-control-error>
+                <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}</clr-control-helper>
+            </div>
+        </div>
+        <div *ngSwitchCase="inputTypes.PASSWORD_INPUT">
+            <div class="clr-form-control">
+                <label [for]="inputConfig.formControlName" class="clr-control-label">{{
+          asPasswordInput(inputConfig).label
+          }} <small class="required-text" *ngIf="asPasswordInput(inputConfig).rules?.isRequired">(*)</small></label>
+                <div class="clr-control-container">
+                    <div class="clr-input-wrapper password-clr-input-wrapper">
+                        <input [type]="showPassword ? 'password' : 'text'" [maxLength]="asPasswordInput(inputConfig).maxLength ? asPasswordInput(inputConfig).maxLength : maxNumberSize()" [minLength]="asPasswordInput(inputConfig).minLength ? asPasswordInput(inputConfig).minLength : 0"
+                            [id]="asPasswordInput(inputConfig).formControlName" [class]="asPasswordInput(inputConfig).classes + ' password-input'" [formControl]="control" [placeholder]="asPasswordInput(inputConfig).placeholder" [required]="asPasswordInput(inputConfig).rules?.isRequired ? true : false"
+                        />
+                        <clr-icon shape="eye" (click)="togglePassWordInput()" *ngIf="showPassword" class="password-trigger">
+                        </clr-icon>
+                        <clr-icon shape="eye-hide" (click)="togglePassWordInput()" *ngIf="!showPassword" class="password-trigger">
+                        </clr-icon>
+                    </div>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span></clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('maxLength') && control.touched"><span [translate]="'validation.maxValue'" [translateParams]="{value: asPasswordInput(inputConfig).maxLength}"></span>
+                    </clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('minLength') && control.touched"><span [translate]="'validation.minValue'" [translateParams]="{value: asPasswordInput(inputConfig).minLength}"></span>
+                    </clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('pattern') && control.touched"><span [translate]="'validation.passwordPattern'"></span></clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('Match') && control.touched"><span [translate]="'validation.passwordMatch'"></span></clr-control-error>
+                    <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}</clr-control-helper>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngSwitchDefault>
+            <div class="clr-form-control">
+                <label [for]="inputConfig.formControlName" class="clr-control-label">{{
+          asEmailInput(inputConfig).label
+          }} <small class="required-text" *ngIf="asEmailInput(inputConfig).rules?.isRequired">(*)</small></label>
+                <div class="clr-control-container">
+                    <div class="clr-input-wrapper">
+                        <input [type]="asEmailInput(inputConfig).type === inputTypes.EMAIL_INPUT ? 'email' : 'text'" [maxLength]="asEmailInput(inputConfig).maxLength ? asEmailInput(inputConfig).maxLength : maxNumberSize()" [minLength]="asEmailInput(inputConfig).minLength ? asEmailInput(inputConfig).minLength : 0"
+                            [id]="asEmailInput(inputConfig).formControlName" [class]="asEmailInput(inputConfig).classes" [formControl]="control" [placeholder]="asEmailInput(inputConfig).placeholder" [required]="asEmailInput(inputConfig).rules?.isRequired ? true : false"
+                        />
+                    </div>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span></clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('maxLength') && control.touched"><span [translate]="'validation.maxValue'" [translateParams]="{value: asEmailInput(inputConfig).maxLength}"></span>
+                    </clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('minLength') && control.touched"><span [translate]="'validation.minValue'" [translateParams]="{value: asEmailInput(inputConfig).minLength}"></span>
+                    </clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('pattern') && control.touched"><span [translate]="'validation.pattern'"></span></clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('email') && control.touched"><span [translate]="'validation.email'"></span></clr-control-error>
+                    <clr-control-error class="field-has-error" *ngIf="control.hasError('notUnique') && control.touched"><span [translate]="'validation.unique'"></span></clr-control-error>
+                    <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}</clr-control-helper>
+                </div>
+            </div>
+        </ng-container>
+        <!-- Add controls for check boxes and radio -->
+    </ng-container>
+</ng-container>
