@@ -47,11 +47,10 @@ export class CustomValidators {
       const firstControlValue = controlGroup.get(control).value;
       const otherControlValue = controlGroup.get(otherControl).value;
       if ((!isDefined(firstControlValue) && !isDefined(otherControlValue)) ||
-        ((firstControlValue === '') && (otherControlValue.trim === ''))) {
+        ((firstControlValue === '') && (otherControlValue === ''))) {
         return null;
       }
       if (firstControlValue !== otherControlValue) {
-        // controlGroup.get(control).setErrors({ Match: true });
         controlGroup.get(otherControl).setErrors({ Match: true });
       } else {
         return null;

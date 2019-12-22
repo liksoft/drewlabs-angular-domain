@@ -5,7 +5,7 @@ import {
 import { HttpRequestService } from 'src/app/lib/domain/http/core';
 import { ServerResponseKeys } from 'src/app/lib/domain/auth/core';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
-import { isDefined } from '../utils/type-utils';
+import { isDefined, isArray } from '../utils/type-utils';
 import { IResponseBody } from '../http/contracts/http-response-data';
 import { IAppStorage } from '../storage/contracts/store-interface';
 import { Store } from '../store';
@@ -89,15 +89,16 @@ export function getRessourcesAndNotify<T>(
   ressourcesPath: string,
   ressourceBuilder: ISerializableBuilder<T>,
   store: Store<T>,
-  action: string
+  action: string,
+  dataKey: string,
 ): Promise<T> {
   return new Promise<T>(async (_, __) => {
     const result = await loadThroughHttpRequest(client, ressourcesPath);
-    if (isDefined(result)) {
+    if (isDefined(result) && isArray(result[dataKey].data)) {
       store.dispatch({
         type: action,
         payload: {
-          value: (result as Array<object>).map((value) => {
+          value: (result[dataKey].data as Array<object>).map((value) => {
             return ressourceBuilder.fromSerialized(value);
           })
         }

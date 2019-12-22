@@ -124,7 +124,8 @@ export class Roleservice extends RequestClient
       this.ressourcesPath,
       Role.builder() as ISerializableBuilder<Role>,
       this.store,
-      ROLES_CONTAINERINITIALIZED_ACTION
+      ROLES_CONTAINERINITIALIZED_ACTION,
+      'roles'
     );
   }
 

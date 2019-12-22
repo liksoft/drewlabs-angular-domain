@@ -107,7 +107,8 @@ export class ApplicationUsersService extends RequestClient
       this.ressourcesPath,
       User.builder() as ISerializableBuilder<User>,
       this.store,
-      USERS_CONTAINERINITIALIZED_ACTION
+      USERS_CONTAINERINITIALIZED_ACTION,
+      'users'
     );
   }
 
