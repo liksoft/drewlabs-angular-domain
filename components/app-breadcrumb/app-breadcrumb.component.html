@@ -1,0 +1,9 @@
+<div class="breadcrumb-holder">
+  <div class="container-fluid">
+    <ul class="breadcrumb">
+      <ng-container *ngFor="let item of breadCrumbs.breadCrumbs | async ">
+          <li class="breadcrumb-item"><a [routerLink]="item.link"> {{ item.label }}</a></li>
+      </ng-container>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+.required-text,
+.field-has-error {
+  color: rgb(241, 50, 50);
+  line-height: 1rem;
+}
+
+small.field-has-error {
+  display: block;
+}
+
+li.country:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.intl-tel-input {
+  width: 100%;
+}
+
+
+#phone {
+  width: 75%;
+}
+
+.clr-dropdown-menu {
+  max-height: 280px;
+  width: 100%;
+}
+
+.countries-viewport {
+  height: 200px;
+  width: auto;
+  overflow-x: hidden;
+}
+/* .dropdown-menu .btn, .dropdown-menu .dropdown-item {
+  padding: .1rem 1rem 1rem 1rem !important;
+} */

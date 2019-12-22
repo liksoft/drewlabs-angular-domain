@@ -1,0 +1,15 @@
+<ng-container *ngIf="showModal">
+  <div id="appModal" [ngClass]="'show modal animated fadeIn'">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <section class="pull-right">
+        <span class="close" *ngIf="!showLoader" (click)="hide()">&times;</span>
+      </section>
+      <div class="text-center app-loader">
+        <app-loader *ngIf="showLoader"></app-loader>
+        <p class="ui-message">{{ modalMessage }}</p>
+        <button *ngIf="!showLoader" (click)="hide()" class="btn btn-primary margi-top">{{ closeMessage }}</button>
+      </div>
+    </div>
+  </div>
+</ng-container>
