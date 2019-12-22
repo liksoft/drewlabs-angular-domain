@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, AbstractControl, FormArray } from '@angular/forms';
-import { isGroupOfIDynamicForm } from '../../../../../presentation/component-reactive-form-helpers';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils/type-utils';
 import { HTMLFormControlRequireIfConfig, IHTMLFormControl } from '../../core/contracts/dynamic-input-interface';
 import { sortFormByIndex } from 'src/app/lib/domain/components/dynamic-inputs/core/contracts/form-control';
+import { isGroupOfIDynamicForm } from 'src/app/lib/domain/helpers/component-reactive-form-helpers';
 
 interface IConditionalControlBinding {
   key: string;
