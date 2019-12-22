@@ -10,9 +10,6 @@ import { Router } from '@angular/router';
 import { HttpServices } from '../contracts/http-services';
 import { HttpRequestConfigs } from './config';
 import { SessionStorage } from '../../storage/core/session-storage.service';
-// import { AuthTokenService } from '../../auth-token/core/auth-token.service';
-// import { LocalStorage } from '../../storage/core/local-storage.service';
-// import { AuthService } from '../../auth/core/auth.service';
 import { AuthPathConfig, AuthStorageConfig } from '../../auth/core/config';
 import { AuthTokenService } from '../../auth-token/core';
 import { URLUtils } from '../../utils/url';
@@ -116,7 +113,7 @@ export class HttpRequestService implements HttpServices {
       if (+error.status === 401) {
         this.sessionStorage.clear();
         this.tokenServiceProvider.removeToken();
-        this.sessionStorage.set('session_expired', true);
+        this.sessionStorage.set(HttpRequestConfigs.sessionExpiredStorageKey, true);
         this.router.navigate([AuthPathConfig.LOGIN_PATH], {
           replaceUrl: true
         });
