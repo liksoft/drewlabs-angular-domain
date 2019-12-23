@@ -10,6 +10,14 @@ import { ParseDatePipe, ParseMonthPipe, TimeAgoPipe } from './pipes/parse-date.p
 import { SafeWebContentPipe, CheckScriptsPipe } from './pipes/safe-web-content.pipe';
 import { SortableDirective } from './directives/sortable.directive';
 import { TranslationService } from './translator';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient } from '@angular/common/http';
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(httpClient: HttpClient) {
+  return new TranslateHttpLoader(httpClient, '../../../assets/i18n/', '.json');
+}
 
 @NgModule({
   imports: [
@@ -17,15 +25,14 @@ import { TranslationService } from './translator';
     AuthTokenModule.forRoot(),
     AppHttpModule.forRoot(),
     AuthModule.forRoot(),
-    // DynamicFormControlModule,
-    CoreComponentModule.forRoot()
+    CoreComponentModule.forRoot(),
+    TranslateModule
   ],
   exports: [
     StorageModule,
     AuthTokenModule,
     AppHttpModule,
     AuthModule,
-    // DynamicFormControlModule,
     CoreComponentModule,
     AmountFormatterPipe,
     ParseDatePipe,
@@ -33,7 +40,8 @@ import { TranslationService } from './translator';
     TimeAgoPipe,
     SafeWebContentPipe,
     CheckScriptsPipe,
-    SortableDirective
+    SortableDirective,
+    TranslateModule
   ],
   declarations: [
     AmountFormatterPipe,
@@ -47,3 +55,16 @@ import { TranslationService } from './translator';
   providers: [WindowRef, Dialog, TranslationService]
 })
 export class DomainModule {}
+
+@NgModule({
+  imports: [
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
+  ]
+})
+export class ApplicationTranslationModule {}

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class TranslationService {
-  constructor(private trans: TranslateService) {}
+  constructor(public readonly provider: TranslateService) {}
 
   /**
    * @description Calls the translation service "get" method to load translations
@@ -12,6 +12,6 @@ export class TranslationService {
    * @param params [[object]] parameters value
    */
   public translate(key: string | string[], params?: object): Observable<any> {
-    return this.trans.get(key, params);
+    return this.provider.get(key, params);
   }
 }
