@@ -13,10 +13,11 @@ import { Form } from './form';
 import { isDefined, isArray } from '../../../../utils/type-utils';
 import { Injectable } from '@angular/core';
 import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
-import { SessionStorage } from 'src/app/lib/domain/storage/core';
+// import { SessionStorage } from 'src/app/lib/domain/storage/core';
 import { FormControl } from './form-control';
 import { ISourceRequestQueryParameters, IDataSourceService, ISource } from '../../../ng-data-table/ng-data-table.component';
 import { FormControlOptionsEntity } from './form-control-options-entity';
+import { LocalStorage } from '../../../../storage/core/local-storage.service';
 
 export class FormDataSource implements IDataSourceService<ISource<Form>> {
 
@@ -25,7 +26,7 @@ export class FormDataSource implements IDataSourceService<ISource<Form>> {
   private client: HttpRequestService;
   public readonly formListEntryKey = 'Temp_Form_Lists_';
 
-  constructor(client: HttpRequestService, fn: HttpGetAllRequestFn, path: string, private cache: SessionStorage) {
+  constructor(client: HttpRequestService, fn: HttpGetAllRequestFn, path: string, private cache: LocalStorage) {
     this.ressourcesGetterMethod = fn;
     this.ressourcesPath = path;
     this.client = client;
@@ -49,9 +50,9 @@ export class FormDataSource implements IDataSourceService<ISource<Form>> {
         const forms = (res.success === true) ? (body.data.forms.data as Array<any>).map((value) => {
           return (Form.builder() as ISerializableBuilder<Form>).fromSerialized(value);
         }) : [];
-        if (isArray(forms) && forms.length > 0) {
-          this.cache.set(`${this.formListEntryKey}`, forms.map((f) => (Form.builder() as ISerializableBuilder<Form>).toSerialized(f)));
-        }
+        // if (isArray(forms) && forms.length > 0) {
+        //   this.cache.set(`${this.formListEntryKey}`, forms.map((f) => (Form.builder() as ISerializableBuilder<Form>).toSerialized(f)));
+        // }
         resolve({
           data: forms,
           total: body.data.forms.total
@@ -77,7 +78,7 @@ export class FormService extends RequestClient
   /**
    * @description Service initializer
    */
-  constructor(private client: HttpRequestService, private cache: SessionStorage) {
+  constructor(private client: HttpRequestService, public readonly cache: LocalStorage) {
     super();
     this.ressourcesPath = 'forms';
     this.formControlRessourcesPath = 'form_controls';
@@ -93,23 +94,6 @@ export class FormService extends RequestClient
     // Try getting the form from the cache
     // const form = this.cache.get(`Form__${id}`);
     return new Promise((resolve, reject) => {
-      // // If the form is in the cache, generate the Form object from cache serialized value
-      // if (form) {
-      //   resolve((Form.builder() as ISerializableBuilder<Form>).fromSerialized(form));
-      // } else {
-      //   // Else query for the form from an http endpoint
-      //   const result: Promise<any> = this.loadThroughHttpRequest(id);
-      //   result.then((value: any) => {
-      //     if (isDefined(value)) {
-      //       // Add the loaded form from to the session storage
-      //       this.cache.set(`Form__${id}`, value);
-      //       resolve((Form.builder() as ISerializableBuilder<Form>).fromSerialized(value));
-      //     } else {
-      //       resolve(null);
-      //     }
-      //   });
-      //   result.catch((err) => reject(err));
-      // }
       const result: Promise<any> = this.loadThroughHttpRequest(id);
       result.then((value: any) => {
         if (isDefined(value)) {

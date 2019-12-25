@@ -98,7 +98,7 @@ export class SecureWebStorage extends SecureStorage {
   constructor(storage: Storage) {
     super(storage, {
       hash: function hash(key: string): string | CryptoJS.WordArray {
-        const $hash = CryptoJS.SHA256(key, environment.storageSecret);
+        const $hash = CryptoJS.MD5(key, environment.storageSecret);
         return $hash.toString();
       },
       encrypt: function encrypt(data: any): string | CryptoJS.WordArray {
