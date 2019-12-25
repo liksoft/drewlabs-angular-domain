@@ -1,7 +1,21 @@
 import { isPlatformBrowser } from '@angular/common';
+import { isDefined } from './type-utils';
 
 type WindowEvent = (self: Window, ev?: Event) => any;
 
+export function readFileAsDataURI(file: File) {
+  return new Promise((_, __) => {
+    if (isDefined(file)) {
+      const reader = new FileReader();
+      reader.onload = async (e: ProgressEvent) => {
+        _((e.target as FileReader).result.toString());
+      };
+      reader.readAsDataURL(file);
+    } else {
+      _(null);
+    }
+  });
+}
 export class Browser {
   public static print() {
     window.print();
@@ -33,7 +47,7 @@ export class Browser {
     }
     const difference = to - element.scrollTop;
     const perTick = (difference / duration) * 2;
-    setTimeout(function() {
+    setTimeout(function () {
       element.scrollTop = element.scrollTop + perTick;
       this.scrollTo(element, to, duration - 2);
     }, 10);

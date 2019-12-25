@@ -38,7 +38,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ParseDatePipe,
     ParseMonthPipe,
     TimeAgoPipe,
-    SafeWebContentPipe,
     CheckScriptsPipe,
     SortableDirective,
     TranslateModule
@@ -48,7 +47,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ParseDatePipe,
     ParseMonthPipe,
     TimeAgoPipe,
-    SafeWebContentPipe,
     CheckScriptsPipe,
     SortableDirective
   ],

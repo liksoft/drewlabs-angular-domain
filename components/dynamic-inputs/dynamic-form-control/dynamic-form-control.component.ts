@@ -25,12 +25,22 @@ import {
   Input,
   Output,
   EventEmitter,
-  OnDestroy
+  OnDestroy,
+  ViewChild
 } from '@angular/core';
 import { MomentUtils } from 'src/app/lib/domain/utils/moment-utils';
 import { Observable } from 'rxjs';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { environment } from '../../../../../../environments/environment';
+import { isDefined } from '../../../utils/type-utils';
+import { DropzoneComponent } from '../../dropzone/dropzone.component';
+import { readFileAsDataURI } from '../../../utils/browser';
 
+export interface FileFormControl {
+  uuid: string;
+  dataURL: string;
+  extension: string;
+}
 @Component({
   selector: 'app-dynamic-inputs',
   templateUrl: './dynamic-form-control.component.html',
@@ -58,8 +68,13 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
 
   // Property for handling File Input types
   public dropzoneConfigs: DropzoneConfigInterface;
+  public dropzoneConfig: DropzoneConfigInterface;
+  @ViewChild('dropzoneContainer', { static: false })
+  dropzoneContainer: DropzoneComponent;
+  // @Output() dropzoneFileAdded = new EventEmitter<any>();
+  // @Output() dropzoneFileRemoved = new EventEmitter<any>();
 
-  constructor(private builder: FormBuilder) {}
+  constructor(private builder: FormBuilder) { }
 
   ngOnInit() {
     this.today = MomentUtils.parseDate(
@@ -71,10 +86,12 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
     if (this.inputConfig.type === InputTypes.FILE_INPUT) {
       this.dropzoneConfigs = {
         maxFiles: this.asFileInput(this.inputConfig).multiple ? 50 : 1,
-        maxFilesize: this.asFileInput(this.inputConfig).maxFileSize,
-        url: this.asFileInput(this.inputConfig).uploadUrl,
-        uploadMultiple: this.asFileInput(this.inputConfig).multiple
+        maxFilesize: this.asFileInput(this.inputConfig).maxFileSize ? this.asFileInput(this.inputConfig).maxFileSize : 4,
+        url: isDefined(this.asFileInput(this.inputConfig).uploadUrl) && this.asFileInput(this.inputConfig).uploadUrl !== '' ?
+          this.asFileInput(this.inputConfig).uploadUrl : environment.apiFileUploadURL,
+        uploadMultiple: this.asFileInput(this.inputConfig).multiple ? this.asFileInput(this.inputConfig).multiple : false
       };
+      this.control.valueChanges.subscribe((v) => console.log(v));
     }
     if (
       this.inputConfig &&
@@ -190,7 +207,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
     this.showPassword = !this.showPassword;
   }
 
-  isArray(listItems: Observable<any[]>|any[]) {
+  isArray(listItems: Observable<any[]> | any[]) {
     return ArrayUtils.isArray(listItems);
   }
 
@@ -205,5 +222,43 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   maxNumberSize() {
     return Math.pow(2, 31) - 1;
   }
-  ngOnDestroy() {}
+
+  // Files Handlers event method
+  async onDropzoneFileAdded(event: any | any[]) {
+    setTimeout(async () => {
+      const files = this.dropzoneContainer.dropzone().getAcceptedFiles();
+      console.log(files);
+      if ((this.inputConfig as FileInput).multiple) {
+        this.control.setValue((files as any[]).map(async (v) => {
+          return {
+            uuid: v.upload.uuid,
+            dataURL: await readFileAsDataURI(v.dataURL),
+            extension: (v.name as string).split('.')[(v.name as string).split('.').length - 1]
+          } as FileFormControl;
+        }));
+      } else {
+        this.control.setValue(
+          {
+            uuid: files[0].upload.uuid,
+            dataURL: await readFileAsDataURI(files[0]),
+            extension: (files[0].name as string).split('.')[(files[0].name as string).split('.').length - 1]
+          } as FileFormControl
+        );
+      }
+    }, 100);
+  }
+
+  onDropzoneFileRemoved(event: any) {
+    if ((this.inputConfig as FileInput).multiple) {
+      this.control.setValue((this.control.value as FileFormControl[]).filter((v) => {
+        return v.uuid !== event.upload.uuid;
+      }));
+    } else {
+      this.control.setValue(null);
+    }
+  }
+
+  onDzThumbnail() { }
+
+  ngOnDestroy() { }
 }

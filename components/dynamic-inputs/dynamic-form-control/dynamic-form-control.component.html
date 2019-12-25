@@ -3,19 +3,33 @@
         <div *ngSwitchCase="inputTypes.FILE_INPUT">
             <ng-container *ngIf="dropzoneConfigs">
                 <div class="text-center padding-left-right-16">
-                    <app-dropzone #dropzoneHolder [dropzoneConfig]="dropzoneConfigs"></app-dropzone>
+                    <app-dropzone #dropzoneContainer [dropzoneConfig]="dropzoneConfigs" (thumbnail)="onDzThumbnail()" (removedFile)="onDropzoneFileRemoved($event)" (addedFile)="onDropzoneFileAdded($event)"></app-dropzone>
                 </div>
             </ng-container>
-        </div>
-        <div *ngSwitchCase="inputTypes.HTML_INPUT">
-            {{ asHtmlInput(inputConfig).descriptionText | safeWebContent }}
-        </div>
-        <div *ngSwitchCase="inputTypes.HIDDEN_INPUT">
-            <input type="hidden" [id]="asEmailInput(inputConfig).formControlName" [class]="asEmailInput(inputConfig).classes" [formControl]="control" />
-        </div>
-        <div *ngSwitchCase="inputTypes.SELECT_INPUT">
-            <div class="clr-form-control">
-                <label class="clr-control-label" [for]="asSelectInput(inputConfig).formControlName">
+            <div>
+                <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span
+        ></clr-control-error>
+      </div>
+    </div>
+    <ng-container *ngSwitchCase="inputTypes.HTML_INPUT">
+      <div
+        [innerHTML]="asHtmlInput(inputConfig).descriptionText | safeWebContent"
+      ></div>
+    </ng-container>
+    <div *ngSwitchCase="inputTypes.HIDDEN_INPUT">
+      <input
+        type="hidden"
+        [id]="asEmailInput(inputConfig).formControlName"
+        [class]="asEmailInput(inputConfig).classes"
+        [formControl]="control"
+      />
+    </div>
+    <div *ngSwitchCase="inputTypes.SELECT_INPUT">
+      <div class="clr-form-control">
+        <label
+          class="clr-control-label"
+          [for]="asSelectInput(inputConfig).formControlName"
+        >
           {{ asSelectInput(inputConfig).label }}
           <small
             class="required-text"
@@ -23,19 +37,37 @@
             >(*)
           </small>
         </label>
-                <ng-select class="flat" [virtualScroll]="true" [items]="
+        <ng-select
+          class="flat"
+          [virtualScroll]="true"
+          [items]="
             isArray(listItems) ? listItems : (asObservable(listItems) | async)
-          " [bindLabel]="asSelectInput(inputConfig).optionsLabel" [bindValue]="asSelectInput(inputConfig).optionsValueIndex" [multiple]="asSelectInput(inputConfig).multiple" [placeholder]="asSelectInput(inputConfig).placeholder" [formControl]="control"
-                    [groupBy]="asSelectInput(inputConfig).groupByKey" (remove)="multiSelectItemRemove.emit($event)">
-                    <ng-template ng-option-tmp let-item="item" let-index="index" let-item$="item$">
-                        <div>
-                            <label class="form-check-label ml-2">
+          "
+          [bindLabel]="asSelectInput(inputConfig).optionsLabel"
+          [bindValue]="asSelectInput(inputConfig).optionsValueIndex"
+          [multiple]="asSelectInput(inputConfig).multiple"
+          [placeholder]="asSelectInput(inputConfig).placeholder"
+          [formControl]="control"
+          [groupBy]="asSelectInput(inputConfig).groupByKey"
+          (remove)="multiSelectItemRemove.emit($event)"
+        >
+          <ng-template
+            ng-option-tmp
+            let-item="item"
+            let-index="index"
+            let-item$="item$"
+          >
+            <div>
+              <label class="form-check-label ml-2">
                 {{ item[asSelectInput(inputConfig).optionsLabel] }}
               </label>
-                        </div>
-                    </ng-template>
-                </ng-select>
-                <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span>
+            </div>
+          </ng-template>
+        </ng-select>
+        <clr-control-error
+          class="field-has-error"
+          *ngIf="control.hasError('required') && control.touched"
+          ><span [translate]="'validation.required'"></span>
                 </clr-control-error>
                 <clr-control-helper *ngIf="inputConfig.descriptionText">
                     {{ inputConfig.descriptionText }}</clr-control-helper>
@@ -252,12 +284,11 @@
           />
           <label>({{ item.description }})</label>
                 </clr-radio-wrapper>
+                </clr-radio-container>
+                <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}
+                </clr-control-helper>
                 <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span
-        ></clr-control-error>
-      </clr-radio-container>
-      <clr-control-helper *ngIf="inputConfig.descriptionText">{{
-        inputConfig.descriptionText
-      }}</clr-control-helper>
+      ></clr-control-error>
     </div>
     <div *ngSwitchCase="inputTypes.CHECKBOX_INPUT">
       <div

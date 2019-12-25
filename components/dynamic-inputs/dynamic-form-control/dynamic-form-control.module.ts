@@ -24,7 +24,7 @@ import { DropzoneModule } from '../../dropzone/dropzone.module';
     DropzoneModule
   ],
   declarations: [DynamicFormControlComponent, DynamicFormWapperComponent, SafeWebContentPipe],
-  exports: [DynamicFormControlComponent, DynamicFormWapperComponent],
+  exports: [DynamicFormControlComponent, DynamicFormWapperComponent, SafeWebContentPipe],
   providers: []
 })
 export class DynamicFormControlModule {

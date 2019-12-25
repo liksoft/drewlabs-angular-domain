@@ -14,7 +14,7 @@ import { ClarityModule } from '@clr/angular';
 const DEFAULT_CONFIG: DropzoneConfigInterface = {
   url: environment.apiFileUploadURL,
   maxFilesize: 10,
-  acceptedFiles: 'image/*',
+  acceptedFiles: null,
   autoProcessQueue: false,
   uploadMultiple: false,
   maxFiles: 1,

@@ -43,7 +43,8 @@ import { Subscription } from 'rxjs';
         [class.dz-placeholder]="placeholder"
       >
         <div class="text-center dz-upload-btn">
-          <i class="fa fa-2x fa-cloud-upload-alt"></i>
+          <!-- <i class="fa fa-2x fa-cloud-upload-alt"></i> -->
+          <clr-icon shape="upload-cloud"></clr-icon>
         </div>
         <span>{{ "dragFileLabel" | translate }}</span>
         <span class="dz-text">
@@ -142,7 +143,7 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() useDropzoneClass = true;
   @Input() disabled = false;
   @Input() previewFileIcon = 'fa fa-file-alt';
-  @Input() acceptedFilesTypeName = 'images';
+  @Input() acceptedFilesTypeName = null;
 
   // tslint:disable-next-line: no-output-rename
   @Output('init') DZ_INIT = new EventEmitter<any>();
@@ -253,7 +254,6 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!isPlatformBrowser(this.platform)) {
       return;
     }
-
     this.winRef.nativeWindow.setTimeout(() => {
       DropzoneEvents.forEach((event: DropzoneEvent) => {
         if (this.dropzoneDirective) {

@@ -37,7 +37,7 @@ export class DropzoneService {
         'dictRemoveFileConfirmationLabel',
         'dictRemoveFileLabel',
         'dictMaxFilesExceededLabel',
-      ], {maxFilesize : '{{maxFilesize}}', filesize: '{{filesize}}', fileformat: acceptedFilesTypeName}).subscribe(translations => {
+      ], { maxFilesize: '{{maxFilesize}}', filesize: '{{filesize}}', fileformat: acceptedFilesTypeName }).toPromise().then(translations => {
         resolve(Object.assign(config, {
           // tslint:disable-next-line:ban-types
           accept: (file: File, done: Function) => {
@@ -46,9 +46,9 @@ export class DropzoneService {
               !config.acceptedFiles.includes(file.type)
             ) {
               done(`${translations.dictAcceptedFilesLabel} ${acceptedFilesTypeName}`);
-              return;
+            } else {
+              done();
             }
-            done();
           },
           dictFallbackMessage: translations.dictFallbackMessageLabel,
           dictFileTooBig: translations.dictFileTooBigLabel,
