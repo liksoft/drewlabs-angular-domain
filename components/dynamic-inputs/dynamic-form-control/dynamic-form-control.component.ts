@@ -13,7 +13,9 @@ import {
   InputTypes,
   RadioItem,
   CheckboxItem,
-  ISelectItem
+  ISelectItem,
+  FileInput,
+  HMTLInput
 } from 'src/app/lib/domain/components/dynamic-inputs/core';
 import { FormGroup, FormBuilder, NgModel, FormControl } from '@angular/forms';
 import { AbstractControl, FormArray } from '@angular/forms';
@@ -27,6 +29,7 @@ import {
 } from '@angular/core';
 import { MomentUtils } from 'src/app/lib/domain/utils/moment-utils';
 import { Observable } from 'rxjs';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 @Component({
   selector: 'app-dynamic-inputs',
@@ -53,6 +56,9 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   public formArrayGroup: FormGroup;
   public showPassword = true;
 
+  // Property for handling File Input types
+  public dropzoneConfigs: DropzoneConfigInterface;
+
   constructor(private builder: FormBuilder) {}
 
   ngOnInit() {
@@ -62,6 +68,14 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
         ? (this.inputConfig as DateInput).dateInputFormat
         : 'dd/mm/yyyy'
     );
+    if (this.inputConfig.type === InputTypes.FILE_INPUT) {
+      this.dropzoneConfigs = {
+        maxFiles: this.asFileInput(this.inputConfig).multiple ? 50 : 1,
+        maxFilesize: this.asFileInput(this.inputConfig).maxFileSize,
+        url: this.asFileInput(this.inputConfig).uploadUrl,
+        uploadMultiple: this.asFileInput(this.inputConfig).multiple
+      };
+    }
     if (
       this.inputConfig &&
       this.inputConfig.type === InputTypes.CHECKBOX_INPUT &&
@@ -149,6 +163,20 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
    */
   public asEmailInput(input: IHTMLFormControl): TextInput {
     return input as TextInput;
+  }
+  /**
+   * @description Returns a dynamic input configuration as a [[FileInput]]
+   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   */
+  public asFileInput(input: IHTMLFormControl): FileInput {
+    return input as FileInput;
+  }
+  /**
+   * @description Returns a dynamic input configuration as a [[HTMLInput]]
+   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   */
+  public asHtmlInput(input: IHTMLFormControl): HMTLInput {
+    return input as HMTLInput;
   }
   /**
    * @description Returns a dynamic input configuration as a [[PhoneInput]]

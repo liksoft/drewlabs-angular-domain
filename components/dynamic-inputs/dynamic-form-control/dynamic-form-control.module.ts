@@ -8,7 +8,8 @@ import { NgSelectModule} from '@ng-select/ng-select';
 import { IntlTelInputModule } from 'src/app/lib/domain/components/intl-tel-input';
 import { ClarityModule } from '@clr/angular';
 import { DynamicFormWapperComponent } from './dynamic-form-wapper/dynamic-form-wapper.component';
-// import { FormService } from '../core/form-control/form.service';
+import { SafeWebContentPipe } from '../../../pipes/safe-web-content.pipe';
+import { DropzoneModule } from '../../dropzone/dropzone.module';
 
 
 @NgModule({
@@ -19,9 +20,10 @@ import { DynamicFormWapperComponent } from './dynamic-form-wapper/dynamic-form-w
     ReactiveFormsModule,
     IntlTelInputModule.forRoot(),
     TranslateModule,
-    ClarityModule
+    ClarityModule,
+    DropzoneModule
   ],
-  declarations: [DynamicFormControlComponent, DynamicFormWapperComponent],
+  declarations: [DynamicFormControlComponent, DynamicFormWapperComponent, SafeWebContentPipe],
   exports: [DynamicFormControlComponent, DynamicFormWapperComponent],
   providers: []
 })
