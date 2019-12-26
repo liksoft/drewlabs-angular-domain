@@ -71,8 +71,6 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   public dropzoneConfig: DropzoneConfigInterface;
   @ViewChild('dropzoneContainer', { static: false })
   dropzoneContainer: DropzoneComponent;
-  // @Output() dropzoneFileAdded = new EventEmitter<any>();
-  // @Output() dropzoneFileRemoved = new EventEmitter<any>();
 
   constructor(private builder: FormBuilder) { }
 
@@ -91,7 +89,6 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
           this.asFileInput(this.inputConfig).uploadUrl : environment.apiFileUploadURL,
         uploadMultiple: this.asFileInput(this.inputConfig).multiple ? this.asFileInput(this.inputConfig).multiple : false
       };
-      this.control.valueChanges.subscribe((v) => console.log(v));
     }
     if (
       this.inputConfig &&
@@ -216,6 +213,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   }
 
   radioButtonValueChange(event: any) {
+    console.log(event);
     this.control.setValue(event);
   }
 
@@ -227,7 +225,6 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   async onDropzoneFileAdded(event: any | any[]) {
     setTimeout(async () => {
       const files = this.dropzoneContainer.dropzone().getAcceptedFiles();
-      console.log(files);
       if ((this.inputConfig as FileInput).multiple) {
         this.control.setValue((files as any[]).map(async (v) => {
           return {

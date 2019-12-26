@@ -1,5 +1,4 @@
 import { IHTMLFormControl } from './dynamic-input-interface';
-import { JsonProperty } from 'src/app/lib/domain/built-value/core/serializers';
 
 /**
  * @description Definitions for entities used as dynamic forms groups

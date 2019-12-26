@@ -122,8 +122,8 @@ export function postRessourceAndNotifiStore<T>(
   ressourcesPath: string,
   requestBody: object,
   ressourceBuilder: ISerializableBuilder<T>,
-  store: Store<T>,
-  action: string
+  store?: Store<T>,
+  action?: string
 ) {
   return new Promise<IResponseBody | T>((resolve, reject) => {
     (new RequestClient()).create(client, `${ressourcesPath}`, requestBody)
@@ -131,14 +131,16 @@ export function postRessourceAndNotifiStore<T>(
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );
-        if (res.success === true && isDefined(body.data)) {
+        if ((res.success === true) && isDefined(body.data)) {
           const ressource = ressourceBuilder.fromSerialized(body.data);
-          store.dispatch({
-            type: action,
-            payload: {
-              value: ressource
-            }
-          });
+          if (isDefined(store) && isDefined(action)) {
+            store.dispatch({
+              type: action,
+              payload: {
+                value: ressource
+              }
+            });
+          }
           resolve(ressource);
         } else {
           resolve(body);
@@ -165,9 +167,9 @@ export function putRessourceAndNotifyStore<T>(
   id: number | string,
   requestBody: object,
   storeUpdateObject: T | object,
-  store: Store<T>,
-  action: string,
-  indexKey: string,
+  store?: Store<T>,
+  action?: string,
+  indexKey?: string,
 ) {
   return new Promise<IResponseBody>((resolve, reject) => {
     (new RequestClient()).update(client, `${ressourcesPath}`, id, requestBody)
@@ -176,14 +178,16 @@ export function putRessourceAndNotifyStore<T>(
           Object.assign(res.body, { status: res.code })
         );
         if (res.success === true && isDefined(body.data) && body.data !== 0) {
-          store.dispatch({
-            type: action,
-            payload: {
-              index: indexKey,
-              needle: id,
-              value: storeUpdateObject
-            } as IPayload
-          });
+          if (isDefined(store) && isDefined(action) && isDefined(indexKey)) {
+            store.dispatch({
+              type: action,
+              payload: {
+                index: indexKey,
+                needle: id,
+                value: storeUpdateObject
+              } as IPayload
+            });
+          }
         }
         resolve(body);
       })

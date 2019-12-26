@@ -24,13 +24,17 @@ import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { EventEmitter, HostBinding } from '@angular/core';
 import { AbstractAlertableComponent } from './component-interfaces';
 import { TranslationService } from '../translator';
+import { ICollection } from '../contracts/collection-interface';
 
 /**
  * @description Checks if a dynamic form contains other form
  * @param f [[IDynamicForm]]
  */
 export function isGroupOfIDynamicForm(f: IDynamicForm) {
-  return isDefined(f.forms) && f.forms.length > 0;
+  if (isDefined(f) && isDefined(f.forms)) {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -41,9 +45,55 @@ export interface FormRequest {
   requestURL?: string;
 }
 
+/**
+ * @description Interface definition of a form submission event with the request url
+ */
 export interface InnerFormSubmissionEvent {
   index: number;
   requestURL?: string;
+}
+
+/**
+ * @description Build an angular form group from a dynamic form instance
+ * @param builder [[FormBuilder]]
+ * @param form [[IDynamicForm]]
+ * @param applyRequiredRules [[boolean]]
+ */
+export function angularAbstractControlFormDynamicForm(
+  builder: FormBuilder,
+  form: IDynamicForm,
+  applyRequiredRules: boolean = true
+): AbstractControl {
+  if (!isDefined(form)) {
+    return null;
+  }
+  const c = [...form.controlConfigs];
+  if (isGroupOfIDynamicForm(form)) {
+    (form as IDynamicForm).forms.forEach((v) => {
+      c.push(...(v.controlConfigs ? v.controlConfigs : []));
+    });
+  }
+  const formGroup: FormGroup = (ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
+    builder,
+    c,
+    applyRequiredRules
+  ) as FormGroup);
+  return formGroup;
+}
+
+/**
+ * @description Build a formgroup from a collection of dynamic inputs
+ * @param builder [[FormBuilder]]
+ * @param collection [[ICollection<IDynamicForm>]]
+ */
+export function formGroupFromCollectionOfDynamicControls(builder: FormBuilder, collection: ICollection<IDynamicForm>) {
+  const group = builder.group({});
+  collection.keys().forEach((k) => {
+    group.addControl(k,
+      angularAbstractControlFormDynamicForm(builder, collection.get(k))
+    );
+  });
+  return group;
 }
 export class ComponentReactiveFormHelpers {
   /**
@@ -181,7 +231,11 @@ export class ComponentReactiveFormHelpers {
    */
   public static validateFormGroupFields(formGroup: FormGroup): void {
     Object.keys(formGroup.controls).forEach((field: string) => {
-      ComponentReactiveFormHelpers.markControlAsTouched(formGroup.get(field));
+      if (formGroup.get(field) instanceof FormGroup) {
+        ComponentReactiveFormHelpers.validateFormGroupFields(formGroup.get(field) as FormGroup);
+      } else {
+        ComponentReactiveFormHelpers.markControlAsTouched(formGroup.get(field));
+      }
     });
   }
   /**
@@ -329,6 +383,9 @@ export abstract class BaseDynamicFormComponent extends AbstractAlertableComponen
    * @description Build an angular [[AbstractControl]] instance from dynamic form configurations
    */
   buildForm(applyRequiredRules: boolean = true): AbstractControl {
+    if (!isDefined(this.form)) {
+      return null;
+    }
     const c = [...this.form.controlConfigs];
     if (this.isFormGroup(this.form)) {
       (this.form as IDynamicForm).forms.forEach((v) => {
