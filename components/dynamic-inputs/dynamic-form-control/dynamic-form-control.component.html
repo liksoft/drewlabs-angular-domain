@@ -115,8 +115,6 @@
       </div>
     </div>
     <div *ngSwitchCase="inputTypes.DATE_INPUT">
-        <!-- <div class="clr-control-container"> -->
-        <!-- <div class="clr-input-wrapper"> -->
         <clr-date-container>
           <label
             class="clr-control-label"
@@ -133,26 +131,11 @@
             [formControl]="control"
             [min]="asDateInput(inputConfig).minDate"
             [max]="asDateInput(inputConfig).maxDate"
-            [attr.date-formatdata-date-format]="'dd/mm/yyyy'"
             [placeholder]="asDateInput(inputConfig).placeholder"
-            [value]="today"
             clrDate
             name="controlMinDate"
           />
         </clr-date-container>
-        <input
-          *ngIf="false"
-          [class]="asDateInput(inputConfig).classes"
-          type="date"
-          [value]="today"
-          [min]="asDateInput(inputConfig).minDate"
-          [max]="asDateInput(inputConfig).maxDate"
-          [attr.date-formatdata-date-format]="'dd/mm/yyyy'"
-          [placeholder]="asDateInput(inputConfig).placeholder"
-          [formControl]="control"
-        />
-        <!-- </div> -->
-        <!-- </div> -->
         <clr-control-error
           class="field-has-error"
           *ngIf="control.hasError('required') && control.touched"

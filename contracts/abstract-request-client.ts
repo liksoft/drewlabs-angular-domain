@@ -88,13 +88,13 @@ export function getRessourcesAndNotify<T>(
   client: HttpRequestService,
   ressourcesPath: string,
   ressourceBuilder: ISerializableBuilder<T>,
-  store: Store<T>,
-  action: string,
-  dataKey: string,
+  store?: Store<T>,
+  action?: string,
+  dataKey?: string,
 ): Promise<T> {
   return new Promise<T>(async (_, __) => {
     const result = await loadThroughHttpRequest(client, ressourcesPath);
-    if (isDefined(result) && isArray(result[dataKey].data)) {
+    if (isDefined(result) && isArray(result[dataKey].data) && isDefined(store)) {
       store.dispatch({
         type: action,
         payload: {
