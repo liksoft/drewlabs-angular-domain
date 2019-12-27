@@ -1,6 +1,16 @@
 <ng-container>
     <ng-container [ngSwitch]="inputConfig.type">
         <div *ngSwitchCase="inputTypes.FILE_INPUT">
+            <div>
+                <label class="clr-control-label" [for]="asSelectInput(inputConfig).formControlName">
+          {{ inputConfig.label }}
+          <small
+            class="required-text"
+            *ngIf="asFileInput(inputConfig).rules?.isRequired"
+            >(*)
+          </small>
+        </label>
+            </div>
             <ng-container *ngIf="dropzoneConfigs">
                 <div class="text-center padding-left-right-16">
                     <app-dropzone #dropzoneContainer [dropzoneConfig]="dropzoneConfigs" (thumbnail)="onDzThumbnail()" (removedFile)="onDropzoneFileRemoved($event)" (addedFile)="onDropzoneFileAdded($event)"></app-dropzone>
