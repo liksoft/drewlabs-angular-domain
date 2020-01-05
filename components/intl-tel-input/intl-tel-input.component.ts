@@ -51,7 +51,7 @@ export class PhoneNumberValidator {
   providers: []
 })
 export class IntlTelInputComponent implements OnInit, OnDestroy {
-  public phoneControl: FormControl = new FormControl();
+  public phoneControl: FormControl;
   @Input() control: FormControl;
   @Output() controlChange: EventEmitter<string> = new EventEmitter<string>();
   @Input() required = false;
@@ -150,6 +150,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   }
 
   private _initializePhoneNumberControl() {
+    this.phoneControl = new FormControl({value: null, disabled: this.disabled});
     // Setting validators on a control
     const validators: Array<ValidatorFn> = [
       PhoneNumberValidator.ValidatePhoneNumber
@@ -157,7 +158,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
     if (this.required) {
       validators.push(Validators.required);
     }
-    this.control.setValidators(validators);
+    this.phoneControl.setValidators(validators);
   }
 
   private setControlValue(dialCode: string, phoneNumber: string) {

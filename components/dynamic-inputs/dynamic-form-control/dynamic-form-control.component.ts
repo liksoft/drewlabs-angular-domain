@@ -229,7 +229,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
         this.control.setValue((files as any[]).map(async (v) => {
           return {
             uuid: v.upload.uuid,
-            dataURL: await readFileAsDataURI(v.dataURL),
+            dataURL: await readFileAsDataURI(v),
             extension: (v.name as string).split('.')[(v.name as string).split('.').length - 1]
           } as FileFormControl;
         }));
