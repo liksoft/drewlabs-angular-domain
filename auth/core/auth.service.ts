@@ -15,7 +15,7 @@ import { SessionStorage, LocalStorage, DataStoreService } from '../../storage/co
 import { ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { Subject } from 'rxjs';
 import { AuthRememberTokenService } from '../../auth-token/core/auth-remember-token.service';
-import { isDefined } from '../../utils/type-utils';
+// import { isDefined } from '../../utils/type-utils';
 
 @Injectable()
 export class AuthService {
@@ -56,40 +56,39 @@ export class AuthService {
    * @description User authentication handler
    * @param username username parameter for authentication
    * @param username  password parameter for authentication
+   * @param rememberMe Idicates whether a remember token will be saved on successfull authentication
    */
-  public authenticate(username: string, password: string) {
+  public authenticate(username: string, password: string, rememberMe: boolean = false) {
     return new Promise((resolve, reject) => {
       this.httpService
-        .post(AuthServerPathConfig.LOGIN_PATH, {
-          username,
-          password,
-          password_confirmation: password
-        })
+        .post(AuthServerPathConfig.LOGIN_PATH,
+          Object.assign({ username, password, password_confirmation: password }, rememberMe ? { remember_me: true } : {})
+        )
         .subscribe(
           (res: any) => {
-            const responseData: ResponseData =
-              res[ServerResponseKeys.RESPONSE_DATA];
-            const body: IResponseBody = new ResponseBody(responseData.body);
-            if (
-              responseData.success && body.data[ServerResponseKeys.AUTHENTICATED_KEY] === true
-            ) {
-              this.loggedIn = true;
-              this.tokenServiceProvider.removeToken();
-              this.tokenServiceProvider.setToken(
-                body.data[ServerResponseKeys.TOKEN]
-              );
-              // Set user data to the store
-              const authUser = (new User()).fromAuthenticationResponseBody(body, this.userBuilder);
-              this.user = authUser;
-              // console.log(this.user);
-              if (isDefined(this.user.rememberToken)) {
-                // console.log('Remember Token is Set');
-                this.rememberTokenService.setToken(
-                  this.user.rememberToken
-                );
-              }
-            }
-            resolve(body);
+            resolve(this.onAuthenticationResponse(res, rememberMe));
+          },
+          (error: any) => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  /**
+   * @description Handler for authenticating a user via user id and a remember token
+   * @param id [[string|number]] User system unique identifier
+   * @param token [[string]] Remember token
+   */
+  public authenticateViaRememberToken(id: string | number, token: string) {
+    return new Promise((resolve, reject) => {
+      this.httpService
+        .post(`${AuthServerPathConfig.LOGIN_PATH}/${id}`,
+          { remember_token: token }
+        )
+        .subscribe(
+          (res: any) => {
+            resolve(this.onAuthenticationResponse(res));
           },
           (error: any) => {
             reject(error);
@@ -120,6 +119,28 @@ export class AuthService {
         err => reject(err)
       );
     });
+  }
+
+  private onAuthenticationResponse(res: any, rememberMe: boolean = false) {
+    const responseData: ResponseData =
+      res[ServerResponseKeys.RESPONSE_DATA];
+    const body: IResponseBody = new ResponseBody(responseData.body);
+    if (
+      responseData.success && body.data[ServerResponseKeys.AUTHENTICATED_KEY] === true
+    ) {
+      this.loggedIn = true;
+      this.tokenServiceProvider.removeToken();
+      this.tokenServiceProvider.setToken(
+        body.data[ServerResponseKeys.TOKEN]
+      );
+      // Set user data to the store
+      const authUser = (new User()).fromAuthenticationResponseBody(body, this.userBuilder);
+      this.user = authUser;
+      if (rememberMe) {
+        this.rememberTokenService.setToken(this.user.rememberToken).setUserId(this.user.id);
+      }
+    }
+    return body;
   }
 
   /**

@@ -1,4 +1,5 @@
 import { IHTMLFormControl } from './dynamic-input-interface';
+import { ICollection } from '../../../../contracts/collection-interface';
 
 /**
  * @description Definitions for entities used as dynamic forms groups
@@ -7,7 +8,7 @@ export interface IDynamicForm {
   title: string;
   description: string;
   forms: IDynamicForm[];
-  controlConfigs?: IHTMLFormControl[];
+  controlConfigs?: IHTMLFormControl[]|ICollection<IHTMLFormControl>;
   endpointURL: string;
 }
 
@@ -15,7 +16,7 @@ export class DynamicForm implements IDynamicForm {
   forms: IDynamicForm[];
   title: string;
   description: string;
-  controlConfigs: IHTMLFormControl[];
+  controlConfigs: IHTMLFormControl[]|ICollection<IHTMLFormControl>;
   endpointURL: string;
 
   /**

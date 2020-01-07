@@ -67,10 +67,10 @@ export function angularAbstractControlFormDynamicForm(
   if (!isDefined(form)) {
     return null;
   }
-  const c = [...form.controlConfigs];
+  const c = [...form.controlConfigs as Array<IHTMLFormControl>];
   if (isGroupOfIDynamicForm(form)) {
     (form as IDynamicForm).forms.forEach((v) => {
-      c.push(...(v.controlConfigs ? v.controlConfigs : []));
+      c.push(...(v.controlConfigs ? (v.controlConfigs as Array<IHTMLFormControl>) : []));
     });
   }
   const formGroup: FormGroup = (ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
@@ -386,10 +386,10 @@ export abstract class BaseDynamicFormComponent extends AbstractAlertableComponen
     if (!isDefined(this.form)) {
       return null;
     }
-    const c = [...this.form.controlConfigs];
+    const c = [...this.form.controlConfigs as Array<IHTMLFormControl>];
     if (this.isFormGroup(this.form)) {
       (this.form as IDynamicForm).forms.forEach((v) => {
-        c.push(...(v.controlConfigs ? v.controlConfigs : []));
+        c.push(...(v.controlConfigs ? v.controlConfigs as Array<IHTMLFormControl> : []));
       });
     }
     const formGroup: FormGroup = (ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(

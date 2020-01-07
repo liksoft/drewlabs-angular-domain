@@ -28,7 +28,7 @@ export interface ICollection<T> {
    * @description Removes an item from the  collection based on it index key
    * @param key index key of the item
    */
-  remove(key: string): T;
+  remove(key: string|string[]): ICollection<T>;
 
   /**
    * @description Returns the list of items contains in the collection

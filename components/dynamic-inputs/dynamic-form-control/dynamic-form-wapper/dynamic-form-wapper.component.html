@@ -2,8 +2,8 @@
     <div class="form" *ngIf="componentFormGroup && conditionalControlBindings">
         <div class="">
             <div class="form form-container clr-row" *ngIf="componentFormGroup">
-                <ng-container *ngIf="form.controlConfigs && form.controlConfigs.length > 0">
-                    <app-dynamic-inputs *ngFor="let value of form.controlConfigs" [class]="
+                <ng-container *ngIf="form.controlConfigs && asArray(form.controlConfigs).length > 0">
+                    <app-dynamic-inputs (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)" *ngFor="let value of form.controlConfigs" [class]="
               isDefined(value.containerClass)
                 ? value.containerClass
                 : 'clr-col-12'
@@ -29,7 +29,7 @@
                 <!-- Loop through the forms in the formArray of the formrgoups -->
                 <ng-container *ngIf="form.forms && form.forms.length > 0">
                     <ng-container *ngFor="let item of form.forms; let i = index">
-                        <app-dynamic-inputs *ngFor="let value of item.controlConfigs" [class]="
+                        <app-dynamic-inputs (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)" *ngFor="let value of item.controlConfigs" [class]="
                 isDefined(value.containerClass)
                   ? value.containerClass
                   : 'clr-col-12'
@@ -44,8 +44,8 @@
                         </app-dynamic-inputs>
                     </ng-container>
                 </ng-container>
-                <ng-container *ngIf="form.controlConfigs && form.controlConfigs.length > 0">
-                    <app-dynamic-inputs *ngFor="let value of form.controlConfigs" [class]="
+                <ng-container *ngIf="form.controlConfigs && asArray(form.controlConfigs).length > 0">
+                    <app-dynamic-inputs (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)" *ngFor="let value of form.controlConfigs" [class]="
               isDefined(value.containerClass)
                 ? value.containerClass
                 : 'clr-col-12'

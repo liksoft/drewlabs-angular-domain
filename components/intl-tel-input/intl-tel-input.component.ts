@@ -150,7 +150,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   }
 
   private _initializePhoneNumberControl() {
-    this.phoneControl = new FormControl({value: null, disabled: this.disabled});
+    this.phoneControl = new FormControl({value: this.control.value, disabled: this.disabled});
     // Setting validators on a control
     const validators: Array<ValidatorFn> = [
       PhoneNumberValidator.ValidatePhoneNumber

@@ -4,7 +4,7 @@ export interface IAuthTokenService {
    * @param token JWT string representation of the connected user
    * @return void
    */
-  setToken(token: string): void;
+  setToken(token: string): any;
 
   /**
    * @description Removes connected user token from the temporary storage

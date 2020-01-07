@@ -26,6 +26,8 @@ export class DynamicFormWapperComponent implements OnInit {
   @Input() form: IDynamicForm;
   @Input() componentFormGroup: FormGroup;
   @Output() controlItemRemoved = new EventEmitter<MultiSelectItemRemoveEvent>();
+  @Output() fileAdded = new EventEmitter<any>();
+  @Output() fileRemoved = new EventEmitter<any>();
   public conditionalControlBindings: { [index: string]: IConditionalControlBinding } = {};
 
   constructor() { }
@@ -42,8 +44,8 @@ export class DynamicFormWapperComponent implements OnInit {
   }
 
   buildConditionalControlBindings(v: IDynamicForm) {
-    if (isDefined(v.controlConfigs) && (v.controlConfigs.length > 0)) {
-      v.controlConfigs.forEach((c) => {
+    if (isDefined(v.controlConfigs) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
+      (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
         if (isDefined(c.requiredIf)) {
           this.conditionalControlBindings[c.formControlName] = { key: c.formControlName, binding: c.requiredIf };
         }
@@ -96,8 +98,8 @@ export class DynamicFormWapperComponent implements OnInit {
   }
 
   updateControlHiddenValue(v: IDynamicForm, conditionBindings: IConditionalControlBinding, value: string | number) {
-    if (isDefined(v.controlConfigs) && (v.controlConfigs.length > 0)) {
-      v.controlConfigs.forEach((c) => {
+    if (isDefined(v.controlConfigs) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
+      (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
         if (c.formControlName === conditionBindings.key) {
           c.hidden = c.requiredIf.values.indexOf(isDefined(value) ? value.toString() : value) === - 1 ? true : false;
           if (isDefined(this)) {
@@ -123,6 +125,10 @@ export class DynamicFormWapperComponent implements OnInit {
 
   isDefined(value: any) {
     return isDefined(value);
+  }
+
+  asArray(value: any) {
+    return value as Array<any>;
   }
 
   rebuilListItems(values: any[]): any[] {
