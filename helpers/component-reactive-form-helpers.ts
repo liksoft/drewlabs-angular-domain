@@ -243,7 +243,9 @@ export class ComponentReactiveFormHelpers {
    * @param formGroup [[AbstractControl]] reference to form control
    */
   public static markControlAsTouched(control: AbstractControl): void {
-    control.markAsTouched({ onlySelf: true });
+    control.markAsTouched();
+    control.markAsDirty();
+    control.markAsPristine();
   }
 }
 

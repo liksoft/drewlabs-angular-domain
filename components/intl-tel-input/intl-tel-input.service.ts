@@ -3,6 +3,7 @@ import { Countries } from './countries';
 import { Country } from './country.model';
 import * as _ from 'google-libphonenumber';
 import { PhoneNumberUtils } from './phone-number-utils';
+import { isDefined } from '../../utils/type-utils';
 
 @Injectable()
 export class IntlTelInputService {
@@ -35,10 +36,13 @@ export class IntlTelInputService {
     }
     return null;
   }
+
   public parse(input: string) {
+    if (!isDefined(input)) {
+      return null;
+    }
     try {
-      const tmpInput =
-        input.startsWith('+') || input.startsWith('00') ? input : `+${input}`;
+      const tmpInput = input.toString().startsWith('+') || input.toString().startsWith('00') ? input : `+${input}`;
       return this.googlePhoneUtilInstance.parseAndKeepRawInput(tmpInput);
     } catch (e) {
       return null;

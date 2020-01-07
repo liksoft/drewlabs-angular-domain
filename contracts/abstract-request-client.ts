@@ -121,7 +121,7 @@ export function postRessourceAndNotifiStore<T>(
   client: HttpRequestService,
   ressourcesPath: string,
   requestBody: object,
-  ressourceBuilder: ISerializableBuilder<T>,
+  ressourceBuilder?: ISerializableBuilder<T>,
   store?: Store<T>,
   action?: string
 ) {
@@ -132,19 +132,19 @@ export function postRessourceAndNotifiStore<T>(
           Object.assign(res.body, { status: res.code })
         );
         if ((res.success === true) && isDefined(body.data)) {
-          const ressource = ressourceBuilder.fromSerialized(body.data);
           if (isDefined(store) && isDefined(action)) {
+            const ressource = ressourceBuilder.fromSerialized(body.data);
             store.dispatch({
               type: action,
               payload: {
                 value: ressource
               }
             });
+            resolve(ressource);
+            return;
           }
-          resolve(ressource);
-        } else {
-          resolve(body);
         }
+        resolve(body);
       })
       .catch(_ => reject(_));
   });
