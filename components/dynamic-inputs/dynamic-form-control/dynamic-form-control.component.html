@@ -1,15 +1,19 @@
 <ng-container>
     <ng-container [ngSwitch]="inputConfig.type">
         <div *ngSwitchCase="inputTypes.FILE_INPUT">
-            <ng-container *ngIf="dropzoneConfigs">
-                <div class="text-center padding-left-right-16">
-                    <app-dropzone #dropzoneContainer [dropzoneConfig]="dropzoneConfigs" (thumbnail)="onDzThumbnail()" (removedFile)="onDropzoneFileRemoved($event)" (addedFile)="onDropzoneFileAdded($event)"></app-dropzone>
-                </div>
-            </ng-container>
-            <div>
-                <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span
-        ></clr-control-error>
-      </div>
+            <div class="clr-form-control">
+                <label class="clr-control-label" *ngIf="showLabelAndDescription" [for]="asSelectInput(inputConfig).formControlName">
+          {{ inputConfig.label }}
+          <small
+            class="required-text"
+            *ngIf="asSelectInput(inputConfig).rules?.isRequired"
+            >(*)
+          </small>
+        </label>
+            </div>
+            <app-dropzone *ngIf="dropzoneConfigs" #dropzoneContainer [dropzoneConfig]="dropzoneConfigs" (thumbnail)="onDzThumbnail()" (removedFile)="onDropzoneFileRemoved($event)" (addedFile)="onDropzoneFileAdded($event)"></app-dropzone>
+            <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span
+      ></clr-control-error>
     </div>
     <ng-container *ngSwitchCase="inputTypes.HTML_INPUT">
       <div
@@ -19,7 +23,6 @@
     <div *ngSwitchCase="inputTypes.HIDDEN_INPUT">
       <input
         type="hidden"
-        [id]="asEmailInput(inputConfig).formControlName"
         [class]="asEmailInput(inputConfig).classes"
         [formControl]="control"
       />
@@ -27,7 +30,7 @@
     <div *ngSwitchCase="inputTypes.SELECT_INPUT">
       <div class="clr-form-control">
         <label
-          class="clr-control-label"
+          class="clr-control-label" *ngIf="showLabelAndDescription"
           [for]="asSelectInput(inputConfig).formControlName"
         >
           {{ asSelectInput(inputConfig).label }}
@@ -68,14 +71,14 @@
           class="field-has-error"
           *ngIf="control.hasError('required') && control.touched"
           ><span [translate]="'validation.required'"></span>
-                </clr-control-error>
-                <clr-control-helper *ngIf="inputConfig.descriptionText">
-                    {{ inputConfig.descriptionText }}</clr-control-helper>
-            </div>
+            </clr-control-error>
+            <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">
+                {{ inputConfig.descriptionText }}</clr-control-helper>
+        </div>
         </div>
         <div *ngSwitchCase="inputTypes.PHONE_INPUT">
             <div class="clr-form-control">
-                <label class="clr-control-label" [for]="asPhoneInput(inputConfig).formControlName">{{ asPhoneInput(inputConfig).label }}
+                <label class="clr-control-label" *ngIf="showLabelAndDescription" [for]="asPhoneInput(inputConfig).formControlName">{{ asPhoneInput(inputConfig).label }}
           <span
             class="required-text"
             *ngIf="asPhoneInput(inputConfig).rules?.isRequired"
@@ -87,82 +90,63 @@
             <app-intl-tel-input
               [controlClass]="asDateInput(inputConfig).classes"
               [control]="control"
+              [disabled]="inputConfig.disabled"
               [preferredCountries]="['tg', 'bj', 'gh']"
               [initialCountry]="'tg'"
             >
             </app-intl-tel-input>
           </div>
           <input
-            [id]="asPhoneInput(inputConfig).formControlName"
             [class]="asPhoneInput(inputConfig).classes"
             [formControl]="control"
             type="hidden"
           />
         </div>
-        <clr-control-helper *ngIf="inputConfig.descriptionText">{{
+        <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
           inputConfig.descriptionText
         }}</clr-control-helper>
       </div>
     </div>
     <div *ngSwitchCase="inputTypes.DATE_INPUT">
-      <div class="clr-form-control">
-        <!-- <div class="clr-control-container"> -->
-        <!-- <div class="clr-input-wrapper"> -->
-        <clr-date-container>
-          <label
-            class="clr-control-label"
-            [for]="asDateInput(inputConfig).formControlName"
-            >{{ asDateInput(inputConfig).label }}
-            <span
-              class="required-text"
-              *ngIf="asDateInput(inputConfig).rules?.isRequired"
-              >(*)</span
-            ></label
-          >
-          <input
-            type="date"
-            [formControl]="control"
-            [min]="asDateInput(inputConfig).minDate"
-            [max]="asDateInput(inputConfig).maxDate"
-            [attr.date-formatdata-date-format]="'dd/mm/yyyy'"
-            [placeholder]="asDateInput(inputConfig).placeholder"
-            [value]="today"
-            clrDate
-            name="controlMinDate"
-          />
-        </clr-date-container>
+      <clr-date-container>
+        <label
+          class="clr-control-label" *ngIf="showLabelAndDescription"
+          [for]="asDateInput(inputConfig).formControlName"
+          >{{ asDateInput(inputConfig).label }}
+          <span
+            class="required-text"
+            *ngIf="asDateInput(inputConfig).rules?.isRequired"
+            >(*)</span
+          ></label
+        >
         <input
-          *ngIf="false"
-          [class]="asDateInput(inputConfig).classes"
           type="date"
-          [value]="today"
+          [formControl]="control"
           [min]="asDateInput(inputConfig).minDate"
           [max]="asDateInput(inputConfig).maxDate"
-          [attr.date-formatdata-date-format]="'dd/mm/yyyy'"
           [placeholder]="asDateInput(inputConfig).placeholder"
-          [formControl]="control"
+          clrDate
+          name="controlMinDate"
         />
-        <!-- </div> -->
-        <!-- </div> -->
-        <clr-control-error
-          class="field-has-error"
-          *ngIf="control.hasError('required') && control.touched"
-          ><span [translate]="'validation.required'"></span
-        ></clr-control-error>
-        <clr-control-error
-          class="field-has-error"
-          *ngIf="control.hasError('pattern') && control.touched"
-          ><span [translate]="'validation.invalid'"></span
-        ></clr-control-error>
-        <clr-control-helper *ngIf="inputConfig.descriptionText">{{
-          inputConfig.descriptionText
-        }}</clr-control-helper>
-      </div>
+      </clr-date-container>
+      <clr-control-error
+        class="field-has-error"
+        *ngIf="control.hasError('required') && control.touched"
+        ><span [translate]="'validation.required'"></span
+      ></clr-control-error>
+      <clr-control-error
+        class="field-has-error"
+        *ngIf="control.hasError('pattern') && control.touched"
+        ><span [translate]="'validation.invalid'"></span
+      ></clr-control-error>
+      <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
+        inputConfig.descriptionText
+      }}</clr-control-helper>
     </div>
     <div *ngSwitchCase="inputTypes.TEXTAREA_INPUT">
       <div class="clr-form-control">
         <label
-          class="clr-control-label"
+          class="clr-control-label" *ngIf="showLabelAndDescription"
           [for]="asTextAreaInput(inputConfig).formControlName"
           >{{ asTextAreaInput(inputConfig).label }}
           <span
@@ -174,7 +158,6 @@
         <div class="clr-control-container">
           <div class="clr-textarea-wrapper">
             <textarea
-              [id]="asTextAreaInput(inputConfig).formControlName"
               [class]="asTextAreaInput(inputConfig).classes"
               [formControl]="control"
               [placeholder]="asTextAreaInput(inputConfig).placeholder"
@@ -197,7 +180,7 @@
             }"
           ></span
         ></clr-control-error>
-        <clr-control-helper *ngIf="inputConfig.descriptionText">{{
+        <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
           inputConfig.descriptionText
         }}</clr-control-helper>
       </div>
@@ -205,7 +188,7 @@
     <div *ngSwitchCase="inputTypes.NUMBER_INPUT">
       <div class="clr-form-control">
         <label
-          class="clr-control-label"
+          class="clr-control-label" *ngIf="showLabelAndDescription"
           [for]="asNumberInput(inputConfig).formControlName"
           >{{ asNumberInput(inputConfig).label }}
           <span
@@ -228,7 +211,6 @@
                   ? asNumberInput(inputConfig).min
                   : 0
               "
-              [id]="asNumberInput(inputConfig).formControlName"
               [class]="asNumberInput(inputConfig).classes"
               [formControl]="control"
               [placeholder]="asNumberInput(inputConfig).placeholder"
@@ -255,7 +237,7 @@
               [translateParams]="{ value: asNumberInput(inputConfig).max }"
             ></span>
           </clr-control-error>
-          <clr-control-helper *ngIf="inputConfig.descriptionText">{{
+          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
             inputConfig.descriptionText
           }}</clr-control-helper>
         </div>
@@ -285,7 +267,7 @@
           <label>({{ item.description }})</label>
                 </clr-radio-wrapper>
                 </clr-radio-container>
-                <clr-control-helper *ngIf="inputConfig.descriptionText">{{ inputConfig.descriptionText }}
+                <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{ inputConfig.descriptionText }}
                 </clr-control-helper>
                 <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span
       ></clr-control-error>
@@ -300,7 +282,7 @@
       >
         <div class="clr-form-control">
           <label
-            class="clr-control-label"
+            class="clr-control-label" *ngIf="showLabelAndDescription"
             [for]="asCheckBoxInput(inputConfig).formControlName"
             >{{ asCheckBoxInput(inputConfig).label }}
             <span
@@ -324,13 +306,12 @@
             >
               <input
                 type="checkbox"
-                [id]="'clr-checkbox-control-' + i"
                 [formControlName]="i"
                 [value]="asCheckBoxInput(inputConfig).items[i].value"
                 class="clr-checkbox"
               />
               <label
-                class="clr-control-label"
+                class="clr-control-label" *ngIf="showLabelAndDescription"
                 [for]="'clr-checkbox-control-' + i"
               >
                 {{ asCheckBoxInput(inputConfig).items[i].description }}</label
@@ -343,14 +324,14 @@
           *ngIf="control.hasError('required') && control.touched"
           ><span [translate]="'validation.required'"></span
         ></clr-control-error>
-        <clr-control-helper *ngIf="inputConfig.descriptionText">{{
+        <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
           inputConfig.descriptionText
         }}</clr-control-helper>
       </div>
     </div>
     <div *ngSwitchCase="inputTypes.PASSWORD_INPUT">
       <div class="clr-form-control">
-        <label [for]="inputConfig.formControlName" class="clr-control-label"
+        <label [for]="inputConfig.formControlName" class="clr-control-label" *ngIf="showLabelAndDescription"
           >{{ asPasswordInput(inputConfig).label }}
           <small
             class="required-text"
@@ -372,7 +353,6 @@
                   ? asPasswordInput(inputConfig).minLength
                   : 0
               "
-              [id]="asPasswordInput(inputConfig).formControlName"
               [class]="asPasswordInput(inputConfig).classes + ' password-input'"
               [formControl]="control"
               [placeholder]="asPasswordInput(inputConfig).placeholder"
@@ -418,7 +398,7 @@
             *ngIf="control.hasError('Match') && control.touched"
             ><span [translate]="'validation.passwordMatch'"></span
           ></clr-control-error>
-          <clr-control-helper *ngIf="inputConfig.descriptionText">{{
+          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
             inputConfig.descriptionText
           }}</clr-control-helper>
         </div>
@@ -426,7 +406,7 @@
     </div>
     <ng-container *ngSwitchDefault>
       <div class="clr-form-control">
-        <label [for]="inputConfig.formControlName" class="clr-control-label"
+        <label [for]="inputConfig.formControlName" class="clr-control-label" *ngIf="showLabelAndDescription"
           >{{ asEmailInput(inputConfig).label }}
           <small
             class="required-text"
@@ -452,7 +432,6 @@
                   ? asEmailInput(inputConfig).minLength
                   : 0
               "
-              [id]="asEmailInput(inputConfig).formControlName"
               [class]="asEmailInput(inputConfig).classes"
               [formControl]="control"
               [placeholder]="asEmailInput(inputConfig).placeholder"
@@ -485,7 +464,7 @@
             *ngIf="control.hasError('notUnique') && control.touched"
             ><span [translate]="'validation.unique'"></span
           ></clr-control-error>
-          <clr-control-helper *ngIf="inputConfig.descriptionText">{{
+          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
             inputConfig.descriptionText
           }}</clr-control-helper>
         </div>

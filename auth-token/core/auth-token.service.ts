@@ -11,9 +11,11 @@ class TokenConfigs {
 export class AuthTokenService implements IAuthTokenService {
 
   constructor(private sessionStorage: SessionStorage) {}
+
   get token() {
     return this.sessionStorage.get(TokenConfigs.USER_TOKEN_KEY);
   }
+
   set token(t: string) {
     this.sessionStorage.set(TokenConfigs.USER_TOKEN_KEY, t);
   }

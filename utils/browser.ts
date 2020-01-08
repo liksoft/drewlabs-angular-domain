@@ -3,8 +3,12 @@ import { isDefined } from './type-utils';
 
 type WindowEvent = (self: Window, ev?: Event) => any;
 
+/**
+ * Provides with promise base file reader functionnality
+ * @param file [[File|any]]
+ */
 export function readFileAsDataURI(file: File) {
-  return new Promise((_, __) => {
+  return new Promise<string>((_, __) => {
     if (isDefined(file)) {
       const reader = new FileReader();
       reader.onload = async (e: ProgressEvent) => {
@@ -15,6 +19,31 @@ export function readFileAsDataURI(file: File) {
       _(null);
     }
   });
+}
+
+/**
+ * @description Convert a base64 encoded string into a [[Blob]] javascript object
+ * @param b64Data [[string]] Base64 encoded string
+ * @param contentType [[string]]
+ * @param sliceSize [[number]] Size of each BlobPart
+ */
+export function b64toBlob(b64Data: string, contentType: string, sliceSize?: number) {
+  contentType = contentType || '';
+  sliceSize = sliceSize || 512;
+
+  const byteCharacters = atob(b64Data);
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+  }
+  return new Blob(byteArrays, {type: contentType});
 }
 export class Browser {
   public static print() {
@@ -47,7 +76,7 @@ export class Browser {
     }
     const difference = to - element.scrollTop;
     const perTick = (difference / duration) * 2;
-    setTimeout(function () {
+    setTimeout(function() {
       element.scrollTop = element.scrollTop + perTick;
       this.scrollTo(element, to, duration - 2);
     }, 10);

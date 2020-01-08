@@ -17,7 +17,7 @@ import {
   FileInput,
   HMTLInput
 } from 'src/app/lib/domain/components/dynamic-inputs/core';
-import { FormGroup, FormBuilder, NgModel, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { AbstractControl, FormArray } from '@angular/forms';
 import {
   Component,
@@ -50,6 +50,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   // Formcontrol injected from the parent controller
   @Input() control: AbstractControl;
   @Input() listenForChanges: boolean;
+  @Input() showLabelAndDescription = true;
   // private controlSubscription: Subscription;
   // Event emitter emitted when the value of the input changes
   @Output() valueChange: EventEmitter<any> = new EventEmitter<any>();
@@ -71,8 +72,8 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   public dropzoneConfig: DropzoneConfigInterface;
   @ViewChild('dropzoneContainer', { static: false })
   dropzoneContainer: DropzoneComponent;
-  // @Output() dropzoneFileAdded = new EventEmitter<any>();
-  // @Output() dropzoneFileRemoved = new EventEmitter<any>();
+  @Output() fileAdded = new EventEmitter<any>();
+  @Output() fileRemoved = new EventEmitter<any>();
 
   constructor(private builder: FormBuilder) { }
 
@@ -89,9 +90,9 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
         maxFilesize: this.asFileInput(this.inputConfig).maxFileSize ? this.asFileInput(this.inputConfig).maxFileSize : 4,
         url: isDefined(this.asFileInput(this.inputConfig).uploadUrl) && this.asFileInput(this.inputConfig).uploadUrl !== '' ?
           this.asFileInput(this.inputConfig).uploadUrl : environment.apiFileUploadURL,
-        uploadMultiple: this.asFileInput(this.inputConfig).multiple ? this.asFileInput(this.inputConfig).multiple : false
+        uploadMultiple: this.asFileInput(this.inputConfig).multiple ? this.asFileInput(this.inputConfig).multiple : false,
+        acceptedFiles: this.asFileInput(this.inputConfig).pattern ? this.asFileInput(this.inputConfig).pattern : 'image/*'
       };
-      this.control.valueChanges.subscribe((v) => console.log(v));
     }
     if (
       this.inputConfig &&
@@ -216,6 +217,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   }
 
   radioButtonValueChange(event: any) {
+    console.log(event);
     this.control.setValue(event);
   }
 
@@ -227,12 +229,11 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   async onDropzoneFileAdded(event: any | any[]) {
     setTimeout(async () => {
       const files = this.dropzoneContainer.dropzone().getAcceptedFiles();
-      console.log(files);
       if ((this.inputConfig as FileInput).multiple) {
         this.control.setValue((files as any[]).map(async (v) => {
           return {
             uuid: v.upload.uuid,
-            dataURL: await readFileAsDataURI(v.dataURL),
+            dataURL: await readFileAsDataURI(v),
             extension: (v.name as string).split('.')[(v.name as string).split('.').length - 1]
           } as FileFormControl;
         }));
@@ -245,6 +246,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
           } as FileFormControl
         );
       }
+      this.fileAdded.emit(this.control.value);
     }, 100);
   }
 
@@ -256,6 +258,14 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
     } else {
       this.control.setValue(null);
     }
+    this.fileRemoved.emit();
+  }
+
+  uniqueID(prefix: string) {
+    // Math.random should be unique because of its seeding algorithm.
+    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+    // after the decimal.
+    return prefix + '_' + Math.random().toString(36).substr(2, 9);
   }
 
   onDzThumbnail() { }

@@ -657,6 +657,7 @@ export class TextAreaInput extends TextInput {
 
 export class FileInput extends AbstractHTMLFormControl {
   uploadUrl: string;
+  pattern: string;
   multiple: boolean;
   maxFileSize: number;
 
@@ -667,6 +668,9 @@ export class FileInput extends AbstractHTMLFormControl {
   constructor(value: FileInput) {
     super(value);
     this.uploadUrl = value.uploadUrl ? value.uploadUrl : null;
+    this.pattern =  value.pattern ? value.pattern : null;
+    this.multiple = value.multiple ? value.multiple : false;
+    this.maxFileSize = value.maxFileSize ? value.maxFileSize : null;
   }
 
 
@@ -696,6 +700,7 @@ export class FileInput extends AbstractHTMLFormControl {
         readOnly: model.readonly === 1 ? true : false,
         descriptionText: model.description,
         uploadUrl: model.uploadURL,
+        pattern: model.pattern,
         multiple: model.multiple === 1 ? true : false,
         maxFileSize: model.max ? model.max : 4
       } as FileInput

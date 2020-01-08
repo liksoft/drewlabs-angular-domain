@@ -79,7 +79,7 @@ import { Subscription } from 'rxjs';
         color: #666 !important;
         text-align: center !important;
         background-color: #e6f2fb !important;
-        margin: 16px !important;
+        margin: 0px !important;
         padding: 10px;
       }
 

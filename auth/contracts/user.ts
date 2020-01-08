@@ -5,6 +5,7 @@ import { ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { UserInfoEntity } from '../models/user-info';
 
 export interface AuthUser {
+  id: number|string;
   username: string;
   password: string;
   isActive: boolean | number;

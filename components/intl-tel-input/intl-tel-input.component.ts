@@ -19,6 +19,7 @@ import {
 import { Subscription } from 'rxjs';
 import * as _ from 'google-libphonenumber';
 import { PhoneNumberUtils } from './phone-number-utils';
+import { isDefined } from '../../utils/type-utils';
 
 export class PhoneNumberValidator {
   static ValidatePhoneNumber(control: AbstractControl) {
@@ -31,7 +32,10 @@ export class PhoneNumberValidator {
     const googlePhonelibInstance = _.PhoneNumberUtil.getInstance();
     try {
       let threatedInput: string;
-      threatedInput = PhoneNumberUtils.sanitize(control.value as string);
+      if (!isDefined(control.value)) {
+        return null;
+      }
+      threatedInput = PhoneNumberUtils.sanitize(control.value.toString() as string);
       const phoneNumber = googlePhonelibInstance.parseAndKeepRawInput(
         threatedInput
       );
@@ -40,6 +44,7 @@ export class PhoneNumberValidator {
       }
       return null;
     } catch (e) {
+      console.log(e);
       return { invalidPhoneNumber: true };
     }
   }
@@ -51,7 +56,7 @@ export class PhoneNumberValidator {
   providers: []
 })
 export class IntlTelInputComponent implements OnInit, OnDestroy {
-  public phoneControl: FormControl = new FormControl();
+  public phoneControl: FormControl;
   @Input() control: FormControl;
   @Output() controlChange: EventEmitter<string> = new EventEmitter<string>();
   @Input() required = false;
@@ -75,8 +80,6 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._initializePhoneNumberControl();
-    // Set the preferred countries
     if (this.preferredCountries.length > 0) {
       this.preferredCountries.forEach(iso2 => {
         const preferredCountry = this.allCountries.filter(c => {
@@ -89,37 +92,8 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
             null;
       });
     }
-    // Set the initial country to show
-    if (this.control.value) {
-      const controlState = this.control.value;
-      const tmpCountryCode: number = this.intelInputService.getCountryCode(
-        controlState
-      );
-      if (tmpCountryCode) {
-        this.selectedCountry = this.allCountries.filter((c: Country) => {
-          return (
-            c.dialCode ===
-            this.intelInputService.getCountryCode(controlState).toString()
-          );
-        })[0];
-        this.phoneControl.setValue(
-          (controlState as string).substring(
-            this.selectedCountry.dialCode.length
-          )
-        );
-      }
-    } else if (this.initialCountry) {
-      const initCountry = this.allCountries.filter((c: Country) => {
-        return c.iso2 === this.initialCountry;
-      });
-      this.selectedCountry = initCountry[0];
-    } else {
-      if (this.preferredCountriesInDropDown.length > 0) {
-        this.selectedCountry = this.preferredCountriesInDropDown[0];
-      } else {
-        this.selectedCountry = this.allCountries[0];
-      }
-    }
+    this._initializePhoneNumberControl();
+    // Set the preferred countries
     this.phoneControlSubscription = this.phoneControl.valueChanges.subscribe(
       state => {
         if (state) {
@@ -150,6 +124,36 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   }
 
   private _initializePhoneNumberControl() {
+    this.phoneControl = new FormControl({value: null, disabled: this.disabled});
+    // Set the initial country to show
+    if (isDefined(this.control.value)) {
+      const controlState = this.control.value.toString();
+      const tmpCountryCode: number = this.intelInputService.getCountryCode(controlState);
+      if (tmpCountryCode) {
+        this.selectedCountry = this.allCountries.filter((c: Country) => {
+          return (
+            c.dialCode ===
+            this.intelInputService.getCountryCode(controlState).toString()
+          );
+        })[0];
+        this.phoneControl.setValue(
+          (controlState as string).substring(
+            this.selectedCountry.dialCode.length
+          )
+        );
+      }
+    } else if (this.initialCountry) {
+      const initCountry = this.allCountries.filter((c: Country) => {
+        return c.iso2 === this.initialCountry;
+      });
+      this.selectedCountry = initCountry[0];
+    } else {
+      if (this.preferredCountriesInDropDown.length > 0) {
+        this.selectedCountry = this.preferredCountriesInDropDown[0];
+      } else {
+        this.selectedCountry = this.allCountries[0];
+      }
+    }
     // Setting validators on a control
     const validators: Array<ValidatorFn> = [
       PhoneNumberValidator.ValidatePhoneNumber
@@ -157,7 +161,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
     if (this.required) {
       validators.push(Validators.required);
     }
-    this.control.setValidators(validators);
+    this.phoneControl.setValidators(validators);
   }
 
   private setControlValue(dialCode: string, phoneNumber: string) {

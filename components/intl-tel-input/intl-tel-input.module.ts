@@ -6,6 +6,7 @@ import { IntlTelInputService } from './intl-tel-input.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { ClarityModule } from '@clr/angular';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+// import { DrewlabsDisableControlDirective } from '../../directives/disable-control.directive';
 
 @NgModule({
   imports: [

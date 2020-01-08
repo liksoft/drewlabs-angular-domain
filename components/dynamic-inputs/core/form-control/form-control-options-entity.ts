@@ -63,13 +63,4 @@ export class FormControlOptionsEntity {
   static builder(): TypeBuilder<FormControlOptionsEntity> | ISerializableBuilder<FormControlOptionsEntity> {
     return new FormControlOptionsEntityBuilder();
   }
-
-  // formViewModelBindings(): {[index: string]: any} {
-  //   return {
-  //     forms_title: 'title',
-  //     forms_description: 'description',
-  //     forms_parent_id: 'parentId',
-  //     forms_endpoint_url: 'url'
-  //   };
-  // }
 }

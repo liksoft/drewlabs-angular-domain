@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, AbstractControl, FormArray } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils/type-utils';
@@ -21,11 +21,13 @@ export interface MultiSelectItemRemoveEvent {
   templateUrl: './dynamic-form-wapper.component.html',
   styles: []
 })
-export class DynamicFormWapperComponent implements OnInit, AfterViewInit {
+export class DynamicFormWapperComponent implements OnInit {
 
   @Input() form: IDynamicForm;
   @Input() componentFormGroup: FormGroup;
   @Output() controlItemRemoved = new EventEmitter<MultiSelectItemRemoveEvent>();
+  @Output() fileAdded = new EventEmitter<any>();
+  @Output() fileRemoved = new EventEmitter<any>();
   public conditionalControlBindings: { [index: string]: IConditionalControlBinding } = {};
 
   constructor() { }
@@ -41,11 +43,9 @@ export class DynamicFormWapperComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {}
-
   buildConditionalControlBindings(v: IDynamicForm) {
-    if (isDefined(v.controlConfigs) && (v.controlConfigs.length > 0)) {
-      v.controlConfigs.forEach((c) => {
+    if (isDefined(v.controlConfigs) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
+      (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
         if (isDefined(c.requiredIf)) {
           this.conditionalControlBindings[c.formControlName] = { key: c.formControlName, binding: c.requiredIf };
         }
@@ -85,32 +85,25 @@ export class DynamicFormWapperComponent implements OnInit, AfterViewInit {
   applyHiddenOnMatchingControls(
     bindings: IConditionalControlBinding,
     value: string | number,
-    fn: (group: FormGroup, f: IDynamicForm, c: IConditionalControlBinding, s: string | number) => void) {
+    fn: (f: IDynamicForm, c: IConditionalControlBinding, s: string | number) => void) {
     if (this.isFormGroup(this.form)) {
       this.form.forms.forEach((v) => {
         // Call the update method here
-        fn(this.componentFormGroup, v, bindings, value);
+        fn(v, bindings, value);
       });
     } else {
       // Calls the update method here
-      fn(this.componentFormGroup, this.form, bindings, value);
+      fn(this.form, bindings, value);
     }
   }
 
-  updateControlHiddenValue(
-    formgroup: FormGroup,
-    v: IDynamicForm,
-    conditionBindings: IConditionalControlBinding,
-    value: string | number
-    ) {
-    if (isDefined(v.controlConfigs) && (v.controlConfigs.length > 0)) {
-      v.controlConfigs.forEach((c) => {
+  updateControlHiddenValue(v: IDynamicForm, conditionBindings: IConditionalControlBinding, value: string | number) {
+    if (isDefined(v.controlConfigs) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
+      (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
         if (c.formControlName === conditionBindings.key) {
-          if (c.requiredIf.values.indexOf(isDefined(value) ? value.toString() : value) === - 1) {
-            formgroup.get(c.formControlName).setValue(null);
-            c.hidden = true;
-          } else {
-            c.hidden = false;
+          c.hidden = c.requiredIf.values.indexOf(isDefined(value) ? value.toString() : value) === - 1 ? true : false;
+          if (isDefined(this)) {
+            this.componentFormGroup.get(conditionBindings.key).setValue(null);
           }
           return;
         }
@@ -132,6 +125,10 @@ export class DynamicFormWapperComponent implements OnInit, AfterViewInit {
 
   isDefined(value: any) {
     return isDefined(value);
+  }
+
+  asArray(value: any) {
+    return value as Array<any>;
   }
 
   rebuilListItems(values: any[]): any[] {

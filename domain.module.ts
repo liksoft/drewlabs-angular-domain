@@ -13,6 +13,7 @@ import { TranslationService } from './translator';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
+import { DrewlabsDisableControlDirective } from './directives/disable-control.directive';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -40,7 +41,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TimeAgoPipe,
     CheckScriptsPipe,
     SortableDirective,
-    TranslateModule
+    TranslateModule,
+    DrewlabsDisableControlDirective
   ],
   declarations: [
     AmountFormatterPipe,
@@ -48,7 +50,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ParseMonthPipe,
     TimeAgoPipe,
     CheckScriptsPipe,
-    SortableDirective
+    SortableDirective,
+    DrewlabsDisableControlDirective
   ],
   providers: [WindowRef, Dialog, TranslationService]
 })

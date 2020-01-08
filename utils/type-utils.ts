@@ -127,3 +127,28 @@ export function getJSObjectPropertyValue(item: any, field: string) {
     return item[field];
   }
 }
+
+/**
+ * @description Helper function for flattening an object properties
+ * @param ob [[object]]
+ */
+export function flattenObject(ob: object, prefixInnerKeys: boolean = true) {
+  if (isPrimitive(ob)) {
+    return ob;
+  }
+  const returnedObj = {};
+  for (const i in ob) {
+    if (!ob.hasOwnProperty(i)) { continue; }
+    if (isPrimitive(ob[i]) || isArray(ob[i])) {
+      returnedObj[i] = ob[i];
+    } else {
+      const flatObject = flattenObject(ob[i], prefixInnerKeys);
+      for (const x in flatObject) {
+        if (!flatObject.hasOwnProperty(x)) { continue; }
+        const obKey = prefixInnerKeys ? i + '.' + x : x;
+        returnedObj[obKey] = flatObject[x];
+      }
+    }
+  }
+  return returnedObj;
+}

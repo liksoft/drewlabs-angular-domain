@@ -14,8 +14,8 @@ export function sortFormByIndex(form: IDynamicForm): IDynamicForm {
         loopThroughFormsFn(i);
       });
     }
-    if (isArray(f.controlConfigs) && f.controlConfigs.length > 0) {
-      f.controlConfigs = ArrayUtils.sort(f.controlConfigs, 'formControlIndex', 1) as IHTMLFormControl[];
+    if (isArray(f.controlConfigs) && (f.controlConfigs as Array<IHTMLFormControl>).length > 0) {
+      f.controlConfigs = ArrayUtils.sort((f.controlConfigs as Array<IHTMLFormControl>), 'formControlIndex', 1) as IHTMLFormControl[];
     }
     return f;
   };
