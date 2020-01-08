@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FormGroup, AbstractControl, FormArray } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils/type-utils';
@@ -21,7 +21,7 @@ export interface MultiSelectItemRemoveEvent {
   templateUrl: './dynamic-form-wapper.component.html',
   styles: []
 })
-export class DynamicFormWapperComponent implements OnInit {
+export class DynamicFormWapperComponent implements OnInit, AfterViewInit {
 
   @Input() form: IDynamicForm;
   @Input() componentFormGroup: FormGroup;
@@ -40,6 +40,8 @@ export class DynamicFormWapperComponent implements OnInit {
       this.buildConditionalControlBindings(this.form);
     }
   }
+
+  ngAfterViewInit() {}
 
   buildConditionalControlBindings(v: IDynamicForm) {
     if (isDefined(v.controlConfigs) && (v.controlConfigs.length > 0)) {
@@ -83,25 +85,32 @@ export class DynamicFormWapperComponent implements OnInit {
   applyHiddenOnMatchingControls(
     bindings: IConditionalControlBinding,
     value: string | number,
-    fn: (f: IDynamicForm, c: IConditionalControlBinding, s: string | number) => void) {
+    fn: (group: FormGroup, f: IDynamicForm, c: IConditionalControlBinding, s: string | number) => void) {
     if (this.isFormGroup(this.form)) {
       this.form.forms.forEach((v) => {
         // Call the update method here
-        fn(v, bindings, value);
+        fn(this.componentFormGroup, v, bindings, value);
       });
     } else {
       // Calls the update method here
-      fn(this.form, bindings, value);
+      fn(this.componentFormGroup, this.form, bindings, value);
     }
   }
 
-  updateControlHiddenValue(v: IDynamicForm, conditionBindings: IConditionalControlBinding, value: string | number) {
+  updateControlHiddenValue(
+    formgroup: FormGroup,
+    v: IDynamicForm,
+    conditionBindings: IConditionalControlBinding,
+    value: string | number
+    ) {
     if (isDefined(v.controlConfigs) && (v.controlConfigs.length > 0)) {
       v.controlConfigs.forEach((c) => {
         if (c.formControlName === conditionBindings.key) {
-          c.hidden = c.requiredIf.values.indexOf(isDefined(value) ? value.toString() : value) === - 1 ? true : false;
-          if (isDefined(this)) {
-            this.componentFormGroup.get(conditionBindings.key).setValue(null);
+          if (c.requiredIf.values.indexOf(isDefined(value) ? value.toString() : value) === - 1) {
+            formgroup.get(c.formControlName).setValue(null);
+            c.hidden = true;
+          } else {
+            c.hidden = false;
           }
           return;
         }
