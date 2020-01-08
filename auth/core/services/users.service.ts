@@ -131,9 +131,9 @@ export class ApplicationUsersService extends RequestClient
       this.client,
       this.ressourcesPath,
       id,
-      this.store,
-      USER_REMOVED_ACTION,
-      'id'
+      // this.store,
+      // USER_REMOVED_ACTION,
+      // 'id'
     );
   }
 

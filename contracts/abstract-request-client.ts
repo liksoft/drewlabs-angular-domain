@@ -209,9 +209,9 @@ export function deleteRessourceAndNotifyStore<T>(
   client: HttpRequestService,
   ressourcesPath: string,
   id: number | string,
-  store: Store<T>,
-  action: string,
-  indexKey: string
+  store?: Store<T>,
+  action?: string,
+  indexKey?: string
 ): Promise<IResponseBody> {
   return new Promise((resolve, reject) => {
     (new RequestClient()).delete(client, `${ressourcesPath}`, id)
@@ -219,7 +219,8 @@ export function deleteRessourceAndNotifyStore<T>(
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );
-        if (res.success === true && isDefined(body.data) && body.data !== 0) {
+        // tslint:disable-next-line: max-line-length
+        if (res.success === true && isDefined(body.data) && (body.data !== 0) && isDefined(store) && isDefined(action) && isDefined(indexKey)) {
           store.dispatch({
             type: action,
             payload: {

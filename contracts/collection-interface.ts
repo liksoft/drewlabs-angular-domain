@@ -34,4 +34,9 @@ export interface ICollection<T> {
    * @description Returns the list of items contains in the collection
    */
   values(): T[];
+
+  /**
+   * Return the collection iterator
+   */
+  [Symbol.iterator](): Iterator<T>;
 }
