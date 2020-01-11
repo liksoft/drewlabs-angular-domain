@@ -1,4 +1,3 @@
-import * as secureWebStorage from 'secure-web-storage';
 import * as  CryptoJS from 'crypto-js';
 import { environment } from 'src/environments/environment';
 
