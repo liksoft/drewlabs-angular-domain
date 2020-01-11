@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { isDefined } from './type-utils';
+import { saveAs } from 'file-saver';
 
 type WindowEvent = (self: Window, ev?: Event) => any;
 
@@ -35,15 +36,15 @@ export function b64toBlob(b64Data: string, contentType: string, sliceSize?: numb
   const byteArrays = [];
 
   for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
+    const slice = byteCharacters.slice(offset, offset + sliceSize);
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
   }
-  return new Blob(byteArrays, {type: contentType});
+  return new Blob(byteArrays, { type: contentType });
 }
 export class Browser {
   public static print() {
@@ -84,5 +85,16 @@ export class Browser {
 
   static document(platformId: object) {
     return isPlatformBrowser(platformId) ? document : null;
+  }
+
+  /**
+   * Saves a file by opening file-save-as dialog in the browser
+   * using file-save library.
+   * @param blobContent file content as a Blob
+   * @param fileName name file should be saved as
+   */
+  static saveFile(blobContent: Blob, fileName: string) {
+    const blob = new Blob([blobContent], { type: 'application/octet-stream' });
+    saveAs(blob, fileName);
   }
 }
