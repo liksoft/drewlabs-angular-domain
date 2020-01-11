@@ -235,6 +235,107 @@ export function deleteRessourceAndNotifyStore<T>(
 }
 
 /**
+ * @description Get a list a ressources from the backend server using an HTTP request
+ * @param client [[HttpRequestService]]
+ * @param ressourcesPath [[string]]
+ * @param ressourceBuilder [[ISerializableBuilder<T>]]
+ */
+export function getRessources<T>(
+  client: HttpRequestService,
+  ressourcesPath: string,
+  ressourceBuilder: ISerializableBuilder<T>,
+  dataKey: string
+) {
+  return new Promise<T[]>(async (_, __) => {
+    const result = await loadThroughHttpRequest(client, ressourcesPath);
+    if (isDefined(result) && isArray(result[dataKey].data)) {
+      _((result[dataKey].data as Array<object>).map((value) => {
+        return ressourceBuilder.fromSerialized(value);
+      }));
+    }
+    _([]);
+  });
+}
+
+/**
+ * @description Make an HTTP request for creating a new ressource
+ * @param client [[HttpRequestService]]
+ * @param ressourcesPath [[string]]
+ * @param requestBody [[object]]
+ * @param ressourceBuilder [[ISerializableBuilder<T>]]
+ */
+export function postRessource<T>(
+  client: HttpRequestService,
+  ressourcesPath: string,
+  requestBody: object,
+  ressourceBuilder?: ISerializableBuilder<T>,
+) {
+  return new Promise<IResponseBody | T>((resolve, reject) => {
+    (new RequestClient()).create(client, `${ressourcesPath}`, requestBody)
+      .then((res: ResponseData) => {
+        const body: IResponseBody = new ResponseBody(
+          Object.assign(res.body, { status: res.code })
+        );
+        if ((res.success === true) && isDefined(body.data)) {
+          resolve(ressourceBuilder.fromSerialized(body.data));
+          return;
+        }
+        resolve(body);
+      })
+      .catch(_ => reject(_));
+  });
+}
+
+/**
+ * @description Make an HTTP PUT request to the ressources endpoint to update ressources information in the database
+ * @param client [[HttpRequestService]]
+ * @param ressourcesPath [[string]]
+ * @param id  [[number|string]]
+ * @param requestBody [[object]]
+ */
+export function putRessource<T>(
+  client: HttpRequestService,
+  ressourcesPath: string,
+  id: number | string,
+  requestBody: object
+) {
+  return new Promise<IResponseBody>((resolve, reject) => {
+    (new RequestClient()).update(client, `${ressourcesPath}`, id, requestBody)
+      .then((res: ResponseData) => {
+        const body: IResponseBody = new ResponseBody(
+          Object.assign(res.body, { status: res.code })
+        );
+        resolve(body);
+      })
+      .catch(err => reject(err));
+  });
+}
+
+/**
+ *
+ * @description Make an HTTP DELETE Request to the ressources endpoint to remove the ressources from the storage
+ * @param client [[HttpRequestService]]
+ * @param ressourcesPath [[string]]
+ * @param id  [[number|string]]
+ */
+export function deleteRessource<T>(
+  client: HttpRequestService,
+  ressourcesPath: string,
+  id: number | string
+): Promise<IResponseBody> {
+  return new Promise((resolve, reject) => {
+    (new RequestClient()).delete(client, `${ressourcesPath}`, id)
+      .then((res: ResponseData) => {
+        const body: IResponseBody = new ResponseBody(
+          Object.assign(res.body, { status: res.code })
+        );
+        resolve(body);
+      })
+      .catch(err => reject(err));
+  });
+}
+
+/**
  * @description Get ressources/ request handler
  * @param ressourcePath [[string]]
  */

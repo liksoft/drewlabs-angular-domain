@@ -14,6 +14,11 @@ export class AuthStorageConfig {
   public static USER_STORAGE_KEY = 'App_user';
 }
 
+export class DefaultAcl {
+  public static SUPER_ADMIN_PERMISSION = 'all';
+  public static UPDATE_PASSWORD_PERMISSION = 'update-password';
+}
+
 /**
  * @description Class de paramètres de configuration des requêtes d'authentification
  */

@@ -4,11 +4,11 @@ import {
   HttpGetAllRequestFn,
   IRequestClient,
   RequestClient,
-  getRessourcesAndNotify,
-  postRessourceAndNotifiStore,
-  deleteRessourceAndNotifyStore,
-  putRessourceAndNotifyStore,
-  loadRessourceFromCacheOrGetFromServer
+  loadRessourceFromCacheOrGetFromServer,
+  getRessources,
+  postRessource,
+  deleteRessource,
+  putRessource
 } from '../../../contracts/abstract-request-client';
 import { HttpRequestService } from '../../../http/core';
 import { isDefined, isArray } from '../../../utils/type-utils';
@@ -16,7 +16,6 @@ import { ResponseData, IResponseBody, ResponseBody } from '../../../http/contrac
 import { Injectable, Inject } from '@angular/core';
 import { Store } from '../../../store';
 import { ISerializableBuilder } from '../../../built-value/contracts/serializers';
-import { USERS_CONTAINERINITIALIZED_ACTION, USER_CREATED_ACTION, USER_REMOVED_ACTION, USER_UPDATED_ACTION } from './reducers/users-reducer';
 import { SessionStorage } from '../../../storage/core/session-storage.service';
 
 class ApplicationUsersDataSource implements IDataSourceService<ISource<User>> {
@@ -69,7 +68,7 @@ class ApplicationUsersDataSource implements IDataSourceService<ISource<User>> {
 export class ApplicationUsersService extends RequestClient
   implements IRequestClient {
 
-  public ressourcesPath: string;
+  public readonly ressourcesPath: string = 'users';
   public readonly dataSource: IDataSourceService<ISource<User>>;
 
   /**
@@ -82,7 +81,6 @@ export class ApplicationUsersService extends RequestClient
     @Inject(USER_SERIALIZABLE_BUILDER) private userBuilder: ISerializableBuilder<User>
   ) {
     super();
-    this.ressourcesPath = 'users';
     this.dataSource = new ApplicationUsersDataSource(client, this.get, this.ressourcesPath, cache);
   }
 
@@ -101,25 +99,21 @@ export class ApplicationUsersService extends RequestClient
     );
   }
 
-  public getUsers(): Promise<any> {
-    return getRessourcesAndNotify<User>(
+  public getUsers(endpointURL?: string): Promise<User[]> {
+    return getRessources<User>(
       this.client,
-      this.ressourcesPath,
+      `${isDefined(endpointURL) ? endpointURL : this.ressourcesPath}`,
       User.builder() as ISerializableBuilder<User>,
-      this.store,
-      USERS_CONTAINERINITIALIZED_ACTION,
       'users'
     );
   }
 
   public postUser(requestURL: string, requestBody: object) {
-    return postRessourceAndNotifiStore<User>(
+    return postRessource<User>(
       this.client,
       `${isDefined(requestURL) ? requestURL : this.ressourcesPath}`,
       requestBody,
-      User.builder() as ISerializableBuilder<User>,
-      this.store,
-      USER_CREATED_ACTION
+      User.builder() as ISerializableBuilder<User>
     );
   }
 
@@ -127,13 +121,10 @@ export class ApplicationUsersService extends RequestClient
    * @inheritdoc
    */
   deleteUser(id: any): Promise<IResponseBody> {
-    return deleteRessourceAndNotifyStore<User>(
+    return deleteRessource<User>(
       this.client,
       this.ressourcesPath,
       id,
-      this.store,
-      USER_REMOVED_ACTION,
-      'id'
     );
   }
 
@@ -141,15 +132,11 @@ export class ApplicationUsersService extends RequestClient
    * @inheritdoc
    */
   updateUser(requestURL: string, id: any, values: object): Promise<IResponseBody> {
-    return putRessourceAndNotifyStore<User>(
+    return putRessource<User>(
       this.client,
       `${isDefined(requestURL) ? requestURL : this.ressourcesPath}`,
       id,
       values,
-      {},
-      this.store,
-      USER_UPDATED_ACTION,
-      'id'
     );
   }
 }
