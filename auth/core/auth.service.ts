@@ -34,7 +34,7 @@ export class AuthService {
    */
   constructor(
     private sessionStorage: SessionStorage,
-    // private localStorage: LocalStorage,
+    private localStorage: LocalStorage,
     private inMemoryStorage: DataStoreService,
     private tokenServiceProvider: AuthTokenService,
     private httpService: HttpRequestService,
@@ -109,7 +109,7 @@ export class AuthService {
             responseData.success
           ) {
             this.sessionStorage.clear();
-            // this.localStorage.clear();
+            this.localStorage.clear();
             this.inMemoryStorage.clear();
             this.removeUserFromstorage();
             // Maybe remove the remember_me token from the storage

@@ -1,6 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { isDefined } from '../../utils/type-utils';
 
 @Injectable()
 export class DropzoneService {
@@ -25,7 +26,7 @@ export class DropzoneService {
   }
 
   public dzDefaultConfig(config: DropzoneConfigInterface, acceptedFilesTypeName: string = 'images') {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _) => {
       this.tranlate.get([
         'dictAcceptedFilesLabel',
         'dictFallbackMessageLabel',
@@ -41,10 +42,15 @@ export class DropzoneService {
         resolve(Object.assign(config, {
           // tslint:disable-next-line:ban-types
           accept: (file: File, done: Function) => {
-            if (
-              config.acceptedFiles &&
-              !config.acceptedFiles.includes(file.type)
-            ) {
+            let matches = false;
+            if (isDefined(config.acceptedFiles) && config.acceptedFiles.indexOf(',') !== -1) {
+              let types = config.acceptedFiles.split(',');
+              types = types.filter((v) => file.type.match(v));
+              matches = types.length > 0 ? true : false;
+            } else {
+              matches = isDefined(file.type.match(config.acceptedFiles)) &&  file.type.match(config.acceptedFiles).length > 0;
+            }
+            if (!matches) {
               done(`${translations.dictAcceptedFilesLabel} ${acceptedFilesTypeName}`);
             } else {
               done();

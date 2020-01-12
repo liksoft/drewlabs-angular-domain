@@ -1,13 +1,14 @@
 import { Permission } from './permission';
 import { Role } from './role';
 import { AuthUser } from '../contracts/user';
-import { ServerResponseKeys } from '../core/config';
+import { ServerResponseKeys, DefaultAcl } from '../core/config';
 import { JsonProperty, ObjectSerializer } from '../../built-value/core/serializers';
 import { ISerializer, ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { InjectionToken } from '@angular/core';
 import { isDefined } from '../../utils/type-utils';
 import { UserInfoEntity } from './user-info';
 import { TypeBuilder, rebuildJSObjectType, buildJSObjectType } from '../../built-value/contracts/type';
+import { environment } from '../../../../../environments/environment.prod';
 
 
 export class UserBuilder implements ISerializableBuilder<User>, TypeBuilder<User> {
@@ -135,6 +136,39 @@ export class User extends UserAsViewable implements AuthUser {
 
   fromStorageObject(value: object, builder: ISerializableBuilder<User>): AuthUser {
     return builder.fromSerialized(value);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  can(permission: string): boolean {
+    if (this.permissions) {
+      const found = this.permissions.filter((el: Permission) => {
+        return el.label.toString() === permission || el.label.toString() === DefaultAcl.SUPER_ADMIN_PERMISSION;
+      });
+      if (found.length > 0) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  canAny(permissions: string[]): boolean {
+    if (permissions && permissions.length > 0) {
+      let found = false;
+      for (const i of permissions) {
+        if (this.can(i)) {
+          found = true;
+          break;
+        }
+      }
+      return found;
+    }
+    return true;
   }
 
   /**

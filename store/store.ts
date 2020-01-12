@@ -1,10 +1,10 @@
 import { IAction } from 'src/app/lib/domain/store/action-interface';
 import { IReducer, AbstractReducersService } from './reducer-interface';
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, OnDestroy } from '@angular/core';
 import { Collection } from '../utils/collection';
 
 @Injectable()
-export class Store<T> extends Collection<IReducer<T>> {
+export class Store<T> extends Collection<IReducer<T>> implements OnDestroy {
   protected storeDispatcher: EventEmitter<IAction> = new EventEmitter<
     IAction
   >();
@@ -43,6 +43,10 @@ export class Store<T> extends Collection<IReducer<T>> {
     this.values().forEach((v: IReducer<T>) => v.reset());
     // initialize values
     this.keys().forEach((k: string) => this.remove(k));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy();
   }
 }
 

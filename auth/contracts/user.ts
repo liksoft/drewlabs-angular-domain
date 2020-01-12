@@ -1,11 +1,11 @@
-import {Role} from './role';
+import { Role } from './role';
 import { Permission } from '../models/permission';
 import { IResponseBody } from '../../http/contracts/http-response-data';
 import { ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { UserInfoEntity } from '../models/user-info';
 
 export interface AuthUser {
-  id: number|string;
+  id: number | string;
   username: string;
   password: string;
   isActive: boolean | number;
@@ -34,4 +34,16 @@ export interface AuthUser {
    * @param builder [[ISerializableBuilder<AuthUser>]]
    */
   fromStorageObject(value: object, builder: ISerializableBuilder<AuthUser>): AuthUser;
+
+  /**
+   * @description Check if this instance can perform a certain action
+   * @param permission permission label
+   */
+  can(permission: string): boolean;
+
+  /**
+   * @description Checks if this instance can perform any of the actions passed as parameter
+   * @param permissions list of permission labels
+   */
+  canAny(permissions: string[]): boolean;
 }

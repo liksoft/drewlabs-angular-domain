@@ -13,6 +13,7 @@ import { AuthService } from './auth.service';
 import { AuthPathConfig } from './config';
 import { Observable } from 'rxjs';
 import { isDefined } from '../../utils/type-utils';
+import { AuthTokenService } from '../../auth-token/core/auth-token.service';
 
 /**
  * @description Authentication guard
@@ -136,5 +137,31 @@ export class PermissionsGuardGuard implements CanActivate {
         resolve(false);
       }
     });
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class RootComponentGuard implements CanActivate {
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+    private authToken: AuthTokenService
+  ) { }
+
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | Promise<boolean> | boolean {
+    const url: string = state.url;
+    return this.canLoadURL(url);
+  }
+
+  private canLoadURL(url: string): boolean {
+    if (isDefined(this.authToken.token) && isDefined(this.auth.user)) {
+      this.router.navigate([url]);
+    }
+    return true;
   }
 }

@@ -12,6 +12,7 @@ import { AppAlertModule } from './app-alert';
 import { ProgressBarModule } from './progress-bar/progress-bar.module';
 import { ClarityModule } from '@clr/angular';
 import { DynamicFormControlModule } from './dynamic-inputs/dynamic-form-control';
+import { OnlineStateMonitoringComponent } from './online-state-monitoring/online-state-monitoring.component';
 
 @NgModule({
   imports: [
@@ -34,12 +35,14 @@ import { DynamicFormControlModule } from './dynamic-inputs/dynamic-form-control'
     NgDataTableModule,
     AppAlertModule,
     DropzoneModule,
-    DynamicFormControlModule
+    DynamicFormControlModule,
+    OnlineStateMonitoringComponent,
   ],
   declarations: [
     AppBreadcrumbComponent,
     AppLoaderModalComponent,
     PaginatorComponent,
+    OnlineStateMonitoringComponent,
   ],
   providers: [
     BreadCrumbStore
