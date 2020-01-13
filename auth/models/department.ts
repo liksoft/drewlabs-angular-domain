@@ -3,6 +3,7 @@ import { ISerializableBuilder, ISerializer } from '../../built-value/contracts/s
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
 import { OrganisationEntity } from './organisation';
 import { IDynamicFormBindableModel } from '../../components/dynamic-inputs/core/contracts/form-control';
+import { Role } from './role';
 
 export class DepartmentBuilder implements ISerializableBuilder<Department>, TypeBuilder<Department> {
   serializer: ISerializer;
@@ -55,6 +56,10 @@ export class Department implements IDynamicFormBindableModel {
   organisationID: string = undefined;
   @JsonProperty({name: 'organisation', valueType: OrganisationEntity})
   organisation: OrganisationEntity = undefined;
+
+  // Related models
+  @JsonProperty({name: 'roles', valueType: Role})
+  roles: Role[] = undefined;
 
   /**
    * @description Calls to get the builder provider of the current class|type

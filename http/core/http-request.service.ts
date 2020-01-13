@@ -13,6 +13,7 @@ import { SessionStorage } from '../../storage/core/session-storage.service';
 import { AuthPathConfig, AuthStorageConfig } from '../../auth/core/config';
 import { AuthTokenService } from '../../auth-token/core';
 import { URLUtils } from '../../utils/url';
+import { Browser } from '../../utils/browser';
 
 @Injectable()
 export class HttpRequestService implements HttpServices {
@@ -132,6 +133,23 @@ export class HttpRequestService implements HttpServices {
     const httpHeader = new HttpHeaders();
     httpHeader.append('Content-Type', 'application/json');
     return httpHeader;
+  }
+
+  /**
+   * @description provide a file download functionnality to the application
+   * @param url [[string]]
+   */
+  downloadFile(url: string) {
+    const headers = new HttpHeaders();
+    headers.append('Accept', 'text/plain');
+    headers.append('Content-type', 'application/octet-stream');
+    this.http
+      .get(url, { headers, responseType: 'blob' })
+      .toPromise()
+      .then((res: any) => {
+        const filename = this.getFileNameFromResponseContentDisposition(res);
+        Browser.saveFile(res, filename);
+      });
   }
 
   /**
