@@ -1,8 +1,8 @@
 import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { Subscription } from 'rxjs';
-import { UIState } from 'src/app/lib/domain/components/ui-store/ui-state';
 import { HostBinding } from '@angular/core';
 import { AlertConfig } from '../components/app-alert/app-alert.component';
+import { UIState } from '../components/ui-store/ui-state';
 
 export interface IFormViewComponent {
   /**
