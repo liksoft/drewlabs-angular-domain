@@ -1,9 +1,9 @@
 import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { Subscription } from 'rxjs';
-import { UIState } from 'src/app/lib/domain/components/ui-store/ui-state';
 import { HostBinding } from '@angular/core';
 import { AlertConfig } from '../components/app-alert/app-alert.component';
 import { AbstractControl, FormGroup, FormArray, FormControl } from '@angular/forms';
+import { UIState } from '../components/ui-store/ui-state';
 
 export interface IFormViewComponent {
   /**
@@ -28,7 +28,7 @@ export interface IFormParentComponent {
  * @description Helper class for applying [[@HostBinding('class.content-container')]] property
  * to the subclass in order to transform it into a clarity main-container view
  */
-export class PageCompoment {
+export class PageComponent {
   @HostBinding('class.content-container') class = true;
 }
 
@@ -99,7 +99,7 @@ export abstract class AbstractAlertableComponent {
  * Helper class that apply [[@HostBinding('class.content-container')]] to it subclass and provide methods and properties
  * to component for responding to ui events and actions
  */
-export class AlertablePageCompoment extends AbstractAlertableComponent {
+export class AlertablePageComponent extends AbstractAlertableComponent {
   @HostBinding('class.content-container') class = true;
 
   constructor(uiManager: AppUIStoreManager) {

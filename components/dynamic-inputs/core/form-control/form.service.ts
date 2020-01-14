@@ -50,9 +50,6 @@ export class FormDataSource implements IDataSourceService<ISource<Form>> {
         const forms = (res.success === true) ? (body.data.forms.data as Array<any>).map((value) => {
           return (Form.builder() as ISerializableBuilder<Form>).fromSerialized(value);
         }) : [];
-        // if (isArray(forms) && forms.length > 0) {
-        //   this.cache.set(`${this.formListEntryKey}`, forms.map((f) => (Form.builder() as ISerializableBuilder<Form>).toSerialized(f)));
-        // }
         resolve({
           data: forms,
           total: body.data.forms.total
@@ -159,15 +156,18 @@ export class FormService extends RequestClient
   public async loadFormFromCacheOrGetFromServer(id: number | string) {
     // Try getting the form from the cache
     let forms = this.cache.get((this.dataSource as FormDataSource).formListEntryKey);
+    let form: Form;
     return new Promise<Form>((resolve, reject) => {
       // If the form is in the cache, generate the Form object from cache serialized value
-      forms = (forms as Array<any>).map((value) => {
-        return (Form.builder() as ISerializableBuilder<Form>).fromSerialized(value);
-      });
-      const form = (forms as Form[]).find((value) => {
-        return value.id === id;
-      });
-      if (form) {
+      if (isArray(forms)) {
+        forms = (forms as Array<any>).map((value) => {
+          return (Form.builder() as ISerializableBuilder<Form>).fromSerialized(value);
+        });
+        form = (forms as Form[]).find((value) => {
+          return value.id === id;
+        });
+      }
+      if (isArray(form) && isDefined(form)) {
         resolve(form);
       } else {
         // Else query for the form from an http endpoint
