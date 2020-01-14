@@ -22,4 +22,4 @@
     <input type="hidden" [formControl]="control" />
 </div>
 <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && (phoneControl.touched || control.touched)"><span [translate]="'validation.required'"></span></clr-control-error>
-<clr-control-error class="field-has-error" *ngIf="phoneControl.hasError('invalidPhoneNumber') && (phoneControl.touched || control.touched)"><span [translate]="'validation.phone'" [translateParams]="{value: '(Ex: 228 90050505)'}"></span></clr-control-error>
+<clr-control-error class="field-has-error" *ngIf="control.hasError('invalidPhoneNumber') && (phoneControl.touched || control.touched)"><span [translate]="'validation.phone'" [translateParams]="{value: '(Ex: 228 90050505)'}"></span></clr-control-error>

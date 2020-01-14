@@ -14,6 +14,7 @@ import { AuthPathConfig, AuthStorageConfig } from '../../auth/core/config';
 import { AuthTokenService } from '../../auth-token/core';
 import { URLUtils } from '../../utils/url';
 import { Browser } from '../../utils/browser';
+import { isDefined } from '../../utils/type-utils';
 
 @Injectable()
 export class HttpRequestService implements HttpServices {
@@ -22,7 +23,7 @@ export class HttpRequestService implements HttpServices {
     private router: Router,
     private sessionStorage: SessionStorage,
     private tokenServiceProvider: AuthTokenService
-  ) {}
+  ) { }
 
   /**
    * @description Send a request to an end server with HTTP POST verb
@@ -139,24 +140,30 @@ export class HttpRequestService implements HttpServices {
    * @description provide a file download functionnality to the application
    * @param url [[string]]
    */
-  downloadFile(url: string) {
+  downloadFile(url: string, fileExtension?: string) {
     const headers = new HttpHeaders();
     headers.append('Accept', 'text/plain');
     headers.append('Content-type', 'application/octet-stream');
-    this.http
-      .get(url, { headers, responseType: 'blob' })
-      .toPromise()
-      .then((res: any) => {
-        const filename = this.getFileNameFromResponseContentDisposition(res);
-        Browser.saveFile(res, filename);
-      });
+    return new Promise((_, __) => {
+      this.http
+        .get(url, { headers, responseType: 'blob' })
+        .toPromise()
+        .then((res: any) => {
+          const filename = isDefined(fileExtension) ? `${this.getFileNameFromResponseContentDisposition(res)}.${fileExtension}` : `${this.getFileNameFromResponseContentDisposition(res)}`;
+          Browser.saveFile(res, filename);
+          _({});
+        });
+    });
   }
 
   /**
    * Derives file name from the http response by looking inside content-disposition
    * @param res http Response
    */
-  getFileNameFromResponseContentDisposition(res: Response) {
+  getFileNameFromResponseContentDisposition(res: any) {
+    if (res instanceof Blob) {
+      return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
     const contentDisposition = res.headers.get('Content-Disposition') || '';
     const matches = /filename=([^;]+)/gi.exec(contentDisposition);
     const fileName = (matches[1] || 'untitled').trim();

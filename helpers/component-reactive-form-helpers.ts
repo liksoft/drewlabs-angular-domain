@@ -227,14 +227,14 @@ export class ComponentReactiveFormHelpers {
 
   /**
    * Loop through formGroup controls and mark them as touched
-   * @param formGroup [[FormGroup]] Reference to component formGroup object
+   * @param control [[FormGroup|FormArray]] Reference to component formGroup object
    */
-  public static validateFormGroupFields(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach((field: string) => {
-      if (formGroup.get(field) instanceof FormGroup) {
-        ComponentReactiveFormHelpers.validateFormGroupFields(formGroup.get(field) as FormGroup);
+  public static validateFormGroupFields(control: FormGroup|FormArray): void {
+    Object.keys(control.controls).forEach((field: string) => {
+      if (control.get(field) instanceof FormGroup) {
+        ComponentReactiveFormHelpers.validateFormGroupFields(control.get(field) as FormGroup);
       } else {
-        ComponentReactiveFormHelpers.markControlAsTouched(formGroup.get(field));
+        ComponentReactiveFormHelpers.markControlAsTouched(control.get(field));
       }
     });
   }

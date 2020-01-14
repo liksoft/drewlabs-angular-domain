@@ -259,6 +259,29 @@ export function getRessources<T>(
 }
 
 /**
+ * @description  Make an Http Request for creating many ressource items
+ * @param client [[HttpRequestService]]
+ * @param ressourcesPath [[string]]
+ * @param requestBody [[object]]
+ */
+export function postManyRessources(
+  client: HttpRequestService,
+  ressourcesPath: string,
+  requestBody: object[],
+) {
+  return new Promise<IResponseBody>((resolve, reject) => {
+    (new RequestClient()).create(client, `${ressourcesPath}`, requestBody)
+      .then((res: ResponseData) => {
+        const body: IResponseBody = new ResponseBody(
+          Object.assign(res.body, { status: res.code })
+        );
+        resolve(body);
+      })
+      .catch(_ => reject(_));
+  });
+}
+
+/**
  * @description Make an HTTP request for creating a new ressource
  * @param client [[HttpRequestService]]
  * @param ressourcesPath [[string]]

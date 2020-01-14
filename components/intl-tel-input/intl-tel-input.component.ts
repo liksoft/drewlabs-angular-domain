@@ -44,7 +44,6 @@ export class PhoneNumberValidator {
       }
       return null;
     } catch (e) {
-      console.log(e);
       return { invalidPhoneNumber: true };
     }
   }
@@ -80,6 +79,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.control.status.toLowerCase() === 'disabled' ? this.disabled = true : this.disabled = false;
     if (this.preferredCountries.length > 0) {
       this.preferredCountries.forEach(iso2 => {
         const preferredCountry = this.allCountries.filter(c => {
@@ -161,7 +161,8 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
     if (this.required) {
       validators.push(Validators.required);
     }
-    this.phoneControl.setValidators(validators);
+    this.control.setValidators(validators);
+    this.control.updateValueAndValidity({onlySelf: true});
   }
 
   private setControlValue(dialCode: string, phoneNumber: string) {
