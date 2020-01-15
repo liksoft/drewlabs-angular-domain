@@ -140,7 +140,7 @@ export class HttpRequestService implements HttpServices {
    * @description provide a file download functionnality to the application
    * @param url [[string]]
    */
-  downloadFile(url: string, fileExtension?: string) {
+  downloadFile(url: string, filename?: string, fileExtension?: string) {
     const headers = new HttpHeaders();
     headers.append('Accept', 'text/plain');
     headers.append('Content-type', 'application/octet-stream');
@@ -149,7 +149,9 @@ export class HttpRequestService implements HttpServices {
         .get(url, { headers, responseType: 'blob' })
         .toPromise()
         .then((res: any) => {
-          const filename = isDefined(fileExtension) ? `${this.getFileNameFromResponseContentDisposition(res)}.${fileExtension}` : `${this.getFileNameFromResponseContentDisposition(res)}`;
+          if (!isDefined(filename)) {
+            filename = isDefined(fileExtension) ? `${this.getFileNameFromResponseContentDisposition(res)}.${fileExtension}` : `${this.getFileNameFromResponseContentDisposition(res)}`;
+          }
           Browser.saveFile(res, filename);
           _({});
         });

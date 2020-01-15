@@ -2,7 +2,7 @@
     <clr-accordion-panel [(clrAccordionPanelOpen)]="isAccordionOpened">
         <clr-accordion-title>
             Bénéficiaire {{ index }}
-            <button class="icon-variant">
+            <button class="icon-variant" *ngIf="!showEditButton">
               <clr-icon (click)="componentDestroyer.emit({})" shape="times"></clr-icon>
             </button>
         </clr-accordion-title>
@@ -13,9 +13,10 @@
                         <div class="clr-col-12" [formGroup]="formGroup">
                             <app-dynamic-form-wapper [componentFormGroup]="formGroup" [form]="form"></app-dynamic-form-wapper>
                         </div>
-                        <!-- <div class="clr-col-1">
-                        </div> -->
                     </ng-container>
+                </div>
+                <div class="button-container" *ngIf="showEditButton">
+                    <button *ngIf="showEditButton" (click)="edit.emit(formGroup)" type="button" class="btn btn-sm btn-outline-warning" [disabled]="performingAction">Modifier</button>
                 </div>
             </div>
         </clr-accordion-content>

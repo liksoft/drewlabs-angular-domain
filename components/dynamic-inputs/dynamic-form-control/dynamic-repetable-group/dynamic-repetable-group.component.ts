@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ViewContainerRef, ComponentRef, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
-import { FormArray, FormGroup, FormControl } from '@angular/forms';
+import { FormArray, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { DynamicComponentService } from '../../../services/dynamic-component-resolver.service';
 import { RepeatableGroupChildComponent } from './repeatable-group-child/repeatable-group-child.component';
@@ -24,8 +24,10 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
   @Input() form: IDynamicForm;
   @Input() addButtonText = 'Ajouter un nouvel élément';
   @Input() hideAddNewFormgroupButton = false;
-  // @Input() formGroup: FormGroup;
-
+  @Output() childCreate = new EventEmitter<AbstractControl>();
+  @Output() childEdit = new EventEmitter<AbstractControl>();
+  @Output() updateParentValueAndValidity = new EventEmitter<object>();
+  @Input() offsetAddNewGroupButton = true;
 
   // Output event
   @Output() addNewControlGroup: EventEmitter<object> = new EventEmitter();
@@ -35,10 +37,12 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
   private totalAddedComponent = 0;
   private componentDestroyerSubscription: Subscription[] = [];
   public initComponent = new EventEmitter<object>();
+  public addNewGroupButtonContainerClass: string;
 
   constructor(private dynamicComponentLoader: DynamicComponentService<RepeatableGroupChildComponent>) { }
 
   ngOnInit() {
+    this.addNewGroupButtonContainerClass = this.offsetAddNewGroupButton ? 'clr-col-3 clr-offset-2 clr-offset-margin-right' : '';
     // load the dynamic components from the store and create the corresponding components
     if (!isDefined(this.control) || !this.control.controls.length) {
       this.control.controls.forEach((state: FormGroup) => {
@@ -48,13 +52,13 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
     // isAccordionOpened
   }
 
-  collapChildControlComponents() {
+  collapseChildControlComponents() {
     this.controlsContainerRefs.forEach((ref) => {
       ref.instance.isAccordionOpened = false;
     });
   }
 
-  addChildComponent(formGroupState?: FormGroup) {
+  addChildComponent(formGroupState?: FormGroup, showEditButton = false) {
     this.totalAddedComponent += 1;
     // const formgroup = ComponentReactiveFormHelpers
     //   .buildFormGroupFromInputConfig(this.fb, this.form.controlConfigs as IHTMLFormControl[]) as FormGroup;
@@ -62,10 +66,16 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
       this.controlsContainer,
       RepeatableGroupChildComponent
     );
+    // Initialize child component input properties
     controlComponentRef.instance.formGroup = formGroupState;
     controlComponentRef.instance.form = Object.assign({}, this.form);
     controlComponentRef.instance.index = (Object.assign({index: this.totalAddedComponent})).index;
     controlComponentRef.instance.formGroup.addControl('index', new FormControl(controlComponentRef.instance.index));
+    controlComponentRef.instance.showEditButton = showEditButton;
+    // controlComponentRef.instance.showCreateButton = showCreateButton;
+    // Ends child component properties initialization
+    controlComponentRef.instance.create.subscribe((state) => this.childCreate.emit(state));
+    controlComponentRef.instance.edit.subscribe((state) => this.childEdit.emit(state));
     this.componentDestroyerSubscription.push(controlComponentRef.instance.componentDestroyer.subscribe(
       () => {
         if (this.totalAddedComponent > 1) {
@@ -77,6 +87,9 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
               return v.instance === controlComponentRef.instance ? false : true;
             }
           );
+        } else {
+          controlComponentRef.instance.formGroup.reset();
+          this.control.updateValueAndValidity();
         }
       }
     ));

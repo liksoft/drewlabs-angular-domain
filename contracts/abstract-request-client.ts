@@ -245,12 +245,13 @@ export function getRessources<T>(
   client: HttpRequestService,
   ressourcesPath: string,
   ressourceBuilder: ISerializableBuilder<T>,
-  dataKey: string
+  dataKey?: string
 ) {
   return new Promise<T[]>(async (_, __) => {
     const result = await loadThroughHttpRequest(client, ressourcesPath);
-    if (isDefined(result) && isArray(result[dataKey].data)) {
-      _((result[dataKey].data as Array<object>).map((value) => {
+    const responseData = isDefined(dataKey) ? result[dataKey] : result;
+    if (isDefined(responseData.data) && isArray(responseData.data)) {
+      _((responseData.data as Array<object>).map((value) => {
         return ressourceBuilder.fromSerialized(value);
       }));
     }
