@@ -139,7 +139,6 @@ export class ComponentReactiveFormHelpers {
               )
               : // tslint:disable-next-line:no-unused-expression
               null;
-          // TODO Email input can sometimes not be a text input
           config.rules && config.rules.email
             ? validators.push(Validators.email)
             : // tslint:disable-next-line:no-unused-expression
@@ -162,7 +161,7 @@ export class ComponentReactiveFormHelpers {
             : // tslint:disable-next-line:no-unused-expression
             null,
             // Checks if maxlength rule is set to true and apply the rule to the input
-            config.rules && config.rules.min
+            config.rules && config.rules.max
               ? validators.push(
                 Validators.minLength(
                   isDefined((config as NumberInput).max)
@@ -186,7 +185,7 @@ export class ComponentReactiveFormHelpers {
             : // tslint:disable-next-line:no-unused-expression
             null,
             // Checks if maxlength rule is set to true and apply the rule to the input
-            config.rules && config.rules.min
+            config.rules && config.rules.maxDate
               ? validators.push(
                 CustomValidators.maxDate(
                   isDefined((config as DateInput).maxDate)
