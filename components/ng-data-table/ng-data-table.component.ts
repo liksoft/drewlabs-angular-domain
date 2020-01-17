@@ -10,6 +10,7 @@ import {
 import { ClrDatagridStateInterface, ClrDatagrid } from '@clr/angular';
 import { isDefined, isObject } from 'src/app/lib/domain/utils/type-utils';
 
+export const DEFAULT_DATAGRID_PAGINATOR_LENGTH = 10;
 export interface ITableColumn {
   name: string;
   field: string;
