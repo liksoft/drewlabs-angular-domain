@@ -3,7 +3,7 @@ import { FormArray, FormGroup, FormControl, AbstractControl } from '@angular/for
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { DynamicComponentService } from '../../../services/dynamic-component-resolver.service';
 import { RepeatableGroupChildComponent } from './repeatable-group-child/repeatable-group-child.component';
-import { isDefined } from '../../../../utils/type-utils';
+import { isDefined, equals } from '../../../../utils/type-utils';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -27,6 +27,7 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
   @Output() childCreate = new EventEmitter<AbstractControl>();
   @Output() childEdit = new EventEmitter<AbstractControl>();
   @Output() updateParentValueAndValidity = new EventEmitter<object>();
+  @Output() removedControlGroup = new EventEmitter<object>();
   @Input() offsetAddNewGroupButton = true;
 
   // Output event
@@ -45,8 +46,8 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
     this.addNewGroupButtonContainerClass = this.offsetAddNewGroupButton ? 'clr-col-3 clr-offset-2 clr-offset-margin-right' : '';
     // load the dynamic components from the store and create the corresponding components
     if (!isDefined(this.control) || !this.control.controls.length) {
-      this.control.controls.forEach((state: FormGroup) => {
-        this.addChildComponent(state);
+      this.control.controls.forEach((state: FormGroup, index) => {
+        this.addChildComponent(index, state);
       });
     }
     // isAccordionOpened
@@ -58,7 +59,7 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
     });
   }
 
-  addChildComponent(formGroupState?: FormGroup, showEditButton = false) {
+  addChildComponent(controlIndex: number, formGroupState: AbstractControl, showEditButton = false) {
     this.totalAddedComponent += 1;
     // const formgroup = ComponentReactiveFormHelpers
     //   .buildFormGroupFromInputConfig(this.fb, this.form.controlConfigs as IHTMLFormControl[]) as FormGroup;
@@ -66,10 +67,11 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
       this.controlsContainer,
       RepeatableGroupChildComponent
     );
+    (formGroupState as FormGroup).addControl('formarray_control_index', new FormControl(controlIndex));
     // Initialize child component input properties
-    controlComponentRef.instance.formGroup = formGroupState;
+    controlComponentRef.instance.formGroup = formGroupState as FormGroup;
     controlComponentRef.instance.form = Object.assign({}, this.form);
-    controlComponentRef.instance.index = (Object.assign({index: this.totalAddedComponent})).index;
+    controlComponentRef.instance.index = (Object.assign({ index: this.totalAddedComponent })).index;
     controlComponentRef.instance.formGroup.addControl('index', new FormControl(controlComponentRef.instance.index));
     controlComponentRef.instance.showEditButton = showEditButton;
     // controlComponentRef.instance.showCreateButton = showCreateButton;
@@ -87,6 +89,8 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
               return v.instance === controlComponentRef.instance ? false : true;
             }
           );
+          this.control.removeAt(controlComponentRef.instance.formGroup.getRawValue().formarray_control_index);
+          this.removedControlGroup.emit({});
         } else {
           controlComponentRef.instance.formGroup.reset();
           this.control.updateValueAndValidity();

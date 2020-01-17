@@ -152,3 +152,32 @@ export function flattenObject(ob: object, prefixInnerKeys: boolean = true) {
   }
   return returnedObj;
 }
+
+// /**
+//  * @description Value object comparison
+//  * @param a [[object]]
+//  * @param b [[object]]
+//  */
+// export function equals(a: object, b: object) {
+//   // Create arrays of property names
+//   const aProps = Object.getOwnPropertyNames(a);
+//   const bProps = Object.getOwnPropertyNames(b);
+//   // If number of properties is different,
+//   // objects are not equivalent
+//   if (aProps.length !== bProps.length) {
+//       return false;
+//   }
+//   // tslint:disable-next-line: prefer-for-of
+//   for (const i = 0; i < aProps.length; i++) {
+//       const propName = aProps[i];
+//       // If values of same property are not equal,
+//       // objects are not equivalent
+//       if (a[propName] !== b[propName]) {
+//           return false;
+//       }
+//   }
+
+//   // If we made it this far, objects
+//   // are considered equivalent
+//   return true;
+// }
