@@ -253,18 +253,6 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
-  // private getFiles(files: any[]) {
-  //   return Promise.all(
-  //     (files as any[]).map(async (v) => {
-  //       return {
-  //         uuid: v.upload.uuid,
-  //         dataURL: await readFileAsDataURI(v),
-  //         extension: (v.name as string).split('.')[(v.name as string).split('.').length - 1]
-  //       } as FileFormControl;
-  //     })
-  //   );
-  // }
-
   onDropzoneFileRemoved(event: any) {
     if ((this.inputConfig as FileInput).multiple) {
       this.control.setValue((this.control.value as FileFormControl[]).filter((v) => {
