@@ -247,22 +247,11 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
             extension: (files[0].name as string).split('.')[(files[0].name as string).split('.').length - 1]
           } as FileFormControl
         );
+        this.dropzoneContainer.disabled = true;
       }
       this.fileAdded.emit(this.control.value);
     }, 100);
   }
-
-  // private getFiles(files: any[]) {
-  //   return Promise.all(
-  //     (files as any[]).map(async (v) => {
-  //       return {
-  //         uuid: v.upload.uuid,
-  //         dataURL: await readFileAsDataURI(v),
-  //         extension: (v.name as string).split('.')[(v.name as string).split('.').length - 1]
-  //       } as FileFormControl;
-  //     })
-  //   );
-  // }
 
   onDropzoneFileRemoved(event: any) {
     if ((this.inputConfig as FileInput).multiple) {
@@ -271,6 +260,10 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
       }));
     } else {
       this.control.setValue(null);
+    }
+    // Enable the dropzpone if an item is removed from the dropzone and not supporting multiple upload
+    if (!(this.inputConfig as FileInput).multiple) {
+      this.dropzoneContainer.disabled = false;
     }
     this.fileRemoved.emit();
   }

@@ -25,6 +25,7 @@ import { EventEmitter, HostBinding } from '@angular/core';
 import { AbstractAlertableComponent } from './component-interfaces';
 import { TranslationService } from '../translator';
 import { ICollection } from '../contracts/collection-interface';
+import { ValidatorFn } from '@angular/forms';
 
 /**
  * @description Checks if a dynamic form contains other form
@@ -245,6 +246,32 @@ export class ComponentReactiveFormHelpers {
     control.markAsTouched();
     control.markAsDirty();
     control.markAsPristine();
+  }
+
+  /**
+   * @description Clear validators on a control and update it value and validation rules
+   * @param control [[AbstractControl]]
+   */
+  public static clearControlValidators(control: AbstractControl) {
+    control.clearValidators();
+    control.updateValueAndValidity();
+  }
+
+  /**
+   * @description Clear async validators on a control and update it value and validation rules
+   * @param control [[AbstractControl]]
+   */
+  public static clearAsyncValidators(control: AbstractControl) {
+    control.clearAsyncValidators();
+    control.updateValueAndValidity();
+  }
+  /**
+   * @description Set new validators on a control and update it value and validation rules
+   * @param control [[AbstractControl]]
+   */
+  public static setValidators(control: AbstractControl, validators: ValidatorFn|ValidatorFn[]) {
+    control.setValidators(validators);
+    control.updateValueAndValidity();
   }
 }
 
