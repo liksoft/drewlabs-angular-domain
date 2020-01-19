@@ -61,7 +61,9 @@ export class FormDataSource implements IDataSourceService<ISource<Form>> {
 
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class FormService extends RequestClient
   implements IRequestClient {
 

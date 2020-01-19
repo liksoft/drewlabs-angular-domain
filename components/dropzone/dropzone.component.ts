@@ -70,7 +70,7 @@ import { Subscription } from 'rxjs';
       /* Drew Dropzone design */
 
       .dropzone.dz-wrapper {
-        position: relative !important;
+        /* position: relative !important;
         overflow: auto !important;
         min-height: 120px !important;
         border-top: 2px dashed #338bca;
@@ -79,6 +79,18 @@ import { Subscription } from 'rxjs';
         color: #666 !important;
         text-align: center !important;
         background-color: #e6f2fb !important;
+        margin: 0px !important;
+        padding: 10px;*/
+
+        position: relative !important;
+        overflow: auto !important;
+        min-height: 120px !important;
+        border-top: 2px dashed #d4d9dc;
+        border-left: 2px dashed #d4d9dc;
+        border-right: 2px dashed #d4d9dc;
+        color: #666 !important;
+        text-align: center !important;
+        background-color: #f7f7f7 !important;
         margin: 0px !important;
         padding: 10px;
       }
