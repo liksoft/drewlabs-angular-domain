@@ -84,4 +84,20 @@ export class MomentUtils {
       throw Error('Invalid date input');
     }
   }
+
+  /**
+   * @description Get the month part of a provided date
+   * @param date [[Date|string]]
+   */
+  public static getMonth(date: Date|string) {
+    return moment(new Date(date)).month();
+  }
+
+  /**
+   * @description Get the month part of a provided date
+   * @param date [[Date|string]]
+   */
+  public static getYear(date: Date|string) {
+    return moment(new Date(date)).year();
+  }
 }
