@@ -14,6 +14,7 @@ import { AuthPathConfig } from './config';
 import { Observable } from 'rxjs';
 import { isDefined } from '../../utils/type-utils';
 import { AuthTokenService } from '../../auth-token/core/auth-token.service';
+import { User } from '../models/user';
 
 /**
  * @description Authentication guard
@@ -155,10 +156,15 @@ export class RootComponentGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     const url: string = state.url;
-    return this.canLoadURL(url);
+    return this.canLoadURL(next, url);
   }
 
-  private canLoadURL(url: string): boolean {
+  private canLoadURL(route: ActivatedRouteSnapshot, url: string): boolean {
+    if (isDefined(route.data.modulePermissions)
+      && !((this.auth.user as User).canAny(route.data.modulePermissions))) {
+      this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
+      return false;
+    }
     if (isDefined(this.authToken.token) && isDefined(this.auth.user)) {
       this.router.navigate([url]);
     }
