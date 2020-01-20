@@ -34,7 +34,7 @@ export class AlertService {
 }
 
 export interface AlertConfig {
-  type: string;
+  type?: string;
   showAlert: boolean;
   message?: string;
 }

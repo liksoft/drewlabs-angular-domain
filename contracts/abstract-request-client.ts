@@ -260,6 +260,27 @@ export function getRessources<T>(
 }
 
 /**
+ * @description Get and item from the data storage base on query conditions
+ * @param client [[HttpRequestService]]
+ * @param ressourcesPath [[string]]
+ * @param ressourceBuilder [[ISerializableBuilder<T>]]
+ */
+export function getRessource<T>(
+  client: HttpRequestService,
+  ressourcesPath: string,
+  ressourceBuilder: ISerializableBuilder<T>,
+) {
+  return new Promise<T>(async (_, __) => {
+    const result = await loadThroughHttpRequest(client, ressourcesPath);
+    if (isDefined(result)) {
+      _(ressourceBuilder.fromSerialized(result));
+      return;
+    }
+    _(null);
+  });
+}
+
+/**
  * @description  Make an Http Request for creating many ressource items
  * @param client [[HttpRequestService]]
  * @param ressourcesPath [[string]]

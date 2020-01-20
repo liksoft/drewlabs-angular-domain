@@ -232,7 +232,7 @@
             type="radio"
             clrRadio
             required
-            [checked]="control.value === item.value"
+            [checked]="control.value == item.value"
             [value]="inputConfig.formControlName + '_' + item.value"
             (change)="radioButtonValueChange(item.value)"
           />
