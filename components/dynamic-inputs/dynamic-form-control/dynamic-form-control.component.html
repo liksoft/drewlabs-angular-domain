@@ -47,7 +47,6 @@
             isArray(listItems) ? listItems : (asObservable(listItems) | async)
           "
           [bindLabel]="asSelectInput(inputConfig).optionsLabel"
-          [disabled]="control?.status === 'DISABLED'"
           [bindValue]="asSelectInput(inputConfig).optionsValueIndex"
           [multiple]="asSelectInput(inputConfig).multiple"
           [placeholder]="asSelectInput(inputConfig).placeholder"
@@ -232,6 +231,7 @@
             type="radio"
             clrRadio
             required
+            [disabled]="control?.status === 'DISABLED'"
             [checked]="control.value == item.value"
             [value]="inputConfig.formControlName + '_' + item.value"
             (change)="radioButtonValueChange(item.value)"

@@ -39,7 +39,8 @@ import { readFileAsDataURI } from '../../../utils/browser';
 export interface FileFormControl {
   uuid: string;
   dataURL: string;
-  extension: string;
+  extension?: string;
+  type?: string;
 }
 @Component({
   selector: 'app-dynamic-inputs',
@@ -254,9 +255,11 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
 
   onDropzoneFileRemoved(event: any) {
     if ((this.inputConfig as FileInput).multiple) {
-      this.control.setValue((this.control.value as FileFormControl[]).filter((v) => {
-        return v.uuid !== event.upload.uuid;
-      }));
+      if (isDefined(this.control.value)) {
+        this.control.setValue((this.control.value as FileFormControl[]).filter((v) => {
+          return v.uuid !== event.upload.uuid;
+        }));
+      }
     } else {
       this.control.setValue(null);
     }

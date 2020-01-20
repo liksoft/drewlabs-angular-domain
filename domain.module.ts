@@ -7,7 +7,7 @@ import { AuthModule } from './auth';
 import { CoreComponentModule } from './components/core-components.module';
 import { AmountFormatterPipe } from './pipes/amount-formatter.pipe';
 import { ParseDatePipe, ParseMonthPipe, TimeAgoPipe } from './pipes/parse-date.pipe';
-import { SafeWebContentPipe, CheckScriptsPipe } from './pipes/safe-web-content.pipe';
+import { CheckScriptsPipe } from './pipes/safe-web-content.pipe';
 import { SortableDirective } from './directives/sortable.directive';
 import { TranslationService } from './translator';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';

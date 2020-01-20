@@ -229,7 +229,7 @@ export class ComponentReactiveFormHelpers {
    * Loop through formGroup controls and mark them as touched
    * @param control [[FormGroup|FormArray]] Reference to component formGroup object
    */
-  public static validateFormGroupFields(control: FormGroup|FormArray): void {
+  public static validateFormGroupFields(control: FormGroup | FormArray): void {
     Object.keys(control.controls).forEach((field: string) => {
       if (control.get(field) instanceof FormGroup) {
         ComponentReactiveFormHelpers.validateFormGroupFields(control.get(field) as FormGroup);
@@ -243,9 +243,12 @@ export class ComponentReactiveFormHelpers {
    * @param formGroup [[AbstractControl]] reference to form control
    */
   public static markControlAsTouched(control: AbstractControl): void {
-    control.markAsTouched();
-    control.markAsDirty();
-    control.markAsPristine();
+    if (isDefined(control)) {
+      control.markAsTouched();
+      control.markAsDirty();
+      control.markAsPristine();
+    }
+
   }
 
   /**
@@ -253,8 +256,10 @@ export class ComponentReactiveFormHelpers {
    * @param control [[AbstractControl]]
    */
   public static clearControlValidators(control: AbstractControl) {
-    control.clearValidators();
-    control.updateValueAndValidity();
+    if (isDefined(control)) {
+      control.clearValidators();
+      control.updateValueAndValidity();
+    }
   }
 
   /**
@@ -262,16 +267,20 @@ export class ComponentReactiveFormHelpers {
    * @param control [[AbstractControl]]
    */
   public static clearAsyncValidators(control: AbstractControl) {
-    control.clearAsyncValidators();
-    control.updateValueAndValidity();
+    if (isDefined(control)) {
+      control.clearAsyncValidators();
+      control.updateValueAndValidity();
+    }
   }
   /**
    * @description Set new validators on a control and update it value and validation rules
    * @param control [[AbstractControl]]
    */
-  public static setValidators(control: AbstractControl, validators: ValidatorFn|ValidatorFn[]) {
-    control.setValidators(validators);
-    control.updateValueAndValidity();
+  public static setValidators(control: AbstractControl, validators: ValidatorFn | ValidatorFn[]) {
+    if (isDefined(control)) {
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+    }
   }
 }
 

@@ -8,7 +8,7 @@ import { NgSelectModule} from '@ng-select/ng-select';
 import { IntlTelInputModule } from 'src/app/lib/domain/components/intl-tel-input';
 import { ClarityModule } from '@clr/angular';
 import { DynamicFormWapperComponent } from './dynamic-form-wapper/dynamic-form-wapper.component';
-import { SafeWebContentPipe } from '../../../pipes/safe-web-content.pipe';
+import { SafeWebContentPipe, SafeRessourceContentPipe } from '../../../pipes/safe-web-content.pipe';
 import { DropzoneModule } from '../../dropzone/dropzone.module';
 import { DynamicRepetableGroupComponent } from './dynamic-repetable-group/dynamic-repetable-group.component';
 import { RepeatableGroupChildComponent } from './dynamic-repetable-group/repeatable-group-child/repeatable-group-child.component';
@@ -30,9 +30,12 @@ import { RepeatableGroupChildComponent } from './dynamic-repetable-group/repeata
     DynamicFormWapperComponent,
     SafeWebContentPipe,
     DynamicRepetableGroupComponent,
-    RepeatableGroupChildComponent
+    RepeatableGroupChildComponent,
+    SafeRessourceContentPipe
   ],
-  exports: [DynamicFormControlComponent, DynamicFormWapperComponent, SafeWebContentPipe, DynamicRepetableGroupComponent],
+  exports: [
+    DynamicFormControlComponent, DynamicFormWapperComponent, SafeRessourceContentPipe, SafeWebContentPipe, DynamicRepetableGroupComponent
+  ],
   providers: []
 })
 export class DynamicFormControlModule {

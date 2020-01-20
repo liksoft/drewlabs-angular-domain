@@ -50,6 +50,18 @@ export class SafeWebContentPipe implements PipeTransform {
 
 }
 
+@Pipe({
+  name: 'safeRessourceContent'
+})
+export class SafeRessourceContentPipe implements PipeTransform {
+  constructor(private sanitized: DomSanitizer) {
+  }
+  transform(value: string) {
+      return this.sanitized.bypassSecurityTrustResourceUrl(value);
+  }
+
+}
+
 @Pipe({name: 'checkScripts'})
 export class CheckScriptsPipe implements PipeTransform {
     constructor(private sanitized: DomSanitizer) {
