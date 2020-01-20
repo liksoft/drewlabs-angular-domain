@@ -47,6 +47,7 @@
             isArray(listItems) ? listItems : (asObservable(listItems) | async)
           "
           [bindLabel]="asSelectInput(inputConfig).optionsLabel"
+          [disabled]="control?.status === 'DISABLED'"
           [bindValue]="asSelectInput(inputConfig).optionsValueIndex"
           [multiple]="asSelectInput(inputConfig).multiple"
           [placeholder]="asSelectInput(inputConfig).placeholder"
