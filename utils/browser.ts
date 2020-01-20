@@ -8,7 +8,7 @@ type WindowEvent = (self: Window, ev?: Event) => any;
  * Provides with promise base file reader functionnality
  * @param file [[File|any]]
  */
-export function readFileAsDataURI(file: File) {
+export function readFileAsDataURI(file: File|Blob) {
   return new Promise<string>((_, __) => {
     if (isDefined(file)) {
       const reader = new FileReader();
