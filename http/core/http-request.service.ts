@@ -145,15 +145,31 @@ export class HttpRequestService implements HttpServices {
     headers.append('Accept', 'text/plain');
     headers.append('Content-type', 'application/octet-stream');
     return new Promise((_, __) => {
-      this.http
-        .get(url, { headers, responseType: 'blob' })
-        .toPromise()
+      this.loadServerFile(url)
         .then((res: any) => {
           if (!isDefined(filename)) {
             filename = isDefined(fileExtension) ? `${this.getFileNameFromResponseContentDisposition(res)}.${fileExtension}` : `${this.getFileNameFromResponseContentDisposition(res)}`;
           }
           Browser.saveFile(res, filename);
           _({});
+        });
+    });
+  }
+
+  /**
+   * @description Load a file from the backend server
+   * @param url [[string]]
+   */
+  loadServerFile(url: string) {
+    const headers = new HttpHeaders();
+    headers.append('Accept', 'text/plain');
+    headers.append('Content-type', 'application/octet-stream');
+    return new Promise((_, __) => {
+      this.http
+        .get(url, { headers, responseType: 'blob' })
+        .toPromise()
+        .then((res: any) => {
+          _(res);
         });
     });
   }

@@ -217,7 +217,6 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   }
 
   radioButtonValueChange(event: any) {
-    console.log(event);
     this.control.setValue(event);
   }
 
