@@ -27,6 +27,8 @@ export class AppUIStoreManager {
     this.uiStore.endAction(message);
     if (alertConfigs) {
       this._alertConfigs = alertConfigs;
+    } else {
+      this._alertConfigs = {type: '', showAlert: false};
     }
   }
 
