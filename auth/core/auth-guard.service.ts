@@ -160,6 +160,10 @@ export class RootComponentGuard implements CanActivate {
   }
 
   private canLoadURL(route: ActivatedRouteSnapshot, url: string): boolean {
+    if (!isDefined(this.auth.user)) {
+      this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
+      return false;
+    }
     if (isDefined(route.data.modulePermissions)
       && !((this.auth.user as User).canAny(route.data.modulePermissions))) {
       this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
