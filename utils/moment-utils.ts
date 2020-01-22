@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { isDefined } from './type-utils';
 
 export class MomentUtils {
   /**
@@ -38,8 +39,8 @@ export class MomentUtils {
    * @param date2 [[Date|string]] Other date
    */
   public static isAfter(date1: Date | string, date2: Date | string): boolean {
-    const firstDate = MomentUtils.ensureDate(date1);
-    const secondDate = MomentUtils.ensureDate(date2);
+    const firstDate = MomentUtils.parseDate(date1, 'YYYY-MM-DD');
+    const secondDate = MomentUtils.parseDate(date2, 'YYYY-MM-DD');
     return moment(firstDate).diff(moment(secondDate)) <= 0 ? false : true;
   }
 
@@ -49,8 +50,8 @@ export class MomentUtils {
    * @param date2 [[Date|string]] Other date
    */
   public static isBefore(date1: Date | string, date2: Date | string): boolean {
-    const firstDate = MomentUtils.ensureDate(date1);
-    const secondDate = MomentUtils.ensureDate(date2);
+    const firstDate = MomentUtils.parseDate(date1, 'YYYY-MM-DD');
+    const secondDate = MomentUtils.parseDate(date2, 'YYYY-MM-DD');
     return moment(firstDate).diff(moment(secondDate)) >= 0 ? false : true;
   }
 
@@ -58,7 +59,7 @@ export class MomentUtils {
    * Checks if date provided is a valid date
    * @param date [[Date]]
    */
-  public static isValidDate(date: Date) {
+  public static isValidDate(date: Date|string) {
     return moment.isDate(date);
   }
 

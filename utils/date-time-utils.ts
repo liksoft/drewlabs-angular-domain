@@ -51,6 +51,7 @@ export class DateTimeUtils {
   public static isBefore(date1: Date|string, date2: Date|string): boolean {
     const firstDate = DateTimeUtils.ensureDate(date1);
     const secondDate = DateTimeUtils.ensureDate(date2);
+    console.log(firstDate, secondDate);
     return moment(firstDate).diff(moment(secondDate)) >= 0 ? false : true;
   }
 
@@ -74,10 +75,10 @@ export class DateTimeUtils {
     return moment(new Date(date)).format(format);
   }
 
-  protected static ensureDate(date: any) {
+  protected static ensureDate(date: string|Date) {
     try {
       if (!(date instanceof Date)) {
-        return new Date(date);
+        return moment(date).format('YYYY-MM-DD');
       }
       return date;
     } catch (error) {
