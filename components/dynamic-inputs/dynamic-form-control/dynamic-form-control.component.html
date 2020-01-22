@@ -231,7 +231,7 @@
             type="radio"
             clrRadio
             required
-            [disabled]="control?.status === 'DISABLED'"
+            [disabled]="control?.status == 'DISABLED'"
             [checked]="control.value == item.value"
             [value]="inputConfig.formControlName + '_' + item.value"
             (change)="radioButtonValueChange(item.value)"
