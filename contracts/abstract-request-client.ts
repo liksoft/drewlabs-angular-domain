@@ -289,7 +289,7 @@ export function getRessource<T>(
 export function postManyRessources(
   client: HttpRequestService,
   ressourcesPath: string,
-  requestBody: object[],
+  requestBody: object[]|object,
 ) {
   return new Promise<IResponseBody>((resolve, reject) => {
     (new RequestClient()).create(client, `${ressourcesPath}`, requestBody)
