@@ -17,7 +17,7 @@
     </div>
     <ng-container *ngSwitchCase="inputTypes.HTML_INPUT">
       <div
-        [innerHTML]="asHtmlInput(inputConfig).descriptionText | safeWebContent"
+        [innerHTML]="asHtmlInput(inputConfig).value | safeWebContent"
       ></div>
     </ng-container>
     <div *ngSwitchCase="inputTypes.HIDDEN_INPUT">
@@ -49,7 +49,7 @@
           [bindLabel]="asSelectInput(inputConfig).optionsLabel"
           [bindValue]="asSelectInput(inputConfig).optionsValueIndex"
           [multiple]="asSelectInput(inputConfig).multiple"
-          [placeholder]="asSelectInput(inputConfig).placeholder"
+          [placeholder]="asEmailInput(inputConfig).placeholder ? asEmailInput(inputConfig).placeholder : ''"
           [formControl]="control"
           [groupBy]="asSelectInput(inputConfig).groupByKey"
           (remove)="multiSelectItemRemove.emit($event)"
@@ -145,7 +145,7 @@
         </label>
                 <div class="clr-control-container">
                     <div class="clr-textarea-wrapper">
-                        <textarea [class]="asTextAreaInput(inputConfig).classes" [formControl]="control" [placeholder]="asTextAreaInput(inputConfig).placeholder" [rows]="asTextAreaInput(inputConfig).rows"></textarea>
+                        <textarea [class]="asTextAreaInput(inputConfig).classes" [formControl]="control" [placeholder]="asEmailInput(inputConfig).placeholder ? asEmailInput(inputConfig).placeholder : ''" [rows]="asTextAreaInput(inputConfig).rows"></textarea>
                     </div>
                 </div>
                 <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched">
@@ -182,7 +182,7 @@
               "
               [class]="asNumberInput(inputConfig).classes"
               [formControl]="control"
-              [placeholder]="asNumberInput(inputConfig).placeholder"
+              [placeholder]="asEmailInput(inputConfig).placeholder ? asEmailInput(inputConfig).placeholder : ''"
             />
           </div>
           <clr-control-error
@@ -284,7 +284,7 @@
               "
               [class]="asPasswordInput(inputConfig).classes + ' password-input'"
               [formControl]="control"
-              [placeholder]="asPasswordInput(inputConfig).placeholder"
+              [placeholder]="asPasswordInput(inputConfig).placeholder ? asPasswordInput(inputConfig).placeholder : ''"
             />
             <clr-icon
               shape="eye"
@@ -363,7 +363,7 @@
               "
               [class]="asEmailInput(inputConfig).classes"
               [formControl]="control"
-              [placeholder]="asEmailInput(inputConfig).placeholder"
+              [placeholder]="asEmailInput(inputConfig).placeholder ? asEmailInput(inputConfig).placeholder : ''"
             />
           </div>
           <clr-control-error
