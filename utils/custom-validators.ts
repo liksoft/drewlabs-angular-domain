@@ -1,10 +1,10 @@
 import { AbstractControl, FormGroup, FormControl, ValidatorFn } from '@angular/forms';
-import { DateTimeUtils } from './date-time-utils';
 import { Injectable } from '@angular/core';
 import { HttpRequestService } from '../http/core/http-request.service';
 import { RequestClient } from '../contracts/abstract-request-client';
 import { ResponseData, IResponseBody, ResponseBody } from '../http/contracts/http-response-data';
 import { isDefined } from './type-utils';
+import { MomentUtils } from './moment-utils';
 
 @Injectable()
 export class UniqueValueService extends RequestClient {
@@ -74,7 +74,7 @@ export class CustomValidators {
   static minDate(minDate: string | Date): ValidatorFn {
     return (control: AbstractControl) => {
       if (control.validator) {
-        if (control.value && DateTimeUtils.isAfter(minDate, control.value)) {
+        if (control.value && MomentUtils.isAfter(minDate, control.value)) {
           return { minDate: true };
         }
       }
@@ -85,7 +85,7 @@ export class CustomValidators {
   static maxDate(maxDate: string | Date): ValidatorFn {
     return (control: AbstractControl) => {
       if (control.validator) {
-        if (control.value && DateTimeUtils.isBefore(maxDate, control.value)) {
+        if (control.value && MomentUtils.isBefore(maxDate, control.value)) {
           return { maxDate: true };
         }
       }

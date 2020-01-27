@@ -94,6 +94,11 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
         uploadMultiple: this.asFileInput(this.inputConfig).multiple ? this.asFileInput(this.inputConfig).multiple : false,
         acceptedFiles: this.asFileInput(this.inputConfig).pattern ? this.asFileInput(this.inputConfig).pattern : 'image/*'
       };
+      this.control.valueChanges.subscribe((state) => {
+        if (!isDefined(state)) {
+          this.dropzoneContainer.resetDropzone();
+        }
+      });
     }
     if (
       this.inputConfig &&

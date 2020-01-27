@@ -3,10 +3,8 @@ import { HttpGetAllRequestFn,
   RequestClient,
   IRequestClient,
   loadThroughHttpRequest,
-  putRessourceAndNotifyStore,
   postRessourceAndNotifiStore,
-  deleteRessourceAndNotifyStore,
-  getRessourcesAndNotify
+  deleteRessource
 } from '../../../contracts/abstract-request-client';
 import { HttpRequestService } from '../../../http/core';
 import { isDefined, isArray } from '../../../utils/type-utils';
@@ -17,6 +15,7 @@ import { Store } from '../../../store';
 import { ISerializableBuilder } from '../../../built-value/contracts/serializers';
 import { Role, RoleBuilder } from '../../models/role';
 import {ROLES_CONTAINERINITIALIZED_ACTION, ROLE_CREATED_ACTION, ROLE_REMOVED_ACTION, ROLE_UPDATED_ACTION } from './reducers/roles-reducer';
+import { putRessource, getRessources } from '../../../contracts/abstract-request-client';
 
 class RolesDataSource implements IDataSourceService<ISource<Role>> {
 
@@ -119,12 +118,10 @@ export class Roleservice extends RequestClient
   }
 
   public getRoles(): Promise<any> {
-    return getRessourcesAndNotify<Role>(
+    return getRessources<Role>(
       this.client,
       this.ressourcesPath,
       Role.builder() as ISerializableBuilder<Role>,
-      this.store,
-      ROLES_CONTAINERINITIALIZED_ACTION,
       'roles'
     );
   }
@@ -144,13 +141,10 @@ export class Roleservice extends RequestClient
    * @inheritdoc
    */
   deleteRole(id: any) {
-    return deleteRessourceAndNotifyStore<Role>(
+    return deleteRessource<Role>(
       this.client,
       this.ressourcesPath,
-      id,
-      this.store,
-      ROLE_REMOVED_ACTION,
-      'id'
+      id
     );
   }
 
@@ -158,15 +152,11 @@ export class Roleservice extends RequestClient
    * @inheritdoc
    */
   updateRole(requestURL: string, id: any, values: any): Promise<IResponseBody> {
-    return putRessourceAndNotifyStore<Role>(
+    return putRessource<Role>(
       this.client,
       `${isDefined(requestURL) ? requestURL : this.ressourcesPath}`,
       id,
-      values,
-      {},
-      this.store,
-      ROLE_UPDATED_ACTION,
-      'id'
+      values
     );
   }
 }

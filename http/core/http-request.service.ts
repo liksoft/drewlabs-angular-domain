@@ -141,6 +141,7 @@ export class HttpRequestService implements HttpServices {
    * @param url [[string]]
    */
   downloadFile(url: string, filename?: string, fileExtension?: string) {
+    url = URLUtils.isWebURL(url) ? `${url}` : `${HttpRequestConfigs.serverUrl}${url}`;
     const headers = new HttpHeaders();
     headers.append('Accept', 'text/plain');
     headers.append('Content-type', 'application/octet-stream');
