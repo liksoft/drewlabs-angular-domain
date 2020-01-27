@@ -46,12 +46,12 @@ export class FormDataSource implements IDataSourceService<ISource<Form>> {
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );
-        const forms = (res.success === true) ? (body.data.forms.data as Array<any>).map((value) => {
+        const forms = (res.success === true) ? (body.data.data as Array<any>).map((value) => {
           return (Form.builder() as ISerializableBuilder<Form>).fromSerialized(value);
         }) : [];
         resolve({
           data: forms,
-          total: body.data.forms.total
+          total: body.data.total
         });
       })
         .catch(err => reject(err));
@@ -116,8 +116,8 @@ export class FormService extends RequestClient
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
           );
-          if (res.success === true && isArray(body.data.forms.data)) {
-            const forms = (body.data.forms.data as Array<object>).map((value) => {
+          if (res.success === true && isArray(body.data.data)) {
+            const forms = (body.data.data as Array<object>).map((value) => {
               return (Form.builder() as ISerializableBuilder<Form>).fromSerialized(value);
             });
             resolve(forms);
@@ -138,8 +138,8 @@ export class FormService extends RequestClient
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
           );
-          if (res.success === true && isArray(body.data.form_control_option_models.data)) {
-            const entities = (body.data.form_control_option_models.data as Array<object>).map((value) => {
+          if (res.success === true && isArray(body.data.data)) {
+            const entities = (body.data.data as Array<object>).map((value) => {
               return (FormControlOptionsEntity.builder() as ISerializableBuilder<FormControlOptionsEntity>).fromSerialized(value);
             });
             resolve(entities);
