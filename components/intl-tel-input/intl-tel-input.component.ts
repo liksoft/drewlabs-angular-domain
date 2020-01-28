@@ -89,7 +89,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
         preferredCountry[0]
           ? this.preferredCountriesInDropDown.push(preferredCountry[0])
           : // tslint:disable-next-line:no-unused-expression
-            null;
+          null;
       });
     }
     this._initializePhoneNumberControl();
@@ -101,6 +101,11 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
         }
       }
     );
+    this.control.valueChanges.subscribe((state) => {
+      if (isDefined(state)) {
+        this.setPhoneControlValue(state);
+      }
+    });
   }
 
   public onCountrySelect(country: Country): void {
@@ -124,24 +129,10 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   }
 
   private _initializePhoneNumberControl() {
-    this.phoneControl = new FormControl({value: null, disabled: this.disabled});
+    this.phoneControl = new FormControl({ value: null, disabled: this.disabled });
     // Set the initial country to show
     if (isDefined(this.control.value)) {
-      const controlState = this.control.value.toString();
-      const tmpCountryCode: number = this.intelInputService.getCountryCode(controlState);
-      if (tmpCountryCode) {
-        this.selectedCountry = this.allCountries.filter((c: Country) => {
-          return (
-            c.dialCode ===
-            this.intelInputService.getCountryCode(controlState).toString()
-          );
-        })[0];
-        this.phoneControl.setValue(
-          (controlState as string).substring(
-            this.selectedCountry.dialCode.length
-          )
-        );
-      }
+      this.setPhoneControlValue(this.control.value.toString());
     } else if (this.initialCountry) {
       const initCountry = this.allCountries.filter((c: Country) => {
         return c.iso2 === this.initialCountry;
@@ -162,11 +153,32 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       validators.push(Validators.required);
     }
     this.control.setValidators(validators);
-    this.control.updateValueAndValidity({onlySelf: true});
+    this.control.updateValueAndValidity({ onlySelf: true });
   }
 
   private setControlValue(dialCode: string, phoneNumber: string) {
+    if (this.control.value === `${dialCode}${phoneNumber}`) {
+      return;
+    }
     this.control.setValue(`${dialCode}${phoneNumber}`);
+  }
+
+  setPhoneControlValue(value: string) {
+    const controlState = value;
+    const tmpCountryCode: number = this.intelInputService.getCountryCode(controlState);
+    if (tmpCountryCode) {
+      this.selectedCountry = this.allCountries.filter((c: Country) => {
+        return (
+          c.dialCode ===
+          this.intelInputService.getCountryCode(controlState).toString()
+        );
+      })[0];
+      this.phoneControl.setValue(
+        (controlState as string).substring(
+          this.selectedCountry.dialCode.length
+        )
+      );
+    }
   }
 
   ngOnDestroy() {

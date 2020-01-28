@@ -101,4 +101,14 @@ export class MomentUtils {
   public static getYear(date: Date|string) {
     return moment(new Date(date)).year();
   }
+
+  /**
+   * Calculate the difference in a unit of time between a moment|date and now
+   * @param date [[moment.MomentInput]]
+   * @param interval [[moment.unitOfTime.DurationConstructor]]
+   * @param precise [[boolean]]
+   */
+  public static diff(date: moment.MomentInput, interval: moment.unitOfTime.DurationConstructor, precise?: boolean) {
+    return moment().diff(date, interval, precise);
+  }
 }
