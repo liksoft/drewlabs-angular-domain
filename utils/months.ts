@@ -10,11 +10,11 @@ export class MonthProvider {
    * @description Returns a month object based on the provided month id
    * @param value Id of a month in the list of predefined month
    */
-  public static parseMonth(value: number) {
+  public static parseMonth(value: number, lang: string = 'fr') {
     const filteredMonth = MONTHS.filter((v: Month) => {
       return +v.id === +value;
     });
-    return filteredMonth.length > 0 ? filteredMonth[0].label : value;
+    return filteredMonth.length > 0 ? (lang !== 'fr' ? filteredMonth[0].enLabel : filteredMonth[0].label) : value;
   }
 }
 
