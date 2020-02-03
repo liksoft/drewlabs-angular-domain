@@ -289,7 +289,7 @@ export function getRessource<T>(
 export function postManyRessources(
   client: HttpRequestService,
   ressourcesPath: string,
-  requestBody: object[]|object,
+  requestBody: object[] | object,
 ) {
   return new Promise<IResponseBody>((resolve, reject) => {
     (new RequestClient()).create(client, `${ressourcesPath}`, requestBody)
@@ -384,37 +384,52 @@ export function deleteRessource<T>(
 /**
  * @description Get ressources/ request handler
  * @param ressourcePath [[string]]
+ * @param options [[object?]]
  */
-export type HttpGetAllRequestFn = (client: HttpRequestService, ressourcePath: string) => Promise<ResponseData>;
+export type HttpGetAllRequestFn = (
+  client: HttpRequestService, ressourcePath: string, options?: object
+) => Promise<ResponseData>;
 
 /**
  * @description GET ressources/{id} request handler
  * @param ressources Server ressource path
  * @param id Ressource identifier
+ * @param options [[object?]]
  */
-export type HttpGetRequestFn = (client: HttpRequestService, ressourcePath: string, id: number | any) => Promise<ResponseData>;
+export type HttpGetRequestFn = (
+  client: HttpRequestService, ressourcePath: string, id: number | any, options?: object
+) => Promise<ResponseData>;
 
 /**
  * @desciption POST ressources/ request handler
  * @param ressources Server ressource path
  * @param requestBody Request body as jsonInput
+ * @param options [[object?]]
  */
-export type HttpPostRequestFn = (client: HttpRequestService, ressources: string, requestBody: object | any) => Promise<ResponseData>;
+export type HttpPostRequestFn = (
+  client: HttpRequestService, ressources: string, requestBody: object | any, options?: object
+) => Promise<ResponseData>;
 
 /**
  * DELETE ressources/{id} request handler
  * @param ressources Server ressource path
  * @param id Ressource identifier
+ * @param options [[object?]]
  */
-export type HttpDeleteRequestFn = (client: HttpRequestService, ressources: string, id: number | any) => Promise<ResponseData>;
+export type HttpDeleteRequestFn = (
+  client: HttpRequestService, ressources: string, id: number | any, options?: object
+) => Promise<ResponseData>;
 
 /**
  * PUT ressources/{id} request handler
  * @param ressources Server ressource path
  * @param id contact identifier
+ * @param options [[object?]]
  */
 // tslint:disable-next-line: max-line-length
-export type HttpPutRequestFn = (client: HttpRequestService, ressources: string, id: number | any, values: object | any) => Promise<ResponseData>;
+export type HttpPutRequestFn = (
+  client: HttpRequestService, ressources: string, id: number | any, values: object | any, options?: object
+) => Promise<ResponseData>;
 
 export interface IRequestClient {
 
@@ -446,9 +461,11 @@ export interface IRequestClient {
 
 export class RequestClient implements IRequestClient {
 
-  public get: HttpGetAllRequestFn = (client: HttpRequestService, ressources: string) => {
+  public get: HttpGetAllRequestFn = (
+    client: HttpRequestService, ressources: string, options?: object
+  ) => {
     return new Promise<ResponseData>((resolve, reject) => {
-      client.get(ressources).subscribe(
+      client.get(ressources, options).subscribe(
         res => {
           // Handle the response object
           const responseData: ResponseData =
@@ -462,25 +479,11 @@ export class RequestClient implements IRequestClient {
     });
   }
 
-  public getById: HttpGetRequestFn = (client: HttpRequestService, ressources: string, id: any) => {
-    return new Promise<ResponseData>((resolve, reject) => {
-      client.get(`ressources/${id}`).subscribe(
-        res => {
-          // Handle the response object
-          const responseData: ResponseData =
-            res[ServerResponseKeys.RESPONSE_DATA];
-          resolve(responseData);
-        },
-        err => {
-          reject(err);
-        }
-      );
-    });
-  }
-  public create: HttpPostRequestFn = (client: HttpRequestService, ressources: string, requestBody: object | string
+  public getById: HttpGetRequestFn = (
+    client: HttpRequestService, ressources: string, id: any, options?: object
   ) => {
     return new Promise<ResponseData>((resolve, reject) => {
-      client.post(ressources, requestBody).subscribe(
+      client.get(`${ressources}/${id}`, options).subscribe(
         res => {
           // Handle the response object
           const responseData: ResponseData =
@@ -493,9 +496,11 @@ export class RequestClient implements IRequestClient {
       );
     });
   }
-  public delete: HttpDeleteRequestFn = (client: HttpRequestService, ressources: string, id: any) => {
+  public create: HttpPostRequestFn = (
+    client: HttpRequestService, ressources: string, requestBody: object | string, options?: object
+  ) => {
     return new Promise<ResponseData>((resolve, reject) => {
-      client.delete(`${ressources}/${id}`).subscribe(
+      client.post(ressources, requestBody, options).subscribe(
         res => {
           // Handle the response object
           const responseData: ResponseData =
@@ -508,11 +513,29 @@ export class RequestClient implements IRequestClient {
       );
     });
   }
-  public update: HttpPutRequestFn = (client: HttpRequestService, ressources: string, id?: any, updateValues = {}
+  public delete: HttpDeleteRequestFn = (
+    client: HttpRequestService, ressources: string, id: any, options?: object
+  ) => {
+    return new Promise<ResponseData>((resolve, reject) => {
+      client.delete(`${ressources}/${id}`, options).subscribe(
+        res => {
+          // Handle the response object
+          const responseData: ResponseData =
+            res[ServerResponseKeys.RESPONSE_DATA];
+          resolve(responseData);
+        },
+        err => {
+          reject(err);
+        }
+      );
+    });
+  }
+  public update: HttpPutRequestFn = (
+    client: HttpRequestService, ressources: string, id?: any, updateValues = {}, options?: object
   ) => {
     return new Promise<ResponseData>((resolve, reject) => {
       ressources = id ? `${ressources}/${id}` : `${ressources}`;
-      client.put(ressources, updateValues).subscribe(
+      client.put(ressources, updateValues, options).subscribe(
         res => {
           // Handle the response object
           const responseData: ResponseData =
