@@ -88,7 +88,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
     if (this.inputConfig.type === InputTypes.FILE_INPUT) {
       this.dropzoneConfigs = {
         maxFiles: this.asFileInput(this.inputConfig).multiple ? 50 : 1,
-        maxFilesize: this.asFileInput(this.inputConfig).maxFileSize ? this.asFileInput(this.inputConfig).maxFileSize : 4,
+        maxFilesize: this.asFileInput(this.inputConfig).maxFileSize ? this.asFileInput(this.inputConfig).maxFileSize : 10,
         url: isDefined(this.asFileInput(this.inputConfig).uploadUrl) && this.asFileInput(this.inputConfig).uploadUrl !== '' ?
           this.asFileInput(this.inputConfig).uploadUrl : environment.apiFileUploadURL,
         uploadMultiple: this.asFileInput(this.inputConfig).multiple ? this.asFileInput(this.inputConfig).multiple : false,

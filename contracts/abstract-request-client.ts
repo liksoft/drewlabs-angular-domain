@@ -322,7 +322,7 @@ export function postRessource<T>(
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );
-        if ((res.success === true) && isDefined(body.data)) {
+        if ((res.success === true) && isDefined(body.data) && isDefined(ressourceBuilder)) {
           resolve(ressourceBuilder.fromSerialized(body.data));
           return;
         }

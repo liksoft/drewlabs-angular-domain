@@ -702,7 +702,7 @@ export class FileInput extends AbstractHTMLFormControl {
         uploadUrl: model.uploadURL,
         pattern: model.pattern,
         multiple: model.multiple === 1 ? true : false,
-        maxFileSize: model.max ? model.max : 4
+        maxFileSize: model.max ? model.max : null
       } as FileInput
     );
   }
