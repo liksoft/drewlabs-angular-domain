@@ -80,6 +80,8 @@ export class UserInfoEntity {
   organisationID: number = undefined;
   @JsonProperty('department_id')
   departmentID: number = undefined;
+  @JsonProperty('agence_id')
+  agenceID: number = undefined;
 
   /**
    * @description Calls to get the builder provider of the current class|type

@@ -18,12 +18,14 @@ import { Store } from '../../../store';
 import { ISerializableBuilder } from '../../../built-value/contracts/serializers';
 import { SessionStorage } from '../../../storage/core/session-storage.service';
 
-class ApplicationUsersDataSource implements IDataSourceService<ISource<User>> {
+export class ApplicationUsersDataSource implements IDataSourceService<ISource<User>> {
 
   private ressourcesGetterMethod: HttpGetAllRequestFn;
   public ressourcesPath: string;
   private client: HttpRequestService;
   public readonly usersStorageKey: string;
+  // tslint:disable-next-line: variable-name
+  private _queryParams: object;
 
   constructor(client: HttpRequestService, fn: HttpGetAllRequestFn, path: string, private cache: SessionStorage) {
     this.ressourcesGetterMethod = fn;
@@ -31,6 +33,12 @@ class ApplicationUsersDataSource implements IDataSourceService<ISource<User>> {
     this.client = client;
     this.usersStorageKey = 'Application_Users_';
   }
+
+  setQueryParameters(params: object) {
+    this._queryParams = params;
+    return this;
+  }
+
   getItems(params: ISourceRequestQueryParameters) {
     // Return a promise of an Http Request
     return new Promise<ISource<User>>((resolve, reject) => {
@@ -42,7 +50,8 @@ class ApplicationUsersDataSource implements IDataSourceService<ISource<User>> {
       if (isDefined(params.by)) {
         query += `&by=${params.by}&order=${params.order ? params.order : 'desc'}`;
       }
-      this.ressourcesGetterMethod(this.client, `${this.ressourcesPath}${query}`).then((res: ResponseData) => {
+      // tslint:disable-next-line: max-line-length
+      this.ressourcesGetterMethod(this.client, `${this.ressourcesPath}${query}`, { params: this._queryParams }).then((res: ResponseData) => {
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );

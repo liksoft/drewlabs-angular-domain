@@ -193,6 +193,7 @@ export class User extends UserAsViewable implements AuthUser {
       usr_info_sex: 'userInfo.sex',
       usr_info_organisation_id: 'userInfo.organisationID',
       usr_info_department_id: 'userInfo.departmentID',
+      usr_info_agence_id: 'userInfo.agenceID',
       is_department_manager: null,
     };
   }

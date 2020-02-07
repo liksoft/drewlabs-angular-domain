@@ -24,11 +24,18 @@ export class FormDataSource implements IDataSourceService<ISource<Form>> {
   public readonly ressourcesPath: string;
   private client: HttpRequestService;
   public readonly formListEntryKey = 'Temp_Form_Lists_';
+  // tslint:disable-next-line: variable-name
+  private _queryParams: object;
 
   constructor(client: HttpRequestService, fn: HttpGetAllRequestFn, path: string, private cache: LocalStorage) {
     this.ressourcesGetterMethod = fn;
     this.ressourcesPath = path;
     this.client = client;
+  }
+
+  setQueryParameters(params: object) {
+    this._queryParams = params;
+    return this;
   }
 
   getItems(params: ISourceRequestQueryParameters): Promise<ISource<Form>> {
@@ -42,7 +49,8 @@ export class FormDataSource implements IDataSourceService<ISource<Form>> {
       if (isDefined(params.by)) {
         query += `&by=${params.by}&order=${params.order ? params.order : 'desc'}`;
       }
-      this.ressourcesGetterMethod(this.client, `${this.ressourcesPath}${query}`).then(async (res: ResponseData) => {
+      // tslint:disable-next-line: max-line-length
+      this.ressourcesGetterMethod(this.client, `${this.ressourcesPath}${query}`, { params: this._queryParams }).then(async (res: ResponseData) => {
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );

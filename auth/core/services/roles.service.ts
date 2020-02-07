@@ -14,15 +14,17 @@ import { SessionStorage } from '../../../storage/core';
 import { Store } from '../../../store';
 import { ISerializableBuilder } from '../../../built-value/contracts/serializers';
 import { Role, RoleBuilder } from '../../models/role';
-import {ROLES_CONTAINERINITIALIZED_ACTION, ROLE_CREATED_ACTION, ROLE_REMOVED_ACTION, ROLE_UPDATED_ACTION } from './reducers/roles-reducer';
+import { ROLE_CREATED_ACTION } from './reducers/roles-reducer';
 import { putRessource, getRessources } from '../../../contracts/abstract-request-client';
 
-class RolesDataSource implements IDataSourceService<ISource<Role>> {
+export class RolesDataSource implements IDataSourceService<ISource<Role>> {
 
   private ressourcesGetterMethod: HttpGetAllRequestFn;
   private ressourcesPath: string;
   private client: HttpRequestService;
   public readonly rolesStorageKey: string;
+  // tslint:disable-next-line: variable-name
+  private _queryParams: object;
 
   constructor(client: HttpRequestService, fn: HttpGetAllRequestFn, path: string, private cache: SessionStorage) {
     this.ressourcesGetterMethod = fn;
@@ -30,6 +32,12 @@ class RolesDataSource implements IDataSourceService<ISource<Role>> {
     this.client = client;
     this.rolesStorageKey = 'Application_roles_';
   }
+
+  setQueryParameters(params: object) {
+    this._queryParams = params;
+    return this;
+  }
+
   getItems(params: ISourceRequestQueryParameters): Promise<ISource<Role>> {
     // Return a promise of an Http Request
     return new Promise((resolve, reject) => {
@@ -41,7 +49,8 @@ class RolesDataSource implements IDataSourceService<ISource<Role>> {
       if (isDefined(params.by)) {
         query += `&by=${params.by}&order=${params.order ? params.order : 'desc'}`;
       }
-      this.ressourcesGetterMethod(this.client, `${this.ressourcesPath}${query}`).then((res: ResponseData) => {
+      // tslint:disable-next-line: max-line-length
+      this.ressourcesGetterMethod(this.client, `${this.ressourcesPath}${query}`, { params: this._queryParams }).then((res: ResponseData) => {
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );

@@ -4,6 +4,7 @@ import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built
 import { OrganisationEntity } from './organisation';
 import { IDynamicFormBindableModel } from '../../components/dynamic-inputs/core/contracts/form-control';
 import { Role } from './role';
+import { isDefined } from '../../utils/type-utils';
 
 export class DepartmentBuilder implements ISerializableBuilder<Department>, TypeBuilder<Department> {
   serializer: ISerializer;
@@ -69,13 +70,23 @@ export class Department implements IDynamicFormBindableModel {
   }
 
   /**
+   * @description Returns the list of roles label as string
+   */
+  rolesToString(): string {
+    if (!isDefined(this.roles)) {
+      return '';
+    }
+    return this.roles.map((r) => r.label).join(', ');
+  }
+
+  /**
    * @inheritdoc
    */
   formViewModelBindings(): { [index: string]: any } {
     return {
-      name: 'departments_name',
+      departments_name: 'name',
       departments_description: 'description',
-      departments_organisation_id: 'organisation_id',
+      departments_organisation_id: 'organisationID',
       roles: 'roles'
     };
   }
