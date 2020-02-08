@@ -49,29 +49,24 @@ export async function loadRessourceFromCacheOrGetFromServer<T extends any>(
   cacheEntriesKey: string,
   builder: ISerializableBuilder<T>) {
   // Try getting the form from the cache
-  let forms = cache.get(cacheEntriesKey);
-  return new Promise<T>((resolve, reject) => {
+  const forms = cache.get(cacheEntriesKey);
+  return new Promise<T>( async (resolve, reject) => {
     // If the form is in the cache, generate the Form object from cache serialized value
-    forms = (forms as Array<any>).map((value) => {
-      return (builder).fromSerialized(value);
-    });
-    const form = (forms as T[]).find((value) => {
-      return value.id === id;
-    });
-    if (form) {
-      resolve(form);
-    } else {
-      // Else query for the form from an http endpoint
-      const result: Promise<any> = loadThroughHttpRequest(client, ressourcesPath, id);
-      result.then((value: any) => {
-        if (isDefined(value)) {
-          // Add the loaded form from to the session storage
-          resolve(builder.fromSerialized(value));
-        } else {
-          resolve(null);
-        }
+    if (isDefined(forms) && isArray(forms)) {
+      const form = (forms as any[]).find((value) => {
+        return value.id === id;
       });
-      result.catch((err) => reject(err));
+      if (form) {
+        resolve(builder.fromSerialized(form));
+      }
+      return;
+    }
+    try {
+      const result = await loadThroughHttpRequest(client, ressourcesPath, id);
+      // Add the loaded form from to the session storage
+      resolve(isDefined(result) ? builder.fromSerialized(result) : result);
+    } catch (error) {
+      reject(error);
     }
   });
 }
