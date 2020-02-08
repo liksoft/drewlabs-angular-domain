@@ -108,24 +108,20 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
       if (this._status) {
         query += `&status=${this._status}`;
       }
-      console.log({ params: this._queryParams });
       this._getMethod(this.client, `${this._ressourcePath}${query}`, { params: this._queryParams }).then((res: ResponseData) => {
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );
         let result = [];
-        const data = isDefined(this._responseJsonKey) ? body.data[this._responseJsonKey].data : body.data.data;
-        if ((res.success === true) && isArray(data)) {
-          if (isDefined(this._cacheKey)) {
-            this.cache.set(`${this._cacheKey}`, data);
-          }
-          result = isDefined(this._builder) ? (data as Array<any>).map((value) => {
+        const responseData = isDefined(this._responseJsonKey) ? body.data[this._responseJsonKey] : body.data;
+        if ((res.success === true) && isArray(responseData.data)) {
+          result = isDefined(this._builder) ? (responseData.data as Array<any>).map((value) => {
             return this._builder.fromSerialized(value);
-          }) : data;
+          }) : responseData.data;
         }
         resolve({
           data: result,
-          total: data.total
+          total: responseData.total
         });
       })
         .catch(err => reject(err));

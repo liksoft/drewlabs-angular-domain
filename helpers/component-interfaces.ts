@@ -1,7 +1,7 @@
 import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { Subscription } from 'rxjs';
 import { HostBinding } from '@angular/core';
-import { AlertConfig } from '../components/app-alert/app-alert.component';
+import { AlertConfig } from '../components/action-alert/app-alert/app-alert.component';
 import { AbstractControl, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { UIState } from '../components/ui-store/ui-state';
 

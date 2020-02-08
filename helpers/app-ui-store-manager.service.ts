@@ -1,5 +1,5 @@
 import { AppUIStore } from 'src/app/lib/domain/components/ui-store/ui-store';
-import { AlertConfig } from 'src/app/lib/domain/components/app-alert/app-alert.component';
+import { AlertConfig } from 'src/app/lib/domain/components/action-alert/app-alert/app-alert.component';
 import { Injectable } from '@angular/core';
 
 @Injectable({

@@ -45,52 +45,43 @@ export interface AlertConfig {
     <div [class]="getAlertType()" role="alert">
       <div class="alert-items">
         <div class="alert-item static">
-          <div *ngIf="showIcon" class="alert-icon-wrapper">
-            <ng-container [ngSwitch]="alertType">
-              <clr-icon
-                *ngSwitchCase="'alert-success'"
-                class="alert-icon"
-                shape="check-circle"
-              ></clr-icon>
-              <clr-icon
-                *ngSwitchCase="'alert-danger'"
-                class="alert-icon"
-                shape="exclamation-circle"
-              ></clr-icon>
-              <clr-icon
-                *ngSwitchCase="'alert-warning'"
-                class="alert-icon"
-                shape="exclamation-triangle"
-              ></clr-icon>
-              <clr-icon
-                *ngSwitchDefault
-                class="alert-icon"
-                shape="check-circle"
-              ></clr-icon>
-            </ng-container>
-          </div>
-          <span class="alert-text">{{ alertMessage }}</span>
+          <ng-container *ngIf="showIcon">
+            <div class="alert-icon-wrapper" [ngSwitch]="alertType">
+              <clr-icon *ngSwitchCase="'alert-success'" class="alert-icon" shape="check-circle"></clr-icon>
+              <clr-icon *ngSwitchCase="'alert-danger'" class="alert-icon" shape="exclamation-circle"></clr-icon>
+              <clr-icon *ngSwitchCase="'alert-warning'" class="alert-icon" shape="exclamation-triangle"></clr-icon>
+              <clr-icon *ngSwitchDefault class="alert-icon" shape="check-circle"></clr-icon>
+            </div>
+          </ng-container>
+          <div class="alert-text">{{ alertMessage }}</div>
         </div>
       </div>
+      <button type="button" class="close" aria-label="Close" (click)="hideAlert.emit({})">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+      </button>
     </div>
   `
 })
 export class AppAlertComponent {
   @Input() alertMessage: string;
   @Input() showIcon = false;
-  @Output() iconCliked = new EventEmitter<any>();
+  @Output() hideAlert = new EventEmitter<object>();
   @Input() icon: string;
   @Input() alertType = 'alert-success';
+  // tslint:disable-next-line: no-inferrable-types
+  @Input() isAppLevel: boolean = false;
+  // tslint:disable-next-line: no-inferrable-types
+  @Input() showCloseActionButton: boolean = false;
 
   /**
    * @description Component object initializer
    */
-  constructor() {}
+  constructor() { }
 
   /**
    * @description build the alert component class
    */
   getAlertType() {
-    return `alert ${this.alertType}`;
+    return `alert ${this.isAppLevel ? 'alert-app-level' : ''} ${this.alertType}`;
   }
 }
