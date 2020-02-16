@@ -47,6 +47,12 @@ export interface FormRequest {
   requestURL?: string;
 }
 
+export interface UpdateRequest {
+  id: number|string;
+  body: object;
+  requestURL?: string;
+}
+
 /**
  * @description Interface definition of a form submission event with the request url
  */

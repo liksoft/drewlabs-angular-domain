@@ -1,0 +1,41 @@
+import { Injectable, OnDestroy } from '@angular/core';
+import { isDefined } from '../utils/type-utils';
+import { Collection } from '../utils/collection';
+import { AbstractControl, FormGroup } from '@angular/forms';
+import { FileFormControl } from '../components/dynamic-inputs/dynamic-form-control/dynamic-form-control.component';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TypeUtilHelper implements OnDestroy {
+
+  /**
+   * @description Checks if the value of the parameter is defined or not
+   * @param value [[any]]
+   */
+  isDefined(value: any) {
+    return isDefined(value);
+  }
+  /**
+   * Return any value as collection of items
+   * @param value [[any]]
+   */
+  asCollection(value: any) {
+    return value as Collection<any>;
+  }
+
+  /**
+   * @description Returns an abstract control as a formgroup
+   * @param control [[AbstractControl]]
+   */
+  asFormGroup(control: AbstractControl) {
+    return control as FormGroup;
+  }
+
+  transformIFileFormControl(value: FileFormControl) {
+    return Object.assign({}, {file: value.dataURL, extension: value.extension});
+  }
+
+  ngOnDestroy() {}
+}

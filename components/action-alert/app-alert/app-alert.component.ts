@@ -60,7 +60,30 @@ export interface AlertConfig {
           <clr-icon aria-hidden="true" shape="close"></clr-icon>
       </button>
     </div>
-  `
+  `,
+  styles: [
+    `
+       .action-alert {
+          /*  min-height: 100px !important;
+          max-width: 320px !important;
+          position: absolute !important;
+          top: 58px !important;
+          right: 0;
+          box-shadow: 0rem 0rem 2px #d7d7d7;
+          transition-property: position;
+          transition-timing-function: linear;
+          transition-duration: 10s; */
+          z-index: 9999;
+
+        }
+        /* .action-alert .alert-text {
+            text-align: center;
+        }
+        .alert-icon-wrapper {
+            align-self: inherit !important;
+        } */
+    `
+  ]
 })
 export class AppAlertComponent {
   @Input() alertMessage: string;
@@ -82,6 +105,6 @@ export class AppAlertComponent {
    * @description build the alert component class
    */
   getAlertType() {
-    return `alert ${this.isAppLevel ? 'alert-app-level' : ''} ${this.alertType}`;
+    return `alert ${this.isAppLevel ? 'alert-app-level action-alert' : ''} ${this.alertType}`;
   }
 }

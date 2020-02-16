@@ -14,6 +14,9 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { DrewlabsDisableControlDirective } from './directives/disable-control.directive';
+import { FormHelperService } from './helpers/form-helper';
+import { TypeUtilHelper } from './helpers/type-utils-helper';
+import { TranslatorHelperService } from './helpers/translator-helper';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -53,7 +56,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     SortableDirective,
     DrewlabsDisableControlDirective
   ],
-  providers: [WindowRef, Dialog, TranslationService]
+  providers: [WindowRef, Dialog, TranslationService, FormHelperService, TypeUtilHelper, TranslatorHelperService]
 })
 export class DomainModule {}
 

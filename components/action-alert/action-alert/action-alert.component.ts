@@ -16,7 +16,7 @@ import { UIState } from '../../ui-store/ui-state';
         [alertType]="alertProperties.type"
         [alertMessage]="actionUiMessage"
         (hideAlert)="onHideAlert()"
-        [showIcon]="true">
+        [showIcon]="false">
       </app-alert>
     </div>
   `,

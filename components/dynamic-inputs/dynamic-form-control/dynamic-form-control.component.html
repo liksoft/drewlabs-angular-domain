@@ -48,7 +48,7 @@
             [translate]="'validation.required'"></span>
         </clr-control-error>
         <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">
-          {{ inputConfig.descriptionText }}</clr-control-helper>
+          <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
       </div>
     </div>
     <div *ngSwitchCase="inputTypes.PHONE_INPUT">
@@ -64,9 +64,8 @@
           </div>
           <input [class]="asPhoneInput(inputConfig).classes" [formControl]="control" type="hidden" />
         </div>
-        <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
-          inputConfig.descriptionText
-        }}</clr-control-helper>
+        <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">
+          <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
       </div>
     </div>
     <div *ngSwitchCase="inputTypes.DATE_INPUT">
@@ -86,7 +85,7 @@
       <clr-control-error class="field-has-error" *ngIf="control.hasError('max')">
         <span [translate]="'validation.maxDate'" [translateParams]="{date: asDateInput(inputConfig).maxDate}"></span>
       </clr-control-error>
-      <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{inputConfig.descriptionText}}
+      <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
       </clr-control-helper>
     </div>
     <div *ngSwitchCase="inputTypes.TEXTAREA_INPUT">
@@ -110,7 +109,7 @@
             [translateParams]="{value: asTextAreaInput(inputConfig).maxLength}"></span>
         </clr-control-error>
         <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">
-          {{inputConfig.descriptionText}}</clr-control-helper>
+          <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
       </div>
     </div>
     <div *ngSwitchCase="inputTypes.NUMBER_INPUT">
@@ -139,9 +138,8 @@
           <clr-control-error class="field-has-error" *ngIf="control.hasError('max') && control.touched"><span
               [translate]="'validation.max'" [translateParams]="{ value: asNumberInput(inputConfig).max }"></span>
           </clr-control-error>
-          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
-            inputConfig.descriptionText
-          }}</clr-control-helper>
+          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span
+              [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
         </div>
       </div>
     </div>
@@ -157,7 +155,7 @@
         </clr-radio-wrapper>
       </clr-radio-container>
       <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">
-        {{ inputConfig.descriptionText }}
+        <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
       </clr-control-helper>
       <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span
           [translate]="'validation.required'"></span></clr-control-error>
@@ -183,7 +181,7 @@
           <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span
               [translate]="'validation.required'"></span></clr-control-error>
           <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">
-            {{inputConfig.descriptionText}}</clr-control-helper>
+            <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
         </div>
       </div>
     </div>
@@ -225,9 +223,7 @@
               [translate]="'validation.passwordPattern'"></span></clr-control-error>
           <clr-control-error class="field-has-error" *ngIf="control.hasError('Match') && control.touched"><span
               [translate]="'validation.passwordMatch'"></span></clr-control-error>
-          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
-            inputConfig.descriptionText
-          }}</clr-control-helper>
+          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
         </div>
       </div>
     </div>
@@ -269,9 +265,8 @@
               [translate]="'validation.email'"></span></clr-control-error>
           <clr-control-error class="field-has-error" *ngIf="control.hasError('notUnique') && control.touched"><span
               [translate]="'validation.unique'"></span></clr-control-error>
-          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">{{
-            inputConfig.descriptionText
-          }}</clr-control-helper>
+          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">
+            <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
         </div>
       </div>
     </ng-container>

@@ -15,10 +15,11 @@ import { IPayload } from '../store/abstract-reducer';
  * @description Make a get request to ressources server using the id parameter
  * @param id [[string|number]]
  */
-export function loadThroughHttpRequest(client: HttpRequestService, ressourcesPath: string, id: string | number = null): Promise<any> {
+export function loadThroughHttpRequest(
+  client: HttpRequestService, ressourcesPath: string, id?: string | number, params?: object): Promise<any> {
   const provider = new RequestClient();
   return new Promise((resolve, reject) => {
-    provider.get(client, isDefined(id) ? `${ressourcesPath}/${id}` : `${ressourcesPath}`)
+    provider.get(client, isDefined(id) ? `${ressourcesPath}/${id}` : `${ressourcesPath}`, params)
       .then((res: ResponseData) => {
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
@@ -50,7 +51,7 @@ export async function loadRessourceFromCacheOrGetFromServer<T extends any>(
   builder: ISerializableBuilder<T>) {
   // Try getting the form from the cache
   const forms = cache.get(cacheEntriesKey);
-  return new Promise<T>( async (resolve, reject) => {
+  return new Promise<T>(async (resolve, reject) => {
     // If the form is in the cache, generate the Form object from cache serialized value
     if (isDefined(forms) && isArray(forms)) {
       const form = (forms as any[]).find((value) => {

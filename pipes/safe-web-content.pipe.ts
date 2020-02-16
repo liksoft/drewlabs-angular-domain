@@ -59,7 +59,6 @@ export class SafeRessourceContentPipe implements PipeTransform {
   transform(value: string) {
       return this.sanitized.bypassSecurityTrustResourceUrl(value);
   }
-
 }
 
 @Pipe({name: 'checkScripts'})
