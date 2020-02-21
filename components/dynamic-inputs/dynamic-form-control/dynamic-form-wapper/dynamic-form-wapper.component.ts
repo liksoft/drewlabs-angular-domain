@@ -1,14 +1,16 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, AbstractControl, FormArray } from '@angular/forms';
+import { FormGroup, AbstractControl, FormArray, ValidatorFn, AsyncValidator, AsyncValidatorFn, Validator } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils/type-utils';
 import { HTMLFormControlRequireIfConfig, IHTMLFormControl } from '../../core/contracts/dynamic-input-interface';
 import { sortFormByIndex } from 'src/app/lib/domain/components/dynamic-inputs/core/contracts/form-control';
-import { isGroupOfIDynamicForm } from 'src/app/lib/domain/helpers/component-reactive-form-helpers';
+import { isGroupOfIDynamicForm, ComponentReactiveFormHelpers } from 'src/app/lib/domain/helpers/component-reactive-form-helpers';
 
 interface IConditionalControlBinding {
   key: string;
   binding: HTMLFormControlRequireIfConfig;
+  validators: ValidatorFn | ValidatorFn[];
+  asyncValidators: AsyncValidatorFn | AsyncValidatorFn[];
 }
 
 export interface MultiSelectItemRemoveEvent {
@@ -47,14 +49,19 @@ export class DynamicFormWapperComponent implements OnInit {
     if (isDefined(v.controlConfigs) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
       (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
         if (isDefined(c.requiredIf)) {
-          this.conditionalControlBindings[c.formControlName] = { key: c.formControlName, binding: c.requiredIf };
+          this.conditionalControlBindings[c.formControlName] = {
+            key: c.formControlName,
+            binding: c.requiredIf,
+            validators: this.componentFormGroup.get(c.formControlName).validator,
+            asyncValidators: this.componentFormGroup.get(c.formControlName).asyncValidator,
+          };
         }
       });
       for (const [k, value] of Object.entries(this.conditionalControlBindings)) {
         if (isDefined(this.componentFormGroup.get(value.binding.formControlName))) {
           this.applyHiddenOnMatchingControls(value,
             this.componentFormGroup.get(value.binding.formControlName).value,
-            this.updateControlHiddenValue);
+            this.updateControlHiddenValue.bind(this));
         }
       }
     }
@@ -77,7 +84,7 @@ export class DynamicFormWapperComponent implements OnInit {
     });
     if (isArray(filteredConfigs)) {
       filteredConfigs.forEach((item) => {
-        this.applyHiddenOnMatchingControls(item, event.event, this.updateControlHiddenValue);
+        this.applyHiddenOnMatchingControls(item, event.event, this.updateControlHiddenValue.bind(this));
       });
     }
   }
@@ -102,8 +109,13 @@ export class DynamicFormWapperComponent implements OnInit {
       (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
         if (c.formControlName === conditionBindings.key) {
           c.hidden = c.requiredIf.values.indexOf(isDefined(value) ? value.toString() : value) === - 1 ? true : false;
-          if (isDefined(this)) {
+          if (c.hidden) {
+            ComponentReactiveFormHelpers.clearControlValidators(this.componentFormGroup.get(conditionBindings.key));
+            ComponentReactiveFormHelpers.clearAsyncValidators(this.componentFormGroup.get(conditionBindings.key));
+          } else {
             this.componentFormGroup.get(conditionBindings.key).setValue(null);
+            this.componentFormGroup.get(conditionBindings.key).setValidators(conditionBindings.validators);
+            this.componentFormGroup.get(conditionBindings.key).setAsyncValidators(conditionBindings.asyncValidators);
           }
           return;
         }
