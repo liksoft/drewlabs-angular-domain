@@ -44,14 +44,14 @@ export class UniqueValueService extends RequestClient {
 export class CustomValidators {
   static Match(control: string, otherControl: string) {
     return (controlGroup: AbstractControl) => {
-      const firstControlValue = controlGroup.get(control).value;
-      const otherControlValue = controlGroup.get(otherControl).value;
-      if ((!isDefined(firstControlValue) && !isDefined(otherControlValue)) ||
-        ((firstControlValue === '') && (otherControlValue === ''))) {
+      const firstControlValue = controlGroup.get(control).value === '' ? undefined : controlGroup.get(control).value;
+      const otherControlValue = controlGroup.get(otherControl).value  === '' ? undefined : controlGroup.get(otherControl).value;
+      console.log(firstControlValue, otherControlValue);
+      if ((!isDefined(firstControlValue) && !isDefined(otherControlValue))) {
         return null;
       }
       if (firstControlValue !== otherControlValue) {
-        controlGroup.get(otherControl).setErrors({ Match: true });
+        return { Match: true };
       } else {
         return null;
       }

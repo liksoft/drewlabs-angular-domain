@@ -65,7 +65,7 @@ export function equals(o1: any, o2: any): boolean {
 }
 
 export function isDefined(value: any): boolean {
-  return typeof value !== 'undefined' && value !== null;
+  return typeof value !== 'undefined' && value !== null && value !== undefined;
 }
 
 export function isObject(item: any): boolean {

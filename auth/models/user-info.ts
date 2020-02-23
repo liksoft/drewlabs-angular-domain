@@ -3,6 +3,7 @@ import { ISerializer, ISerializableBuilder } from '../../built-value/contracts/s
 import { OrganisationEntity } from './organisation';
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
 import { RessourcesWallet } from './wallet';
+import { Agence } from './agence';
 
 export class UserInfoBuilder implements ISerializableBuilder<UserInfoEntity>, TypeBuilder<UserInfoEntity> {
 
@@ -74,14 +75,20 @@ export class UserInfoEntity {
   createdAt: string = undefined;
   @JsonProperty('created_at')
   updatedAt: string = undefined;
-  @JsonProperty({ name: 'organisation', valueType: OrganisationEntity })
-  organisation: OrganisationEntity = undefined;
   @JsonProperty('organisation_id')
   organisationID: number = undefined;
   @JsonProperty('department_id')
   departmentID: number = undefined;
   @JsonProperty('agence_id')
   agenceID: number = undefined;
+  @JsonProperty('is_manager')
+  isManager: boolean = undefined;
+
+
+  @JsonProperty({ name: 'organisation', valueType: OrganisationEntity })
+  organisation: OrganisationEntity = undefined;
+  @JsonProperty({name: 'agence', valueType: Agence})
+  agence: Agence = undefined;
 
   /**
    * @description Calls to get the builder provider of the current class|type

@@ -85,7 +85,8 @@
       <clr-control-error class="field-has-error" *ngIf="control.hasError('max')">
         <span [translate]="'validation.maxDate'" [translateParams]="{date: asDateInput(inputConfig).maxDate}"></span>
       </clr-control-error>
-      <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
+      <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span
+          [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
       </clr-control-helper>
     </div>
     <div *ngSwitchCase="inputTypes.TEXTAREA_INPUT">
@@ -192,15 +193,10 @@
           <small class="required-text" *ngIf="asPasswordInput(inputConfig).rules?.isRequired">(*)</small></label>
         <div class="clr-control-container">
           <div class="clr-input-wrapper password-clr-input-wrapper">
-            <input [type]="showPassword ? 'password' : 'text'" [maxLength]="
-                asPasswordInput(inputConfig).maxLength
-                  ? asPasswordInput(inputConfig).maxLength
-                  : maxNumberSize()
-              " [minLength]="
-                asPasswordInput(inputConfig).minLength
-                  ? asPasswordInput(inputConfig).minLength
-                  : 0
-              " [class]="asPasswordInput(inputConfig).classes + ' password-input'" [formControl]="control"
+            <input [autocomplete]="'off'" [type]="showPassword ? 'password' : 'text'"
+              [maxLength]="asPasswordInput(inputConfig).maxLength? asPasswordInput(inputConfig).maxLength : maxNumberSize()"
+              [minLength]="asPasswordInput(inputConfig).minLength ? asPasswordInput(inputConfig).minLength : 0"
+              [class]="asPasswordInput(inputConfig).classes + ' password-input'" [formControl]="control"
               [placeholder]="asPasswordInput(inputConfig).placeholder ? asPasswordInput(inputConfig).placeholder : ''" />
             <clr-icon shape="eye" (click)="togglePassWordInput()" *ngIf="showPassword" class="password-trigger">
             </clr-icon>
@@ -223,7 +219,8 @@
               [translate]="'validation.passwordPattern'"></span></clr-control-error>
           <clr-control-error class="field-has-error" *ngIf="control.hasError('Match') && control.touched"><span
               [translate]="'validation.passwordMatch'"></span></clr-control-error>
-          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
+          <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span
+              [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
         </div>
       </div>
     </div>
