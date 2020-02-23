@@ -110,10 +110,10 @@ export class DynamicFormWapperComponent implements OnInit {
         if (c.formControlName === conditionBindings.key) {
           c.hidden = c.requiredIf.values.indexOf(isDefined(value) ? value.toString() : value) === - 1 ? true : false;
           if (c.hidden) {
+            this.componentFormGroup.get(conditionBindings.key).setValue(null);
             ComponentReactiveFormHelpers.clearControlValidators(this.componentFormGroup.get(conditionBindings.key));
             ComponentReactiveFormHelpers.clearAsyncValidators(this.componentFormGroup.get(conditionBindings.key));
           } else {
-            this.componentFormGroup.get(conditionBindings.key).setValue(null);
             this.componentFormGroup.get(conditionBindings.key).setValidators(conditionBindings.validators);
             this.componentFormGroup.get(conditionBindings.key).setAsyncValidators(conditionBindings.asyncValidators);
           }
