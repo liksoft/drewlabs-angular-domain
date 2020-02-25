@@ -134,10 +134,10 @@
           <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span
               [translate]="'validation.required'"></span></clr-control-error>
           <clr-control-error class="field-has-error" *ngIf="control.hasError('min') && control.touched"><span
-              [translate]="'validation.min'" [translateParams]="{ value: asNumberInput(inputConfig).min }"></span>
+              [translate]="'validation.min'" [translateParams]="{ value: asNumberInput(inputConfig).min ? asNumberInput(inputConfig).min : control.errors['min']?.min }"></span>
           </clr-control-error>
           <clr-control-error class="field-has-error" *ngIf="control.hasError('max') && control.touched"><span
-              [translate]="'validation.max'" [translateParams]="{ value: asNumberInput(inputConfig).max }"></span>
+              [translate]="'validation.max'" [translateParams]="{ value: asNumberInput(inputConfig).max ? asNumberInput(inputConfig).max : control.errors['max']?.max  }"></span>
           </clr-control-error>
           <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span
               [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
