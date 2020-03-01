@@ -282,6 +282,10 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
     return prefix + '_' + Math.random().toString(36).substr(2, 9);
   }
 
+  getErrorAsNumber(value: object|number, key: string = null) {
+    return typeof value === 'number' ? value : value[key];
+  }
+
   onDzThumbnail() { }
 
   ngOnDestroy() { }
