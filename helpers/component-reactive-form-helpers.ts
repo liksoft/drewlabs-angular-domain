@@ -26,7 +26,6 @@ import { AbstractAlertableComponent } from './component-interfaces';
 import { TranslationService } from '../translator';
 import { ICollection } from '../contracts/collection-interface';
 import { ValidatorFn } from '@angular/forms';
-import { MomentUtils } from '../utils/moment-utils';
 
 /**
  * @description Checks if a dynamic form contains other form
@@ -184,7 +183,7 @@ export class ComponentReactiveFormHelpers {
         if (config.type === InputTypes.DATE_INPUT) {
           config.rules && config.rules.minDate
             ? validators.push(
-              CustomValidators.minDate( // 'YYYY-MM-DD'
+              CustomValidators.minDate(
                 isDefined((config as DateInput).minDate)
                   ? (config as DateInput).minDate
                   : new Date()

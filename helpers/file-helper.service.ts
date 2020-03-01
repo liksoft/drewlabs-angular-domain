@@ -66,5 +66,15 @@ export class FileHelperService implements OnDestroy {
     Browser.saveFile(b64toBlob(data, contentType), filename);
   }
 
+  /**
+   * @Description Provide file download from backend server
+   * @param url [[string]]
+   * @param filename [[string]]
+   * @param extension [[string]]
+   */
+  downloadFile(url: string, filename: string, extension: string = null) {
+    return this.client.downloadFile(url, filename, extension);
+  }
+
   ngOnDestroy() { }
 }
