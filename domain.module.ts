@@ -18,6 +18,7 @@ import { FormHelperService } from './helpers/form-helper';
 import { TypeUtilHelper } from './helpers/type-utils-helper';
 import { TranslatorHelperService } from './helpers/translator-helper';
 import { FileHelperService } from './helpers/file-helper.service';
+import { DateTimeHelper } from './helpers/date-time-helper';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -57,7 +58,16 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     SortableDirective,
     DrewlabsDisableControlDirective
   ],
-  providers: [WindowRef, Dialog, TranslationService, FormHelperService, TypeUtilHelper, TranslatorHelperService, FileHelperService]
+  providers: [
+    WindowRef,
+    Dialog,
+    TranslationService,
+    FormHelperService,
+    TypeUtilHelper,
+    TranslatorHelperService,
+    FileHelperService,
+    DateTimeHelper
+  ]
 })
 export class DomainModule {}
 

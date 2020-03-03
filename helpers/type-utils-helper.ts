@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { isDefined } from '../utils/type-utils';
+import { isDefined, isArray } from '../utils/type-utils';
 import { Collection } from '../utils/collection';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { FileFormControl } from '../components/dynamic-inputs/dynamic-form-control/dynamic-form-control.component';
@@ -23,6 +23,14 @@ export class TypeUtilHelper implements OnDestroy {
    */
   asCollection(value: any) {
     return value as Collection<any>;
+  }
+
+  /**
+   * @description Checks if a given value is an array
+   * @param value [[any]]
+   */
+  isArray(value: any) {
+    return isArray(value);
   }
 
   /**
