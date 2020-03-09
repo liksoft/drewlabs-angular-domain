@@ -50,7 +50,6 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
         this.addChildComponent(index, state);
       });
     }
-    // isAccordionOpened
   }
 
   collapseChildControlComponents() {

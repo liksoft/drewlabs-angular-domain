@@ -42,13 +42,13 @@ export function isGroupOfIDynamicForm(f: IDynamicForm) {
  * @description Defines an object passed to the form submission event
  */
 export interface FormRequest {
-  body: object;
+  body: object|any;
   requestURL?: string;
 }
 
 export interface UpdateRequest {
   id: number|string;
-  body: object;
+  body: object|any;
   requestURL?: string;
 }
 
