@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { isDefined } from './type-utils';
 
 export class DateTimeUtils {
   /**
@@ -84,5 +85,14 @@ export class DateTimeUtils {
     } catch (error) {
       throw Error('Invalid date input');
     }
+  }
+
+  /**
+   * @description Return the current date as a javascript date object if no parameter
+   * is passed or a formatted date string based on the parameter
+   * @param format [[string]]
+   */
+  public static now(format: string = null) {
+    return isDefined(format) ? moment(new Date()).format(format) : new Date();
   }
 }

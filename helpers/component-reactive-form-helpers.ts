@@ -44,13 +44,13 @@ export function isGroupOfIDynamicForm(f: IDynamicForm) {
  * @description Defines an object passed to the form submission event
  */
 export interface FormRequest {
-  body: object;
+  body: object|any;
   requestURL?: string;
 }
 
 export interface UpdateRequest {
-  id: number | string;
-  body: object;
+  id: number|string;
+  body: object|any;
   requestURL?: string;
 }
 
@@ -208,7 +208,7 @@ export class ComponentReactiveFormHelpers {
         if (config.type === InputTypes.DATE_INPUT) {
           config.rules && config.rules.minDate
             ? validators.push(
-              CustomValidators.minDate( // 'YYYY-MM-DD'
+              CustomValidators.minDate(
                 isDefined((config as DateInput).minDate)
                   ? (config as DateInput).minDate
                   : new Date()
