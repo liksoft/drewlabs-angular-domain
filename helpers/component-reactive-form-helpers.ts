@@ -25,9 +25,9 @@ import { EventEmitter, HostBinding } from '@angular/core';
 import { AbstractAlertableComponent } from './component-interfaces';
 import { TranslationService } from '../translator';
 import { ICollection } from '../contracts/collection-interface';
-import { ValidatorFn, AsyncValidator, AsyncValidatorFn, FormControl } from '@angular/forms';
-import { MomentUtils } from '../utils/moment-utils';
+import { ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { UniqueValueService } from '../utils/custom-validators';
+import { MomentUtils } from '../utils/moment-utils';
 
 /**
  * @description Checks if a dynamic form contains other form
@@ -211,7 +211,7 @@ export class ComponentReactiveFormHelpers {
               CustomValidators.minDate(
                 isDefined((config as DateInput).minDate)
                   ? (config as DateInput).minDate
-                  : new Date()
+                  : MomentUtils.parseDate(new Date(), 'YYYY-MM-DD')
               )
             )
             : // tslint:disable-next-line:no-unused-expression
@@ -222,7 +222,7 @@ export class ComponentReactiveFormHelpers {
                 CustomValidators.maxDate(
                   isDefined((config as DateInput).maxDate)
                     ? (config as DateInput).maxDate
-                    : new Date()
+                    : MomentUtils.parseDate(new Date(), 'YYYY-MM-DD')
                 )
               )
               : // tslint:disable-next-line:no-unused-expression
