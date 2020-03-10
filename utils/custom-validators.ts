@@ -1,19 +1,20 @@
-import { AbstractControl, FormGroup, FormControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormGroup, FormControl, ValidatorFn, ValidationErrors, AsyncValidator } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { HttpRequestService } from '../http/core/http-request.service';
-import { RequestClient } from '../contracts/abstract-request-client';
-import { ResponseData, IResponseBody, ResponseBody } from '../http/contracts/http-response-data';
+import { RequestClient, loadThroughHttpRequest } from '../contracts/abstract-request-client';
 import { isDefined } from './type-utils';
 import { MomentUtils } from './moment-utils';
+import { Observable } from 'rxjs';
 
-@Injectable()
-export class UniqueValueService extends RequestClient {
+@Injectable({
+  providedIn: 'root'
+})
+export class UniqueValueService {
 
   public readonly path: string;
 
   constructor(private client: HttpRequestService) {
-    super();
-    this.path = '/is_unique';
+    this.path = 'is_unique';
   }
 
   /**
@@ -22,22 +23,14 @@ export class UniqueValueService extends RequestClient {
    * @param value [[string|any]]
    * @param entity [[entity]]
    */
-  verify(property: string, value: any, entity: string = null) {
+  async verify(entity: string, property: string, value: string | number) {
     const query = isDefined(entity) ? `?property=${property}&value=${value}&entity=${entity}` : `?property=${property}&value=${value}`;
-    return new Promise<boolean>((resolve, reject) => {
-      this.get(this.client, `${this.path}${query}`)
-        .then((res: ResponseData) => {
-          const body: IResponseBody = new ResponseBody(
-            Object.assign(res.body, { status: res.code })
-          );
-          if ((res.success === true) && isDefined(body.data)) {
-            resolve(true);
-          } else {
-            resolve(false);
-          }
-        })
-        .catch(err => reject(err));
-    });
+    try {
+      const result = await loadThroughHttpRequest(this.client, `${this.path}${query}`);
+      return isDefined(result) ? true : false;
+    } catch (error) {
+      return true;
+    }
   }
 }
 
@@ -45,8 +38,7 @@ export class CustomValidators {
   static Match(control: string, otherControl: string) {
     return (controlGroup: AbstractControl) => {
       const firstControlValue = controlGroup.get(control).value === '' ? undefined : controlGroup.get(control).value;
-      const otherControlValue = controlGroup.get(otherControl).value  === '' ? undefined : controlGroup.get(otherControl).value;
-      console.log(firstControlValue, otherControlValue);
+      const otherControlValue = controlGroup.get(otherControl).value === '' ? undefined : controlGroup.get(otherControl).value;
       if ((!isDefined(firstControlValue) && !isDefined(otherControlValue))) {
         return null;
       }
@@ -168,11 +160,20 @@ export class CustomValidators {
     });
   }
 
-  static uniqueValidator(service: UniqueValueService, controlName: string, entity: string = null) {
+  /**
+   * @description Checks if the value of the current control already exists in the database.
+   * @param service [[UniqueValueService]]
+   * @param entity [[string]]
+   * @param column [[string]]
+   */
+  static createAsycUniqueValidator(service: UniqueValueService, entity: string, column: string) {
     return async (control: AbstractControl) => {
-      return service.verify(controlName, control.value, entity).then(res => {
-        return res ? null : { notUnique: true };
-      });
+      if (!isDefined(control.value) || control.value === '') {
+        return null;
+      }
+      const res = await service.verify(entity, column, control.value);
+      const errors = res ? null : { notUnique: {value: control.value} };
+      return errors;
     };
   }
 }

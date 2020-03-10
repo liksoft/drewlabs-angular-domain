@@ -26,6 +26,7 @@ export function loadThroughHttpRequest(
         );
         if (res.success === true && isDefined(body.data)) {
           resolve(body.data);
+          return;
         }
         resolve(null);
       })

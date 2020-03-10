@@ -193,7 +193,7 @@
           <small class="required-text" *ngIf="asPasswordInput(inputConfig).rules?.isRequired">(*)</small></label>
         <div class="clr-control-container">
           <div class="clr-input-wrapper password-clr-input-wrapper">
-            <input [autocomplete]="'off'" [type]="showPassword ? 'password' : 'text'"
+            <input [autocomplete]="'off'" [type]="showPassword ? 'password' : 'text'" autocomplete="off"
               [maxLength]="asPasswordInput(inputConfig).maxLength? asPasswordInput(inputConfig).maxLength : maxNumberSize()"
               [minLength]="asPasswordInput(inputConfig).minLength ? asPasswordInput(inputConfig).minLength : 0"
               [class]="asPasswordInput(inputConfig).classes + ' password-input'" [formControl]="control"
