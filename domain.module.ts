@@ -1,3 +1,4 @@
+import { PositiveNumber } from './pipes/positive-amount.pipe';
 import { NgModule } from '@angular/core';
 import { WindowRef, Dialog } from './utils/window-ref';
 import { StorageModule } from './storage';
@@ -45,7 +46,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CheckScriptsPipe,
     SortableDirective,
     TranslateModule,
-    DrewlabsDisableControlDirective
+    DrewlabsDisableControlDirective,
+    PositiveNumber
   ],
   declarations: [
     AmountFormatterPipe,
@@ -54,7 +56,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TimeAgoPipe,
     CheckScriptsPipe,
     SortableDirective,
-    DrewlabsDisableControlDirective
+    DrewlabsDisableControlDirective,
+    PositiveNumber
   ],
   providers: [WindowRef, Dialog, TranslationService, FormHelperService, TypeUtilHelper, TranslatorHelperService]
 })
