@@ -22,7 +22,7 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
   // Injectable inputs
   @Input() control: FormArray;
   @Input() form: IDynamicForm;
-  @Input() addButtonText = 'Ajouter un nouvel élément';
+  @Input() addButtonText = 'Plus';
   @Input() hideAddNewFormgroupButton = false;
   @Output() childCreate = new EventEmitter<AbstractControl>();
   @Output() childEdit = new EventEmitter<AbstractControl>();
@@ -50,7 +50,6 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
         this.addChildComponent(index, state);
       });
     }
-    // isAccordionOpened
   }
 
   collapseChildControlComponents() {

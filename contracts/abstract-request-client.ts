@@ -26,6 +26,7 @@ export function loadThroughHttpRequest(
         );
         if (res.success === true && isDefined(body.data)) {
           resolve(body.data);
+          return;
         }
         resolve(null);
       })
@@ -265,9 +266,10 @@ export function getRessource<T>(
   client: HttpRequestService,
   ressourcesPath: string,
   ressourceBuilder: ISerializableBuilder<T>,
+  params?: object
 ) {
   return new Promise<T>(async (_, __) => {
-    const result = await loadThroughHttpRequest(client, ressourcesPath);
+    const result = await loadThroughHttpRequest(client, ressourcesPath, null, params);
     if (isDefined(result)) {
       _(ressourceBuilder.fromSerialized(result));
       return;

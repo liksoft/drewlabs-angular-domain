@@ -170,14 +170,16 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       this.selectedCountry = this.allCountries.filter((c: Country) => {
         return (
           c.dialCode ===
-          this.intelInputService.getCountryCode(controlState).toString()
+          tmpCountryCode.toString()
         );
       })[0];
-      this.phoneControl.setValue(
-        (controlState as string).substring(
-          this.selectedCountry.dialCode.length
-        )
-      );
+      if (this.selectedCountry) {
+        this.phoneControl.setValue(
+          (controlState as string).substring(
+            this.selectedCountry.dialCode.length
+          )
+        );
+      }
     }
   }
 
