@@ -25,7 +25,9 @@ import { EventEmitter, HostBinding } from '@angular/core';
 import { AbstractAlertableComponent } from './component-interfaces';
 import { TranslationService } from '../translator';
 import { ICollection } from '../contracts/collection-interface';
-import { ValidatorFn } from '@angular/forms';
+import { ValidatorFn, AsyncValidatorFn } from '@angular/forms';
+import { UniqueValueService } from '../utils/custom-validators';
+import { MomentUtils } from '../utils/moment-utils';
 
 /**
  * @description Checks if a dynamic form contains other form
@@ -111,7 +113,8 @@ export class ComponentReactiveFormHelpers {
   public static buildFormGroupFromInputConfig(
     fb: FormBuilder,
     input: IHTMLFormControl[],
-    applyRequiredRules: boolean = true
+    applyRequiredRules: boolean = true,
+    uniqueFieldValidator: UniqueValueService = null
   ): AbstractControl {
     const group = fb.group({});
     input.map((config: IHTMLFormControl) => {
@@ -119,11 +122,33 @@ export class ComponentReactiveFormHelpers {
         const validators = [
           config.rules && config.rules.isRequired && applyRequiredRules ? Validators.required : Validators.nullValidator
         ];
+        const asyncValidators: AsyncValidatorFn[] = [];
         if (
           config.type === InputTypes.TEXT_INPUT ||
           config.type === InputTypes.EMAIL_INPUT ||
           config.type === InputTypes.PASSWORD_INPUT
         ) {
+          // Checks if maxlength rule is set to true and apply the rule to the input
+          if (isDefined(uniqueFieldValidator) &&
+            isDefined(config.rules) &&
+            isDefined(config.rules.notUnique) &&
+            isDefined(config.uniqueCondition)) {
+            const parts = config.uniqueCondition.split(':');
+            if (parts.length === 2) {
+              config.rules && config.rules.notUnique
+                ? asyncValidators.push(
+                  CustomValidators.createAsycUniqueValidator(
+                    uniqueFieldValidator,
+                    // First entry in the array is the table name
+                    parts[0],
+                    // Second is the column name in the table
+                    parts[1]
+                  )
+                )
+                : // tslint:disable-next-line:no-unused-expression
+                null;
+            }
+          }
           // Checks if maxlength rule is set to true and apply the rule to the input
           config.rules && config.rules.maxLength
             ? validators.push(
@@ -186,7 +211,7 @@ export class ComponentReactiveFormHelpers {
               CustomValidators.minDate(
                 isDefined((config as DateInput).minDate)
                   ? (config as DateInput).minDate
-                  : new Date()
+                  : MomentUtils.parseDate(new Date(), 'YYYY-MM-DD')
               )
             )
             : // tslint:disable-next-line:no-unused-expression
@@ -197,7 +222,7 @@ export class ComponentReactiveFormHelpers {
                 CustomValidators.maxDate(
                   isDefined((config as DateInput).maxDate)
                     ? (config as DateInput).maxDate
-                    : new Date()
+                    : MomentUtils.parseDate(new Date(), 'YYYY-MM-DD')
                 )
               )
               : // tslint:disable-next-line:no-unused-expression
@@ -206,9 +231,13 @@ export class ComponentReactiveFormHelpers {
         // Add formControl to the form group with the generated validation rules
         group.addControl(
           config.formControlName,
+          // new FormControl(), //
           fb.control(
-            { value: config.value, disabled: config.disabled },
-            Validators.compose(validators)
+            { value: config.value, disabled: config.disabled }, {
+            validators: Validators.compose(validators),
+            updateOn: 'blur',
+            asyncValidators
+          }
           )
           // Add other necessary validators
         );
