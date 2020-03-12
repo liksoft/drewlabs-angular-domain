@@ -1,4 +1,4 @@
-import { IDynamicForm } from './dynamic-form';
+import { IDynamicForm, DynamicForm } from './dynamic-form';
 import { isArray } from '../../../../utils/type-utils';
 import { ArrayUtils } from '../../../../utils/array-utils';
 import { IHTMLFormControl } from './dynamic-input-interface';
@@ -20,6 +20,18 @@ export function sortFormByIndex(form: IDynamicForm): IDynamicForm {
     return f;
   };
   return loopThroughFormsFn(form);
+}
+
+export function rebuildFormControlConfigs(form: IDynamicForm, controlConfigs: Array<IHTMLFormControl>) {
+  return sortFormByIndex(
+    new DynamicForm({
+      title: form.title,
+      endpointURL: form.endpointURL,
+      description: form.description,
+      controlConfigs,
+      forms: form.forms
+    })
+  );
 }
 
 /**
