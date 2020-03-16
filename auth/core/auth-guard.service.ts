@@ -1,4 +1,3 @@
-import { AuthUserService } from './user.service';
 import { Injectable } from '@angular/core';
 import {
   CanActivate,
@@ -67,14 +66,9 @@ export class AuthGuardService
     if (this.auth.loggedIn) {
       return true;
     }
-
     if (this.auth.user) {
       return true;
     }
-
-    // Store the attempted URL for redirecting
-    this.auth.redirectUrl = url;
-
     // Navigate to the login page with extras
     this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
     return false;
@@ -87,8 +81,7 @@ export class AuthGuardService
 export class PermissionsGuardGuard implements CanActivate {
   constructor(
     private router: Router,
-    private auth: AuthService,
-    private userService: AuthUserService
+    private auth: AuthService
   ) { }
 
   canActivate(
@@ -112,32 +105,27 @@ export class PermissionsGuardGuard implements CanActivate {
   }
 
   private checkPermission(permissions: string[] | string, url: string) {
-    return new Promise<boolean>((resolve, reject) => {
+    try {
       const user = this.auth.user;
       let isAuthorized = false;
       if (isDefined(user)) {
         if (permissions && permissions instanceof Array) {
-          isAuthorized = this.userService.hasPermissionIn(user, permissions);
+          isAuthorized = user.canAny(permissions);
         } else {
-          isAuthorized = this.userService.hasPermission(
-            user,
+          isAuthorized = user.can(
             permissions as string
           );
         }
       }
-      if (isAuthorized) {
-        resolve(true);
-      } else {
-        if (url) {
-          this.auth.redirectUrl = url;
-        } else {
-          this.auth.redirectUrl = AuthPathConfig.REDIRECT_PATH;
-        }
+      if (!isAuthorized) {
         // Navigate to the login page with extras
-        this.router.navigate([this.auth.redirectUrl]);
-        resolve(false);
+        this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
+        return false;
       }
-    });
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
 

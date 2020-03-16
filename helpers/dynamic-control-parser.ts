@@ -16,17 +16,17 @@ export class DynamicControlParser {
   /**
    * @description Provides a wrapper arround static method for parsing dynamic controls into an angular formgoup
    * @param inputs [[Array<IHTMLFormControl>]]
-   * @param applyRequiredRules [[boolean]]
+   * @param applyUniqueValidations [[boolean]]
    */
   public buildFormGroupFromInputConfig(
     inputs: IHTMLFormControl[],
-    applyRequiredRules: boolean = true,
+    applyUniqueValidations: boolean = true,
+    // applyRequiredRules: boolean = true
   ) {
     return ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
       this.fb,
       inputs,
-      applyRequiredRules,
-      this.uniqueFieldValidator
+      applyUniqueValidations ? this.uniqueFieldValidator : null
     );
   }
 
@@ -34,9 +34,12 @@ export class DynamicControlParser {
    * @description From the controls defined in a dynamic form, it controls, and inner embedded dynamic forms,
    * the method returns an Angular form [[FormGroup]] instance
    * @param form [[IDynamicForm]]
-   * @param applyRequiredRules [[boolean]]
+   * @param applyUniqueValidations [[boolean]]
    */
-  buildFormGroupFromDynamicForm(form: IDynamicForm, applyRequiredRules: boolean = true) {
+  buildFormGroupFromDynamicForm(
+    form: IDynamicForm,
+    applyUniqueValidations: boolean = true
+  ) {
     if (!this.typeHelper.isDefined(form)) {
       return null;
     }
@@ -46,6 +49,6 @@ export class DynamicControlParser {
         c.push(...(v.controlConfigs ? v.controlConfigs as Array<IHTMLFormControl> : []));
       });
     }
-    return this.buildFormGroupFromInputConfig(c, applyRequiredRules) as FormGroup;
+    return this.buildFormGroupFromInputConfig(c, applyUniqueValidations) as FormGroup;
   }
 }
