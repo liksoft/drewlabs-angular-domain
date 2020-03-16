@@ -36,6 +36,11 @@ export interface ICollection<T> {
   values(): T[];
 
   /**
+   * @description Removes all items from the collection / reinitialize collection items
+   */
+  clear(): void;
+
+  /**
    * Return the collection iterator
    */
   [Symbol.iterator](): Iterator<T>;

@@ -93,7 +93,16 @@ export class Collection<T> implements ICollection<T> {
   [Symbol.iterator]() {
     return this.values()[Symbol.iterator]();
   }
+
+  /**
+   * @inheritdoc
+   */
+  clear() {
+    this.items = {};
+    this.counter = 0;
+  }
 }
+
 
 /**
  * @description Convert a list of [T] items into a collection of [T] items
