@@ -21,7 +21,7 @@ import { AuthRememberTokenService } from '../../auth-token/core/auth-remember-to
 export class AuthService {
   private isLoggedIn: boolean;
   redirectUrl: string;
-  public readonly userObserver: Subject<AuthUser> = new Subject();
+  // public readonly userObserver: Subject<AuthUser> = new Subject();
 
   /**
    *
@@ -153,9 +153,7 @@ export class AuthService {
   }
 
   get user(): AuthUser {
-    const user = this.sessionStorage.get(
-      AuthStorageConfig.USER_STORAGE_KEY
-    );
+    const user = this.sessionStorage.get(AuthStorageConfig.USER_STORAGE_KEY);
     return user ? (new User()).fromStorageObject(user, this.userBuilder) : null;
   }
 
@@ -164,7 +162,5 @@ export class AuthService {
       AuthStorageConfig.USER_STORAGE_KEY,
       this.userBuilder.toSerialized(user as User)
     );
-    // Notify User Observer listeners of the the new user value
-    this.userObserver.next(user);
   }
 }

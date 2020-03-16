@@ -44,13 +44,13 @@ export function isGroupOfIDynamicForm(f: IDynamicForm) {
  * @description Defines an object passed to the form submission event
  */
 export interface FormRequest {
-  body: object|any;
+  body: object | any;
   requestURL?: string;
 }
 
 export interface UpdateRequest {
-  id: number|string;
-  body: object|any;
+  id: number | string;
+  body: object | any;
   requestURL?: string;
 }
 
@@ -71,7 +71,7 @@ export interface InnerFormSubmissionEvent {
 export function angularAbstractControlFormDynamicForm(
   builder: FormBuilder,
   form: IDynamicForm,
-  applyRequiredRules: boolean = true
+  uniqueValidator: UniqueValueService = null
 ): AbstractControl {
   if (!isDefined(form)) {
     return null;
@@ -85,7 +85,7 @@ export function angularAbstractControlFormDynamicForm(
   const formGroup: FormGroup = (ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
     builder,
     c,
-    applyRequiredRules
+    uniqueValidator
   ) as FormGroup);
   return formGroup;
 }
@@ -95,11 +95,15 @@ export function angularAbstractControlFormDynamicForm(
  * @param builder [[FormBuilder]]
  * @param collection [[ICollection<IDynamicForm>]]
  */
-export function formGroupFromCollectionOfDynamicControls(builder: FormBuilder, collection: ICollection<IDynamicForm>) {
+export function formGroupFromCollectionOfDynamicControls(
+  builder: FormBuilder,
+  collection: ICollection<IDynamicForm>,
+  uniqueValidator: UniqueValueService = null
+) {
   const group = builder.group({});
   collection.keys().forEach((k) => {
     group.addControl(k,
-      angularAbstractControlFormDynamicForm(builder, collection.get(k))
+      angularAbstractControlFormDynamicForm(builder, collection.get(k), uniqueValidator)
     );
   });
   return group;
@@ -113,14 +117,13 @@ export class ComponentReactiveFormHelpers {
   public static buildFormGroupFromInputConfig(
     fb: FormBuilder,
     input: IHTMLFormControl[],
-    applyRequiredRules: boolean = true,
-    uniqueFieldValidator: UniqueValueService = null
+    uniqueValidator: UniqueValueService = null
   ): AbstractControl {
     const group = fb.group({});
     input.map((config: IHTMLFormControl) => {
       if (config.type !== InputTypes.CHECKBOX_INPUT) {
         const validators = [
-          config.rules && config.rules.isRequired && applyRequiredRules ? Validators.required : Validators.nullValidator
+          config.rules && config.rules.isRequired ? Validators.required : Validators.nullValidator
         ];
         const asyncValidators: AsyncValidatorFn[] = [];
         if (
@@ -129,7 +132,7 @@ export class ComponentReactiveFormHelpers {
           config.type === InputTypes.PASSWORD_INPUT
         ) {
           // Checks if maxlength rule is set to true and apply the rule to the input
-          if (isDefined(uniqueFieldValidator) &&
+          if (isDefined(uniqueValidator) &&
             isDefined(config.rules) &&
             isDefined(config.rules.notUnique) &&
             isDefined(config.uniqueCondition)) {
@@ -138,7 +141,7 @@ export class ComponentReactiveFormHelpers {
               config.rules && config.rules.notUnique
                 ? asyncValidators.push(
                   CustomValidators.createAsycUniqueValidator(
-                    uniqueFieldValidator,
+                    uniqueValidator,
                     // First entry in the array is the table name
                     parts[0],
                     // Second is the column name in the table
@@ -233,11 +236,17 @@ export class ComponentReactiveFormHelpers {
           config.formControlName,
           // new FormControl(), //
           fb.control(
-            { value: config.value, disabled: config.disabled }, {
-            validators: Validators.compose(validators),
-            updateOn: 'blur',
-            asyncValidators
-          }
+            {
+              value: config.value,
+              disabled: config.disabled
+            },
+            asyncValidators.length > 0 ? {
+              validators: Validators.compose(validators),
+              updateOn: 'blur',
+              asyncValidators
+            } : {
+                validators: Validators.compose(validators)
+              }
           )
           // Add other necessary validators
         );
@@ -251,7 +260,7 @@ export class ComponentReactiveFormHelpers {
           });
         });
         // Add FormArray control to the formGroup
-        if (config.rules && config.rules.isRequired && applyRequiredRules) {
+        if (config.rules && config.rules.isRequired) {
           array.setValidators(Validators.required);
         }
         group.addControl(config.formControlName, array);
@@ -463,7 +472,6 @@ export abstract class BaseDynamicFormComponent extends AbstractAlertableComponen
     const formGroup: FormGroup = (ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
       this.builder,
       c,
-      applyRequiredRules
     ) as FormGroup);
     return formGroup;
   }
