@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { UniqueValueService } from '../utils/custom-validators';
 import { IHTMLFormControl } from '../components/dynamic-inputs/core';
-import { ComponentReactiveFormHelpers } from './component-reactive-form-helpers';
+import { ComponentReactiveFormHelpers, angularAbstractControlFormDynamicForm } from './component-reactive-form-helpers';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TypeUtilHelper } from './type-utils-helper';
 import { IDynamicForm } from '../components/dynamic-inputs/core/contracts/dynamic-form';
+import { ICollection } from '../contracts/collection-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -50,5 +51,23 @@ export class DynamicControlParser {
       });
     }
     return this.buildFormGroupFromInputConfig(c, applyUniqueValidations) as FormGroup;
+  }
+
+  /**
+   * @description Build a formgroup from a collection of dynamic inputs
+   * @param collection [[ICollection<IDynamicForm>]]
+   * @param applyUniqueValidations [[boolean|null]]
+   */
+  formGroupFromCollectionOfDynamicControls(
+    collection: ICollection<IDynamicForm>,
+    applyUniqueValidations: boolean = null
+  ) {
+    const group = this.fb.group({});
+    collection.keys().forEach((k) => {
+      group.addControl(k,
+        angularAbstractControlFormDynamicForm(this.fb, collection.get(k), applyUniqueValidations ? this.uniqueFieldValidator : null)
+      );
+    });
+    return group;
   }
 }
