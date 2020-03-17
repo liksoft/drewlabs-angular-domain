@@ -1,9 +1,12 @@
 <ng-container *ngIf="!isFormGroup(form)">
-    <div class="form" *ngIf="componentFormGroup && conditionalControlBindings">
-        <div class="">
-            <div class="form form-container clr-row" *ngIf="componentFormGroup">
-                <ng-container *ngIf="form.controlConfigs && asArray(form.controlConfigs).length > 0">
-                    <app-dynamic-inputs (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)" *ngFor="let value of form.controlConfigs" [class]="
+  <div class="form" *ngIf="componentFormGroup && conditionalControlBindings">
+    <div class="">
+      <div class="form form-container clr-row" *ngIf="componentFormGroup">
+        <ng-container *ngIf="form.controlConfigs && asArray(form.controlConfigs).length > 0">
+          <app-dynamic-inputs (inputKeyUp)="inputKeyUp.emit($event)" (inputKeyDown)="inputKeyDown.emit($event)"
+            (inputBlur)="inputBlur.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
+            (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)"
+            *ngFor="let value of form.controlConfigs" [class]="
               isDefined(value.containerClass)
                 ? value.containerClass
                 : 'clr-col-12'
@@ -14,22 +17,27 @@
                 event: $event,
                 controlName: value.formControlName
               })
-            " [listenForChanges]="shouldListenforChange(value.formControlName)" [hidden]="value.hidden" [control]="componentFormGroup.controls[value.formControlName]" [inputConfig]="value" [listItems]="value.items">
-                    </app-dynamic-inputs>
-                </ng-container>
-            </div>
-        </div>
+            " [listenForChanges]="shouldListenforChange(value.formControlName)" [hidden]="value.hidden"
+            [control]="componentFormGroup.controls[value.formControlName]" [inputConfig]="value"
+            [listItems]="value.items">
+          </app-dynamic-inputs>
+        </ng-container>
+      </div>
     </div>
+  </div>
 </ng-container>
 <!-- Load form with group of forms -->
 <ng-container *ngIf="isFormGroup(form)">
-    <div class="form" *ngIf="conditionalControlBindings">
-        <div class="">
-            <div class="form form-container clr-row">
-                <!-- Loop through the forms in the formArray of the formrgoups -->
-                <ng-container *ngIf="form.forms && form.forms.length > 0">
-                    <ng-container *ngFor="let item of form.forms; let i = index">
-                        <app-dynamic-inputs (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)" *ngFor="let value of item.controlConfigs" [class]="
+  <div class="form" *ngIf="conditionalControlBindings">
+    <div class="">
+      <div class="form form-container clr-row">
+        <!-- Loop through the forms in the formArray of the formrgoups -->
+        <ng-container *ngIf="form.forms && form.forms.length > 0">
+          <ng-container *ngFor="let item of form.forms; let i = index">
+            <app-dynamic-inputs (inputKeyUp)="inputKeyUp.emit($event)" (inputKeyDown)="inputKeyDown.emit($event)"
+              (inputBlur)="inputBlur.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
+              (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)"
+              *ngFor="let value of item.controlConfigs" [class]="
                 isDefined(value.containerClass)
                   ? value.containerClass
                   : 'clr-col-12'
@@ -40,12 +48,16 @@
                   event: $event,
                   controlName: value.formControlName
                 })
-              " [listenForChanges]="shouldListenforChange(value.formControlName)" [hidden]="value.hidden" [control]="componentFormGroup.get(value.formControlName)" [inputConfig]="value" [listItems]="value.items">
-                        </app-dynamic-inputs>
-                    </ng-container>
-                </ng-container>
-                <ng-container *ngIf="form.controlConfigs && asArray(form.controlConfigs).length > 0">
-                    <app-dynamic-inputs (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)" *ngFor="let value of form.controlConfigs" [class]="
+              " [listenForChanges]="shouldListenforChange(value.formControlName)" [hidden]="value.hidden"
+              [control]="componentFormGroup.get(value.formControlName)" [inputConfig]="value" [listItems]="value.items">
+            </app-dynamic-inputs>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="form.controlConfigs && asArray(form.controlConfigs).length > 0">
+          <app-dynamic-inputs (inputKeyUp)="inputKeyUp.emit($event)" (inputKeyDown)="inputKeyDown.emit($event)"
+            (inputBlur)="inputBlur.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
+            (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)"
+            *ngFor="let value of form.controlConfigs" [class]="
               isDefined(value.containerClass)
                 ? value.containerClass
                 : 'clr-col-12'
@@ -56,10 +68,12 @@
                 event: $event,
                 controlName: value.formControlName
               })
-            " [hidden]="value.hidden" [listenForChanges]="shouldListenforChange(value.formControlName)" [control]="componentFormGroup.controls[value.formControlName]" [inputConfig]="value" [listItems]="value.items">
-                    </app-dynamic-inputs>
-                </ng-container>
-            </div>
-        </div>
+            " [hidden]="value.hidden" [listenForChanges]="shouldListenforChange(value.formControlName)"
+            [control]="componentFormGroup.controls[value.formControlName]" [inputConfig]="value"
+            [listItems]="value.items">
+          </app-dynamic-inputs>
+        </ng-container>
+      </div>
     </div>
+  </div>
 </ng-container>

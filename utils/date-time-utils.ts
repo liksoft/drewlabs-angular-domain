@@ -73,7 +73,7 @@ export class DateTimeUtils {
     if (date instanceof Date) {
       return moment(date).format(format);
     }
-    return moment(new Date(date)).format(format);
+    return moment(date).format(format);
   }
 
   protected static ensureDate(date: string|Date) {
@@ -93,6 +93,6 @@ export class DateTimeUtils {
    * @param format [[string]]
    */
   public static now(format: string = null) {
-    return isDefined(format) ? moment(new Date()).format(format) : new Date();
+    return moment().format(format);
   }
 }

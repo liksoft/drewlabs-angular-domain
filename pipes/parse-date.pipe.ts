@@ -13,7 +13,7 @@ export class ParseDatePipe implements PipeTransform {
     if (!isDefined(value)) {
       return '';
     }
-    return moment.isDate(new Date(value)) ?  moment(new Date(value)).format(args ? args : 'DD/MM/YYYY') : value;
+    return moment.isDate(new Date(value)) ?  moment(value).format(args ? args : 'DD/MM/YYYY') : value;
   }
 
 }
@@ -23,11 +23,11 @@ export class ParseDatePipe implements PipeTransform {
 })
 export class TimeAgoPipe implements PipeTransform {
 
-  transform(value: any): any {
+  transform(value: moment.MomentInput): any {
     if (!isDefined(value)) {
       return '';
     }
-    return moment.isDate(new Date(value)) ?  moment(new Date(value)).fromNow() : value;
+    return moment.isDate(value) ?  moment(value).fromNow() : value;
   }
 
 }

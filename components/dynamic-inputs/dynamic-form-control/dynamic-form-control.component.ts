@@ -73,8 +73,16 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   public dropzoneConfig: DropzoneConfigInterface;
   @ViewChild('dropzoneContainer', { static: false })
   dropzoneContainer: DropzoneComponent;
+
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();
+
+  @Output() inputKeyUp = new EventEmitter<{formcontrolname: string, value: any}>();
+  @Output() inputKeyDown = new EventEmitter<{formcontrolname: string, value: any}>();
+  @Output() inputKeypress = new EventEmitter<{formcontrolname: string, value: any}>();
+  @Output() inputBlur = new EventEmitter<{formcontrolname: string, value: any}>();
+  @Output() inputFocus = new EventEmitter<{formcontrolname: string, value: any}>();
+  @Output() inputFelect = new EventEmitter<{formcontrolname: string, value: any}>();
 
   constructor(private builder: FormBuilder) { }
 
