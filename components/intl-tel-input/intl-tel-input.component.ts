@@ -79,7 +79,6 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.control.status.toLowerCase() === 'disabled' ? this.disabled = true : this.disabled = false;
     if (this.preferredCountries.length > 0) {
       this.preferredCountries.forEach(iso2 => {
         const preferredCountry = this.allCountries.filter(c => {
@@ -102,6 +101,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       }
     );
     this.control.valueChanges.subscribe((state) => {
+      this.control.status.toLowerCase() === 'disabled' ? this.disabled = true : this.disabled = false;
       if (isDefined(state)) {
         this.setPhoneControlValue(state);
       }
