@@ -102,6 +102,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       }
     );
     this.control.valueChanges.subscribe((state) => {
+      this.control.status.toLowerCase() === 'disabled' ? this.disabled = true : this.disabled = false;
       if (isDefined(state)) {
         this.setPhoneControlValue(state);
       }
