@@ -272,7 +272,7 @@
           </clr-control-error>
           <clr-control-error class="field-has-error" *ngIf="control.hasError('minLength') && control.touched"><span
               [translate]="'validation.minValue'"
-              [translateParams]="{ value: asEmailInput(inputConfig).minLength }"></span>
+              [translateParams]="{ value: asEmailInput(inputConfig).minLength ? asEmailInput(inputConfig).minLength : getErrorAsNumber(control.errors['minLength'], 'minLength')}"></span>
           </clr-control-error>
           <clr-control-error class="field-has-error" *ngIf="control.hasError('pattern') && control.touched"><span
               [translate]="'validation.pattern'"></span></clr-control-error>
