@@ -52,7 +52,6 @@ export class DateTimeUtils {
   public static isBefore(date1: Date|string, date2: Date|string): boolean {
     const firstDate = DateTimeUtils.ensureDate(date1);
     const secondDate = DateTimeUtils.ensureDate(date2);
-    console.log(firstDate, secondDate);
     return moment(firstDate).diff(moment(secondDate)) >= 0 ? false : true;
   }
 
