@@ -69,10 +69,10 @@ export class MomentUtils {
    * @param format [[string]] returned date format
    */
   public static parseDate(date: Date | string, format = 'DD/MM/YYYY') {
-    if (date instanceof Date) {
-      return moment(date).format(format);
-    }
-    return moment(new Date(date)).format(format);
+    // if (date instanceof Date) {
+    //   return moment(date).format(format);
+    // }
+    return moment(date).format(format);
   }
 
   protected static ensureDate(date: any) {
@@ -82,6 +82,7 @@ export class MomentUtils {
       }
       return date;
     } catch (error) {
+      console.log(error);
       throw Error('Invalid date input');
     }
   }
@@ -91,7 +92,7 @@ export class MomentUtils {
    * @param date [[Date|string]]
    */
   public static getMonth(date: Date|string) {
-    return moment(new Date(date)).month();
+    return moment(date).month();
   }
 
   /**
@@ -99,7 +100,7 @@ export class MomentUtils {
    * @param date [[Date|string]]
    */
   public static getYear(date: Date|string) {
-    return moment(new Date(date)).year();
+    return moment(date).year();
   }
 
   /**
@@ -118,6 +119,6 @@ export class MomentUtils {
    * @param format [[string]]
    */
   public static now(format: string = null) {
-    return isDefined(format) ? moment(new Date()).format(format) : new Date();
+    return moment().format(format);
   }
 }

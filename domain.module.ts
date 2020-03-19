@@ -20,6 +20,7 @@ import { TypeUtilHelper } from './helpers/type-utils-helper';
 import { TranslatorHelperService } from './helpers/translator-helper';
 import { FileHelperService } from './helpers/file-helper.service';
 import { DateTimeHelper } from './helpers/date-time-helper';
+import { MonthParserPipe } from './pipes/month-parser.pipe';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -49,7 +50,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     SortableDirective,
     TranslateModule,
     DrewlabsDisableControlDirective,
-    PositiveNumber
+    PositiveNumber,
+    MonthParserPipe
   ],
   declarations: [
     AmountFormatterPipe,
@@ -59,7 +61,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CheckScriptsPipe,
     SortableDirective,
     DrewlabsDisableControlDirective,
-    PositiveNumber
+    PositiveNumber,
+    MonthParserPipe
   ],
   providers: [
     WindowRef,

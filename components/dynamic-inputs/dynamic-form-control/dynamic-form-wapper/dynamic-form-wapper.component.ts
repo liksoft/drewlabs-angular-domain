@@ -32,6 +32,12 @@ export class DynamicFormWapperComponent implements OnInit {
   @Output() fileRemoved = new EventEmitter<any>();
   public conditionalControlBindings: { [index: string]: IConditionalControlBinding } = {};
 
+  // Text/Type input event
+  @Output() inputKeyUp = new EventEmitter<{formcontrolname: string, value: any}>();
+  @Output() inputKeyDown = new EventEmitter<{formcontrolname: string, value: any}>();
+  @Output() inputKeypress = new EventEmitter<{formcontrolname: string, value: any}>();
+  @Output() inputBlur = new EventEmitter<{formcontrolname: string, value: any}>();
+
   constructor() { }
 
   ngOnInit() {
