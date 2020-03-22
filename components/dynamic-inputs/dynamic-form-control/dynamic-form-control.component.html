@@ -73,7 +73,7 @@
         <label class="clr-control-label" *ngIf="showLabelAndDescription"
           [for]="asDateInput(inputConfig).formControlName">{{ asDateInput(inputConfig).label }}
           <span class="required-text" *ngIf="asDateInput(inputConfig).rules?.isRequired">(*)</span></label>
-        <input type="date" (blur)="onDateInputBlur($event)" [formControl]="control" [min]="asDateInput(inputConfig).minDate"
+        <input type="date" (blur)="onDateInputBlur()" [formControl]="control" [min]="asDateInput(inputConfig).minDate"
           [max]="asDateInput(inputConfig).maxDate" clrDate />
       </clr-date-container>
       <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched">
