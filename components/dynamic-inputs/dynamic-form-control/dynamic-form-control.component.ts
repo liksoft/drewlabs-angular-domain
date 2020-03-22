@@ -35,6 +35,7 @@ import { environment } from '../../../../../../environments/environment';
 import { isDefined } from '../../../utils/type-utils';
 import { DropzoneComponent } from '../../dropzone/dropzone.component';
 import { readFileAsDataURI } from '../../../utils/browser';
+import { TypeUtilHelper } from 'src/app/lib/domain/helpers/type-utils-helper';
 
 export interface FileFormControl {
   uuid: string;
@@ -73,8 +74,16 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   public dropzoneConfig: DropzoneConfigInterface;
   @ViewChild('dropzoneContainer', { static: false })
   dropzoneContainer: DropzoneComponent;
+
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();
+
+  @Output() inputKeyUp = new EventEmitter<{ formcontrolname: string, value: any }>();
+  @Output() inputKeyDown = new EventEmitter<{ formcontrolname: string, value: any }>();
+  @Output() inputKeypress = new EventEmitter<{ formcontrolname: string, value: any }>();
+  @Output() inputBlur = new EventEmitter<{ formcontrolname: string, value: any }>();
+  @Output() inputFocus = new EventEmitter<{ formcontrolname: string, value: any }>();
+  @Output() inputFelect = new EventEmitter<{ formcontrolname: string, value: any }>();
 
   constructor(private builder: FormBuilder) { }
 
@@ -282,8 +291,19 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
     return prefix + '_' + Math.random().toString(36).substr(2, 9);
   }
 
-  getErrorAsNumber(value: object|number, key: string = null) {
+  getErrorAsNumber(value: object | number, key: string = null) {
     return typeof value === 'number' ? value : value[key];
+  }
+
+  onDateInputBlur(lang: string = 'fr') {
+    if (isDefined(this.control.value)) {
+      const value: string = this.control.value as string;
+      if (!value.match(/(0*([1-9]|1[0-2]))\/(0*([1-9]|[12][0-9]|3[01]))\/\d{4}/)) {
+        // tslint:disable-next-line: max-line-length
+        const output: { days: string, month: string, year: string } = { days: value.substr(0, 2), month: value.substr(2, 2), year: value.substr(4) };
+        this.control.setValue(`${output.month}/${output.days}/${output.year}`);
+      }
+    }
   }
 
   onDzThumbnail() { }

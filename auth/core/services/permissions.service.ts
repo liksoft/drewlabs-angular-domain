@@ -194,7 +194,6 @@ export class PermissionsService extends RequestClient
           );
           if (res.success === true) {
             // Dispath update action
-            console.log(body.data);
           }
           resolve(body);
         })
