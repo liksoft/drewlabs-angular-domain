@@ -153,6 +153,19 @@ export function flattenObject(ob: object, prefixInnerKeys: boolean = true) {
   return returnedObj;
 }
 
+/**
+ * @description Generate the hascode of a given string
+ * @param s [[string]] s as name of the class or object
+ */
+export function objectHashCode(s: string) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    // tslint:disable-next-line: no-bitwise
+    h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+  }
+  return h;
+}
+
 // /**
 //  * @description Value object comparison
 //  * @param a [[object]]
