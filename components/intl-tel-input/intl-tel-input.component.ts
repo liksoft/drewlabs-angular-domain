@@ -102,7 +102,18 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       }
     );
     this.control.valueChanges.subscribe((state) => {
-      this.control.status.toLowerCase() === 'disabled' ? this.disabled = true : this.disabled = false;
+      // this.control.status.toLowerCase() === 'disabled' ? this.disabled = true : this.disabled = false;
+      if (this.control.status.toLowerCase() === 'disabled') {
+        if (this.phoneControl.status.toLowerCase() !== 'disabled' ) {
+          this.phoneControl.disable({onlySelf: true});
+        }
+        this.disabled = true;
+      } else {
+        if (this.phoneControl.status.toLowerCase() === 'disabled' ) {
+          this.phoneControl.enable({onlySelf: true});
+        }
+        this.disabled = false;
+      }
       if (isDefined(state)) {
         this.setPhoneControlValue(state);
       }

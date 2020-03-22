@@ -151,7 +151,7 @@ export class HttpRequestService implements HttpServices {
           if (!isDefined(filename)) {
             filename = isDefined(fileExtension) ? `${this.getFileNameFromResponseContentDisposition(res)}.${fileExtension}` : `${this.getFileNameFromResponseContentDisposition(res)}`;
           }
-          Browser.saveFile(res, filename);
+          Browser.saveFile(res, isDefined(fileExtension) ? `${filename}.${fileExtension}` : `${filename}`);
           _({});
         });
     });
