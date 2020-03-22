@@ -35,7 +35,6 @@ import { environment } from '../../../../../../environments/environment';
 import { isDefined } from '../../../utils/type-utils';
 import { DropzoneComponent } from '../../dropzone/dropzone.component';
 import { readFileAsDataURI } from '../../../utils/browser';
-import { TypeUtilHelper } from 'src/app/lib/domain/helpers/type-utils-helper';
 
 export interface FileFormControl {
   uuid: string;
@@ -88,12 +87,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   constructor(private builder: FormBuilder) { }
 
   ngOnInit() {
-    this.today = MomentUtils.parseDate(
-      new Date(),
-      (this.inputConfig as DateInput).dateInputFormat
-        ? (this.inputConfig as DateInput).dateInputFormat
-        : 'dd/mm/yyyy'
-    );
+    this.today = MomentUtils.parseDate();
     if (this.inputConfig.type === InputTypes.FILE_INPUT) {
       this.dropzoneConfigs = {
         maxFiles: this.asFileInput(this.inputConfig).multiple ? 50 : 1,
@@ -295,13 +289,18 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
     return typeof value === 'number' ? value : value[key];
   }
 
-  onDateInputBlur(lang: string = 'fr') {
+  onDateInputBlur() {
+    const locale = MomentUtils.locale();
     if (isDefined(this.control.value)) {
       const value: string = this.control.value as string;
       if (!value.match(/(0*([1-9]|1[0-2]))\/(0*([1-9]|[12][0-9]|3[01]))\/\d{4}/)) {
         // tslint:disable-next-line: max-line-length
         const output: { days: string, month: string, year: string } = { days: value.substr(0, 2), month: value.substr(2, 2), year: value.substr(4) };
-        this.control.setValue(`${output.month}/${output.days}/${output.year}`);
+        if (locale.match(/fr/)) {
+          this.control.setValue(`${output.days}/${output.month}/${output.year}`);
+        } else {
+          this.control.setValue(`${output.month}/${output.days}/${output.year}`);
+        }
       }
     }
   }

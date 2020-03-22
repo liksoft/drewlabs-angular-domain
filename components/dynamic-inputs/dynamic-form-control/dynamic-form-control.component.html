@@ -79,10 +79,10 @@
       <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched">
         <span [translate]="'validation.required'"></span>
       </clr-control-error>
-      <clr-control-error class="field-has-error" *ngIf="control.hasError('min')">
+      <clr-control-error class="field-has-error" *ngIf="control.hasError('minDate')">
         <span [translate]="'validation.minDate'" [translateParams]="{date: asDateInput(inputConfig).minDate}"></span>
       </clr-control-error>
-      <clr-control-error class="field-has-error" *ngIf="control.hasError('max')">
+      <clr-control-error class="field-has-error" *ngIf="control.hasError('maxDate')">
         <span [translate]="'validation.maxDate'" [translateParams]="{date: asDateInput(inputConfig).maxDate}"></span>
       </clr-control-error>
       <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span
