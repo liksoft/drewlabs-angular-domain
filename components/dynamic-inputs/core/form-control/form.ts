@@ -3,7 +3,19 @@ import { ISerializer, ISerializableBuilder } from 'src/app/lib/domain/built-valu
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from 'src/app/lib/domain/built-value/contracts/type';
 import { FormControl } from './form-control';
 import { IDynamicFormBindableModel } from '../contracts/form-control';
+import { ArrayUtils } from '../../../../utils/array-utils';
+import { isArray } from '../../../../utils/type-utils';
 
+/**
+ * @description Sort form loaded from backend server by control index
+ * @param f [[Form]]
+ */
+export function sortFormFormControlsByIndex(f: Form) {
+  if (isArray(f.formControls) && (f.formControls as Array<FormControl>).length > 0) {
+    f.formControls = ArrayUtils.sort((f.formControls as Array<FormControl>), 'controlIndex', 1) as FormControl[];
+  }
+  return f;
+}
 export class FormBuilder implements ISerializableBuilder<Form>, TypeBuilder<Form> {
   serializer: ISerializer;
 
