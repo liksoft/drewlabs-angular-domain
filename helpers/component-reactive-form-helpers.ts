@@ -213,7 +213,7 @@ export class ComponentReactiveFormHelpers {
             ? validators.push(
               CustomValidators.minDate(
                 isDefined((config as DateInput).minDate)
-                  ? (config as DateInput).minDate
+                  ? MomentUtils.parseDate((config as DateInput).minDate as string, null, 'YYYY-MM-DD')
                   : MomentUtils.parseDate()
               )
             )
@@ -224,7 +224,7 @@ export class ComponentReactiveFormHelpers {
               ? validators.push(
                 CustomValidators.maxDate(
                   isDefined((config as DateInput).maxDate)
-                    ? (config as DateInput).maxDate
+                    ? MomentUtils.parseDate((config as DateInput).maxDate, null, 'YYYY-MM-DD')
                     : MomentUtils.parseDate()
                 )
               )

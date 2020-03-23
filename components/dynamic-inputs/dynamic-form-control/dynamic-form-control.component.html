@@ -69,6 +69,7 @@
       </div>
     </div>
     <div *ngSwitchCase="inputTypes.DATE_INPUT">
+      <pre> {{ control.errors | json }}</pre>
       <clr-date-container>
         <label class="clr-control-label" *ngIf="showLabelAndDescription"
           [for]="asDateInput(inputConfig).formControlName">{{ asDateInput(inputConfig).label }}
@@ -79,10 +80,10 @@
       <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched">
         <span [translate]="'validation.required'"></span>
       </clr-control-error>
-      <clr-control-error class="field-has-error" *ngIf="control.hasError('minDate')">
+      <clr-control-error class="field-has-error" *ngIf="control.hasError('minDate') && control.touched">
         <span [translate]="'validation.minDate'" [translateParams]="{date: asDateInput(inputConfig).minDate}"></span>
       </clr-control-error>
-      <clr-control-error class="field-has-error" *ngIf="control.hasError('maxDate')">
+      <clr-control-error class="field-has-error" *ngIf="control.hasError('maxDate') && control.touched">
         <span [translate]="'validation.maxDate'" [translateParams]="{date: asDateInput(inputConfig).maxDate}"></span>
       </clr-control-error>
       <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span

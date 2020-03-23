@@ -41,6 +41,7 @@ export class MomentUtils {
   public static isAfter(date1: Date | string, date2: Date | string): boolean {
     const firstDate = MomentUtils.parseDate(date1);
     const secondDate = MomentUtils.parseDate(date2);
+    console.log(firstDate, secondDate);
     return moment(firstDate).diff(moment(secondDate)) <= 0 ? false : true;
   }
 
@@ -52,6 +53,7 @@ export class MomentUtils {
   public static isBefore(date1: Date | string, date2: Date | string): boolean {
     const firstDate = MomentUtils.parseDate(date1);
     const secondDate = MomentUtils.parseDate(date2);
+    console.log(firstDate, secondDate);
     return moment(firstDate).diff(moment(secondDate)) >= 0 ? false : true;
   }
 
