@@ -67,7 +67,7 @@ export class CustomValidators {
     return (control: AbstractControl) => {
       if (control.validator) {
         if (control.value && MomentUtils.isAfter(minDate, control.value)) {
-          return { minDate: true };
+          return { minDate };
         }
       }
       return null;
@@ -78,7 +78,7 @@ export class CustomValidators {
     return (control: AbstractControl) => {
       if (control.validator) {
         if (control.value && MomentUtils.isBefore(maxDate, control.value)) {
-          return { maxDate: true };
+          return { maxDate };
         }
       }
       return null;
@@ -127,7 +127,7 @@ export class CustomValidators {
         if (+control.value >= min) {
           return null;
         }
-        return { min: true };
+        return { min };
       }
       return null;
     };
@@ -143,7 +143,7 @@ export class CustomValidators {
         if (+control.value <= max) {
           return null;
         }
-        return { min: true };
+        return { max };
       }
       return null;
     };
