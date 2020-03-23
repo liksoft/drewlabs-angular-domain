@@ -214,7 +214,7 @@ export class ComponentReactiveFormHelpers {
               CustomValidators.minDate(
                 isDefined((config as DateInput).minDate)
                   ? (config as DateInput).minDate
-                  : MomentUtils.parseDate(new Date(), 'YYYY-MM-DD')
+                  : MomentUtils.parseDate()
               )
             )
             : // tslint:disable-next-line:no-unused-expression
@@ -225,7 +225,7 @@ export class ComponentReactiveFormHelpers {
                 CustomValidators.maxDate(
                   isDefined((config as DateInput).maxDate)
                     ? (config as DateInput).maxDate
-                    : MomentUtils.parseDate(new Date(), 'YYYY-MM-DD')
+                    : MomentUtils.parseDate()
                 )
               )
               : // tslint:disable-next-line:no-unused-expression
@@ -240,7 +240,7 @@ export class ComponentReactiveFormHelpers {
               value: config.value,
               disabled: config.disabled
             },
-            asyncValidators.length > 0 ? {
+            (asyncValidators.length > 0) || (config.type === InputTypes.DATE_INPUT) ? {
               validators: Validators.compose(validators),
               updateOn: 'blur',
               asyncValidators

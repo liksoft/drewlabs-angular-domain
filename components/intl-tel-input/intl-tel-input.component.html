@@ -18,7 +18,7 @@
             </cdk-virtual-scroll-viewport>
         </clr-dropdown-menu>
     </clr-dropdown>
-    <input [disabled]="disabled" #phoneControlElement type="tel" [class]="controlClass" autocomplete="off" (keypress)="onInputKeyPress($event)" [formControl]="phoneControl" [placeholder]="selectedCountry.placeHolder" #focusable>
+    <input #phoneControlElement type="tel" [class]="controlClass" autocomplete="off" (keypress)="onInputKeyPress($event)" [formControl]="phoneControl" [placeholder]="selectedCountry.placeHolder" #focusable>
     <input type="hidden" [formControl]="control" />
 </div>
 <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && (phoneControl.touched || control.touched)"><span [translate]="'validation.required'"></span></clr-control-error>
