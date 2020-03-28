@@ -13,8 +13,8 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
   private _getMethod: HttpGetAllRequestFn;
   // tslint:disable-next-line: variable-name
   private _ressourcePath: string;
-  // tslint:disable-next-line: variable-name
-  private _cacheKey: string;
+  // // tslint:disable-next-line: variable-name
+  // private _cacheKey: string;
   // tslint:disable-next-line: variable-name
   public _status: number;
   // tslint:disable-next-line: variable-name

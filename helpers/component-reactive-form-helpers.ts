@@ -46,12 +46,14 @@ export function isGroupOfIDynamicForm(f: IDynamicForm) {
 export interface FormRequest {
   body: object | any;
   requestURL?: string;
+  params?: object;
 }
 
 export interface UpdateRequest {
-  id: number | string;
+  id?: number | string;
   body: object | any;
   requestURL?: string;
+  params?: object;
 }
 
 /**
@@ -190,7 +192,7 @@ export class ComponentReactiveFormHelpers {
               Validators.min(
                 isDefined((config as NumberInput).min)
                   ? (config as NumberInput).min
-                  : 0
+                  : -1
               )
             )
             : // tslint:disable-next-line:no-unused-expression
@@ -198,7 +200,7 @@ export class ComponentReactiveFormHelpers {
             // Checks if maxlength rule is set to true and apply the rule to the input
             config.rules && config.rules.max
               ? validators.push(
-                Validators.minLength(
+                Validators.max(
                   isDefined((config as NumberInput).max)
                     ? (config as NumberInput).max
                     : (Math.pow(2, 31) - 1)

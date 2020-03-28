@@ -29,6 +29,7 @@ import { Subscription } from 'rxjs';
   template: `
     <ng-container *ngIf="localConfig">
     <div
+      [class.disabled]="disabled"
       class="dz-wrapper"
       [class.dropzone]="useDropzoneClass"
       [dropzone]="localConfig"
@@ -90,7 +91,7 @@ import { Subscription } from 'rxjs';
         border-right: 2px dashed #d4d9dc;
         color: #666 !important;
         text-align: center !important;
-        background-color: #f7f7f7 !important;
+        background-color: rgba(247, 247, 247, .8) !important;
         margin: 0px !important;
         padding: 10px;
       }
@@ -140,6 +141,9 @@ import { Subscription } from 'rxjs';
         padding: 10px !important;
         transform: translateY(0%) !important;
         cursor: pointer;
+      }
+      .disabled {
+        opacity: .5;
       }
       /* End Drew Dropzone design */
     `

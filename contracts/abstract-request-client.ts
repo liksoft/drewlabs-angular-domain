@@ -284,14 +284,16 @@ export function getRessource<T>(
  * @param client [[HttpRequestService]]
  * @param ressourcesPath [[string]]
  * @param requestBody [[object]]
+ * @param params [[object]]
  */
 export function postManyRessources(
   client: HttpRequestService,
   ressourcesPath: string,
   requestBody: object[] | object,
+  params?: object
 ) {
   return new Promise<IResponseBody>((resolve, reject) => {
-    (new RequestClient()).create(client, `${ressourcesPath}`, requestBody)
+    (new RequestClient()).create(client, `${ressourcesPath}`, requestBody, params)
       .then((res: ResponseData) => {
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
@@ -309,14 +311,10 @@ export function postManyRessources(
  * @param requestBody [[object]]
  * @param ressourceBuilder [[ISerializableBuilder<T>]]
  */
-export function postRessource<T>(
-  client: HttpRequestService,
-  ressourcesPath: string,
-  requestBody: object,
-  ressourceBuilder?: ISerializableBuilder<T>,
-) {
+// tslint:disable-next-line: max-line-length
+export function postRessource<T>(client: HttpRequestService, ressourcesPath: string, requestBody: object, ressourceBuilder?: ISerializableBuilder<T>, params?: object) {
   return new Promise<IResponseBody | T>((resolve, reject) => {
-    (new RequestClient()).create(client, `${ressourcesPath}`, requestBody)
+    (new RequestClient()).create(client, `${ressourcesPath}`, requestBody, params)
       .then((res: ResponseData) => {
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
@@ -337,15 +335,12 @@ export function postRessource<T>(
  * @param ressourcesPath [[string]]
  * @param id  [[number|string]]
  * @param requestBody [[object]]
+ * @param params [[object|null]]
  */
-export function putRessource<T>(
-  client: HttpRequestService,
-  ressourcesPath: string,
-  id: number | string,
-  requestBody: object
-) {
+// tslint:disable-next-line: max-line-length
+export function putRessource<T>(client: HttpRequestService, ressourcesPath: string, id: number | string, requestBody: object, params?: object) {
   return new Promise<IResponseBody>((resolve, reject) => {
-    (new RequestClient()).update(client, `${ressourcesPath}`, id, requestBody)
+    (new RequestClient()).update(client, `${ressourcesPath}`, id, requestBody, params)
       .then((res: ResponseData) => {
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
@@ -363,13 +358,10 @@ export function putRessource<T>(
  * @param ressourcesPath [[string]]
  * @param id  [[number|string]]
  */
-export function deleteRessource<T>(
-  client: HttpRequestService,
-  ressourcesPath: string,
-  id: number | string
-): Promise<IResponseBody> {
+// tslint:disable-next-line: max-line-length
+export function deleteRessource<T>(client: HttpRequestService, ressourcesPath: string, id: number | string, params?: object): Promise<IResponseBody> {
   return new Promise((resolve, reject) => {
-    (new RequestClient()).delete(client, `${ressourcesPath}`, id)
+    (new RequestClient()).delete(client, `${ressourcesPath}`, id, params)
       .then((res: ResponseData) => {
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
