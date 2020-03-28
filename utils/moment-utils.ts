@@ -41,8 +41,8 @@ export class MomentUtils {
   public static isAfter(date1: Date | string, date2: Date | string): boolean {
     const firstDate = MomentUtils.parseDate(date1);
     const secondDate = MomentUtils.parseDate(date2);
-    console.log(firstDate, secondDate);
-    return moment(firstDate).diff(moment(secondDate)) <= 0 ? false : true;
+    console.log(moment(firstDate, this.longDateFormat()).isAfter(moment(secondDate, this.longDateFormat())));
+    return moment(firstDate, this.longDateFormat()).isAfter(moment(secondDate, this.longDateFormat()));
   }
 
   /**
@@ -53,8 +53,7 @@ export class MomentUtils {
   public static isBefore(date1: Date | string, date2: Date | string): boolean {
     const firstDate = MomentUtils.parseDate(date1);
     const secondDate = MomentUtils.parseDate(date2);
-    console.log(firstDate, secondDate);
-    return moment(firstDate).diff(moment(secondDate)) >= 0 ? false : true;
+    return moment(firstDate, this.longDateFormat()).isBefore(moment(secondDate, this.longDateFormat())) ? true : false;
   }
 
   /**
@@ -99,7 +98,7 @@ export class MomentUtils {
    * @param date [[Date|string]]
    */
   public static getMonth(date: Date | string) {
-    return moment(date).month();
+    return moment(date, this.longDateFormat()).month();
   }
 
   /**
@@ -107,7 +106,7 @@ export class MomentUtils {
    * @param date [[Date|string]]
    */
   public static getYear(date: Date | string) {
-    return moment(date).year();
+    return moment(date, this.longDateFormat()).year();
   }
 
   /**

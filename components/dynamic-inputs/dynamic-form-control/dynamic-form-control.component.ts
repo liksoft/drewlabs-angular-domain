@@ -98,6 +98,12 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
         acceptedFiles: this.asFileInput(this.inputConfig).pattern ? this.asFileInput(this.inputConfig).pattern : 'image/*'
       };
       this.control.valueChanges.subscribe((state) => {
+        console.log(this.control.status.toLowerCase());
+        if (this.control.status.toLowerCase() === 'disabled') {
+          this.dropzoneContainer.disabled = true;
+        } else {
+          this.dropzoneContainer.disabled = false;
+        }
         if (!isDefined(state)) {
           this.dropzoneContainer.resetDropzone();
         }

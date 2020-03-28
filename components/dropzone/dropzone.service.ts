@@ -38,6 +38,7 @@ export class DropzoneService {
         'dictRemoveFileConfirmationLabel',
         'dictRemoveFileLabel',
         'dictMaxFilesExceededLabel',
+        'dictUploadCanceled',
       ], { maxFilesize: '{{maxFilesize}}', filesize: '{{filesize}}', fileformat: acceptedFilesTypeName }).toPromise().then(translations => {
         resolve(Object.assign(config, {
           // tslint:disable-next-line:ban-types
@@ -65,6 +66,7 @@ export class DropzoneService {
           dictRemoveFile: translations.dictRemoveFileLabel,
           dictRemoveFileConfirmation: translations.dictRemoveFileConfirmationLabel,
           dictMaxFilesExceeded: translations.dictMaxFilesExceededLabel,
+          dictUploadCanceled: translations.dictUploadCanceled
         } as DropzoneConfigInterface));
       });
     });
