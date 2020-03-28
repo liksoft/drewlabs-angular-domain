@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { MomentUtils } from '../utils/moment-utils';
+import * as moment from 'moment';
 
 @Injectable()
 export class DateTimeHelper {
 
   /**
    * @description Return the current date
-   * @param format [[string]]
+   * @param _ [[string]]
    */
-  public now(format: string = null) {
-    return MomentUtils.now(format);
+  public now(_: string = null) {
+    return new Date();
   }
 }
