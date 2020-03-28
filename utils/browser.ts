@@ -8,7 +8,7 @@ type WindowEvent = (self: Window, ev?: Event) => any;
  * Provides with promise base file reader functionnality
  * @param file [[File|any]]
  */
-export function readFileAsDataURI(file: File|Blob) {
+export function readFileAsDataURI(file: File | Blob) {
   return new Promise<string>((_, __) => {
     if (isDefined(file)) {
       const reader = new FileReader();
@@ -77,7 +77,7 @@ export class Browser {
     }
     const difference = to - element.scrollTop;
     const perTick = (difference / duration) * 2;
-    setTimeout(function() {
+    setTimeout(() => {
       element.scrollTop = element.scrollTop + perTick;
       this.scrollTo(element, to, duration - 2);
     }, 10);
@@ -93,8 +93,17 @@ export class Browser {
    * @param blobContent file content as a Blob
    * @param fileName name file should be saved as
    */
-  static saveFile(blobContent: Blob, fileName: string) {
+  static saveFile(blobContent: Blob | string, fileName: string) {
     const blob = new Blob([blobContent], { type: 'application/octet-stream' });
     saveAs(blob, fileName);
+  }
+
+  /**
+   * @description Save file as it is, without converting it to a blob content
+   * @param blobContent [[Blob|string]]
+   * @param fileName [[string]]
+   */
+  static saveFileAsRaw(blobContent: Blob | string, fileName: string) {
+    saveAs(blobContent, fileName);
   }
 }
