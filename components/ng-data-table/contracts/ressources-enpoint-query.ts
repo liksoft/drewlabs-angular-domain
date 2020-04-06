@@ -6,6 +6,8 @@ import { ISourceRequestQueryParameters } from '../ng-data-table.component';
 export interface RessourcesEndpointQuery {
   filters: { [prop: string]: any[] };
   params: ISourceRequestQueryParameters;
+  inlineQuery?: string;
+  status?: number;
 }
 
 /**
