@@ -2,7 +2,6 @@ import {
   ResponseBody,
   ResponseData
 } from 'src/app/lib/domain/http/contracts/http-response-data';
-import { HttpRequestService } from 'src/app/lib/domain/http/core';
 import { ServerResponseKeys } from 'src/app/lib/domain/auth/core';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { isDefined, isArray } from '../utils/type-utils';
@@ -10,13 +9,14 @@ import { IResponseBody } from '../http/contracts/http-response-data';
 import { IAppStorage } from '../storage/contracts/store-interface';
 import { Store } from '../store';
 import { IPayload } from '../store/abstract-reducer';
+import { IEntityServiceProvider } from './entity-service-provider';
 
 /**
  * @description Make a get request to ressources server using the id parameter
  * @param id [[string|number]]
  */
 export function loadThroughHttpRequest(
-  client: HttpRequestService, ressourcesPath: string, id?: string | number, params?: object): Promise<any> {
+  client: IEntityServiceProvider, ressourcesPath: string, id?: string | number, params?: object): Promise<any> {
   const provider = new RequestClient();
   return new Promise((resolve, reject) => {
     provider.get(client, isDefined(id) ? `${ressourcesPath}/${id}` : `${ressourcesPath}`, params)
@@ -37,7 +37,7 @@ export function loadThroughHttpRequest(
 /**
  * @description Try loading a model details from the cache or from the server
  * @param cache [[IAppStorage]]
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param id [[number|string]]
  * @param cacheEntriesKey [[string]]
@@ -45,7 +45,7 @@ export function loadThroughHttpRequest(
  */
 export async function loadRessourceFromCacheOrGetFromServer<T extends any>(
   cache: IAppStorage,
-  client: HttpRequestService,
+  client: IEntityServiceProvider,
   ressourcesPath: string,
   id: number | string,
   cacheEntriesKey: string,
@@ -75,14 +75,14 @@ export async function loadRessourceFromCacheOrGetFromServer<T extends any>(
 
 /**
  * @description Get a list a ressources from the backend server using an HTTP request and notify ressources store
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param ressourceBuilder [[ISerializableBuilder<T>]]
  * @param store [[Store<T>]]
  * @param action [[string]]
  */
 export function getRessourcesAndNotify<T>(
-  client: HttpRequestService,
+  client: IEntityServiceProvider,
   ressourcesPath: string,
   ressourceBuilder: ISerializableBuilder<T>,
   store?: Store<T>,
@@ -107,7 +107,7 @@ export function getRessourcesAndNotify<T>(
 
 /**
  * @description Make an HTTP request for creating a new ressource and notify ressource store when completed successfully
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param requestBody [[object]]
  * @param ressourceBuilder [[ISerializableBuilder<T>]]
@@ -115,7 +115,7 @@ export function getRessourcesAndNotify<T>(
  * @param action [[string]]
  */
 export function postRessourceAndNotifiStore<T>(
-  client: HttpRequestService,
+  client: IEntityServiceProvider,
   ressourcesPath: string,
   requestBody: object,
   ressourceBuilder?: ISerializableBuilder<T>,
@@ -149,7 +149,7 @@ export function postRessourceAndNotifiStore<T>(
 
 /**
  * @description Make an HTTP request with the PUT Verb and notify the ressource store when completed successfully or reject if an error
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param id  [[number|string]]
  * @param requestBody [[object]]
@@ -159,7 +159,7 @@ export function postRessourceAndNotifiStore<T>(
  * @param indexKey [[string]]
  */
 export function putRessourceAndNotifyStore<T>(
-  client: HttpRequestService,
+  client: IEntityServiceProvider,
   ressourcesPath: string,
   id: number | string,
   requestBody: object,
@@ -195,7 +195,7 @@ export function putRessourceAndNotifyStore<T>(
 /**
  *
  * @description Send an HTTP POST and notify the ressource store when completed successfully or reject if an error
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param id  [[number|string]]
  * @param store [[Store<T>]]
@@ -203,7 +203,7 @@ export function putRessourceAndNotifyStore<T>(
  * @param indexKey [[string]]
  */
 export function deleteRessourceAndNotifyStore<T>(
-  client: HttpRequestService,
+  client: IEntityServiceProvider,
   ressourcesPath: string,
   id: number | string,
   store?: Store<T>,
@@ -234,12 +234,12 @@ export function deleteRessourceAndNotifyStore<T>(
 
 /**
  * @description Get a list a ressources from the backend server using an HTTP request
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param ressourceBuilder [[ISerializableBuilder<T>]]
  */
 export function getRessources<T>(
-  client: HttpRequestService,
+  client: IEntityServiceProvider,
   ressourcesPath: string,
   ressourceBuilder: ISerializableBuilder<T>,
   dataKey?: string,
@@ -259,12 +259,12 @@ export function getRessources<T>(
 
 /**
  * @description Get and item from the data storage base on query conditions
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param ressourceBuilder [[ISerializableBuilder<T>]]
  */
 export function getRessource<T>(
-  client: HttpRequestService,
+  client: IEntityServiceProvider,
   ressourcesPath: string,
   ressourceBuilder: ISerializableBuilder<T>,
   params?: object
@@ -281,13 +281,13 @@ export function getRessource<T>(
 
 /**
  * @description  Make an Http Request for creating many ressource items
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param requestBody [[object]]
  * @param params [[object]]
  */
 export function postManyRessources(
-  client: HttpRequestService,
+  client: IEntityServiceProvider,
   ressourcesPath: string,
   requestBody: object[] | object,
   params?: object
@@ -306,13 +306,13 @@ export function postManyRessources(
 
 /**
  * @description Make an HTTP request for creating a new ressource
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param requestBody [[object]]
  * @param ressourceBuilder [[ISerializableBuilder<T>]]
  */
 // tslint:disable-next-line: max-line-length
-export function postRessource<T>(client: HttpRequestService, ressourcesPath: string, requestBody: object, ressourceBuilder?: ISerializableBuilder<T>, params?: object) {
+export function postRessource<T>(client: IEntityServiceProvider, ressourcesPath: string, requestBody: object, ressourceBuilder?: ISerializableBuilder<T>, params?: object) {
   return new Promise<IResponseBody | T>((resolve, reject) => {
     (new RequestClient()).create(client, `${ressourcesPath}`, requestBody, params)
       .then((res: ResponseData) => {
@@ -331,14 +331,14 @@ export function postRessource<T>(client: HttpRequestService, ressourcesPath: str
 
 /**
  * @description Make an HTTP PUT request to the ressources endpoint to update ressources information in the database
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param id  [[number|string]]
  * @param requestBody [[object]]
  * @param params [[object|null]]
  */
 // tslint:disable-next-line: max-line-length
-export function putRessource<T>(client: HttpRequestService, ressourcesPath: string, id: number | string, requestBody: object, params?: object) {
+export function putRessource<T>(client: IEntityServiceProvider, ressourcesPath: string, id: number | string, requestBody: object, params?: object) {
   return new Promise<IResponseBody>((resolve, reject) => {
     (new RequestClient()).update(client, `${ressourcesPath}`, id, requestBody, params)
       .then((res: ResponseData) => {
@@ -354,12 +354,12 @@ export function putRessource<T>(client: HttpRequestService, ressourcesPath: stri
 /**
  *
  * @description Make an HTTP DELETE Request to the ressources endpoint to remove the ressources from the storage
- * @param client [[HttpRequestService]]
+ * @param client [[IEntityServiceProvider]]
  * @param ressourcesPath [[string]]
  * @param id  [[number|string]]
  */
 // tslint:disable-next-line: max-line-length
-export function deleteRessource<T>(client: HttpRequestService, ressourcesPath: string, id: number | string, params?: object): Promise<IResponseBody> {
+export function deleteRessource<T>(client: IEntityServiceProvider, ressourcesPath: string, id: number | string, params?: object): Promise<IResponseBody> {
   return new Promise((resolve, reject) => {
     (new RequestClient()).delete(client, `${ressourcesPath}`, id, params)
       .then((res: ResponseData) => {
@@ -378,7 +378,7 @@ export function deleteRessource<T>(client: HttpRequestService, ressourcesPath: s
  * @param options [[object?]]
  */
 export type HttpGetAllRequestFn = (
-  client: HttpRequestService, ressourcePath: string, options?: object
+  client: IEntityServiceProvider, ressourcePath: string, options?: object
 ) => Promise<ResponseData>;
 
 /**
@@ -388,7 +388,7 @@ export type HttpGetAllRequestFn = (
  * @param options [[object?]]
  */
 export type HttpGetRequestFn = (
-  client: HttpRequestService, ressourcePath: string, id: number | any, options?: object
+  client: IEntityServiceProvider, ressourcePath: string, id: number | any, options?: object
 ) => Promise<ResponseData>;
 
 /**
@@ -398,7 +398,7 @@ export type HttpGetRequestFn = (
  * @param options [[object?]]
  */
 export type HttpPostRequestFn = (
-  client: HttpRequestService, ressources: string, requestBody: object | any, options?: object
+  client: IEntityServiceProvider, ressources: string, requestBody: object | any, options?: object
 ) => Promise<ResponseData>;
 
 /**
@@ -408,7 +408,7 @@ export type HttpPostRequestFn = (
  * @param options [[object?]]
  */
 export type HttpDeleteRequestFn = (
-  client: HttpRequestService, ressources: string, id: number | any, options?: object
+  client: IEntityServiceProvider, ressources: string, id: number | any, options?: object
 ) => Promise<ResponseData>;
 
 /**
@@ -419,7 +419,7 @@ export type HttpDeleteRequestFn = (
  */
 // tslint:disable-next-line: max-line-length
 export type HttpPutRequestFn = (
-  client: HttpRequestService, ressources: string, id: number | any, values: object | any, options?: object
+  client: IEntityServiceProvider, ressources: string, id: number | any, values: object | any, options?: object
 ) => Promise<ResponseData>;
 
 export interface IRequestClient {
@@ -453,7 +453,7 @@ export interface IRequestClient {
 export class RequestClient implements IRequestClient {
 
   public get: HttpGetAllRequestFn = (
-    client: HttpRequestService, ressources: string, options?: object
+    client: IEntityServiceProvider, ressources: string, options?: object
   ) => {
     return new Promise<ResponseData>((resolve, reject) => {
       client.get(ressources, options).subscribe(
@@ -471,7 +471,7 @@ export class RequestClient implements IRequestClient {
   }
 
   public getById: HttpGetRequestFn = (
-    client: HttpRequestService, ressources: string, id: any, options?: object
+    client: IEntityServiceProvider, ressources: string, id: any, options?: object
   ) => {
     return new Promise<ResponseData>((resolve, reject) => {
       client.get(`${ressources}/${id}`, options).subscribe(
@@ -488,7 +488,7 @@ export class RequestClient implements IRequestClient {
     });
   }
   public create: HttpPostRequestFn = (
-    client: HttpRequestService, ressources: string, requestBody: object | string, options?: object
+    client: IEntityServiceProvider, ressources: string, requestBody: object | string, options?: object
   ) => {
     return new Promise<ResponseData>((resolve, reject) => {
       client.post(ressources, requestBody, options).subscribe(
@@ -505,7 +505,7 @@ export class RequestClient implements IRequestClient {
     });
   }
   public delete: HttpDeleteRequestFn = (
-    client: HttpRequestService, ressources: string, id: any, options?: object
+    client: IEntityServiceProvider, ressources: string, id: any, options?: object
   ) => {
     return new Promise<ResponseData>((resolve, reject) => {
       client.delete(`${ressources}/${id}`, options).subscribe(
@@ -522,7 +522,7 @@ export class RequestClient implements IRequestClient {
     });
   }
   public update: HttpPutRequestFn = (
-    client: HttpRequestService, ressources: string, id?: any, updateValues = {}, options?: object
+    client: IEntityServiceProvider, ressources: string, id?: any, updateValues = {}, options?: object
   ) => {
     return new Promise<ResponseData>((resolve, reject) => {
       ressources = id ? `${ressources}/${id}` : `${ressources}`;

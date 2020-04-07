@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { HttpServices } from '../contracts/http-services';
 import { HttpRequestConfigs } from './config';
 import { SessionStorage } from '../../storage/core/session-storage.service';
-import { AuthPathConfig, AuthStorageConfig } from '../../auth/core/config';
+import { AuthPathConfig } from '../../auth/core/config';
 import { AuthTokenService } from '../../auth-token/core';
 import { URLUtils } from '../../utils/url';
 import { Browser } from '../../utils/browser';

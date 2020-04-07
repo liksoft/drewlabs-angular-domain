@@ -1,6 +1,3 @@
-import { IFormRequestConfig, FormHelperService } from '../helpers/form-helper';
-import { ICollection } from '../contracts/collection-interface';
-import { IDynamicForm } from '../components/dynamic-inputs/core';
 import { Subject, Subscription } from 'rxjs';
 import { CreateReq, UpdateReq, DeleteReq, GetReq, GetAllReq } from './contracts/requests';
 import { IResponseBody } from '../http/contracts/http-response-data';
@@ -16,9 +13,9 @@ import { filter } from 'rxjs/operators';
 import { GenericPaginatorDatasource } from '../helpers/paginator';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { TypeUtilHelper } from '../helpers/type-utils-helper';
-import { Collection } from '../utils/collection';
-import { EntityBaseHttpService } from './entity-base.service';
+import { DefaultEntityHandler } from './entity-base.service';
 import { Injectable, OnDestroy } from '@angular/core';
+import { IEntityServiceProvider } from '../contracts/entity-service-provider';
 
 // export abstract class AbstractEntity implements IEntity, Filtrable {
 
@@ -60,69 +57,84 @@ import { Injectable, OnDestroy } from '@angular/core';
 // }
 
 // tslint:disable-next-line: max-line-length
-type EntityPaginator<T> = { query: RessourcesEndpointQuery, builder: ISerializableBuilder<T>, path: string, provider: GenericPaginatorDatasource<T> };
+// tslint:disable-next-line: interface-over-type-literal
+type EntityPaginator<T> = {
+  query: RessourcesEndpointQuery, builder: ISerializableBuilder<T>, path: string, provider: GenericPaginatorDatasource<T>
+};
 
 /**
  * @description Add/Insert a new entry to the ressource storage
+ * @param provider [[IEntityServiceProvider]]
  * @param builder [[builder: ISerializableBuilder<T>]]
  * @param ressourcePath [[string]]
  * @param value [[any]]
  * @param params [[object|null]]
  */
-type Create<T> = (builder: ISerializableBuilder<T>, ressourcePath: string, value: any, params?: object) => Promise<IResponseBody | T>;
+// tslint:disable-next-line: max-line-length
+type Create<T> = (provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, ressourcePath: string, value: any, params?: object) => Promise<IResponseBody | T>;
 
 /**
  * @description Add/Insert a new entry to the ressource storage
+ * @param provider [[IEntityServiceProvider]]
  * @param ressourcePath [[string]]
  * @param value [[any[]]]
  * @param params [[object|null]]
  */
-type CreateMany = (ressourcePath: string, value: any[], params?: object) => Promise<IResponseBody>;
+type CreateMany = (provider: IEntityServiceProvider, ressourcePath: string, value: any[], params?: object) => Promise<IResponseBody>;
 
 
 /**
  * @description Update ressource in the data storage based on the ressource id
+ * @param provider [[IEntityServiceProvider]]
  * @param ressourcePath [[string]]
  * @param value [[object]]
  * @param id [[number]]
  * @param params [[object|null]]
  */
 type Update =
-  (ressourcePath: string, value: any, id?: string | number, params?: object) => Promise<IResponseBody>;
+  (provider: IEntityServiceProvider, ressourcePath: string, value: any, id?: string | number, params?: object) => Promise<IResponseBody>;
 
 /**
  * @description Delete ressource from storage using a provider implementations based ressource id or provided parameters
+ * provider [[IEntityServiceProvider]]
  * @param ressourcePath [[string]]
  * @param value [[object]]
  * @param id [[number]]
  * @param params [[object|null]]
  */
 type Delete =
-  (ressourcePath: string, id?: string | number, params?: object) => Promise<IResponseBody>;
+  (provider: IEntityServiceProvider, ressourcePath: string, id?: string | number, params?: object) => Promise<IResponseBody>;
 
 /**
  * @description Query for a ressource using the provided [[id]] parameter
+ * @param provider [[IEntityServiceProvider]]
  * @param builder [[ISerializableBuilder<T>]]
  * @param path [[string]]
  * @param id [[string|number|null]]
  * @param params [[object|null]]
  */
-type Get<T> = (builder: ISerializableBuilder<T>, path: string, id?: string | number, params?: object) => Promise<T>
+type Get<T> =
+  (provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, path: string, id?: string | number, params?: object) => Promise<T>;
 
 /**
  * @description Get/Returns a list of ressources from the data storage
+ * @param provider [[IEntityServiceProvider]]
  * @param builder [[ISerializableBuilder<T>]]
  * @param ressourcePath [[string]]
  * @param key [[string]]
  * @param params [[object]]
  */
-type GetAll<T> = (builder: ISerializableBuilder<T>, ressourcePath: string, params?: object, key?: string) => Promise<T[]>;
+type GetAll<T> =
+  (provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, ressourcePath: string, params?: object, key?: string)
+    => Promise<T[]>;
 
 /**
  * @description Type definition for entity CRUD handlers
  */
+// tslint:disable-next-line: interface-over-type-literal
 type EntityHandlers<T> = { create: Create<T>, createMany: CreateMany, update: Update, delete: Delete, get: Get<T>, getAll: GetAll<T> };
 
+// tslint:disable-next-line: interface-over-type-literal
 export type HandlersResultMsg = { success: () => void, error: (error: any) => void, warnings: (errors: any) => void, unknown?: () => void };
 
 @Injectable()
@@ -170,6 +182,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   /**
    * @description Get triggers when entity event gets completed
    */
+  // tslint:disable-next-line: variable-name
   public readonly _updateResult = new Subject<IResponseBody>();
   get updateResult$() {
     return this._updateResult.asObservable();
@@ -178,6 +191,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   /**
    * @description Get triggers when entity update/delete event gets completed
    */
+  // tslint:disable-next-line: variable-name
   public readonly _deleteResult = new Subject<IResponseBody>();
   get deleteResult$() {
     return this._deleteResult.asObservable();
@@ -186,6 +200,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   /**
    * @description Get triggers when entity /GET event gets completed
    */
+  // tslint:disable-next-line: variable-name
   public readonly _getResult = new Subject<T>();
   get getResult$() {
     return this._getResult.asObservable();
@@ -193,6 +208,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   /**
    * @description Get triggers when entity /GET event gets completed
    */
+  // tslint:disable-next-line: variable-name
   public readonly _getAllResult = new Subject<T[]>();
   get getAllResult$() {
     return this._getAllResult.asObservable();
@@ -223,9 +239,14 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    */
   protected handlers: EntityHandlers<T>;
 
+  /**
+   * @description Service provider for manipulating entity binded with this class
+   */
+  private provider: IEntityServiceProvider;
+
   constructor(
     private typeHelper: TypeUtilHelper,
-    httpProvider: EntityBaseHttpService<T>
+    httpProvider: DefaultEntityHandler<T>
   ) {
     this._subjects = [this.createRequest, this.updateRequest,
     this.deleteRequest, this._createResult, this._updateResult,
@@ -238,9 +259,26 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   }
 
   /**
+   * @description Setter method for [[provider]] property
+   * @param provider [[IEntityServiceProvider]]
+   */
+  public setProvider(provider: IEntityServiceProvider) {
+    this.provider = provider;
+    return this;
+  }
+
+  /**
+   * @description Getter method for [[provider]] property
+   */
+  public getProvider() {
+    return this.provider;
+  }
+
+  /**
    * @description [[hanlders]] property setter
    * @param _handlers [[EntityHandlers<T>]]
    */
+  // tslint:disable-next-line: variable-name
   public setHandlers(_handlers: EntityHandlers<T>) {
     this.handlers = _handlers;
     return this;
@@ -266,7 +304,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
         ).subscribe(async (source) => {
           try {
             // tslint:disable-next-line: max-line-length
-            this._createResult.next(await this.handlers.create(source.builder, source.req.path, source.req.body));
+            this._createResult.next(await this.handlers.create(this.provider, source.builder, source.req.path, source.req.body));
           } catch (error) {
             // Show an error message en case of error
             throw error;
@@ -277,7 +315,8 @@ export class AbstractEntityProvider<T> implements OnDestroy {
           filter((source) => this.typeHelper.isDefined(source))
         ).subscribe(async (source) => {
           try {
-            this._updateResult.next(await this.handlers.update(source.req.path, source.req.body, source.req.id, source.req.params))
+            // tslint:disable-next-line: max-line-length
+            this._updateResult.next(await this.handlers.update(this.provider, source.req.path, source.req.body, source.req.id, source.req.params));
           } catch (error) {
             // Show an error message en case of error
             throw error;
@@ -288,7 +327,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
           filter((source) => this.typeHelper.isDefined(source))
         ).subscribe(async (source) => {
           try {
-            this._deleteResult.next(await this.handlers.delete(source.req.path, source.req.id, source.req.params));
+            this._deleteResult.next(await this.handlers.delete(this.provider, source.req.path, source.req.id, source.req.params));
           } catch (error) {
             // Show an error message en case of error
             throw error;
@@ -299,7 +338,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
           filter((source) => this.typeHelper.isDefined(source))
         ).subscribe(async (source) => {
           try {
-            this._getResult.next(await this.handlers.get(source.builder, source.req.path, source.req.id, source.req.params));
+            this._getResult.next(await this.handlers.get(this.provider, source.builder, source.req.path, source.req.id, source.req.params));
           } catch (error) {
             // Show an error message en case of error
             throw error;
@@ -310,7 +349,8 @@ export class AbstractEntityProvider<T> implements OnDestroy {
           filter((source) => this.typeHelper.isDefined(source))
         ).subscribe(async (source) => {
           try {
-            this._getAllResult.next(await this.handlers.getAll(source.builder, source.req.path, source.req.params, source.req.dataKey));
+            // tslint:disable-next-line: max-line-length
+            this._getAllResult.next(await this.handlers.getAll(this.provider, source.builder, source.req.path, source.req.params, source.req.dataKey));
           } catch (error) {
             // Show an error message en case of error
             throw error;
