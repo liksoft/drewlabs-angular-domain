@@ -5,7 +5,7 @@ import { IResponseBody } from '../http/contracts/http-response-data';
 import { isDefined } from '../utils/type-utils';
 
 
-export interface ActionResponseParams {res: IResponseBody|boolean; okMsg?: string; badReqMsg?: string; errorMsg?: string; }
+export interface ActionResponseParams { res: IResponseBody | boolean; okMsg?: string; badReqMsg?: string; errorMsg?: string; }
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class AppUIStoreManager {
    * @description Service instance Initializer
    * @param uiStore [[AppUIStore]] Application UI store instance
    */
-  constructor(private uiStore: AppUIStore) {}
+  constructor(private uiStore: AppUIStore) { }
 
   get appUIStore(): AppUIStore {
     return this.uiStore;
@@ -33,7 +33,7 @@ export class AppUIStoreManager {
     if (alertConfigs) {
       this._alertConfigs = alertConfigs;
     } else {
-      this._alertConfigs = {type: '', showAlert: false};
+      this._alertConfigs = { type: '', showAlert: false };
     }
   }
 
@@ -64,16 +64,20 @@ export class AppUIStoreManager {
   }
 
   public onActionResponse(params: ActionResponseParams) {
-    if (typeof params.res === 'boolean') {
-      this.completeActionWithSuccess(params.okMsg);
-      return;
-    }
-    if (isDefined(params.res) && isDefined(params.okMsg) && params.res.statusOK) {
-      this.completeActionWithSuccess(params.okMsg);
-    } else if (isDefined(params.res) && isDefined(params.badReqMsg) && params.res.errors) {
-      this.completeActionWithWarning(params.badReqMsg);
-    } else if (isDefined(params.res) && isDefined(params.errorMsg)) {
-      this.completeActionWithWarning(params.errorMsg);
+    try {
+      if (typeof params.res === 'boolean') {
+        this.completeActionWithSuccess(params.okMsg);
+        return;
+      }
+      if (isDefined(params.res) && isDefined(params.okMsg)) {
+        this.completeActionWithSuccess(params.okMsg);
+      } else if (isDefined(params.res) && isDefined(params.badReqMsg) && params.res.errors) {
+        this.completeActionWithWarning(params.badReqMsg);
+      } else if (isDefined(params.res) && isDefined(params.errorMsg)) {
+        this.completeActionWithWarning(params.errorMsg);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 

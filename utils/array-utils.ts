@@ -66,7 +66,7 @@ export class ArrayUtils {
    */
   public static sort(
     items: Array<any>,
-    path: string[]|string,
+    path: string[] | string,
     order: number
   ): Array<any> {
     // Check if is not null
@@ -150,12 +150,29 @@ export class ArrayUtils {
     return (__.intersection(lhs, rhs) as any[]);
   }
 
+  public static equals(lhs: any[], rhs: any[]) {
+    let equals = true;
+    if (lhs.length !== rhs.length) {
+      equals = false;
+    } else {
+      // comapring each element of array
+      for (const i of lhs) {
+        if (!rhs.includes(i)) {
+          console.log(i);
+          equals = false;
+          break;
+        }
+      }
+    }
+    return equals;
+  }
+
   /**
    * @description Returns boolean result depending on wheter all values of the second array are in the first array
    * @param lhs [[any[]]]
    * @param rhs [[any[]]]
    */
   public static containsAll(lhs: any[], rhs: any[]) {
-    return ArrayUtils.intersect(lhs, rhs) === rhs;
+    return ArrayUtils.equals(ArrayUtils.intersect(lhs, rhs), rhs);
   }
 }

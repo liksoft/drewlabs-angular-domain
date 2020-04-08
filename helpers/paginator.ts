@@ -163,6 +163,8 @@ export abstract class ClrPaginationViewComponent<T> extends AbstractAlertableCom
   selectedItem = new EventEmitter<T>();
   deleteItem = new EventEmitter<T>();
   public currentGridState: ClrDatagridStateInterface;
+  // tslint:disable-next-line: variable-name
+  private _inlineQuery: string;
 
   constructor(
     injector: Injector,
@@ -174,6 +176,10 @@ export abstract class ClrPaginationViewComponent<T> extends AbstractAlertableCom
     this.translate = injector.get(TranslationService);
   }
 
+  set inlineQuery(value: string) {
+    this._inlineQuery = value;
+  }
+
   /**
    * Register observables and provides listeners to paginator state events
    */
@@ -183,14 +189,16 @@ export abstract class ClrPaginationViewComponent<T> extends AbstractAlertableCom
     // Subscribe to refresh and of the datagrid and debounce reload for 1 seconds
     this.uiStoreSubscriptions.push(this.dataGrid.refresh.asObservable().pipe(
       debounceTime(500),
-      distinctUntilChanged(),
+      // distinctUntilChanged(),
       switchMap((state) => from(this.refresh(state))),
     ).subscribe(async (state) => {
       try {
+        this.appUIStoreManager.initializeUIStoreAction();
         this.source = await (this.provider)
           .resetScope()
           .setResponseJsonKey(this.ressourcesJsonKey)
           .setRessourcePath(this.ressourcesPath)
+          .setInlineQuery(this._inlineQuery)
           .setBuider(this.builder)
           .setQueryParameters(Object.assign(state.filters))
           .getItems(state.params);

@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
+// tslint:disable-next-line: interface-over-type-literal
+export type TranslationParms = {keys: string[], translateParams: object};
+
 @Injectable()
 export class TranslationService {
   constructor(public readonly provider: TranslateService) {}

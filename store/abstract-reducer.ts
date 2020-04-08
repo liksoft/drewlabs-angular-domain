@@ -1,11 +1,9 @@
 import { EventEmitter } from '@angular/core';
 import { List } from 'immutable';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { IEntity } from '../entity';
 import { IReducer, IAction } from '.';
 import { Collection } from '../utils/collection';
 import { ICollection } from '../contracts/collection-interface';
-import { Items } from '@clr/angular/data/datagrid/providers/items';
 import { isDefined } from '../utils/type-utils';
 
 export interface IPayload {
@@ -59,10 +57,10 @@ export function addToStoreHandler<T>(items: List<T>, item: T): List<T> {
  * @param needle [[any]]
  * @param newVal [[object]]
  */
-export function updateEntityByKeyHandler<T extends IEntity>(items: List<T>, key: number | string, needle: any, newVal: object): List<T> {
+export function updateEntityByKeyHandler<T>(items: List<T>, key: number | string, needle: any, newVal: object): List<T> {
   const index = items.findIndex((value: T) => value[key] === needle);
   const item = items.get(index);
-  item.fromEntries(newVal);
+  // item.fromEntries(newVal);
   return items.set(index, item);
 }
 
@@ -121,6 +119,4 @@ export abstract class AbstractReducer<T> implements IReducer<T> {
 }
 
 
-export abstract class AbstractEntityReducer<T extends IEntity> extends AbstractReducer<T> implements IReducer<IEntity> {
-
-}
+export abstract class AbstractEntityReducer<T> extends AbstractReducer<T> implements IReducer<any> {}

@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, Injector, EventEmitter } from '@angular/core';
+import { Injectable, OnDestroy, Injector, EventEmitter, Inject } from '@angular/core';
 // import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { FormService } from '../components/dynamic-inputs/core/form-control/form.service';
 import { isDefined } from '../utils/type-utils';
@@ -13,10 +13,12 @@ import { AbstractAlertableComponent } from 'src/app/lib/domain/helpers/component
 import { FormGroup } from '@angular/forms';
 import { IEntity } from '../entity/contracts/entity';
 import { TypeUtilHelper } from './type-utils-helper';
-import { AppUIStoreManager } from './app-ui-store-manager.service';
+import { AppUIStoreManager, ActionResponseParams } from './app-ui-store-manager.service';
 import { ArrayUtils } from '../utils/array-utils';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { IDynamicForm } from '../components/dynamic-inputs/core/contracts/dynamic-form';
+import { IResponseBody } from '../http/contracts/http-response-data';
+import { TranslationParms } from '../translator/translator.service';
 
 /**
  * @description Definition of form request configuration object
@@ -171,9 +173,11 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
       ...[
         // Register to form loading event response
         this.formHelper.formLoaded$.pipe(
-          filter((form) => this.typeHelper.isDefined(form) && (
-            ArrayUtils.containsAll(form.keys(), this.getFormConfigs().map(i => i.label))
-          ))
+          filter((form) => {
+            return this.typeHelper.isDefined(form) && (
+              ArrayUtils.containsAll(form.keys(), this.getFormConfigs().map(i => i.label))
+            );
+          })
         )
           .subscribe((forms) => {
             if (forms) {
@@ -230,7 +234,7 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
    * @overridable
    * @param value [[object|any]]
    */
-  protected onFormGroupRawValue(value: object|any) {
+  protected onFormGroupRawValue(value: object | any) {
     return value;
   }
 
@@ -240,5 +244,114 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
    */
   protected suscribeToFormControlChanges() {
     // Provide method implementation in subclasse if needed
+  }
+}
+
+/**
+ * @description Provides basic implementation for form view component containers, handling create,
+ * update, and delete operation at the lower level
+ */
+export abstract class FormViewContainerComponent<T> extends AbstractAlertableComponent {
+
+  // // tslint:disable-next-line: no-inferrable-types
+  // public selected: T;
+  private publishers: Subject<any>[] = [];
+  public typeHelper: TypeUtilHelper;
+  // tslint:disable-next-line: variable-name
+  private _translate: TranslationService;
+
+  constructor(
+    injector: Injector,
+    // tslint:disable-next-line: variable-name
+    private _entityProvider: AbstractEntityProvider<T>,
+    // tslint:disable-next-line: variable-name
+    private _tranlationConfigs: TranslationParms
+  ) {
+    super(injector.get(AppUIStoreManager));
+    this.typeHelper = injector.get(TypeUtilHelper);
+    this._translate = injector.get(TranslationService);
+  }
+
+  async initState() {
+    this.publishers.push(
+      ...[
+        this._entityProvider.deleteRequest,
+      ]
+    );
+    this._entityProvider.subscribe();
+    const translations = await this._translate.loadTranslations(this._tranlationConfigs.keys, this._tranlationConfigs.translateParams);
+    this.uiStoreSubscriptions.push(
+      ...[
+        this._entityProvider.deleteResult$.pipe(
+          filter((source) => this.typeHelper.isDefined(source))
+        ).subscribe((res) => {
+          this.onDeleteActionResult(res);
+        }, _ => this.appUIStoreManager.completeActionWithError(`${translations.serverRequestFailed}`)),
+
+        this._entityProvider.createResult$.pipe(
+          filter((form) => this.typeHelper.isDefined(form))
+        ).subscribe((res) => {
+          this.onCreateActionResult(res);
+        }, _ => this.appUIStoreManager.completeActionWithError(`${translations.serverRequestFailed}`)),
+        this._entityProvider.updateResult$.pipe(
+          filter((source) => this.typeHelper.isDefined(source))
+        ).subscribe((res) => {
+          this.onUpdateActionResult(res);
+        }, _ => this.appUIStoreManager.completeActionWithError(`${translations.serverRequestFailed}`)),
+      ]);
+  }
+
+  /**
+   * @description [[_entityProvider]] property getter
+   */
+  get entityProvider() {
+    return this._entityProvider;
+  }
+
+  /**
+   * @description [[_translate]] property getter
+   */
+  get translate() {
+    return this._translate;
+  }
+
+  /**
+   * @description [[_tranlationConfigs]] property getter
+   */
+  get tranlationConfigs() {
+    return this._tranlationConfigs;
+  }
+
+  /**
+   * @description Provides action to be executed when a delete action get completed successfully.
+   * By default it only show result message to UI
+   * @evrridable
+   * @param result [[IResponseBody]]
+   */
+  async onDeleteActionResult(result: IResponseBody) {
+    const translations = await this._translate.loadTranslations(this._tranlationConfigs.keys, this._tranlationConfigs.translateParams);
+    this.appUIStoreManager.onActionResponse({
+      res: result,
+      okMsg: translations.successfulRequest,
+      badReqMsg: `${translations.invalidRequestParams}`,
+    } as ActionResponseParams);
+  }
+
+  /**
+   * @description Provides implentations of update result handler that gets call when update request get completed
+   * @param result [[IResponseBody]]
+   */
+  abstract async onUpdateActionResult(result: IResponseBody): Promise<void>;
+
+  /**
+   * @description Provides implentations of create result handler that gets call when create request get completed
+   * @param result [[IResponseBody]]
+   */
+  abstract async onCreateActionResult(result: IResponseBody | T | boolean): Promise<void>;
+
+  dispose() {
+    this._entityProvider.unsubscribe().onCompleActionListeners(this.publishers);
+    this.clearUIActionSubscriptions();
+    this.resetUIStore();
   }
 }
