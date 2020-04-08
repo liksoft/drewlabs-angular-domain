@@ -193,7 +193,7 @@ export abstract class ClrPaginationViewComponent<T> extends AbstractAlertableCom
       switchMap((state) => from(this.refresh(state))),
     ).subscribe(async (state) => {
       try {
-        this.appUIStoreManager.initializeUIStoreAction();
+        // this.appUIStoreManager.initializeUIStoreAction();
         this.source = await (this.provider)
           .resetScope()
           .setResponseJsonKey(this.ressourcesJsonKey)
