@@ -1,10 +1,17 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, Injector, EventEmitter } from '@angular/core';
 import { IDataSourceService, ISource, ISourceRequestQueryParameters } from '../components/ng-data-table/ng-data-table.component';
 import { HttpGetAllRequestFn, RequestClient } from '../contracts/abstract-request-client';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { HttpRequestService, ResponseData, IResponseBody, ResponseBody } from '../http/core';
 import { SessionStorage } from '../storage/core';
 import { isArray, isDefined } from '../utils/type-utils';
+import { AppUIStoreManager } from './app-ui-store-manager.service';
+import { AbstractAlertableComponent } from './component-interfaces';
+import { Dialog } from '../utils/window-ref';
+import { TranslationService } from '../translator/translator.service';
+import { debounceTime, switchMap, distinctUntilChanged } from 'rxjs/operators';
+import { ClrDatagrid, ClrDatagridStateInterface } from '@clr/angular';
+import { from } from 'rxjs';
 
 @Injectable()
 export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource<T>>, OnDestroy {
@@ -141,5 +148,110 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
 
   ngOnDestroy(): void {
     this.resetScope();
+  }
+}
+
+
+export abstract class ClrPaginationViewComponent<T> extends AbstractAlertableComponent {
+
+  private dialog: Dialog;
+  private translate: TranslationService;
+  public dataGrid: ClrDatagrid;
+  public source: ISource<T>;
+  public ressourcesPath: string;
+  public ressourcesJsonKey: string;
+  selectedItem = new EventEmitter<T>();
+  deleteItem = new EventEmitter<T>();
+  public currentGridState: ClrDatagridStateInterface;
+
+  constructor(
+    injector: Injector,
+    readonly provider: GenericPaginatorDatasource<T>,
+    private builder: ISerializableBuilder<T>
+  ) {
+    super(injector.get(AppUIStoreManager));
+    this.dialog = injector.get(Dialog);
+    this.translate = injector.get(TranslationService);
+  }
+
+  /**
+   * Register observables and provides listeners to paginator state events
+   */
+  initState() {
+    this.subscribeToUIActions();
+    this.appUIStoreManager.initializeUIStoreAction();
+    // Subscribe to refresh and of the datagrid and debounce reload for 1 seconds
+    this.uiStoreSubscriptions.push(this.dataGrid.refresh.asObservable().pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      switchMap((state) => from(this.refresh(state))),
+    ).subscribe(async (state) => {
+      try {
+        this.source = await (this.provider)
+          .resetScope()
+          .setResponseJsonKey(this.ressourcesJsonKey)
+          .setRessourcePath(this.ressourcesPath)
+          .setBuider(this.builder)
+          .setQueryParameters(Object.assign(state.filters))
+          .getItems(state.params);
+        this.appUIStoreManager.completeUIStoreAction();
+      } catch (error) {
+        this.appUIStoreManager.completeUIStoreAction();
+      }
+    }));
+  }
+
+  /**
+   * @description Handle user click event to update entity values
+   * @param item [[T]]
+   */
+  async onSelectedItem(item: T) {
+    this.selectedItem.emit(item);
+  }
+
+  /**
+   * @description Handle user click events to delete entity
+   * @param config [[T]]
+   */
+  async onDeleteItem(config: T) {
+    const translations = await this.translate.loadTranslations(['prompt']);
+    if (this.dialog.confirm(translations.prompt)) {
+      this.deleteItem.emit(config);
+    }
+  }
+
+  /**
+   * @description Handler for the ClrDataGrid refresh event
+   * @param state [[ClrDatagridStateInterface]]
+   */
+  public async refresh(state: ClrDatagridStateInterface) {
+    // We convert the filters from an array to a map,
+    // because that's what our backend-calling service is expecting
+    this.currentGridState = state;
+    // We convert the filters from an array to a map,
+    // because that's what our backend-calling service is expecting
+    const filters: { [prop: string]: any[] } = {};
+    let params: ISourceRequestQueryParameters = {} as ISourceRequestQueryParameters;
+    if (state.filters) {
+      for (const filter of state.filters) {
+        const { property, value } = filter as { property: string, value: string };
+        filters[property] = [value];
+      }
+    }
+    if (state.page) {
+      params = {
+        page: state.page.current,
+        perPage: state.page.size
+      };
+    }
+    return { filters, params };
+  }
+
+  dgRefesh() {
+    this.dataGrid.refresh.emit(this.currentGridState);
+  }
+
+  dispose() {
+    this.resetUIStore();
   }
 }

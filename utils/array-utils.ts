@@ -140,4 +140,22 @@ export class ArrayUtils {
   public static isArray(value: any): boolean {
     return Array.isArray(value);
   }
+
+  /**
+   * @description Returns the intersection of two array
+   * @param lhs [[any[]]]
+   * @param rhs [[any[]]]
+   */
+  public static intersect(lhs: any[], rhs: any[]) {
+    return (__.intersection(lhs, rhs) as any[]);
+  }
+
+  /**
+   * @description Returns boolean result depending on wheter all values of the second array are in the first array
+   * @param lhs [[any[]]]
+   * @param rhs [[any[]]]
+   */
+  public static containsAll(lhs: any[], rhs: any[]) {
+    return ArrayUtils.intersect(lhs, rhs) === rhs;
+  }
 }

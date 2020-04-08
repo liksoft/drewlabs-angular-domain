@@ -1,4 +1,3 @@
-import { IEntity } from './entity-interface';
 import {List} from 'immutable';
 import { Observable } from 'rxjs';
 
