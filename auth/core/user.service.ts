@@ -9,6 +9,7 @@ import { ResponseData } from '../../http/core';
 export interface PasswordResetBody {
   password: string;
   password_confirmation: string;
+  qwqe: string;
 }
 
 /**
