@@ -9,7 +9,7 @@ import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { AbstractAlertableComponent } from './component-interfaces';
 import { Dialog } from '../utils/window-ref';
 import { TranslationService } from '../translator/translator.service';
-import { debounceTime, switchMap, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, switchMap } from 'rxjs/operators';
 import { ClrDatagrid, ClrDatagridStateInterface } from '@clr/angular';
 import { from } from 'rxjs';
 
@@ -20,8 +20,6 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
   private _getMethod: HttpGetAllRequestFn;
   // tslint:disable-next-line: variable-name
   private _ressourcePath: string;
-  // // tslint:disable-next-line: variable-name
-  // private _cacheKey: string;
   // tslint:disable-next-line: variable-name
   public _status: number;
   // tslint:disable-next-line: variable-name
@@ -151,6 +149,7 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
   }
 }
 
+export interface ToExcelHeaderEventArgs {data: object[]; headers: { [index: string]: string }; datefield?: string[] };
 export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableComponent {
 
   private dialog: Dialog;
@@ -162,9 +161,13 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
   selectedItem = new EventEmitter<T>();
   deleteItem = new EventEmitter<T>();
   createItem = new EventEmitter<object>();
-  public currentGridState: ClrDatagridStateInterface;
+  exportToExcel = new EventEmitter<ToExcelHeaderEventArgs>();
+  currentGridState: ClrDatagridStateInterface;
   // tslint:disable-next-line: variable-name
   private _inlineQuery: string;
+  protected showLoader = true;
+
+  defaultClrPaginatorSizeOptions = [10, 50, 100, 500, 1000];
 
   constructor(
     injector: Injector,
@@ -185,7 +188,9 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
    */
   initState() {
     this.subscribeToUIActions();
-    this.appUIStoreManager.initializeUIStoreAction();
+    // if (this.showLoader) {
+    //   this.appUIStoreManager.initializeUIStoreAction();
+    // }
     // Subscribe to refresh and of the datagrid and debounce reload for 1 seconds
     this.uiStoreSubscriptions.push(this.dataGrid.refresh.asObservable().pipe(
       debounceTime(500),
@@ -193,7 +198,9 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
       switchMap((state) => from(this.refresh(state))),
     ).subscribe(async (state) => {
       try {
-        this.appUIStoreManager.initializeUIStoreAction();
+        if (this.showLoader) {
+          this.appUIStoreManager.initializeUIStoreAction();
+        }
         this.source = await (this.provider)
           .resetScope()
           .setResponseJsonKey(this.ressourcesJsonKey)
@@ -248,6 +255,7 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
    */
   onExportToExcel() {
     // Provide implementation for excel data exportation
+    throw new Error('UnImplement method calls...');
   }
 
   /**

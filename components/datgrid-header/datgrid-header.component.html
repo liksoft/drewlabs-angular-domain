@@ -12,7 +12,7 @@
 </div>
 <div class="btn-group" *ngIf="showExportDropdown">
   <clr-dropdown>
-    <button type="button" [class]="buttonClass" clrDropdownTrigger>
+    <button type="button" [disabled]="excelDropDownDisabled" [class]="buttonClass" clrDropdownTrigger>
       Exporter
       <clr-icon shape="caret down"></clr-icon>
     </button>
