@@ -41,7 +41,6 @@ export class MomentUtils {
   public static isAfter(date1: Date | string, date2: Date | string): boolean {
     const firstDate = MomentUtils.parseDate(date1);
     const secondDate = MomentUtils.parseDate(date2);
-    console.log(moment(firstDate, this.longDateFormat()).isAfter(moment(secondDate, this.longDateFormat())));
     return moment(firstDate, this.longDateFormat()).isAfter(moment(secondDate, this.longDateFormat()));
   }
 
@@ -88,7 +87,6 @@ export class MomentUtils {
       }
       return date;
     } catch (error) {
-      console.log(error);
       throw Error('Invalid date input');
     }
   }

@@ -4,7 +4,7 @@ import { FormService } from '../components/dynamic-inputs/core/form-control/form
 import { isDefined } from '../utils/type-utils';
 import { TranslationService } from '../translator';
 import { DynamicFormHelpers, ComponentReactiveFormHelpers } from './component-reactive-form-helpers';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, BehaviorSubject } from 'rxjs';
 import { ICollection } from '../contracts/collection-interface';
 import { filter } from 'rxjs/operators';
 import { Collection } from '../utils/collection';
@@ -33,6 +33,7 @@ export interface IFormRequestConfig {
 })
 export class FormHelperService implements OnDestroy {
 
+  private inMemoryFormCollection: ICollection<IDynamicForm> = new Collection();
   /**
    * @description Load dynamic form subject instance
    * @var [[BehaviorSubject]]
@@ -80,13 +81,36 @@ export class FormHelperService implements OnDestroy {
         filter((source) => isDefined(source))
       ).subscribe(async (source) => {
         try {
-          const values = await Promise.all(source.configs.map((i) => this.getFormById(i.id)));
           const collection: ICollection<IDynamicForm> = new Collection();
-          source.configs.forEach((item) => { collection.add(item.label, values[source.configs.indexOf(item)]); });
+          // Get list of form ids that are not in the in-memory forms collection
+          const configs = source.configs.filter((item) => {
+            return !isDefined(this.inMemoryFormCollection.get(item.id.toString()));
+          });
+          // Get list of form ids that are in the in-memory forms collection
+          const inmemoryConfigs = source.configs.filter((item) => {
+            return isDefined(this.inMemoryFormCollection.get(item.id.toString()));
+          });
+          // Get form configurations that are not in the in-memory forms' collection from the backend provider
+          const values = await Promise.all(configs.map((i) => this.getFormById(i.id)));
+          configs.forEach((item) => {
+            collection.add(item.label, values[configs.indexOf(item)]);
+            // Add loaded form configurations to the in-memory collection
+            this.inMemoryFormCollection.add(item.id.toString(), values[configs.indexOf(item)]);
+          });
+          inmemoryConfigs.forEach((item) => {
+            // Get the dynamic form configuration from the in-memory forms' collection
+            collection.add(item.label, this.inMemoryFormCollection.get(item.id.toString()));
+          });
           this._formLoaded.next(collection);
           if (isDefined(source.result.success)) {
             source.result.success();
           }
+          // const values = await Promise.all(source.configs.map((i) => this.getFormById(i.id)));
+          // source.configs.forEach((item) => { collection.add(item.label, values[source.configs.indexOf(item)]); });
+          // this._formLoaded.next(collection);
+          // if (isDefined(source.result.success)) {
+          //   source.result.success();
+          // }
         } catch (error) {
           if (isDefined(source.result.error)) {
             throw source.result.error(error);
@@ -124,7 +148,7 @@ export class FormHelperService implements OnDestroy {
  */
 export abstract class FormsViewComponent<T extends IEntity> extends AbstractAlertableComponent {
 
-  form: IDynamicForm;
+  submissionEndpointURL: string;
   componentFormGroup: FormGroup;
   public selected: T;
   public publishers: Subject<any>[] = [];
@@ -199,12 +223,12 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
       this.appUIStoreManager.initializeUIStoreAction();
       if (!this.typeHelper.isDefined(this.selected)) {
         this.entityProvider.createRequest.next({
-          builder: this.builder, req: { path: this.form.endpointURL, body: obj }
+          builder: this.builder, req: { path: this.submissionEndpointURL, body: obj }
         });
       } else {
         this.entityProvider.updateRequest.next({
           // tslint:disable-next-line: max-line-length
-          builder: this.builder, req: { path: this.form.endpointURL, body: obj, id: this.selected.id }
+          builder: this.builder, req: { path: this.submissionEndpointURL, body: obj, id: this.selected.id }
         });
       }
     }

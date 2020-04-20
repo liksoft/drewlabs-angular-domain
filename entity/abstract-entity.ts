@@ -5,56 +5,12 @@ import { ISource } from '../components/ng-data-table/ng-data-table.component';
 import { RessourcesEndpointQuery } from '../components/ng-data-table/contracts/ressources-enpoint-query';
 import { isDefined } from '../utils/type-utils';
 import { filter } from 'rxjs/operators';
-
-// import { ICollection } from '../contracts/collection-interface';
-// import { IEntity } from './entity-interface';
-// import { Filtrable } from '../contracts/filtrable';
-// import { Collection } from '../utils/collection';
 import { GenericPaginatorDatasource } from '../helpers/paginator';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { TypeUtilHelper } from '../helpers/type-utils-helper';
-import { DefaultEntityHandler } from './entity-base.service';
+import { DefaultEntityHandler } from './entity-handler-provider';
 import { Injectable, OnDestroy } from '@angular/core';
 import { IEntityServiceProvider } from '../contracts/entity-service-provider';
-
-// export abstract class AbstractEntity implements IEntity, Filtrable {
-
-//   protected fillables = [];
-
-//   /**
-//    * @inheritdoc
-//    */
-//   toMap(): object | ICollection<any> {
-//     const collection = new Collection<any>();
-//     this.fillables.forEach(value => {
-//       collection.add(value, this[value]);
-//     });
-//     return collection;
-//   }
-
-//   /**
-//    * @inheritdoc
-//    */
-//   fromEntries(entry: object) {
-//     for (const [k, v] of Object.entries(entry)) {
-//       if (this.fillables.indexOf(k) !== -1) {
-//         this[k] = v;
-//       }
-//     }
-//     return this;
-//   }
-//   /**
-//    * @inheritdoc
-//    */
-//   getEntityKey(): string {
-//     return 'id';
-//   }
-
-//   has(key: string, value: any): boolean {
-//     const item = this[key];
-//     return (item.toString() as string).includes(value);
-//   }
-// }
 
 // tslint:disable-next-line: max-line-length
 // tslint:disable-next-line: interface-over-type-literal
