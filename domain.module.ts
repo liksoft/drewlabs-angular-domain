@@ -21,6 +21,7 @@ import { TranslatorHelperService } from './helpers/translator-helper';
 import { FileHelperService } from './helpers/file-helper.service';
 import { DateTimeHelper } from './helpers/date-time-helper';
 import { MonthParserPipe } from './pipes/month-parser.pipe';
+import { DatagridHeaderModule } from './components/datgrid-header/datagrid-header.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -34,7 +35,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AppHttpModule.forRoot(),
     AuthModule.forRoot(),
     CoreComponentModule.forRoot(),
-    TranslateModule
+    TranslateModule,
+    DatagridHeaderModule
   ],
   exports: [
     StorageModule,
@@ -51,7 +53,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TranslateModule,
     DrewlabsDisableControlDirective,
     PositiveNumber,
-    MonthParserPipe
+    MonthParserPipe,
+    DatagridHeaderModule
   ],
   declarations: [
     AmountFormatterPipe,

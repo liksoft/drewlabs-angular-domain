@@ -1,0 +1,24 @@
+<div class="btn-group">
+  <button type="button" [disabled]="createButtonDisabled" [class]="buttonClass" (click)="createEvent.emit({})">
+    <clr-icon shape="plus"></clr-icon> Nouveau
+  </button>
+  <button type="button" [disabled]="refreshButtonDisabled" [class]="buttonClass" (click)="refreshEvent.emit({})">
+    <clr-icon shape="refresh"></clr-icon> Actualiser
+  </button>
+  <drewlabs-ressource-assignment *ngIf="showAssignmentButton" (assignmentCompletedSuccessfully)="assigned.emit({})"
+    [collectionID]="assignableEntity" [permission]="permissions" [buttonDisabled]="assignmentButtonDisabled"
+    [selectedIds]="selectedIds" [triggerButtonClass]="buttonClass">
+  </drewlabs-ressource-assignment>
+</div>
+<div class="btn-group" *ngIf="showExportDropdown">
+  <clr-dropdown>
+    <button type="button" [class]="buttonClass" clrDropdownTrigger>
+      Exporter
+      <clr-icon shape="caret down"></clr-icon>
+    </button>
+    <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+      <button type="button" (click)="exportToExcelEvent.emit({})" clrDropdownItem>Exporter les
+        données</button>
+    </clr-dropdown-menu>
+  </clr-dropdown>
+</div>

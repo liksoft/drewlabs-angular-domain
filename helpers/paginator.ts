@@ -151,8 +151,7 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
   }
 }
 
-
-export abstract class ClrPaginationViewComponent<T> extends AbstractAlertableComponent {
+export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableComponent {
 
   private dialog: Dialog;
   private translate: TranslationService;
@@ -162,6 +161,7 @@ export abstract class ClrPaginationViewComponent<T> extends AbstractAlertableCom
   public ressourcesJsonKey: string;
   selectedItem = new EventEmitter<T>();
   deleteItem = new EventEmitter<T>();
+  createItem = new EventEmitter<object>();
   public currentGridState: ClrDatagridStateInterface;
   // tslint:disable-next-line: variable-name
   private _inlineQuery: string;
@@ -193,7 +193,7 @@ export abstract class ClrPaginationViewComponent<T> extends AbstractAlertableCom
       switchMap((state) => from(this.refresh(state))),
     ).subscribe(async (state) => {
       try {
-        // this.appUIStoreManager.initializeUIStoreAction();
+        this.appUIStoreManager.initializeUIStoreAction();
         this.source = await (this.provider)
           .resetScope()
           .setResponseJsonKey(this.ressourcesJsonKey)
@@ -226,6 +226,28 @@ export abstract class ClrPaginationViewComponent<T> extends AbstractAlertableCom
     if (this.dialog.confirm(translations.prompt)) {
       this.deleteItem.emit(config);
     }
+  }
+
+  entityAssignmentCompleted() {
+    this.dgRefesh();
+    setTimeout(() => {
+      this.appUIStoreManager.completeUIStoreAction();
+    }, 3000);
+  }
+
+  /**
+   * @description Responds to user create new action
+   */
+  onCreateItem() {
+    this.createItem.emit({});
+  }
+
+  /**
+   * @description Override this function to provide data exportation to class extending this class
+   * @overridable
+   */
+  onExportToExcel() {
+    // Provide implementation for excel data exportation
   }
 
   /**
