@@ -168,6 +168,8 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
   protected showLoader = true;
 
   defaultClrPaginatorSizeOptions = [10, 50, 100, 500, 1000];
+  // List of filters to be binded before querying ressources
+  protected filters: {[index: string]: any} = {};
 
   constructor(
     injector: Injector,
@@ -207,7 +209,7 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
           .setRessourcePath(this.ressourcesPath)
           .setInlineQuery(this._inlineQuery)
           .setBuider(this.builder)
-          .setQueryParameters(Object.assign(state.filters))
+          .setQueryParameters(Object.assign(state.filters, this.filters))
           .getItems(state.params);
         this.appUIStoreManager.completeUIStoreAction();
       } catch (error) {
