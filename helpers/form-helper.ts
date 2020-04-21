@@ -1,5 +1,4 @@
 import { Injectable, OnDestroy, Injector, EventEmitter, Inject } from '@angular/core';
-// import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { FormService } from '../components/dynamic-inputs/core/form-control/form.service';
 import { isDefined } from '../utils/type-utils';
 import { TranslationService } from '../translator';
@@ -226,10 +225,14 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
           builder: this.builder, req: { path: this.submissionEndpointURL, body: obj }
         });
       } else {
-        this.entityProvider.updateRequest.next({
-          // tslint:disable-next-line: max-line-length
-          builder: this.builder, req: { path: this.submissionEndpointURL, body: obj, id: this.selected.id }
-        });
+        if (this.typeHelper.isDefined(this.selected)) {
+          this.entityProvider.updateRequest.next({
+            // tslint:disable-next-line: max-line-length
+            builder: this.builder, req: { path: this.submissionEndpointURL, body: obj, id: this.selected.id }
+          });
+        } else {
+          this.appUIStoreManager.completeActionWithWarning(`Please set the selected attribute on the current component`);
+        }
       }
     }
   }
@@ -277,9 +280,7 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
  */
 export abstract class FormViewContainerComponent<T> extends AbstractAlertableComponent {
 
-  // // tslint:disable-next-line: no-inferrable-types
-  // public selected: T;
-  private publishers: Subject<any>[] = [];
+  protected publishers: Subject<any>[] = [];
   public typeHelper: TypeUtilHelper;
   // tslint:disable-next-line: variable-name
   private _translate: TranslationService;

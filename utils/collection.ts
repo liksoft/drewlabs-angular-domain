@@ -44,6 +44,14 @@ export class Collection<T> implements ICollection<T> {
   get(key: string): T {
     return this.items[key];
   }
+
+  /**
+   * @inheritdoc
+   */
+  set(key: string, value: T) {
+    this.items[key] = value;
+  }
+
   /**
    * @inheritdoc
    */

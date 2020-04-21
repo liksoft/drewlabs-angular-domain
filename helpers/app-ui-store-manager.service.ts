@@ -69,15 +69,15 @@ export class AppUIStoreManager {
         this.completeActionWithSuccess(params.okMsg);
         return;
       }
-      if (isDefined(params.res) && isDefined(params.okMsg)) {
-        this.completeActionWithSuccess(params.okMsg);
-      } else if (isDefined(params.res) && isDefined(params.badReqMsg) && params.res.errors) {
+      if (isDefined(params.res) && isDefined(params.badReqMsg) && params.res.errors) {
         this.completeActionWithWarning(params.badReqMsg);
+      } else if (isDefined(params.res) && isDefined(params.okMsg)) {
+        this.completeActionWithSuccess(params.okMsg);
       } else if (isDefined(params.res) && isDefined(params.errorMsg)) {
         this.completeActionWithWarning(params.errorMsg);
       }
     } catch (error) {
-      console.log(error);
+      this.completeActionWithWarning(params.errorMsg);
     }
   }
 

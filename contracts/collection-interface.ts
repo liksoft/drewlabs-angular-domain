@@ -20,6 +20,14 @@ export interface ICollection<T> {
    * @param key [[string]] index key of the item
    */
   get(key: string): T;
+
+  /**
+   * @description Set the value of a given key in the collection
+   * @param key Collection item key
+   * @param value Collection item new value
+   */
+  set(key: string, value: T): void;
+
   /**
    * @description Returns the list of keys contains in the collection
    */
