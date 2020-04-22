@@ -79,7 +79,6 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.control.status.toLowerCase() === 'disabled' ? this.disabled = true : this.disabled = false;
     if (this.preferredCountries.length > 0) {
       this.preferredCountries.forEach(iso2 => {
         const preferredCountry = this.allCountries.filter(c => {
@@ -93,6 +92,10 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       });
     }
     this._initializePhoneNumberControl();
+    if (this.control.status.toLowerCase() === 'disabled') {
+      this.phoneControl.disable({ onlySelf: true });
+      this.disabled = true;
+    }
     // Set the preferred countries
     this.phoneControlSubscription = this.phoneControl.valueChanges.subscribe(
       state => {
@@ -102,15 +105,14 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       }
     );
     this.control.valueChanges.subscribe((state) => {
-      // this.control.status.toLowerCase() === 'disabled' ? this.disabled = true : this.disabled = false;
       if (this.control.status.toLowerCase() === 'disabled') {
-        if (this.phoneControl.status.toLowerCase() !== 'disabled' ) {
-          this.phoneControl.disable({onlySelf: true});
+        if (this.phoneControl.status.toLowerCase() !== 'disabled') {
+          this.phoneControl.disable({ onlySelf: true });
         }
         this.disabled = true;
       } else {
-        if (this.phoneControl.status.toLowerCase() === 'disabled' ) {
-          this.phoneControl.enable({onlySelf: true});
+        if (this.phoneControl.status.toLowerCase() === 'disabled') {
+          this.phoneControl.enable({ onlySelf: true });
         }
         this.disabled = false;
       }
