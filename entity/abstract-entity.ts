@@ -8,9 +8,9 @@ import { filter } from 'rxjs/operators';
 import { GenericPaginatorDatasource } from '../helpers/paginator';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { TypeUtilHelper } from '../helpers/type-utils-helper';
-import { DefaultEntityHandler } from './entity-handler-provider';
 import { Injectable, OnDestroy } from '@angular/core';
 import { IEntityServiceProvider } from '../contracts/entity-service-provider';
+import { DefaultEntityHandler } from './entity-handler-provider';
 
 // tslint:disable-next-line: max-line-length
 // tslint:disable-next-line: interface-over-type-literal
@@ -202,15 +202,15 @@ export class AbstractEntityProvider<T> implements OnDestroy {
 
   constructor(
     private typeHelper: TypeUtilHelper,
-    httpProvider: DefaultEntityHandler<T>
+    entityHandler: DefaultEntityHandler<T>
   ) {
     this._subjects = [this.createRequest, this.updateRequest,
     this.deleteRequest, this._createResult, this._updateResult,
     this._deleteResult, this._paginatorDataSource, this.loadPaginatorData
     ];
     this.handlers = {
-      create: httpProvider.create, createMany: httpProvider.createMany, update: httpProvider.update,
-      delete: httpProvider.delete, get: httpProvider.get, getAll: httpProvider.getAll
+      create: entityHandler.create, createMany: entityHandler.createMany, update: entityHandler.update,
+      delete: entityHandler.delete, get: entityHandler.get, getAll: entityHandler.getAll
     };
   }
 
