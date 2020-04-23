@@ -5,7 +5,11 @@
           <app-dynamic-inputs (inputKeyUp)="inputKeyUp.emit($event)" (inputKeyDown)="inputKeyDown.emit($event)"
             (inputBlur)="inputBlur.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
             (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)"
-            *ngFor="let value of form.controlConfigs" [class]="'clr-col-12'" (multiSelectItemRemove)="
+            *ngFor="let value of form.controlConfigs" [class]="
+              isDefined(value.containerClass)
+                ? value.containerClass
+                : 'clr-col-12'
+            " (multiSelectItemRemove)="
               controlItemRemoved.emit({ event: $event, control: value })
             " (valueChange)="
               handleControlChanges({
