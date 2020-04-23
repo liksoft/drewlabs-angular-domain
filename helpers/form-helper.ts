@@ -1,9 +1,9 @@
-import { Injectable, OnDestroy, Injector, EventEmitter, Inject } from '@angular/core';
+import { Injectable, OnDestroy, Injector, } from '@angular/core';
 import { FormService } from '../components/dynamic-inputs/core/form-control/form.service';
 import { isDefined } from '../utils/type-utils';
 import { TranslationService } from '../translator';
 import { DynamicFormHelpers, ComponentReactiveFormHelpers } from './component-reactive-form-helpers';
-import { Subject, Subscription, BehaviorSubject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ICollection } from '../contracts/collection-interface';
 import { filter } from 'rxjs/operators';
 import { Collection } from '../utils/collection';
@@ -104,12 +104,6 @@ export class FormHelperService implements OnDestroy {
           if (isDefined(source.result.success)) {
             source.result.success();
           }
-          // const values = await Promise.all(source.configs.map((i) => this.getFormById(i.id)));
-          // source.configs.forEach((item) => { collection.add(item.label, values[source.configs.indexOf(item)]); });
-          // this._formLoaded.next(collection);
-          // if (isDefined(source.result.success)) {
-          //   source.result.success();
-          // }
         } catch (error) {
           if (isDefined(source.result.error)) {
             throw source.result.error(error);

@@ -5,7 +5,7 @@ import { IResponseBody } from '../http/contracts/http-response-data';
 import { isDefined } from '../utils/type-utils';
 
 
-export interface ActionResponseParams { res: IResponseBody | boolean; okMsg?: string; badReqMsg?: string; errorMsg?: string; }
+export interface ActionResponseParams { res: IResponseBody | boolean | any; okMsg?: string; badReqMsg?: string; errorMsg?: string; }
 
 @Injectable({
   providedIn: 'root'

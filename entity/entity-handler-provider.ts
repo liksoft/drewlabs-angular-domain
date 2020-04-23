@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
-import { TypeUtilHelper } from '../helpers/type-utils-helper';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { postRessource, postManyRessources, putRessource, getRessource, getRessources, deleteRessource } from '../contracts/abstract-request-client';
 import { IResponseBody } from '../http/core';
 import { IEntityServiceProvider } from '../contracts/entity-service-provider';
+import { isDefined } from '../utils/type-utils';
 
 @Injectable()
 export class DefaultEntityHandler<T> {
 
   /**
    * @description Oject initializer fn
-   * @param typeHelper [[TypeUtilHelper]]
    */
-  constructor(private typeHelper: TypeUtilHelper) { }
+  constructor() { }
 
   /**
    * @description Add/Insert a new entry to the ressource storage
@@ -68,7 +67,7 @@ export class DefaultEntityHandler<T> {
    * @param params [[object|null]]
    */
   public get(provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, path: string, id?: string | number, params?: object) {
-    return getRessource<T>(provider, this.typeHelper.isDefined(id) ? `${path}/${id}` : `${path}`, builder, params);
+    return getRessource<T>(provider, isDefined(id) ? `${path}/${id}` : `${path}`, builder, params);
   }
 
   /**

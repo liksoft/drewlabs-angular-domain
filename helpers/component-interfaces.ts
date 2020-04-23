@@ -4,6 +4,7 @@ import { HostBinding } from '@angular/core';
 import { AlertConfig } from '../components/action-alert/app-alert/app-alert.component';
 import { AbstractControl, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { UIState } from '../components/ui-store/ui-state';
+import { isDefined } from '../utils/type-utils';
 
 export interface IFormViewComponent {
   /**
@@ -83,7 +84,11 @@ export abstract class AbstractAlertableComponent {
    */
   clearUIActionSubscriptions() {
     if (this.uiStoreSubscriptions.length > 0) {
-      this.uiStoreSubscriptions.map(subscription => subscription.unsubscribe());
+      this.uiStoreSubscriptions.map(s => {
+        if (isDefined(s)) {
+          s.unsubscribe();
+        }
+      });
     }
   }
 
