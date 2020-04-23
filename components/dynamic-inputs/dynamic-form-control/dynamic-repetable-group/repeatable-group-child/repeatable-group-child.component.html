@@ -3,7 +3,7 @@
         <clr-accordion-title>
             Bénéficiaire {{ index }}
             <button class="icon-variant" *ngIf="!showEditButton">
-              <clr-icon (click)="componentDestroyer.emit({})" shape="times"></clr-icon>
+              <clr-icon (click)="componentDestroyer.emit({})" shape="trash"></clr-icon>
             </button>
         </clr-accordion-title>
         <clr-accordion-content *clrIfExpanded>
