@@ -37,13 +37,13 @@ export class FormHelperService implements OnDestroy {
    * @description Load dynamic form subject instance
    * @var [[BehaviorSubject]]
    */
-  public readonly loadForms = new Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
+  public loadForms: Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>;
 
   /**
    * @description Form successfully loaded subject instance
    */
   // tslint:disable-next-line: variable-name
-  protected _formLoaded = new Subject<ICollection<IDynamicForm>>();
+  protected _formLoaded: Subject<ICollection<IDynamicForm>>;
   get formLoaded$() {
     return this._formLoaded.asObservable();
   }
@@ -57,7 +57,8 @@ export class FormHelperService implements OnDestroy {
    */
   constructor(public readonly form: FormService, private translate: TranslationService) {
     this._publishers = [
-      this.loadForms, this._formLoaded
+      this.loadForms,
+      this._formLoaded
     ];
   }
 
@@ -74,43 +75,48 @@ export class FormHelperService implements OnDestroy {
   }
 
   suscribe() {
+    // Initialize publishers
+    this._formLoaded = new Subject<ICollection<IDynamicForm>>();
+    this.loadForms = new Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
+    // Register to publishers events
     this.subscriptions.push(
       // Dynamic form loader publisher
-      this.loadForms.asObservable().pipe(
-        filter((source) => isDefined(source))
-      ).subscribe(async (source) => {
-        try {
-          const collection: ICollection<IDynamicForm> = new Collection();
-          // Get list of form ids that are not in the in-memory forms collection
-          const configs = source.configs.filter((item) => {
-            return !isDefined(this.inMemoryFormCollection.get(item.id.toString()));
-          });
-          // Get list of form ids that are in the in-memory forms collection
-          const inmemoryConfigs = source.configs.filter((item) => {
-            return isDefined(this.inMemoryFormCollection.get(item.id.toString()));
-          });
-          // Get form configurations that are not in the in-memory forms' collection from the backend provider
-          const values = await Promise.all(configs.map((i) => this.getFormById(i.id)));
-          configs.forEach((item) => {
-            collection.add(item.label, values[configs.indexOf(item)]);
-            // Add loaded form configurations to the in-memory collection
-            this.inMemoryFormCollection.add(item.id.toString(), values[configs.indexOf(item)]);
-          });
-          inmemoryConfigs.forEach((item) => {
-            // Get the dynamic form configuration from the in-memory forms' collection
-            collection.add(item.label, this.inMemoryFormCollection.get(item.id.toString()));
-          });
-          this._formLoaded.next(collection);
-          if (isDefined(source.result.success)) {
-            source.result.success();
+      ...[
+        this.loadForms.asObservable().pipe(
+          filter((source) => isDefined(source))
+        ).subscribe(async (source) => {
+          try {
+            const collection: ICollection<IDynamicForm> = new Collection();
+            // Get list of form ids that are not in the in-memory forms collection
+            const configs = source.configs.filter((item) => {
+              return !isDefined(this.inMemoryFormCollection.get(item.id.toString()));
+            });
+            // Get list of form ids that are in the in-memory forms collection
+            const inmemoryConfigs = source.configs.filter((item) => {
+              return isDefined(this.inMemoryFormCollection.get(item.id.toString()));
+            });
+            // Get form configurations that are not in the in-memory forms' collection from the backend provider
+            const values = await Promise.all(configs.map((i) => this.getFormById(i.id)));
+            configs.forEach((item) => {
+              collection.add(item.label, values[configs.indexOf(item)]);
+              // Add loaded form configurations to the in-memory collection
+              this.inMemoryFormCollection.add(item.id.toString(), values[configs.indexOf(item)]);
+            });
+            inmemoryConfigs.forEach((item) => {
+              // Get the dynamic form configuration from the in-memory forms' collection
+              collection.add(item.label, this.inMemoryFormCollection.get(item.id.toString()));
+            });
+            this._formLoaded.next(collection);
+            if (isDefined(source.result.success)) {
+              source.result.success();
+            }
+          } catch (error) {
+            if (isDefined(source.result.error)) {
+              throw source.result.error(error);
+            }
           }
-        } catch (error) {
-          if (isDefined(source.result.error)) {
-            throw source.result.error(error);
-          }
-        }
-      }),
-    );
+        }),
+      ]);
   }
 
   /**
@@ -126,7 +132,11 @@ export class FormHelperService implements OnDestroy {
    * @param actions [[Subjeect]]
    */
   onCompleActionListeners(actions: Subject<any>[]) {
-    actions.forEach((a) => a.observers.forEach((ob) => ob.complete()));
+    actions.forEach((a) => {
+      a.observers.forEach((ob) => {
+        ob.complete();
+      });
+    });
   }
 
   public ngOnDestroy() {
