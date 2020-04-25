@@ -161,7 +161,7 @@
           <span class="required-text" *ngIf="asRadioInput(inputConfig).rules?.isRequired">(*)</span></label>
         <clr-radio-wrapper *ngFor="let item of asRadioInput(inputConfig).items; let i = index">
           <input type="radio" clrRadio required [disabled]="control?.status == 'DISABLED'"
-            [checked]="control.value == item.value" [value]="inputConfig.formControlName + '_' + item.value"
+            [checked]="control.value == item.value" [value]="inputConfig.formControlName + '_' + item?.value?.toString()"
             (change)="radioButtonValueChange(item.value)" />
           <label>{{item.description}}</label>
         </clr-radio-wrapper>

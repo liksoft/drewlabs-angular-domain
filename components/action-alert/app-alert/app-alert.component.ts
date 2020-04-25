@@ -53,7 +53,7 @@ export interface AlertConfig {
               <clr-icon *ngSwitchDefault class="alert-icon" shape="check-circle"></clr-icon>
             </div>
           </ng-container>
-          <div class="alert-text">{{ alertMessage }}</div>
+          <div class="alert-text" [innerHTML]="alertMessage | safeWebContent"></div>
         </div>
       </div>
       <button type="button" class="close" aria-label="Close" (click)="hideAlert.emit({})">
