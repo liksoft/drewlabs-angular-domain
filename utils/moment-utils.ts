@@ -4,32 +4,38 @@ import { isDefined } from './type-utils';
 export class MomentUtils {
   /**
    * @description Add date unit to a given date
-   * @param currentDate [[Date]]
+   * @param date [[Date]]
    * @param value [[moment.DurationInputArg1]]
    * @param key [[moment.unitOfTime.DurationConstructor]]
+   * @param format [[string]]
    */
   public static add(
-    currentDate: Date,
+    date: Date | string,
     value?: moment.DurationInputArg1,
-    key?: moment.unitOfTime.DurationConstructor
+    key?: moment.unitOfTime.DurationConstructor,
+    format?: string
   ): Date {
-    return moment(currentDate)
+    format = isDefined(format) ? format : moment.localeData().longDateFormat('L');
+    return moment(date instanceof Date ? date : MomentUtils.parseDate(date, null, format), this.longDateFormat())
       .add(value, key)
       .toDate();
   }
 
   /**
    * @description Substract date unit from a given date
-   * @param currentDate [[Date]]
+   * @param date [[Date]]
    * @param value [[moment.DurationInputArg1]]
    * @param key [[moment.unitOfTime.DurationConstructor]]
+   * @param format [[string]]
    */
   public static substract(
-    currentDate: Date,
+    date: Date | string,
     value: moment.DurationInputArg1,
-    key?: moment.unitOfTime.DurationConstructor
+    key?: moment.unitOfTime.DurationConstructor,
+    format?: string
   ): Date {
-    return moment(currentDate)
+    format = isDefined(format) ? format : moment.localeData().longDateFormat('L');
+    return moment(date instanceof Date ? date : MomentUtils.parseDate(date, null, format), this.longDateFormat())
       .subtract(value, key)
       .toDate();
   }
@@ -74,8 +80,8 @@ export class MomentUtils {
     outputformat?: string,
     inputformat?: string
   ) {
-    outputformat = isDefined(outputformat) ? outputformat :  moment.localeData().longDateFormat('L');
-    inputformat = isDefined(inputformat) ? inputformat :  moment.localeData('en-gb').longDateFormat('L');
+    outputformat = isDefined(outputformat) ? outputformat : moment.localeData().longDateFormat('L');
+    inputformat = isDefined(inputformat) ? inputformat : moment.localeData('en-gb').longDateFormat('L');
     const value = moment(date, inputformat).format(outputformat);
     return value;
   }
