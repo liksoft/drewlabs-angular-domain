@@ -1,6 +1,5 @@
 import { ICollection } from '../contracts/collection-interface';
 import { isDefined } from './type-utils';
-
 export class Collection<T> implements ICollection<T> {
   protected items: { [index: string]: T } = {};
   private counter = 0;
@@ -62,7 +61,7 @@ export class Collection<T> implements ICollection<T> {
         keySet.push(prop);
       }
     }
-    return keySet;
+    return [...keySet];
   }
   /**
    * @inheritdoc
@@ -95,7 +94,7 @@ export class Collection<T> implements ICollection<T> {
         values.push(this.items[prop]);
       }
     }
-    return values;
+    return [...values];
   }
 
   [Symbol.iterator]() {
