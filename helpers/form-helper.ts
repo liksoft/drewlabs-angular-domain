@@ -37,13 +37,13 @@ export class FormHelperService implements OnDestroy {
    * @description Load dynamic form subject instance
    * @var [[BehaviorSubject]]
    */
-  public loadForms: Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>;
+  public loadForms = new Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
 
   /**
    * @description Form successfully loaded subject instance
    */
   // tslint:disable-next-line: variable-name
-  protected _formLoaded: Subject<ICollection<IDynamicForm>>;
+  protected _formLoaded = new Subject<ICollection<IDynamicForm>>();
   get formLoaded$() {
     return this._formLoaded.asObservable();
   }
@@ -76,8 +76,8 @@ export class FormHelperService implements OnDestroy {
 
   suscribe() {
     // Initialize publishers
-    this._formLoaded = new Subject<ICollection<IDynamicForm>>();
-    this.loadForms = new Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
+    // this._formLoaded = new Subject<ICollection<IDynamicForm>>();
+    // this.loadForms = new Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
     // Register to publishers events
     this.subscriptions.push(
       // Dynamic form loader publisher
