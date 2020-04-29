@@ -1,0 +1,30 @@
+export declare type DropzoneEvent = 'error' | 'success' | 'sending' | 'canceled' | 'complete' | 'processing' | 'drop' | 'dragStart' | 'dragEnd' | 'dragEnter' | 'dragOver' | 'dragLeave' | 'thumbnail' | 'addedFile' | 'removedFile' | 'uploadProgress' | 'maxFilesReached' | 'maxFilesExceeded' | 'successMultiple' | 'sendingMultiple' | 'canceledMultiple' | 'completeMultiple' | 'processingMultiple' | 'reset' | 'queueComplete' | 'totalUploadProgress';
+
+export const DropzoneEvents = [
+    'error',
+    'success',
+    'sending',
+    'canceled',
+    'complete',
+    'processing',
+    'drop',
+    'dragStart',
+    'dragEnd',
+    'dragEnter',
+    'dragOver',
+    'dragLeave',
+    'thumbnail',
+    'addedFile',
+    'removedFile',
+    'uploadProgress',
+    'maxFilesReached',
+    'maxFilesExceeded',
+    'successMultiple',
+    'sendingMultiple',
+    'canceledMultiple',
+    'completeMultiple',
+    'processingMultiple',
+    'reset',
+    'queueComplete',
+    'totalUploadProgress'
+];

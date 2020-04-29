@@ -20,7 +20,7 @@ import { isPlatformBrowser } from '@angular/common';
 import {
   DropzoneEvents,
   DropzoneEvent
-} from 'ngx-dropzone-wrapper/dist/lib/dropzone.interfaces';
+} from './dropzone-interfaces';
 import { DropzoneService } from './dropzone.service';
 import { Subscription } from 'rxjs';
 
