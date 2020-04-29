@@ -27,7 +27,12 @@ export class FormDataSource implements IDataSourceService<ISource<Form>> {
   // tslint:disable-next-line: variable-name
   private _queryParams: object;
 
-  constructor(client: HttpRequestService, fn: HttpGetAllRequestFn, path: string, private cache: LocalStorage) {
+  constructor(
+    client: HttpRequestService,
+    fn: HttpGetAllRequestFn,
+    path: string,
+    /* private cache: LocalStorage */
+  ) {
     this.ressourcesGetterMethod = fn;
     this.ressourcesPath = path;
     this.client = client;
@@ -90,7 +95,7 @@ export class FormService extends RequestClient
     this.formControlRessourcesPath = 'form_controls';
     this.formFormControlRessourcesPath = 'form_form_controls';
     this.bindableEntitiesRessourcesPath = 'form_control_option_models';
-    this.dataSource = new FormDataSource(client, this.get, this.ressourcesPath, cache);
+    this.dataSource = new FormDataSource(client, this.get, this.ressourcesPath);
   }
 
   /**
@@ -161,8 +166,9 @@ export class FormService extends RequestClient
   /**
    * @description Try loading a form details from the cache or from the server
    * @param id [[number|string]]
+   * @param params [[object]]
    */
-  public async loadFormFromCacheOrGetFromServer(id: number | string) {
+  public async loadFormFromCacheOrGetFromServer(id: number | string, params?: object) {
     // Try getting the form from the cache
     let forms = this.cache.get((this.dataSource as FormDataSource).formListEntryKey);
     let form: Form;
@@ -180,7 +186,7 @@ export class FormService extends RequestClient
         resolve(form);
       } else {
         // Else query for the form from an http endpoint
-        const result: Promise<any> = this.loadThroughHttpRequest(id);
+        const result: Promise<any> = this.loadThroughHttpRequest(id, params);
         result.then((value: any) => {
           if (isDefined(value)) {
             // Add the loaded form from to the session storage
@@ -195,9 +201,9 @@ export class FormService extends RequestClient
     });
   }
 
-  private loadThroughHttpRequest(id: string | number): Promise<any> {
+  private loadThroughHttpRequest(id: string | number, params: object = {}): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.get(this.client, `${this.ressourcesPath}/${id}`)
+      this.get(this.client, `${this.ressourcesPath}/${id}`, params)
         .then((res: ResponseData) => {
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
