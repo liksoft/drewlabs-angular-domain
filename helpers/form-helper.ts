@@ -18,6 +18,7 @@ import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { IDynamicForm } from '../components/dynamic-inputs/core/contracts/dynamic-form';
 import { IResponseBody } from '../http/contracts/http-response-data';
 import { TranslationParms } from '../translator/translator.service';
+import * as lodash from 'lodash';
 
 /**
  * @description Definition of form request configuration object
@@ -37,13 +38,13 @@ export class FormHelperService implements OnDestroy {
    * @description Load dynamic form subject instance
    * @var [[BehaviorSubject]]
    */
-  public loadForms: Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>;
+  public loadForms = new Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
 
   /**
    * @description Form successfully loaded subject instance
    */
   // tslint:disable-next-line: variable-name
-  protected _formLoaded: Subject<ICollection<IDynamicForm>>;
+  protected _formLoaded = new Subject<ICollection<IDynamicForm>>();
   get formLoaded$() {
     return this._formLoaded.asObservable();
   }
@@ -76,8 +77,8 @@ export class FormHelperService implements OnDestroy {
 
   suscribe() {
     // Initialize publishers
-    this._formLoaded = new Subject<ICollection<IDynamicForm>>();
-    this.loadForms = new Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
+    // this._formLoaded = new Subject<ICollection<IDynamicForm>>();
+    // this.loadForms = new Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
     // Register to publishers events
     this.subscriptions.push(
       // Dynamic form loader publisher
@@ -98,15 +99,15 @@ export class FormHelperService implements OnDestroy {
             // Get form configurations that are not in the in-memory forms' collection from the backend provider
             const values = await Promise.all(configs.map((i) => this.getFormById(i.id)));
             configs.forEach((item) => {
-              collection.add(item.label, values[configs.indexOf(item)]);
+              collection.add(item.label, Object.assign(values[configs.indexOf(item)]));
               // Add loaded form configurations to the in-memory collection
-              this.inMemoryFormCollection.add(item.id.toString(), values[configs.indexOf(item)]);
+              this.inMemoryFormCollection.add(item.id.toString(), Object.assign(values[configs.indexOf(item)]));
             });
             inmemoryConfigs.forEach((item) => {
               // Get the dynamic form configuration from the in-memory forms' collection
-              collection.add(item.label, this.inMemoryFormCollection.get(item.id.toString()));
+              collection.add(item.label, Object.assign({}, this.inMemoryFormCollection.get(item.id.toString())));
             });
-            this._formLoaded.next(collection);
+            this._formLoaded.next(lodash.cloneDeep(collection));
             if (isDefined(source.result.success)) {
               source.result.success();
             }

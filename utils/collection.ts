@@ -62,7 +62,7 @@ export class Collection<T> implements ICollection<T> {
         keySet.push(prop);
       }
     }
-    return keySet;
+    return [...keySet];
   }
   /**
    * @inheritdoc
@@ -95,7 +95,7 @@ export class Collection<T> implements ICollection<T> {
         values.push(this.items[prop]);
       }
     }
-    return values;
+    return [...values];
   }
 
   [Symbol.iterator]() {
