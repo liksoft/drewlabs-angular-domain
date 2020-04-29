@@ -1,6 +1,6 @@
 import { AuthUser } from '../contracts';
 import { Injectable, Inject } from '@angular/core';
-import 'core-js/es6/object';
+import 'core-js/es/object';
 import 'rxjs/operators/map';
 import {
   ServerResponseKeys,
@@ -15,7 +15,6 @@ import { SessionStorage, LocalStorage, DataStoreService } from '../../storage/co
 import { ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { Subject } from 'rxjs';
 import { AuthRememberTokenService } from '../../auth-token/core/auth-remember-token.service';
-// import { isDefined } from '../../utils/type-utils';
 
 @Injectable()
 export class AuthService {

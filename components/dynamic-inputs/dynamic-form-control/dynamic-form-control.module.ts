@@ -41,7 +41,7 @@ import { PipesModule } from '../../../pipes';
   providers: []
 })
 export class DynamicFormControlModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<DynamicFormControlModule> {
     return {
       ngModule: DynamicFormControlModule,
       providers: [HTMLFormControlService]

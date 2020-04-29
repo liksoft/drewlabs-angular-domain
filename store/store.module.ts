@@ -4,7 +4,7 @@ import { Store, StoreFactory } from './store';
 
 @NgModule()
 export class StoreModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<StoreModule> {
     return {
       ngModule: StoreModule,
       providers: [

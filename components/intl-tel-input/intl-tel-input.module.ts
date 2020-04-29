@@ -24,7 +24,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
   ]
 })
 export class IntlTelInputModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<IntlTelInputModule> {
     return {
       ngModule: IntlTelInputModule,
       providers: [IntlTelInputService]

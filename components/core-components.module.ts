@@ -36,13 +36,13 @@ import { ActionAlertModule } from './action-alert';
   ]
 })
 export class CoreComponentModule {
-  static forChild(): ModuleWithProviders {
+  static forChild(): ModuleWithProviders<CoreComponentModule> {
     return {
       ngModule: CoreComponentModule,
       providers: []
     };
   }
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<CoreComponentModule> {
     return {
       ngModule: CoreComponentModule,
       providers: [DynamicComponentService]

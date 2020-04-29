@@ -11,7 +11,7 @@ import { PipesModule } from '../../pipes';
   exports: [AppAlertComponent, ActionAlertComponent]
 })
 export class ActionAlertModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<ActionAlertModule> {
     return {
       ngModule: ActionAlertModule,
       providers: [AlertService]

@@ -5,7 +5,7 @@ import { AuthRememberTokenService } from '../core';
   providers: []
 })
 export class AuthTokenModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<AuthTokenModule> {
     return {
       ngModule: AuthTokenModule,
       providers: [

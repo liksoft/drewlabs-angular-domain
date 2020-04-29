@@ -18,7 +18,7 @@ import { AuthModule } from '../../auth';
   ]
 })
 export class AppHttpModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<AppHttpModule> {
     return {
       ngModule: AppHttpModule,
       providers: [

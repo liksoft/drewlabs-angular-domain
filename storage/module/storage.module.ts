@@ -10,7 +10,7 @@ import { DataStoreService, LocalStorage, SessionStorage } from '../core';
   bootstrap: []
 })
 export class StorageModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<StorageModule> {
     return {
       ngModule: StorageModule,
       providers: [
