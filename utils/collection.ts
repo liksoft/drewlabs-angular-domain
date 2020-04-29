@@ -1,5 +1,6 @@
 import { ICollection } from '../contracts/collection-interface';
 import { isDefined } from './type-utils';
+
 export class Collection<T> implements ICollection<T> {
   protected items: { [index: string]: T } = {};
   private counter = 0;

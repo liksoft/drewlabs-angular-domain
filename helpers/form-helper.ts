@@ -18,6 +18,7 @@ import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { IDynamicForm } from '../components/dynamic-inputs/core/contracts/dynamic-form';
 import { IResponseBody } from '../http/contracts/http-response-data';
 import { TranslationParms } from '../translator/translator.service';
+import * as lodash from 'lodash';
 
 /**
  * @description Definition of form request configuration object
@@ -98,15 +99,15 @@ export class FormHelperService implements OnDestroy {
             // Get form configurations that are not in the in-memory forms' collection from the backend provider
             const values = await Promise.all(configs.map((i) => this.getFormById(i.id)));
             configs.forEach((item) => {
-              collection.add(item.label, values[configs.indexOf(item)]);
+              collection.add(item.label, Object.assign(values[configs.indexOf(item)]));
               // Add loaded form configurations to the in-memory collection
-              this.inMemoryFormCollection.add(item.id.toString(), values[configs.indexOf(item)]);
+              this.inMemoryFormCollection.add(item.id.toString(), Object.assign(values[configs.indexOf(item)]));
             });
             inmemoryConfigs.forEach((item) => {
               // Get the dynamic form configuration from the in-memory forms' collection
-              collection.add(item.label, this.inMemoryFormCollection.get(item.id.toString()));
+              collection.add(item.label, Object.assign({}, this.inMemoryFormCollection.get(item.id.toString())));
             });
-            this._formLoaded.next(collection);
+            this._formLoaded.next(lodash.cloneDeep(collection));
             if (isDefined(source.result.success)) {
               source.result.success();
             }
