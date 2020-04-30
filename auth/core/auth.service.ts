@@ -1,6 +1,5 @@
 import { AuthUser } from '../contracts';
 import { Injectable, Inject } from '@angular/core';
-import 'core-js/es/object';
 import 'rxjs/operators/map';
 import {
   ServerResponseKeys,
