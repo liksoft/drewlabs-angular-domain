@@ -19,6 +19,7 @@ export class DefaultAcl {
   public static UPDATE_PASSWORD_PERMISSION = 'update-password';
 }
 
+
 /**
  * @description Class de paramètres de configuration des requêtes d'authentification
  */

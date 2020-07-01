@@ -1,10 +1,9 @@
 import { AbstractControl, FormGroup, FormControl, ValidatorFn } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { HttpRequestService } from '../http/core/http-request.service';
-import { RequestClient, loadThroughHttpRequest } from '../contracts/abstract-request-client';
+import {loadThroughHttpRequest } from '../contracts/abstract-request-client';
 import { isDefined } from './type-utils';
 import { MomentUtils } from './moment-utils';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

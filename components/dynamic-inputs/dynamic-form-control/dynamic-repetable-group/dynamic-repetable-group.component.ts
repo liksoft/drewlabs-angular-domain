@@ -3,7 +3,7 @@ import { FormArray, FormGroup, FormControl, AbstractControl } from '@angular/for
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { DynamicComponentService } from '../../../services/dynamic-component-resolver.service';
 import { RepeatableGroupChildComponent } from './repeatable-group-child/repeatable-group-child.component';
-import { isDefined, equals } from '../../../../utils/type-utils';
+import { isDefined } from '../../../../utils/type-utils';
 import { Subscription } from 'rxjs';
 
 @Component({
