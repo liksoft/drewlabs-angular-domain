@@ -1,11 +1,7 @@
-import { Collection } from '../../utils/collection';
 
-export class ResponseErrorBag extends Collection<string> {
-  public errors() {
-    return this.values();
-  }
-}
-
+/**
+ * @deprecated
+ */
 export interface IResponseBody {
   data: any;
   errors?: any;
@@ -13,7 +9,9 @@ export interface IResponseBody {
   responseStatusCode?: number;
   statusOK?: boolean;
 }
-
+/**
+ * @deprecated
+ */
 export class ResponseBody implements IResponseBody {
   data: any;
   errors?: any;
@@ -35,6 +33,9 @@ export class ResponseBody implements IResponseBody {
   }
 }
 
+/**
+ * @deprecated
+ */
 export interface ResponseData {
   success: boolean;
   body: ResponseBody;

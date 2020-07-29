@@ -5,11 +5,10 @@ import { ServerResponseKeys, DefaultAcl } from '../core/config';
 import { JsonProperty, ObjectSerializer } from '../../built-value/core/serializers';
 import { ISerializer, ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { InjectionToken } from '@angular/core';
-import { isDefined } from '../../utils/type-utils';
+import { isDefined } from '../../utils/types/type-utils';
 import { UserInfoEntity } from './user-info';
 import { TypeBuilder, rebuildJSObjectType, buildJSObjectType } from '../../built-value/contracts/type';
-import { environment } from '../../../../../environments/environment.prod';
-
+import { IResponseBody } from '../../http/core';
 
 export class UserBuilder implements ISerializableBuilder<User>, TypeBuilder<User> {
   serializer: ISerializer;
@@ -129,7 +128,7 @@ export class User extends UserAsViewable implements AuthUser {
     return this.permissions;
   }
 
-  fromAuthenticationResponseBody(body: import('../../http/core').IResponseBody, builder: ISerializableBuilder<User>): AuthUser {
+  fromAuthenticationResponseBody(body: IResponseBody, builder: ISerializableBuilder<User>): AuthUser {
     const user: any = body.data[ServerResponseKeys.USER_KEY];
     return isDefined(user) ? this.fromStorageObject(user, builder) : null;
   }

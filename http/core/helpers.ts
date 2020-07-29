@@ -1,8 +1,7 @@
-import { ResponseData } from '../contracts/http-response-data';
+import { statusOk } from '../contracts/types';
 
 /**
- * @description Helper method to check if request completed successfully
+ * @description Checks if the request response status code equals HTTP OK status code
+ * @param statusCode Reponse status code
  */
-export function requestHasCompletedSuccessfully(responseData: ResponseData) {
-  return responseData.success;
-}
+export const responseStatusOK: statusOk = (statusCode: number|string) => String(statusCode) === '200' || String(statusCode) === '201';

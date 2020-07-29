@@ -4,6 +4,10 @@ import { IResponseBody } from '../../http/contracts/http-response-data';
 import { ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { UserInfoEntity } from '../models/user-info';
 
+
+/**
+ * @deprecated
+ */
 export interface AuthUser {
   id: number | string;
   username: string;

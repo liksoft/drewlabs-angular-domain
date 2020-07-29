@@ -1,22 +1,19 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { DataStoreService, LocalStorage, SessionStorage } from '../core';
+import { InMemoryStoreService, LocalStorage, SessionStorage } from '../core';
 
-@NgModule({
-  declarations: [
-  ],
-  imports: [],
-  exports: [],
-  providers: [],
-  bootstrap: []
-})
+@NgModule()
 export class StorageModule {
-  static forRoot(): ModuleWithProviders<StorageModule> {
+  static forRoot(configs: {secretKey: string}): ModuleWithProviders<StorageModule> {
     return {
       ngModule: StorageModule,
       providers: [
+        {
+          provide: 'APP_SECRET',
+          useValue: configs.secretKey
+        },
         LocalStorage,
         SessionStorage,
-        DataStoreService
+        InMemoryStoreService
       ]
     };
   }

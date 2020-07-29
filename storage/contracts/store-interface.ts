@@ -1,5 +1,4 @@
 import * as  CryptoJS from 'crypto-js';
-import { environment } from 'src/environments/environment';
 
 type HashFn = (key: string) => string | CryptoJS.WordArray;
 type DecrypterFn = (data: string | CryptoJS.WordArray) => any;
@@ -94,18 +93,18 @@ export abstract class SecureStorage {
 
 export class SecureWebStorage extends SecureStorage {
 
-  constructor(storage: Storage) {
+  constructor(storage: Storage, secret: string) {
     super(storage, {
       hash: function hash(key: string): string | CryptoJS.WordArray {
-        const $hash = CryptoJS.MD5(key, environment.storageSecret);
+        const $hash = CryptoJS.MD5(key, secret);
         return $hash.toString();
       },
       encrypt: function encrypt(data: any): string | CryptoJS.WordArray {
-        data = CryptoJS.AES.encrypt(data, environment.storageSecret);
+        data = CryptoJS.AES.encrypt(data, secret);
         return data.toString();
       },
       decrypt: function decrypt(data: string | CryptoJS.WordArray): any {
-        const plain = CryptoJS.AES.decrypt(data, environment.storageSecret);
+        const plain = CryptoJS.AES.decrypt(data, secret);
         return plain.toString(CryptoJS.enc.Utf8);
       }
     });

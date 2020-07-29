@@ -10,10 +10,11 @@ import {
 } from '@angular/router';
 import { AuthService } from './auth.service';
 import { AuthPathConfig } from './config';
-import { Observable } from 'rxjs';
-import { isDefined } from '../../utils/type-utils';
+import { Observable, of } from 'rxjs';
+import { isDefined } from '../../utils/types/type-utils';
 import { AuthTokenService } from '../../auth-token/core/auth-token.service';
-import { User } from '../models/user';
+import { mergeMap, takeUntil } from 'rxjs/operators';
+import { userCanAny, Authorizable, userCan } from '../contracts/v2/user/user';
 
 /**
  * @description Authentication guard
@@ -21,6 +22,9 @@ import { User } from '../models/user';
 @Injectable()
 export class AuthGuardService
   implements CanActivate, CanActivateChild, CanLoad {
+
+  private authState$ = this.auth.state$;
+
   constructor(private router: Router, private auth: AuthService) { }
   /**
    * @description Handle for component instance activation.
@@ -31,7 +35,7 @@ export class AuthGuardService
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): boolean {
+  ) {
     const url: string = state.url;
     return this.checkLogin(url);
   }
@@ -44,7 +48,7 @@ export class AuthGuardService
   canActivateChild(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): boolean {
+  ) {
     return this.canActivate(route, state);
   }
 
@@ -53,7 +57,7 @@ export class AuthGuardService
    * @param route [[ActivatedRouteSnapshot]] instance
    * @param state [[RouterStateSnapshot]] instance
    */
-  canLoad(route: Route): boolean {
+  canLoad(route: Route) {
     const url = `/${route.path}`;
     return this.checkLogin(url);
   }
@@ -62,22 +66,22 @@ export class AuthGuardService
    * @description Méthode de vérification de d'accès
    * @param url [[string]] redirection url
    */
-  checkLogin(url: string): boolean {
-    if (this.auth.loggedIn) {
-      return true;
-    }
-    if (this.auth.user) {
-      return true;
-    }
-    // Navigate to the login page with extras
-    this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-    return false;
+  checkLogin(url: string) {
+    return this.authState$
+      .pipe(
+        takeUntil(this.auth.destroy$),
+        mergeMap(source => {
+          if (!isDefined(source.user) || !isDefined(source.isLoggedIn)) {
+            this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
+            return of(false);
+          }
+          return of(true);
+        }),
+      );
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PermissionsGuardGuard implements CanActivate {
   constructor(
     private router: Router,
@@ -105,33 +109,31 @@ export class PermissionsGuardGuard implements CanActivate {
   }
 
   private checkPermission(permissions: string[] | string, url: string) {
-    try {
-      const user = this.auth.user;
-      let isAuthorized = false;
-      if (isDefined(user)) {
-        if (permissions && permissions instanceof Array) {
-          isAuthorized = user.canAny(permissions);
-        } else {
-          isAuthorized = user.can(
-            permissions as string
-          );
-        }
-      }
-      if (!isAuthorized) {
-        // Navigate to the login page with extras
-        this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-        return false;
-      }
-      return true;
-    } catch (error) {
-      return false;
-    }
+    return this.auth.state$
+      .pipe(
+        mergeMap(source => {
+          if (!isDefined(source.user)) {
+            this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
+            return of(false);
+          }
+          let isAuthorized = false;
+          if (permissions && permissions instanceof Array) {
+            isAuthorized = (userCanAny(source.user as Authorizable, permissions));
+          } else {
+            isAuthorized = (userCan(source.user as Authorizable, permissions as string));
+          }
+          if (!isAuthorized) {
+            // Navigate to the login page with extras
+            this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
+            return of(false);
+          }
+          return of(true);
+        })
+      );
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RootComponentGuard implements CanActivate {
   constructor(
     private router: Router,
@@ -147,19 +149,24 @@ export class RootComponentGuard implements CanActivate {
     return this.canLoadURL(next, url);
   }
 
-  private canLoadURL(route: ActivatedRouteSnapshot, url: string): boolean {
-    if (!isDefined(this.auth.user)) {
-      this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-      return false;
-    }
-    if (isDefined(route.data.modulePermissions)
-      && !((this.auth.user as User).canAny(route.data.modulePermissions))) {
-      this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-      return false;
-    }
-    if (isDefined(this.authToken.token) && isDefined(this.auth.user)) {
-      this.router.navigate([url]);
-    }
-    return true;
+  private canLoadURL(route: ActivatedRouteSnapshot, url: string): Observable<boolean> {
+    return this.auth.state$
+      .pipe(
+        mergeMap(source => {
+          if (!isDefined(source.user)) {
+            this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
+            return of(false);
+          }
+          if (isDefined(route.data.modulePermissions)
+            && !(userCanAny(source.user as Authorizable, route.data.modulePermissions))) {
+            this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
+            return of(false);
+          }
+          if (isDefined(this.authToken.token)) {
+            this.router.navigate([url]);
+          }
+          return of(true);
+        })
+      );
   }
 }

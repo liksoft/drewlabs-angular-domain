@@ -9,14 +9,16 @@ export interface IJsonMetaData<T> {
   valueType?: new () => T;
 }
 
-export interface ISerializer {
-
+interface IDeserializer {
   /**
    * @description Convert a JSON encoded object into a provided class type
    * @param bluePrint [[T]] Type definition of the object to return from the deserialization operation
    * @param jsonObject [[any]] JSON formatted Object to be deserialize
    */
   deserialize<T>(bluePrint: new () => T, jsonObject: any): T;
+}
+
+export interface ISerializer extends IDeserializer{
 
   /**
    * @description Convert an object into a JSON formatted object
@@ -26,7 +28,24 @@ export interface ISerializer {
   serialize<T>(bluePrint: new () => T, value: T): object|any;
 }
 
-export interface ISerializableBuilder<T> {
+export interface UnDecoratedObjectSerializer extends IDeserializer {
+  /**
+   * @description Convert an object into a JSON formatted object
+   * @param value [[any]] Instance to be serialize
+   */
+  serialize<T>(value: T): object;
+}
+
+export interface SerializableBuilder<T> {
+  /**
+   * @description Convert a given object of type [[T]] into a serialized value
+   * @param value [[T]]
+   */
+  toSerialized(value: T): any;
+
+}
+
+export interface ISerializableBuilder<T> extends SerializableBuilder<T> {
 
   /**
    * @description Object that provide implementation of [[deserialize]] and [[serialize]]
@@ -38,10 +57,13 @@ export interface ISerializableBuilder<T> {
    * @param serialized [[any]]
    */
   fromSerialized(serialized: object|string|any): T;
+}
 
+export interface IGenericSerializableBuilder<T> extends SerializableBuilder<T> {
   /**
    * @description Convert a given object of type [[T]] into a serialized value
+   * @param type [new () => T]
    * @param value [[T]]
    */
-  toSerialized(value: T): object|string|any;
+  fromSerialized(type: new () => T, value: T): any;
 }

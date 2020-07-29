@@ -1,8 +1,12 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptorService } from '../../auth/core/auth-interceptor.service';
+import { HttpClientModule } from '@angular/common/http';
 import { HttpRequestService } from '../core/http-request.service';
 import { AuthModule } from '../../auth';
+import { DrewlabsRessourceServerClient } from '../core/ressource-server-client';
+import { parseV2HttpResponse } from '../core/v2/http-response';
+import { TransformResponseHandlerFn } from '../contracts';
+
+type ModuleConfigParams = { serverURL: string, requestResponseHandler?: TransformResponseHandlerFn };
 
 @NgModule({
   imports: [
@@ -12,18 +16,23 @@ import { AuthModule } from '../../auth';
   exports: [
     HttpClientModule
   ],
-  providers: [
-    HttpRequestService,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
-  ]
+  providers: []
 })
-export class AppHttpModule {
-  static forRoot(): ModuleWithProviders<AppHttpModule> {
+export class DrewlabsHttpModule {
+  static forRoot(configs: ModuleConfigParams): ModuleWithProviders<DrewlabsHttpModule> {
     return {
-      ngModule: AppHttpModule,
+      ngModule: DrewlabsHttpModule,
       providers: [
         HttpRequestService,
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
+        {
+          provide: 'SERVER_URL',
+          useValue: configs.serverURL
+        },
+        {
+          provide: 'ResponseTransformHandlerFn',
+          useValue: configs.requestResponseHandler || parseV2HttpResponse
+        },
+        DrewlabsRessourceServerClient
       ]
     };
   }

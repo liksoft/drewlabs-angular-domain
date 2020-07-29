@@ -1,7 +1,7 @@
 import { JsonProperty, ObjectSerializer } from '../../built-value/core/serializers';
 import { ISerializableBuilder, ISerializer } from '../../built-value/contracts/serializers';
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
-import { IDynamicFormBindableModel } from '../../components/dynamic-inputs/core/contracts/form-control';
+import { FormViewModel } from '../../components/dynamic-inputs/core/contracts';
 
 export class AgenceBuilder implements ISerializableBuilder<Agence>, TypeBuilder<Agence> {
   serializer: ISerializer;
@@ -43,7 +43,7 @@ export class AgenceBuilder implements ISerializableBuilder<Agence>, TypeBuilder<
 
 }
 
-export class Agence implements IDynamicFormBindableModel {
+export class Agence implements FormViewModel {
   @JsonProperty('id')
   id: number = undefined;
   @JsonProperty('label')

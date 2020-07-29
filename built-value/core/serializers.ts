@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { isArray, isPrimitive, isDefined } from '../../utils/type-utils';
+import { isArray, isPrimitive, isDefined } from '../../utils/types/type-utils';
 import { IJsonMetaData, ISerializer } from '../contracts/serializers';
 
 /**
@@ -110,7 +110,8 @@ export class ObjectSerializer implements ISerializer {
     }
     // Creates an instance of the bluprint
     const $serialized: object = {};
-    const obj = new bluePrint();
+    const obj = value.constructor;
+    // const obj = new bluePrint();
     Object.keys(value).forEach((key) => {
       const metadata = getJsonProperty<T>(obj, key);
       if (metadata) {
@@ -123,16 +124,6 @@ export class ObjectSerializer implements ISerializer {
               return value;
             }
             return this.serialize(metadata.valueType, k);
-            // if (!isDefined(metadata.valueType)) {
-            //   return value[key];
-
-            // }
-            // const jsonMetaData = getJsonProperty<T>(metadata.valueType, value[key]);
-            // if (isDefined(jsonMetaData) && (jsonMetaData.valueType || isPrimitive(designType))) {
-
-            // } else {
-            //   return value[key];
-            // }
           }) : null;
         } else if (!isPrimitive(designType)) {
           $serialized[entryKey] = this.serialize(designType, value[key]);

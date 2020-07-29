@@ -1,187 +1,223 @@
-import { AuthUser } from '../contracts';
-import { Injectable, Inject } from '@angular/core';
-import 'rxjs/operators/map';
-import {
-  AuthStorageConfig,
-  AuthServerPathConfig,
-} from './config';
+import { Injectable, OnDestroy } from '@angular/core';
+import { AuthServerPathConfig, AuthPathConfig } from './config';
 import { AuthTokenService } from '../../auth-token/core/auth-token.service';
-import { User, USER_SERIALIZABLE_BUILDER } from '../models/user';
-import { HttpRequestService } from '../../http/core/http-request.service';
-import {
-  ResponseData,
-  IResponseBody,
-  ResponseBody
-} from '../../http/contracts/http-response-data';
-import {
-  AUTHENTICATED_ATTRIBUTE,
-  LOGIN_RESPONSE_ATTRIBUTE,
-  RESPONSE_DATA_ATTRIBUTE,
-  OAUTH_TOKEN_ATTRIBUTE
-} from '../../http/core/config';
-import {
-  requestHasCompletedSuccessfully
-} from '../../http/core/helpers';
-import { SessionStorage, LocalStorage, DataStoreService } from '../../storage/core';
-import { ISerializableBuilder } from '../../built-value/contracts/serializers';
+import { HttpRequestService, HTTPErrorState } from '../../http/core/http-request.service';
 import { AuthRememberTokenService } from '../../auth-token/core/auth-remember-token.service';
-import { isDefined } from '../../utils/type-utils';
+import { createSubject, observaleOf } from '../../rxjs/helpers';
+import { mapToHttpResponse, doLog } from '../../rxjs/operators';
+import { mergeMap, catchError, takeUntil, tap, filter, delay } from 'rxjs/operators';
+import { throwError, merge } from 'rxjs';
+import { ILoginRequest, ILoginResponse } from '../contracts/v2';
+import { DrewlabsV2LoginResultHandlerFunc, onAuthenticationResultEffect } from '../../rxjs/operators';
+import { UserStorageProvider } from './services/user-storage';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ILoginResponseBody } from '../contracts/v2/login.response';
+import { IAppUser } from '../contracts/v2/user/user';
+import { isDefined } from '../../utils/types/type-utils';
+import { SessionStorage } from '../../storage/core/session-storage.service';
+import { Router } from '@angular/router';
+import { HttpRequestConfigs } from '../../http/core';
+import { Log } from 'src/app/lib/utils/logger';
+import { AuthState, AuthStorageValues } from './types';
+import { createStore } from '../../rxjs/state/rx-state';
+import { intitAuthStateAction, authenticatingAction, authenticationRequestCompletedAction } from './actions';
+import { authReducer } from './reducers';
+import { isEmpty } from 'lodash';
 
-@Injectable()
-export class AuthService {
-  private isLoggedIn: boolean;
-  redirectUrl: string;
-  // public readonly userObserver: Subject<AuthUser> = new Subject();
+const initalState: AuthState = {
+  isLoggedIn: false,
+  is2FactorAuthActive: false,
+  isInitialState: true,
+  authenticating: false,
+  user: null,
+  token: null
+};
 
-  /**
-   *
-   * @param sessionStorage [[SessionStorage]]
-   * @param inMemoryStorage [[DataStoreService]]
-   * @param tokenServiceProvider [[AuthTokenService]]
-   * @param httpService [[HttpRequestService]]
-   * @param userBuilder [[ISerializableBuilder<User>]]
-   * @param rememberTokenService [[AuthRememberTokenService]]
-   */
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService implements OnDestroy {
+
+  // tslint:disable-next-line: variable-name
+  private _destroy$ = createSubject<{}>();
+  // tslint:disable-next-line: variable-name
+  private _logoutSubject$ = createSubject<boolean>();
+  public readonly logoutState$ = this._logoutSubject$.asObservable();
+
+  // tslint:disable-next-line: variable-name
+  private _authStore$ = createStore(authReducer, { authenticating: false, isInitialState: null } as AuthState);
+  get state$() {
+    return this._authStore$.connect().pipe(
+      filter(state => !isEmpty(state))
+    );
+  }
+
   constructor(
+    public userStorage: UserStorageProvider,
+    private oAuthTokenProvider: AuthTokenService,
+    private rememberTokenProvider: AuthRememberTokenService,
+    private httpClient: HttpRequestService,
     private sessionStorage: SessionStorage,
-    private localStorage: LocalStorage,
-    private inMemoryStorage: DataStoreService,
-    private tokenServiceProvider: AuthTokenService,
-    private httpService: HttpRequestService,
-    @Inject(USER_SERIALIZABLE_BUILDER) private userBuilder: ISerializableBuilder<User>,
-    private rememberTokenService: AuthRememberTokenService
+    private router: Router
   ) {
-    // code...
-    this.isLoggedIn = false;
-  }
-
-  get loggedIn() {
-    return this.isLoggedIn;
-  }
-
-  set loggedIn(isloggedIn: boolean) {
-    this.isLoggedIn = isloggedIn;
-  }
-  /**
-   * @description User authentication handler
-   * @param username username parameter for authentication
-   * @param username  password parameter for authentication
-   * @param rememberMe Idicates whether a remember token will be saved on successfull authentication
-   */
-  public authenticate(username: string, password: string, rememberMe: boolean = false) {
-    return new Promise((resolve, reject) => {
-      this.httpService
-        .post(AuthServerPathConfig.LOGIN_PATH,
-          Object.assign({ username, password, password_confirmation: password }, rememberMe ? { remember_me: true } : {})
-        )
-        .subscribe(
-          (res: any) => {
-            resolve(this.onAuthenticationResponse(res, rememberMe));
-          },
-          (error: any) => {
-            reject(error);
+    merge(this.httpClient.errorState$, observaleOf({} as HTTPErrorState).
+      pipe(
+        takeUntil(this._destroy$),
+        delay(0)
+      )).pipe(
+        takeUntil(this._destroy$),
+        tap(state => {
+          this.initState();
+          if (isDefined(state.status)) {
+            if (state && state.status === 401) {
+              this.userStorage.removeUserFromCache();
+              this.oAuthTokenProvider.removeToken();
+              intitAuthStateAction(this._authStore$)();
+              this.sessionStorage.set(HttpRequestConfigs.sessionExpiredStorageKey, true);
+              // To be review
+              this.router.navigate([AuthPathConfig.LOGIN_PATH], { replaceUrl: true });
+            }
           }
-        );
-    });
+
+        })
+      ).subscribe();
+
+    this.logoutState$
+      .pipe(
+        doLog('Loggin out...'),
+        takeUntil(this._destroy$)
+      ).subscribe(() => {
+        this.userStorage.removeUserFromCache();
+        this.oAuthTokenProvider.removeToken();
+        this.sessionStorage.clear();
+        intitAuthStateAction(this._authStore$)(initalState);
+        this.router.navigate([AuthPathConfig.LOGIN_PATH], { replaceUrl: true });
+      });
+  }
+
+  ngOnDestroy = () => this._destroy$.next();
+
+  /**
+   * @description Authenticate user using server credentials and try logging in user
+   * @param body Login request body {@link ILogginRequest}
+   */
+  public authenticate(body: ILoginRequest) {
+    authenticatingAction(this._authStore$)();
+    return this.httpClient
+      .post(
+        AuthServerPathConfig.LOGIN_PATH,
+        Object.assign(body, { remember_me: body.remember || false })
+      ).pipe(
+        mapToHttpResponse<ILoginResponse>(DrewlabsV2LoginResultHandlerFunc),
+        onAuthenticationResultEffect(this.userStorage, this.oAuthTokenProvider, this.rememberTokenProvider, body.remember || false),
+        mergeMap(source => {
+          authenticationRequestCompletedAction(this._authStore$)({
+            isLoggedIn: Boolean(source.isAutenticated),
+            is2FactorAuthActive: Boolean(source.is2FactorAuthEnabled),
+            isInitialState: false,
+            authenticating: false,
+            user: this.userStorage.user,
+            token: this.oAuthTokenProvider.token,
+            rememberToken: this.rememberTokenProvider.token
+          } as AuthState);
+          return observaleOf(source.loginResponse);
+        }),
+        catchError((err) => {
+          if (err instanceof HttpErrorResponse) {
+            return observaleOf({
+              success: false,
+              body: { errorMessage: err.statusText, responseData: null, errors: [] } as ILoginResponseBody,
+              statusCode: err.status
+            } as ILoginResponse);
+          }
+          return throwError(err);
+        }),
+      );
   }
 
   /**
    * @description Handler for authenticating a user via user id and a remember token
-   * @param id [[string|number]] User system unique identifier
-   * @param token [[string]] Remember token
    */
-  public authenticateViaRememberToken(id: string | number, token: string) {
-    return new Promise((resolve, reject) => {
-      this.httpService
-        .post(`${AuthServerPathConfig.LOGIN_PATH}/${id}`,
-          { remember_token: token }
-        )
-        .subscribe(
-          (res: any) => {
-            resolve(this.onAuthenticationResponse(res));
-          },
-          (error: any) => {
-            reject(error);
-          }
-        );
-    });
+  public authenticateViaRememberToken(body: { id: string | number, token: string }) {
+    authenticatingAction(this._authStore$)();
+    return this.httpClient.post(
+      `${AuthServerPathConfig.LOGIN_PATH}/${body.id}`,
+      { remember_token: body.token }
+    ).pipe(
+      mapToHttpResponse<ILoginResponse>(DrewlabsV2LoginResultHandlerFunc),
+      onAuthenticationResultEffect(this.userStorage, this.oAuthTokenProvider, this.rememberTokenProvider, false),
+      mergeMap(source => {
+        authenticationRequestCompletedAction(this._authStore$)({
+          isLoggedIn: Boolean(source.isAutenticated),
+          is2FactorAuthActive: Boolean(source.is2FactorAuthEnabled),
+          isInitialState: false,
+          authenticating: false,
+          user: this.userStorage.user,
+          token: this.oAuthTokenProvider.token,
+          rememberToken: this.rememberTokenProvider.token
+        } as AuthState);
+        return observaleOf(source.loginResponse);
+      }),
+      catchError((err) => {
+        if (err instanceof HttpErrorResponse) {
+          return observaleOf({
+            success: false,
+            body: { errorMessage: err.statusText, responseData: null, errors: [] } as ILoginResponseBody,
+            statusCode: err.status
+          } as ILoginResponse);
+        }
+        return throwError(err);
+      }),
+    );
   }
 
   /**
    * @description Logout the application user
    */
-  public logout(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.httpService.get(AuthServerPathConfig.LOGOUT_PATH).subscribe(
-        res => {
-          const responseData: ResponseData = res[RESPONSE_DATA_ATTRIBUTE];
-          if (responseData.success) {
-            this.sessionStorage.clear();
-            this.localStorage.clear();
-            this.inMemoryStorage.clear();
-            this.removeUserFromstorage();
-            // Maybe remove the remember_me token from the storage
-          }
-          resolve(responseData.success);
-        },
-        err => reject(err)
+  public logout() {
+    return this.httpClient
+      .get(
+        AuthServerPathConfig.LOGOUT_PATH
+      ).pipe(
+        tap(() => {
+          this._logoutSubject$.next(true);
+        })
       );
-    });
   }
 
-  private onAuthenticationResponse(res: any, rememberMe: boolean = false) {
-    const responseData: ResponseData = res[RESPONSE_DATA_ATTRIBUTE];
-    const body: IResponseBody = new ResponseBody(Object.assign(responseData.body, { status: res.code }));
-    if (isUserAuthenticated(body, responseData)) {
-      this.loggedIn = true;
-      this.tokenServiceProvider.removeToken();
-      this.tokenServiceProvider.setToken(getTokenFromResponseBody(body));
-      // Set user data to the store
-      const authUser = (new User()).fromAuthenticationResponseBody(body, this.userBuilder);
-      this.user = authUser;
-      if (rememberMe) {
-        this.rememberTokenService.setToken(this.user.rememberToken).setUserId(this.user.id);
+  public initState = () => {
+    const user = this.userStorage.user;
+    const token = this.oAuthTokenProvider.token;
+    const rememberToken = this.rememberTokenProvider.token;
+    this.setAuthenticationStateFromStoredValues({ user, token, rememberToken });
+  }
+
+  setAuthenticationStateFromStoredValues(state: Partial<AuthStorageValues>) {
+    try {
+      let payload = {};
+      if ((isDefined(state.user) && isDefined(state.token))) {
+        payload = {
+          ...state,
+          isLoggedIn: Boolean(true),
+          is2FactorAuthActive: Boolean((state.user as IAppUser).is2FactorAuthActive),
+          isInitialState: true,
+        };
+      } else {
+        payload = {
+          ...state,
+          isLoggedIn: false,
+          is2FactorAuthActive: false,
+          isInitialState: true
+        };
       }
+      intitAuthStateAction(this._authStore$)(payload);
+    } catch (error) {
+      Log('Error during initialization...', error);
     }
-    return body;
   }
 
-  /**
-   * @description Remove user data from the storage
-   */
-  private removeUserFromstorage(): void {
-    this.sessionStorage.delete(AuthStorageConfig.USER_STORAGE_KEY);
-    this.tokenServiceProvider.removeToken();
-    this.isLoggedIn = false;
-  }
-
-  get user(): AuthUser {
-    const user = this.sessionStorage.get(AuthStorageConfig.USER_STORAGE_KEY);
-    return user ? (new User()).fromStorageObject(user, this.userBuilder) : null;
-  }
-
-  set user(user: AuthUser) {
-    this.sessionStorage.set(
-      AuthStorageConfig.USER_STORAGE_KEY,
-      this.userBuilder.toSerialized(user as User)
-    );
-  }
+  getAuthorizationToken = () => this.oAuthTokenProvider.token;
+  // {
+  //   return this.oAuthTokenProvider.token;
+  // }
 }
-
-/**
- * @description Get authenticated token from the response body
- * @param body [[IResponseBody]]
- */
-function getTokenFromResponseBody(body: IResponseBody): string {
-  const loginResponse = isDefined(body.data[LOGIN_RESPONSE_ATTRIBUTE]) ? body.data[LOGIN_RESPONSE_ATTRIBUTE] : body.data;
-  return loginResponse[OAUTH_TOKEN_ATTRIBUTE];
-}
-
-/**
- * @description Checks if the user is authenticated using response attributes
- */
-export function isUserAuthenticated(body: IResponseBody, responseData?: ResponseData) {
-  const loginResponse = isDefined(body.data[LOGIN_RESPONSE_ATTRIBUTE]) ? body.data[LOGIN_RESPONSE_ATTRIBUTE] : body.data;
-  return loginResponse[AUTHENTICATED_ATTRIBUTE] === true && (responseData ? requestHasCompletedSuccessfully(responseData) : true);
-}
-

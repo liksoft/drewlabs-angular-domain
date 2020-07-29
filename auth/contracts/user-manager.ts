@@ -1,12 +1,8 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AuthUser } from './user';
 
 export interface IUserManager {
-  // /**
-  //  * @description Authenticate a user
-  //  * @param userSecret Secret of the user being connecting to the application
-  //  * @param identifier Identifier of the user attempting connexion
-  //  */
+
   // authenticate(userSecret: string, identifier: string): Promise<any> | Observable<any>;
   /**
    * Handler for user creation action

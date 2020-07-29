@@ -1,23 +1,40 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { SessionStorage } from '../../storage/core/session-storage.service';
-import { IAuthTokenService } from '../contracts/auth-token-interface';
-import { environment } from 'src/environments/environment';
+import { IAuthTokenHandler } from '../contracts/auth-token';
+import { createStateful } from '../../rxjs/helpers';
+import { isDefined } from '../../utils/types/type-utils';
+import { Log } from '../../utils/logger';
 
-class TokenConfigs {
-  public static USER_TOKEN_KEY = environment.authTokenStorageKey ? environment.authTokenStorageKey : 'X_Auth_Token';
-}
 
 @Injectable()
-export class AuthTokenService implements IAuthTokenService {
+export class AuthTokenService implements IAuthTokenHandler {
 
-  constructor(private sessionStorage: SessionStorage) {}
+  constructor(
+    private sessionStorage: SessionStorage,
+    @Inject('DREWLABS_USER_TOKEN_KEY') private tokenStorageKey: string) { }
+
+  // tslint:disable-next-line: variable-name
+  public _authToken$ = createStateful<string>(null);
+  get authToken$() {
+    return this._authToken$.asObservable();
+  }
 
   get token() {
-    return this.sessionStorage.get(TokenConfigs.USER_TOKEN_KEY);
+    return this.loadTokenFromCache();
   }
 
   set token(t: string) {
-    this.sessionStorage.set(TokenConfigs.USER_TOKEN_KEY, t);
+    this.setToken(t);
+  }
+
+  loadOAuthTokenWithStateUpdate() {
+    const token = this.loadTokenFromCache();
+    this._authToken$.next(token);
+    return token;
+  }
+
+  loadTokenFromCache() {
+    return this.sessionStorage.get(this.tokenStorageKey);
   }
 
   /**
@@ -26,7 +43,8 @@ export class AuthTokenService implements IAuthTokenService {
    * @return void
    */
   setToken(token: string): void {
-    this.sessionStorage.set(TokenConfigs.USER_TOKEN_KEY, token);
+    this._authToken$.next(token);
+    this.sessionStorage.set(this.tokenStorageKey, token);
   }
 
   /**
@@ -34,6 +52,7 @@ export class AuthTokenService implements IAuthTokenService {
    * @return void
    */
   removeToken(): void {
-    this.sessionStorage.delete(TokenConfigs.USER_TOKEN_KEY);
+    this._authToken$.next(null);
+    this.sessionStorage.delete(this.tokenStorageKey);
   }
 }

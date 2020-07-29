@@ -2,8 +2,8 @@ import { Role as IRole } from '../contracts';
 import { JsonProperty, ObjectSerializer } from '../../built-value/core/serializers';
 import { ISerializer, ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
-import { IDynamicFormBindableModel } from '../../components/dynamic-inputs/core/contracts/form-control';
 import { Permission } from './permission';
+import { FormViewModel } from '../../components/dynamic-inputs/core/contracts';
 
 export class RoleBuilder implements ISerializableBuilder<Role>, TypeBuilder<Role> {
   serializer: ISerializer;
@@ -57,7 +57,7 @@ export abstract class RoleAsViewable {
   }
 }
 
-export class Role extends RoleAsViewable implements IRole, IDynamicFormBindableModel {
+export class Role extends RoleAsViewable implements IRole, FormViewModel {
   @JsonProperty('label')
   label: string = undefined;
   @JsonProperty('display_label')

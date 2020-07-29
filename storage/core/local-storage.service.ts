@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { IAppStorage, SecureWebStorage, SecureStorage,  } from '../contracts/store-interface';
-import { storageEntry } from '../../utils/app-helpers';
+import { storageEntry } from '../../utils';
 
 /**
  * @description Browser local storage class for saving data
@@ -13,7 +13,7 @@ export class LocalStorage implements IAppStorage {
    */
   private store: SecureStorage;
 
-  constructor() {
+  constructor(@Inject('APP_SECRET') private secret: string) {
     this.store = this.initStorage();
   }
 
@@ -22,21 +22,21 @@ export class LocalStorage implements IAppStorage {
    * @return [[any]]
    */
   get(key: string): any {
-    return JSON.parse(this.store.getItem(storageEntry(key)));
+    return JSON.parse(this.store.getItem(storageEntry(key, this.secret)));
   }
   /**
    * @description Set a value in the key -> value store
    * @return [[void]]
    */
   set(key: string, item: any): void {
-    this.store.setItem(storageEntry(key), JSON.stringify(item));
+    this.store.setItem(storageEntry(key, this.secret), JSON.stringify(item));
   }
   /**
    * @description Delete item from the key -> value store with a provided key
    * @return [[void]]
    */
   delete(key: string): void {
-    this.store.removeItem(storageEntry(key));
+    this.store.removeItem(storageEntry(key, this.secret));
   }
   /**
    * @description Clear or reinitialize the key -> value store
@@ -50,7 +50,7 @@ export class LocalStorage implements IAppStorage {
    */
   private initStorage(): SecureStorage {
     if (window) {
-      return new SecureWebStorage(window.localStorage);
+      return new SecureWebStorage(window.localStorage, this.secret);
       // return window.localStorage;
     }
     throw new Error('Local Storage is only available in the Browser');

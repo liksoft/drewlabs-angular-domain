@@ -2,9 +2,9 @@ import { JsonProperty, ObjectSerializer } from '../../built-value/core/serialize
 import { ISerializableBuilder, ISerializer } from '../../built-value/contracts/serializers';
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
 import { OrganisationEntity } from './organisation';
-import { IDynamicFormBindableModel } from '../../components/dynamic-inputs/core/contracts/form-control';
 import { Role } from './role';
-import { isDefined } from '../../utils/type-utils';
+import { isDefined } from '../../utils/types/type-utils';
+import { FormViewModel } from '../../components/dynamic-inputs/core/contracts';
 
 export class DepartmentBuilder implements ISerializableBuilder<Department>, TypeBuilder<Department> {
   serializer: ISerializer;
@@ -46,7 +46,7 @@ export class DepartmentBuilder implements ISerializableBuilder<Department>, Type
 
 }
 
-export class Department implements IDynamicFormBindableModel {
+export class Department implements FormViewModel {
   @JsonProperty('id')
   id: number = undefined;
   @JsonProperty('name')

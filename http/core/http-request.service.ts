@@ -4,130 +4,123 @@ import {
   HttpHeaders
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpServices } from '../contracts/http-services';
-import { HttpRequestConfigs } from './config';
-import { SessionStorage } from '../../storage/core/session-storage.service';
-import { AuthPathConfig } from '../../auth/core/config';
-import { AuthTokenService } from '../../auth-token/core';
-import { URLUtils } from '../../utils/url';
-import { Browser } from '../../utils/browser';
-import { isDefined } from '../../utils/type-utils';
+import { catchError, startWith } from 'rxjs/operators';
+import { Injectable, Inject } from '@angular/core';
+import { IHttpService } from '../contracts';
+import { URLUtils } from '../../utils/url/url';
+import { Browser } from '../../utils/browser/browser';
+import { isDefined } from '../../utils/types/type-utils';
+import { createSubject } from '../../rxjs/helpers/index';
+import { Err } from '../../utils/logger';
+
+
+/**
+ * Derives file name from the http response by looking inside content-disposition
+ * @param res http Response
+ */
+function fileNameFromResponseHeaders(res: any) {
+  if (res instanceof Blob) {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+  const contentDisposition = res.headers.get('Content-Disposition') || '';
+  const matches = /filename=([^;]+)/gi.exec(contentDisposition);
+  const fileName = (matches[1] || 'untitled').trim();
+  return fileName;
+}
+
+export interface HTTPErrorState {
+  status: number;
+  error?: any;
+  url?: string;
+}
 
 @Injectable()
-export class HttpRequestService implements HttpServices {
+export class HttpRequestService implements IHttpService {
+
+  // tslint:disable-next-line: variable-name
+  private _errorState$ = createSubject<HTTPErrorState>();
+  errorState$ = this._errorState$.pipe(
+    startWith({}  as HTTPErrorState)
+  );
+
   constructor(
     public http: HttpClient,
-    private router: Router,
-    private sessionStorage: SessionStorage,
-    private tokenServiceProvider: AuthTokenService
+    @Inject('SERVER_URL') private serverUrl: string
   ) { }
 
   /**
-   * @description Send a request to an end server with HTTP POST verb
-   * @param path Request path [[string]]
-   * @param body Request body [[object]]
-   * @param fullUrl Specifies if full url is passed or not
-   * @param options Request options including HTTP headers [[object]]
+   * {@inheritdoc}
    */
   post(
     path: string,
     body: any,
-    options?: any,
-    fullUrl: boolean = false
+    options?: any
   ): Observable<any> {
-    const url = URLUtils.isWebURL(path) ? `${path}` : `${HttpRequestConfigs.serverUrl}${path}`;
+    const url = URLUtils.isWebURL(path) ? `${path}` : `${this.serverUrl}${path}`;
     return this.http.post(url, body, options).pipe(
       // retry(1),
-      catchError((err, res) => this.handleError(err))
+      catchError((err) => this.handleError(err))
     );
   }
 
   /**
-   * @description Send a request to an end server with HTTP GET verb
-   * @param path Request path [[string]]
-   * @param options Request options including HTTP headers [[object]]
-   * @param fullUrl Specifies if full url is passed or not
+   * {@inheritdoc}
    */
   get(
     path: string,
-    options?: any,
-    fullUrl: boolean = false
+    options?: any
   ): Observable<any> {
-    const url = URLUtils.isWebURL(path) ? `${path}` : `${HttpRequestConfigs.serverUrl}${path}`;
+    const url = URLUtils.isWebURL(path) ? `${path}` : `${this.serverUrl}${path}`;
     return this.http.get(url, options).pipe(
       // retry(1),
-      catchError((err, res) => this.handleError(err))
+      catchError((err) => this.handleError(err))
     );
   }
 
   /**
-   * @description Send a request to an end server with HTTP PUT verb
-   * @param path Request path [[string]]
-   * @param body Request body [[object]]
-   * @param options Request options including HTTP headers [[object]]
-   * @param fullUrl Specifies if full url is passed or not
+   * {@inheritdoc}
    */
   put(
     path: string,
     body: any,
-    options?: any,
-    fullUrl: boolean = false
+    options?: any
   ): Observable<any> {
-    const url = URLUtils.isWebURL(path) ? `${path}` : `${HttpRequestConfigs.serverUrl}${path}`;
+    const url = URLUtils.isWebURL(path) ? `${path}` : `${this.serverUrl}${path}`;
     return this.http.put(url, body, options).pipe(
       // retry(1),
-      catchError((err, res) => this.handleError(err))
+      catchError((err) => this.handleError(err))
     );
   }
 
   /**
-   * @description Send a request to an end server with HTTP DELETE verb
-   * @param path Request path [[string]]
-   * @param options Request options including HTTP headers [[object]]
-   * @param fullUrl Specifies if full url is passed or not
+   * {@inheritdoc}
    */
   delete(
     path: string,
-    options?: any,
-    fullUrl: boolean = false
+    options?: any
   ): Observable<any> {
-    const url = URLUtils.isWebURL(path) ? `${path}` : `${HttpRequestConfigs.serverUrl}${path}`;
+    const url = URLUtils.isWebURL(path) ? `${path}` : `${this.serverUrl}${path}`;
     return this.http.delete(url, options).pipe(
       // retry(1),
-      catchError((err, res) => this.handleError(err))
+      catchError((err) => this.handleError(err))
     );
   }
 
   /**
-   * @description Handle HTTP request Error event
-   * @param error Http Error response [[HttpErrorResponse]]
+   * {@inheritdoc}
    */
-  handleError(error: HttpErrorResponse): any {
+  handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
+      Err('An error occurred:', error.error.message);
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      if (+error.status === 401) {
-        this.sessionStorage.clear();
-        this.tokenServiceProvider.removeToken();
-        this.sessionStorage.set(HttpRequestConfigs.sessionExpiredStorageKey, true);
-        this.router.navigate([AuthPathConfig.LOGIN_PATH], {
-          replaceUrl: true
-        });
-        // return throwError(HttpRequestMessages.getSessionExpiredMessage());
-        return throwError('Error');
-      }
-      console.error(
-        `Backend returned code ${error.status}, ` + `body was: ${error.error}`
-      );
+      this._errorState$.next({ status: +error.status, error: error.error, url: error.url });
+      Err(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
     }
     // return an observable with a user friendly error message
-    return throwError('Error');
+    return throwError(error);
   }
 
   public defaultHttpHeaders(): HttpHeaders {
@@ -141,7 +134,7 @@ export class HttpRequestService implements HttpServices {
    * @param url [[string]]
    */
   downloadFile(url: string, filename?: string, fileExtension?: string) {
-    url = URLUtils.isWebURL(url) ? `${url}` : `${HttpRequestConfigs.serverUrl}${url}`;
+    url = URLUtils.isWebURL(url) ? `${url}` : `${this.serverUrl}${url}`;
     const headers = new HttpHeaders();
     headers.append('Accept', 'text/plain');
     headers.append('Content-type', 'application/octet-stream');
@@ -149,7 +142,7 @@ export class HttpRequestService implements HttpServices {
       this.loadServerFile(url)
         .then((res: any) => {
           if (!isDefined(filename)) {
-            filename = isDefined(fileExtension) ? `${this.getFileNameFromResponseContentDisposition(res)}.${fileExtension}` : `${this.getFileNameFromResponseContentDisposition(res)}`;
+            filename = isDefined(fileExtension) ? `${fileNameFromResponseHeaders(res)}.${fileExtension}` : `${fileNameFromResponseHeaders(res)}`;
           }
           Browser.saveFile(res, isDefined(fileExtension) ? `${filename}.${fileExtension}` : `${filename}`);
           _({});
@@ -173,19 +166,5 @@ export class HttpRequestService implements HttpServices {
           _(res);
         });
     });
-  }
-
-  /**
-   * Derives file name from the http response by looking inside content-disposition
-   * @param res http Response
-   */
-  getFileNameFromResponseContentDisposition(res: any) {
-    if (res instanceof Blob) {
-      return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    }
-    const contentDisposition = res.headers.get('Content-Disposition') || '';
-    const matches = /filename=([^;]+)/gi.exec(contentDisposition);
-    const fileName = (matches[1] || 'untitled').trim();
-    return fileName;
   }
 }

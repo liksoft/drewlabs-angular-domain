@@ -1,1 +1,1 @@
-export { AppHttpModule } from './module/http.module';
+export { DrewlabsHttpModule } from './module/http.module';
