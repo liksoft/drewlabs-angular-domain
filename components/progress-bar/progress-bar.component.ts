@@ -1,27 +1,17 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { UIState } from '../ui-store/ui-state';
-import { AppUIStore } from '../ui-store/ui-store';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { AppUIStateProvider } from '../../ui-store';
 
 @Component({
   selector: 'app-progress-bar',
   templateUrl: './progress-bar.component.html',
-  styleUrls: ['./progress-bar.component.css']
+  styleUrls: ['./progress-bar.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProgressBarComponent implements OnInit {
+export class ProgressBarComponent {
   @Input() overlay = false;
   @Input() hidden = false;
   @Input() indeterminate = false;
-  performingAction: boolean;
-  uiStoreSubscriptions: Subscription[] = [];
+  uiState$ = this.appUiStore.uiState;
 
-  constructor(private appUiStore: AppUIStore) {}
-
-  ngOnInit() {
-    this.uiStoreSubscriptions.push(
-      this.appUiStore.uiState.subscribe((state: UIState) => {
-        this.performingAction = state.performingAction;
-      })
-    );
-  }
+  constructor(private appUiStore: AppUIStateProvider) {}
 }

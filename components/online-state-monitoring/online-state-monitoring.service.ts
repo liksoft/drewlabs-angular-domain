@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ConnectionStatus } from './connection-status';
-import { WindowRef } from '../../utils/window-ref';
+import { WindowRef } from '../../utils';
 
 enum EventType {
   ONLINE_EVENT = 'online',

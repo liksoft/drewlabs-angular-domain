@@ -1,10 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { isDefined, isArray } from '../utils/type-utils';
-import { Collection } from '../utils/collection';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { FileFormControl } from '../components/dynamic-inputs/dynamic-form-control/dynamic-form-control.component';
 import { IDynamicForm } from '../components/dynamic-inputs/core';
 import { isGroupOfIDynamicForm } from './component-reactive-form-helpers';
+import { isArray, isDefined } from '../utils';
+import { Collection } from '../collections/collection';
 
 
 @Injectable({

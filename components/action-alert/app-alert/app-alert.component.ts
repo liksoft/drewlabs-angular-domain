@@ -3,46 +3,14 @@ import {
   Input,
   Output,
   EventEmitter,
-  Injectable
+  ChangeDetectionStrategy
 } from '@angular/core';
-
-@Injectable()
-export class AlertService {
-  private showAlertComponent = false;
-  private type: string;
-
-  get showAlert() {
-    return this.showAlertComponent;
-  }
-
-  set showAlert(value: boolean) {
-    this.showAlertComponent = value;
-  }
-
-  get alertType() {
-    return this.type;
-  }
-
-  set alertType(value: string) {
-    this.type = value;
-  }
-
-  public setAlertTypeAndShowAlert(type: string) {
-    this.showAlertComponent = true;
-    this.type = type;
-  }
-}
-
-export interface AlertConfig {
-  type?: string;
-  showAlert: boolean;
-  message?: string;
-}
+import { createSubject } from '../../../rxjs/helpers';
 
 @Component({
   selector: 'app-alert',
   template: `
-    <div [class]="getAlertType()" role="alert">
+    <div *ngIf="alertTypeClass$ | async as alertTypeClass" [class]="alertTypeClass" role="alert">
       <div class="alert-items">
         <div class="alert-item static">
           <ng-container *ngIf="showIcon">
@@ -53,7 +21,7 @@ export interface AlertConfig {
               <clr-icon *ngSwitchDefault class="alert-icon" shape="check-circle"></clr-icon>
             </div>
           </ng-container>
-          <div class="alert-text" [innerHTML]="alertMessage | safeWebContent"></div>
+          <div class="alert-text">{{ alertMessage }}</div>
         </div>
       </div>
       <button type="button" class="close" aria-label="Close" (click)="hideAlert.emit({})">
@@ -83,7 +51,8 @@ export interface AlertConfig {
             align-self: inherit !important;
         } */
     `
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppAlertComponent {
   @Input() alertMessage: string;
@@ -91,20 +60,21 @@ export class AppAlertComponent {
   @Output() hideAlert = new EventEmitter<object>();
   @Input() icon: string;
   @Input() alertType = 'alert-success';
-  // tslint:disable-next-line: no-inferrable-types
-  @Input() isAppLevel: boolean = false;
+  // tslint:disable-next-line: variable-name
+  private _isAppLevel = false;
+  @Input() set isAppLevel(value: boolean) {
+    this._isAppLevel = value;
+    this._alertTypeClass.next(`alert ${this.isAppLevel ? 'alert-app-level action-alert' : ''} ${this.alertType}`);
+  }
+  get isAppLevel() {
+    return this._isAppLevel;
+  }
   // tslint:disable-next-line: no-inferrable-types
   @Input() showCloseActionButton: boolean = false;
 
-  /**
-   * @description Component object initializer
-   */
-  constructor() { }
-
-  /**
-   * @description build the alert component class
-   */
-  getAlertType() {
-    return `alert ${this.isAppLevel ? 'alert-app-level action-alert' : ''} ${this.alertType}`;
+  // tslint:disable-next-line: variable-name
+  private _alertTypeClass = createSubject<string>();
+  public get alertTypeClass$() {
+    return this._alertTypeClass.asObservable();
   }
 }

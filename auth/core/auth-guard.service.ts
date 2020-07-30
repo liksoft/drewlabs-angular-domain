@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import {
   CanActivate,
   Router,
@@ -15,17 +15,21 @@ import { isDefined } from '../../utils/types/type-utils';
 import { AuthTokenService } from '../../auth-token/core/auth-token.service';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 import { userCanAny, Authorizable, userCan } from '../contracts/v2/user/user';
+import { createSubject } from '../../rxjs/helpers/index';
 
 /**
  * @description Authentication guard
  */
 @Injectable()
 export class AuthGuardService
-  implements CanActivate, CanActivateChild, CanLoad {
+  implements CanActivate, CanActivateChild, CanLoad, OnDestroy {
 
   private authState$ = this.auth.state$;
+  // tslint:disable-next-line: variable-name
+  private _destroy$ = createSubject();
 
   constructor(private router: Router, private auth: AuthService) { }
+
   /**
    * @description Handle for component instance activation.
    * Check if user is authenticated before authorizing access to the current component
@@ -69,7 +73,7 @@ export class AuthGuardService
   checkLogin(url: string) {
     return this.authState$
       .pipe(
-        takeUntil(this.auth.destroy$),
+        takeUntil(this._destroy$),
         mergeMap(source => {
           if (!isDefined(source.user) || !isDefined(source.isLoggedIn)) {
             this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
@@ -78,6 +82,9 @@ export class AuthGuardService
           return of(true);
         }),
       );
+  }
+  ngOnDestroy() {
+    this._destroy$.next();
   }
 }
 

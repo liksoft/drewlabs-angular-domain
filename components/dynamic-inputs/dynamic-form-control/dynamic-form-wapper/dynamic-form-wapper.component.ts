@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, AbstractControl, FormArray, ValidatorFn, AsyncValidator, AsyncValidatorFn, Validator } from '@angular/forms';
+import { FormGroup, AbstractControl, FormArray, ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
-import { isDefined, isArray } from '../../../../utils/type-utils';
+import { isDefined, isArray } from '../../../../utils';
 import { HTMLFormControlRequireIfConfig, IHTMLFormControl } from '../../core/contracts/dynamic-input-interface';
 import { sortFormByIndex } from 'src/app/lib/domain/components/dynamic-inputs/core/contracts/form-control';
 import { isGroupOfIDynamicForm, ComponentReactiveFormHelpers } from 'src/app/lib/domain/helpers/component-reactive-form-helpers';

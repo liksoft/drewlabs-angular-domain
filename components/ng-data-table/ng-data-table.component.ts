@@ -8,7 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { ClrDatagridStateInterface, ClrDatagrid } from '@clr/angular';
-import { isDefined, isObject } from 'src/app/lib/domain/utils/type-utils';
+import { isDefined, isObject } from '../../utils';
 
 export const DEFAULT_DATAGRID_PAGINATOR_LENGTH = 10;
 export interface ITableColumn {

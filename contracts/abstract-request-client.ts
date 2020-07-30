@@ -4,10 +4,10 @@ import {
 } from 'src/app/lib/domain/http/contracts/http-response-data';
 import { ServerResponseKeys } from 'src/app/lib/domain/auth/core';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
-import { isDefined, isArray } from '../utils/type-utils';
 import { IResponseBody } from '../http/contracts/http-response-data';
 import { IAppStorage } from '../storage/contracts/store-interface';
 import { IEntityServiceProvider } from './entity-service-provider';
+import { isArray, isDefined } from '../utils';
 
 /**
  * @description Make a get request to ressources server using the id parameter
@@ -18,7 +18,9 @@ export function loadThroughHttpRequest(
   const provider = new RequestClient();
   return new Promise((resolve, reject) => {
     provider.get(client, isDefined(id) ? `${ressourcesPath}/${id}` : `${ressourcesPath}`, params)
+      // tslint:disable-next-line: deprecation
       .then((res: ResponseData) => {
+        // tslint:disable-next-line: deprecation
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );

@@ -1,14 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { AbstractAlertableComponent } from 'src/app/lib/domain/helpers/component-interfaces';
-import { AppUIStoreManager } from 'src/app/lib/domain/helpers/app-ui-store-manager.service';
-import { Dialog } from 'src/app/lib/domain/utils/window-ref';
-import { ApplicationUsersService } from 'src/app/lib/domain/auth/core/services/users.service';
-import { User } from 'src/app/lib/domain/auth/models/user';
-import { isDefined } from 'src/app/lib/domain/utils/type-utils';
-import { IResponseBody } from 'src/app/lib/domain/http/contracts/http-response-data';
+import { AbstractAlertableComponent } from '../../helpers/component-interfaces';
+import { AppUIStoreManager } from '../../helpers/app-ui-store-manager.service';
+import { Dialog } from '../../utils';
+// import { ApplicationUsersService } from '../../auth/core/services/users.service';
+import { User } from '../../auth/models/user';
+import { IResponseBody } from '../../http/contracts/http-response-data';
 import { DrewlabsRessourceAssignmentService } from './ressource-assignment.service';
 import { DrewlabsRessourceAssignment } from './ressource-assignment';
-import { isArray } from '../../utils/type-utils';
+import { isArray, isDefined } from '../../utils';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -46,7 +45,6 @@ export class DrewlabsRessourceAssignmentComponent extends AbstractAlertableCompo
 
   constructor(
     uiStore: AppUIStoreManager,
-    private service: ApplicationUsersService,
     private dialog: Dialog,
     public componentService: DrewlabsRessourceAssignmentService,
   ) { super(uiStore); }
@@ -59,7 +57,8 @@ export class DrewlabsRessourceAssignmentComponent extends AbstractAlertableCompo
       permissionquery = `${'?permission=' + this.permission}`.trim();
     }
     try {
-      this.users = await this.service.getUsers(`${this.service.ressourcesPath}${isDefined(permissionquery) ? permissionquery : ''}`);
+      // TODO : Write the users reducers, action and provider for this implementation to work
+      // this.users = await this.service.getUsers(`${this.service.ressourcesPath}${isDefined(permissionquery) ? permissionquery : ''}`);
     } catch (_) {
       console.log(_);
     }
@@ -89,6 +88,7 @@ export class DrewlabsRessourceAssignmentComponent extends AbstractAlertableCompo
     }
   }
 
+  // tslint:disable-next-line: deprecation
   onAssignmentResponse(res: DrewlabsRessourceAssignment | IResponseBody, trans: any) {
     if ((res instanceof DrewlabsRessourceAssignment) || (res.statusOK)) {
       // Notify the parent of successful completion of the assignment request

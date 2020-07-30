@@ -3,7 +3,7 @@ import { Countries } from './countries';
 import { Country } from './country.model';
 import * as _ from 'google-libphonenumber';
 import { PhoneNumberUtils } from './phone-number-utils';
-import { isDefined } from '../../utils/type-utils';
+import { isDefined } from '../../utils';
 
 @Injectable()
 export class IntlTelInputService {

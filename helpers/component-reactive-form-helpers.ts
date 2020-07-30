@@ -17,17 +17,15 @@ import {
   DynamicForm,
 } from 'src/app/lib/domain/components/dynamic-inputs/core';
 import { of } from 'rxjs';
-import { CustomValidators } from 'src/app/lib/domain/utils/custom-validators';
 import { Form } from 'src/app/lib/domain/components/dynamic-inputs/core/form-control/form';
-import { isDefined, isArray } from 'src/app/lib/domain/utils/type-utils';
 import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { EventEmitter, HostBinding } from '@angular/core';
 import { AbstractAlertableComponent } from './component-interfaces';
 import { TranslationService } from '../translator';
 import { ICollection } from '../contracts/collection-interface';
 import { ValidatorFn, AsyncValidatorFn } from '@angular/forms';
-import { UniqueValueService } from '../utils/custom-validators';
-import { MomentUtils } from '../utils/moment-utils';
+import { CustomValidators, UniqueValueService } from '../validators';
+import { isArray, isDefined, MomentUtils } from '../utils';
 
 /**
  * @description Checks if a dynamic form contains other form

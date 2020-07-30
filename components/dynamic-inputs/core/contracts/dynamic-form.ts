@@ -1,6 +1,6 @@
 import { IHTMLFormControl } from './dynamic-input-interface';
 import { ICollection } from '../../../../contracts/collection-interface';
-import { isDefined } from '../../../../utils/type-utils';
+import { isDefined } from '../../../../utils';
 
 /**
  * @description Definitions for entities used as dynamic forms groups

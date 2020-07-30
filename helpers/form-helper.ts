@@ -1,25 +1,24 @@
 import { Injectable, OnDestroy, Injector, } from '@angular/core';
 import { FormService } from '../components/dynamic-inputs/core/form-control/form.service';
-import { isDefined } from '../utils/type-utils';
 import { TranslationService } from '../translator';
 import { DynamicFormHelpers, ComponentReactiveFormHelpers } from './component-reactive-form-helpers';
 import { Subscription, Subject } from 'rxjs';
 import { ICollection } from '../contracts/collection-interface';
 import { filter } from 'rxjs/operators';
-import { Collection } from '../utils/collection';
 import { AbstractEntityProvider } from '../entity/abstract-entity';
 import { AbstractAlertableComponent } from 'src/app/lib/domain/helpers/component-interfaces';
 import { FormGroup } from '@angular/forms';
 import { IEntity } from '../entity/contracts/entity';
 import { TypeUtilHelper } from './type-utils-helper';
 import { AppUIStoreManager, ActionResponseParams } from './app-ui-store-manager.service';
-import { ArrayUtils } from '../utils/array-utils';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { IDynamicForm } from '../components/dynamic-inputs/core/contracts/dynamic-form';
 import { IResponseBody } from '../http/contracts/http-response-data';
 import { TranslationParms } from '../translator/translator.service';
 import * as lodash from 'lodash';
 import { HandlersResultMsg } from '../entity/contracts/entity-handler-types';
+import { ArrayUtils, isDefined } from '../utils';
+import { Collection } from '../collections/collection';
 
 /**
  * @description Definition of form request configuration object
@@ -78,8 +77,6 @@ export class FormHelperService implements OnDestroy {
 
   suscribe() {
     // Initialize publishers
-    // this._formLoaded = new Subject<ICollection<IDynamicForm>>();
-    // this.loadForms = new Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
     // Register to publishers events
     this.subscriptions.push(
       // Dynamic form loader publisher
@@ -359,6 +356,7 @@ export abstract class FormViewContainerComponent<T> extends AbstractAlertableCom
    * @evrridable
    * @param result [[IResponseBody]]
    */
+  // tslint:disable-next-line: deprecation
   async onDeleteActionResult(result: IResponseBody) {
     const translations = await this._translate.loadTranslations(this._tranlationConfigs.keys, this._tranlationConfigs.translateParams);
     this.appUIStoreManager.onActionResponse({
@@ -372,12 +370,14 @@ export abstract class FormViewContainerComponent<T> extends AbstractAlertableCom
    * @description Provides implentations of update result handler that gets call when update request get completed
    * @param result [[IResponseBody]]
    */
+  // tslint:disable-next-line: deprecation
   abstract async onUpdateActionResult(result: IResponseBody): Promise<void>;
 
   /**
    * @description Provides implentations of create result handler that gets call when create request get completed
    * @param result [[IResponseBody]]
    */
+  // tslint:disable-next-line: deprecation
   abstract async onCreateActionResult(result: IResponseBody | T | boolean): Promise<void>;
 
   dispose() {

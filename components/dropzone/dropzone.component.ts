@@ -1,5 +1,4 @@
-import { isDefined } from 'src/app/lib/domain/utils/type-utils';
-import { WindowRef } from 'src/app/lib/domain/utils/window-ref';
+import { isDefined, WindowRef } from '../../utils';
 import {
   Component,
   OnInit,

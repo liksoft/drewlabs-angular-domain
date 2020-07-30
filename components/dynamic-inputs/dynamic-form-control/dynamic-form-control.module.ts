@@ -8,11 +8,10 @@ import { NgSelectModule} from '@ng-select/ng-select';
 import { IntlTelInputModule } from 'src/app/lib/domain/components/intl-tel-input';
 import { ClarityModule } from '@clr/angular';
 import { DynamicFormWapperComponent } from './dynamic-form-wapper/dynamic-form-wapper.component';
-// import { SafeWebContentPipe, SafeRessourceContentPipe } from '../../../pipes/safe-web-content.pipe';
 import { DropzoneModule } from '../../dropzone/dropzone.module';
 import { DynamicRepetableGroupComponent } from './dynamic-repetable-group/dynamic-repetable-group.component';
 import { RepeatableGroupChildComponent } from './dynamic-repetable-group/repeatable-group-child/repeatable-group-child.component';
-import { PipesModule } from '../../../pipes';
+import { CustomPipesModule } from '../../pipes';
 
 
 @NgModule({
@@ -25,7 +24,7 @@ import { PipesModule } from '../../../pipes';
     TranslateModule,
     ClarityModule,
     DropzoneModule,
-    PipesModule
+    CustomPipesModule
   ],
   declarations: [
     DynamicFormControlComponent,

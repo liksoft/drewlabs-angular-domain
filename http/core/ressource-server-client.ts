@@ -8,7 +8,6 @@ import { RequestBody, TransformResponseHandlerFn } from '../contracts/resource';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DrewlabsHttpResponseStatusCode } from './http-response';
 import { UIStateStatusCode } from '../../ui-store/ui-state';
-import { Log } from '../../utils/logger';
 
 @Injectable()
 export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHttpResponse<any>> {

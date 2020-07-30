@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { OnlineStateMonitoringService } from './online-state-monitoring.service';
 import { Subscription } from 'rxjs';
-import { isDefined } from '../../utils/type-utils';
+import { isDefined } from '../../utils';
 
 @Component({
   selector: 'app-online-state-monitoring',

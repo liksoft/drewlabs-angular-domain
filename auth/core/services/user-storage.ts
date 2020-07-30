@@ -6,7 +6,6 @@ import { SessionStorage } from '../../../storage/core';
 import { AuthStorageConfig } from '../config';
 import { AppUser, Authorizable, NotifiableUserDetails } from '../../contracts/v2/user/user';
 import { createStateful } from '../../../rxjs/helpers';
-import { Log } from '../../../utils/logger';
 
 @Injectable()
 export class UserStorageProvider implements IUserStorageHandler {
@@ -24,6 +23,7 @@ export class UserStorageProvider implements IUserStorageHandler {
   get user() {
     return this.getUserFromCache();
   }
+
   /**
    * @inheritdoc
    */

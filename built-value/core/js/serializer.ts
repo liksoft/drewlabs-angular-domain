@@ -1,7 +1,6 @@
 import { UnDecoratedObjectSerializer, IGenericSerializableBuilder } from '../../contracts/serializers';
 import { deserializeJsObject, serializeJsObject } from './helper';
 import { GenericTypeBuilder } from '../type-builder';
-import { Log } from '../../../utils/logger';
 import { isDefined } from '../../../utils/types/type-utils';
 
 export class UndecoratedSerializer implements UnDecoratedObjectSerializer {

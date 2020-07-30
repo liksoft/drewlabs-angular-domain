@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {
   postRessource,
-} from 'src/app/lib/domain/contracts/abstract-request-client';
-import { HttpRequestService } from 'src/app/lib/domain/http/core';
-import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
-import { TranslationService } from 'src/app/lib/domain/translator/translator.service';
+} from '../../../domain/contracts/abstract-request-client';
+import { HttpRequestService } from '../../../domain/http/core';
+import { ISerializableBuilder } from '../../../domain/built-value/contracts/serializers';
+import { TranslationService } from '../../../domain/translator/translator.service';
 import { DrewlabsRessourceAssignment } from './ressource-assignment';
 
 @Injectable()

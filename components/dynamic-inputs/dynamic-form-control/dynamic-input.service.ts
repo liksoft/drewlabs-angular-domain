@@ -2,7 +2,7 @@ import { IHTMLFormControl } from '../core/contracts/dynamic-input-interface';
 import { Injectable } from '@angular/core';
 import { InputTypes } from '../core/input-types';
 // tslint:disable-next-line: max-line-length
-import { CheckBoxInput, DateInput, SelectInput, TextAreaInput, NumberInput, TextInput, PhoneInput, PasswordInput, RadioInput } from '../core/index';
+import { CheckBoxInput, DateInput, SelectInput, TextAreaInput, NumberInput, TextInput, PhoneInput, PasswordInput, RadioInput } from '../core';
 
 @Injectable()
 export class HTMLFormControlService {

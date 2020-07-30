@@ -10,7 +10,7 @@ import {
   ResponseBody
 } from 'src/app/lib/domain/http/core';
 import { Form } from './form';
-import { isDefined, isArray } from '../../../../utils/type-utils';
+import { isDefined, isArray } from '../../../../utils';
 import { Injectable } from '@angular/core';
 import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
 import { FormControl } from './form-control';

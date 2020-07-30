@@ -3,8 +3,7 @@ import { ISerializer, ISerializableBuilder } from 'src/app/lib/domain/built-valu
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from 'src/app/lib/domain/built-value/contracts/type';
 import { FormControl } from './form-control';
 import { IDynamicFormBindableModel } from '../contracts/form-control';
-import { ArrayUtils } from '../../../../utils/array-utils';
-import { isArray } from '../../../../utils/type-utils';
+import { ArrayUtils, isArray } from '../../../../utils';
 
 /**
  * @description Sort form loaded from backend server by control index

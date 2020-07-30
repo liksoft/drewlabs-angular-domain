@@ -9,7 +9,7 @@ export class StorageModule {
       providers: [
         {
           provide: 'APP_SECRET',
-          useValue: configs.secretKey
+          useValue: configs.secretKey || 'ELEWOU_SECRET_KEY'
         },
         LocalStorage,
         SessionStorage,

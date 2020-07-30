@@ -1,23 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { AppUIStoreManager } from '../../../helpers/app-ui-store-manager.service';
-import { AlertConfig } from '../app-alert/app-alert.component';
-import { UIState } from '../../ui-store/ui-state';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Subscription, combineLatest } from 'rxjs';
+import { AppUIStateWrapper } from '../../../ui-store';
+import { map } from 'rxjs/operators';
 
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'drewlabs-action-alert',
   template: `
     <div class="text-center">
+      <ng-container *ngIf="vm$ | async as vm">
       <app-alert
-        *ngIf="alertProperties.showAlert"
+        *ngIf="vm?.alertState?.showAlert"
         [isAppLevel]="true"
         [showCloseActionButton]="true"
-        [alertType]="alertProperties.type"
-        [alertMessage]="actionUiMessage"
-        (hideAlert)="onHideAlert()"
+        [alertType]="vm?.alertState?.type"
+        [alertMessage]="vm?.uiState?.uiMessage"
+        (hideAlert)="uiStore.completeUIStoreAction()"
         [showIcon]="false">
       </app-alert>
+      </ng-container>
     </div>
   `,
   styles: [
@@ -26,43 +27,22 @@ import { UIState } from '../../ui-store/ui-state';
       text-align: center;
     }
     `
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ActionAlertComponent implements OnInit {
+export class ActionAlertComponent {
 
-  public performingAction = false;
-  public actionUiMessage: string;
   public uiStoreSubscriptions: Subscription[] = [];
 
-  constructor(private uiStore: AppUIStoreManager) { }
+  constructor(public readonly uiStore: AppUIStateWrapper) { }
 
-  onHideAlert() {
-    this.uiStore.completeUIStoreAction();
-  }
-
-  /**
-   * @description AlertProperties get that load the alert properties from app ui store provider
-   */
-  get alertProperties(): AlertConfig {
-    return this.uiStore.alertConfigs;
-  }
-
-  /**
-   * @description Subscribe to UI events on the inherited component
-   */
-  subscribeToUIActions() {
-    this.uiStoreSubscriptions.push(
-      this.uiStore.appUIStore.uiState.subscribe(
-        (uiState: UIState) => {
-          this.performingAction = uiState.performingAction;
-          this.actionUiMessage = uiState.uiMessage;
-        }
-      )
+  get vm$() {
+    return combineLatest([
+      this.uiStore.alertState$,
+      this.uiStore.appUIStore.uiState
+    ]).pipe(
+      map(([alertState, uiState]) => ({ alertState, uiState }))
     );
-  }
-
-  ngOnInit() {
-    this.subscribeToUIActions();
   }
 
 }

@@ -1,10 +1,8 @@
-import { AppUIStoreManager } from './app-ui-store-manager.service';
+import { AppUIStoreManager, UIState } from './app-ui-store-manager.service';
 import { Subscription } from 'rxjs';
 import { HostBinding } from '@angular/core';
-import { AlertConfig } from '../components/action-alert/app-alert/app-alert.component';
 import { AbstractControl, FormGroup, FormArray, FormControl } from '@angular/forms';
-import { UIState } from '../components/ui-store/ui-state';
-import { isDefined } from '../utils/type-utils';
+import { isDefined } from '../utils';
 
 export interface IFormViewComponent {
   /**
@@ -44,8 +42,8 @@ export abstract class AbstractAlertableComponent {
   /**
    * @description AlertProperties get that load the alert properties from app ui store provider
    */
-  get alertProperties(): AlertConfig {
-    return this.appUIStoreManager.alertConfigs;
+  get alertProperties() {
+    return this.appUIStoreManager.alertState$;
   }
   /**
    * @description Subscribe to UI events on the inherited component

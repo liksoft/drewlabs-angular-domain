@@ -24,6 +24,7 @@ export interface IAuthTokenHandler extends ITokenHandler {
 /**
  * @description Type definition for a user remember token param
  */
+// tslint:disable-next-line: interface-over-type-literal
 export type IUserRememberTokenParam = { userId: number | string, token: string };
 
 export interface IRememberTokenHandler extends ITokenHandler {

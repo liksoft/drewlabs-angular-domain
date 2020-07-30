@@ -1,9 +1,10 @@
-import { ISerializableBuilder, ISerializer } from 'src/app/lib/domain/built-value/contracts/serializers';
-import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from 'src/app/lib/domain/built-value/contracts/type';
-import { ObjectSerializer, JsonProperty } from 'src/app/lib/domain/built-value/core/serializers';
-import { IDynamicFormBindableModel } from 'src/app/lib/domain/components/dynamic-inputs/core/contracts/form-control';
+import { ISerializableBuilder, ISerializer } from '../../built-value/contracts/serializers';
+import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
+import { ObjectSerializer, JsonProperty } from '../../built-value/core/serializers';
+import { IDynamicFormBindableModel } from '../../components/dynamic-inputs/core/contracts/form-control';
 
-export class DrewlabsRessourceAssignmentBuilder implements ISerializableBuilder<DrewlabsRessourceAssignment>, TypeBuilder<DrewlabsRessourceAssignment> {
+export class DrewlabsRessourceAssignmentBuilder implements
+  ISerializableBuilder<DrewlabsRessourceAssignment>, TypeBuilder<DrewlabsRessourceAssignment> {
   serializer: ISerializer;
 
   /**

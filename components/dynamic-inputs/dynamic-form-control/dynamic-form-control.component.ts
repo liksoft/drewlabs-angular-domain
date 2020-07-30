@@ -1,4 +1,4 @@
-import { ArrayUtils } from 'src/app/lib/domain/utils/array-utils';
+import { ArrayUtils, MomentUtils, isDefined } from '../../../utils';
 import {
   IHTMLFormControl,
   SelectInput,
@@ -16,7 +16,7 @@ import {
   ISelectItem,
   FileInput,
   HMTLInput
-} from 'src/app/lib/domain/components/dynamic-inputs/core';
+} from '../core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { AbstractControl, FormArray } from '@angular/forms';
 import {
@@ -28,11 +28,9 @@ import {
   OnDestroy,
   ViewChild
 } from '@angular/core';
-import { MomentUtils } from 'src/app/lib/domain/utils/moment-utils';
 import { Observable } from 'rxjs';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { environment } from '../../../../../../environments/environment';
-import { isDefined } from '../../../utils/type-utils';
 import { DropzoneComponent } from '../../dropzone/dropzone.component';
 import { readFileAsDataURI } from '../../../utils/browser';
 

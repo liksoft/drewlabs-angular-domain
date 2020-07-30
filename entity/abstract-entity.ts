@@ -2,7 +2,6 @@ import { Subscription, Subject } from 'rxjs';
 import { CreateReq, UpdateReq, DeleteReq, GetReq, GetAllReq } from './contracts/requests';
 import { IResponseBody } from '../http/contracts/http-response-data';
 import { ISource } from '../components/ng-data-table/ng-data-table.component';
-import { isDefined } from '../utils/type-utils';
 import { filter } from 'rxjs/operators';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { TypeUtilHelper } from '../helpers/type-utils-helper';
@@ -10,6 +9,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { IEntityServiceProvider } from '../contracts/entity-service-provider';
 import { DefaultEntityHandler } from './entity-handler-provider';
 import { EntityPaginator, EntityHandlers } from './contracts/entity-handler-types';
+import { isDefined } from '../utils';
 
 @Injectable()
 export class AbstractEntityProvider<T> implements OnDestroy {
@@ -43,7 +43,9 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    * @description Get triggers when entity create event gets completed successfully
    */
   // tslint:disable-next-line: variable-name
-  protected _createResult = new Subject<T | IResponseBody | boolean>();
+  protected _createResult =
+    // tslint:disable-next-line: deprecation
+    new Subject<T | IResponseBody | boolean>();
   get createResult$() {
     return this._createResult.asObservable();
   }
@@ -52,7 +54,9 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    * @description Get triggers when entity event gets completed
    */
   // tslint:disable-next-line: variable-name
-  public readonly _updateResult = new Subject<IResponseBody>();
+  public readonly _updateResult =
+    // tslint:disable-next-line: deprecation
+    new Subject<IResponseBody>();
   get updateResult$() {
     return this._updateResult.asObservable();
   }
@@ -61,7 +65,9 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    * @description Get triggers when entity update/delete event gets completed
    */
   // tslint:disable-next-line: variable-name
-  public readonly _deleteResult = new Subject<IResponseBody>();
+  public readonly _deleteResult =
+    // tslint:disable-next-line: deprecation
+    new Subject<IResponseBody>();
   get deleteResult$() {
     return this._deleteResult.asObservable();
   }

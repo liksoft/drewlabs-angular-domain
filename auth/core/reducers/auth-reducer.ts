@@ -1,6 +1,4 @@
-import { AuthState } from '../types';
-import { AuthStateAction, AuthStoreActions } from '../actions/auth-actions';
-import { Log } from '../../../utils/logger';
+import { AuthState, AuthStateAction, AuthStoreActions } from '../actions';
 
 export function authReducer(state: Partial<AuthState>, action: Partial<AuthStateAction>) {
   switch (action.type) {

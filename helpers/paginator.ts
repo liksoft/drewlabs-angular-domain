@@ -4,14 +4,13 @@ import { HttpGetAllRequestFn, RequestClient } from '../contracts/abstract-reques
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { HttpRequestService, ResponseData, IResponseBody, ResponseBody } from '../http/core';
 import { SessionStorage } from '../storage/core';
-import { isArray, isDefined } from '../utils/type-utils';
 import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { AbstractAlertableComponent } from './component-interfaces';
-import { Dialog } from '../utils/window-ref';
 import { TranslationService } from '../translator/translator.service';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { ClrDatagrid, ClrDatagridStateInterface } from '@clr/angular';
 import { from } from 'rxjs';
+import { Dialog, isArray, isDefined } from '../utils';
 
 @Injectable()
 export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource<T>>, OnDestroy {
@@ -113,7 +112,9 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
       if (this._status) {
         query += `&status=${this._status}`;
       }
+      // tslint:disable-next-line: deprecation
       this._getMethod(this.client, `${this._ressourcePath}${query}`, { params: this._queryParams }).then((res: ResponseData) => {
+        // tslint:disable-next-line: deprecation
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );

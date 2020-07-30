@@ -6,6 +6,7 @@ import { DrewlabsRessourceServerClient } from '../core/ressource-server-client';
 import { parseV2HttpResponse } from '../core/v2/http-response';
 import { TransformResponseHandlerFn } from '../contracts';
 
+// tslint:disable-next-line: interface-over-type-literal
 type ModuleConfigParams = { serverURL: string, requestResponseHandler?: TransformResponseHandlerFn };
 
 @NgModule({

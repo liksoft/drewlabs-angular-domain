@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, ViewChild, ViewContainerRef, ComponentRef, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ViewContainerRef, ComponentRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormArray, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
-import { DynamicComponentService } from '../../../services/dynamic-component-resolver.service';
 import { RepeatableGroupChildComponent } from './repeatable-group-child/repeatable-group-child.component';
-import { isDefined } from '../../../../utils/type-utils';
+import { isDefined } from '../../../../utils';
 import { Subscription } from 'rxjs';
+import { DynamicComponentService } from '../../../services/dynamic-component-resolver';
 
 @Component({
   selector: 'app-dynamic-repetable-group',

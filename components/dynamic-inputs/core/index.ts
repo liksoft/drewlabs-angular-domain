@@ -2,7 +2,7 @@ import { AbstractHTMLFormControl } from './abstract-dynamic-input';
 import { IHTMLFormControl, HTMLFormControlRequireIfConfig } from './contracts/dynamic-input-interface';
 import { FormControlModel } from './contracts/form-control';
 import { IHTMLFormControlValidationRule } from './contracts/input-rules';
-import { isDefined } from '../../../utils/type-utils';
+import { isDefined } from '../../../utils';
 import { InputTypes } from './input-types';
 
 /**
@@ -798,3 +798,4 @@ export { InputTypes } from './input-types';
 export { IHTMLFormControlValidationRule } from './contracts/input-rules';
 export { AbstractHTMLFormControl } from './abstract-dynamic-input';
 export { IDynamicForm, DynamicForm } from './contracts/dynamic-form';
+export { FormService } from './form-control/form.service';

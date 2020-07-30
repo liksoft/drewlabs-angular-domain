@@ -1,6 +1,6 @@
 import { IHttpResponse, TransformResponseHandlerFn } from '../../contracts';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
-import { isDefined } from '../../../utils/types/type-utils';
+import { isDefined } from '../../../utils';
 import {
   IHttpResourceResponse,
   IHttpResourceResponseBody,

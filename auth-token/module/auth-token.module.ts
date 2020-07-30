@@ -2,9 +2,11 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { AuthTokenService } from '../core/auth-token.service';
 import { AuthRememberTokenService } from '../core';
 
-type AuthModuleConfigInterface = {
-  rememberTokenStorageKeyName?: string, authUserStorageKeyName?: string, OauthTokenStorageKeyName?: string
-};
+interface AuthModuleConfigInterface {
+  rememberTokenStorageKeyName?: string;
+  authUserStorageKeyName?: string;
+  OauthTokenStorageKeyName?: string;
+}
 
 @NgModule()
 export class AuthTokenModule {

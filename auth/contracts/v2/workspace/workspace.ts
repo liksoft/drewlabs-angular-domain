@@ -1,4 +1,4 @@
-import { isNumber } from '../../../../utils/types/type-utils';
+import { isNumber } from '../../../../utils';
 
 export interface IAppWorkspace {
   id: number;

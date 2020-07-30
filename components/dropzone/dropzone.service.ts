@@ -1,7 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
-import { isDefined } from '../../utils/type-utils';
+import { isDefined } from '../../utils';
 
 @Injectable()
 export class DropzoneService {

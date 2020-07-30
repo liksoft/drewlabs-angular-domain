@@ -17,12 +17,12 @@ import { isDefined } from '../../utils/types/type-utils';
 import { SessionStorage } from '../../storage/core/session-storage.service';
 import { Router } from '@angular/router';
 import { HttpRequestConfigs } from '../../http/core';
-import { Log } from 'src/app/lib/utils/logger';
-import { AuthState, AuthStorageValues } from './types';
+import { AuthState, AuthStorageValues } from './actions';
 import { createStore } from '../../rxjs/state/rx-state';
 import { intitAuthStateAction, authenticatingAction, authenticationRequestCompletedAction } from './actions';
 import { authReducer } from './reducers';
 import { isEmpty } from 'lodash';
+import { Log } from '../../utils/logger';
 
 const initalState: AuthState = {
   isLoggedIn: false,
@@ -50,6 +50,13 @@ export class AuthService implements OnDestroy {
     return this._authStore$.connect().pipe(
       filter(state => !isEmpty(state))
     );
+  }
+
+  /**
+   * @deprecated
+   */
+  get user() {
+    return this.userStorage.user;
   }
 
   constructor(
@@ -217,7 +224,5 @@ export class AuthService implements OnDestroy {
   }
 
   getAuthorizationToken = () => this.oAuthTokenProvider.token;
-  // {
-  //   return this.oAuthTokenProvider.token;
-  // }
+
 }

@@ -1,4 +1,6 @@
-<div [ngClass]="{'loader' : true, 'loader-overlay' : overlay, 'loader-hidden': !performingAction}">
-  <div [class]="indeterminate ? 'indeterminate' : 'determinate'">
+<ng-container *ngIf="uiState$ | async as uiState">
+  <div [ngClass]="{'loader' : true, 'loader-overlay' : overlay, 'loader-hidden': !uiState?.performingAction}">
+    <div [class]="indeterminate ? 'indeterminate' : 'determinate'">
+    </div>
   </div>
-</div>
+</ng-container>

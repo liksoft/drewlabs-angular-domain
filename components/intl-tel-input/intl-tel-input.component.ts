@@ -19,7 +19,7 @@ import {
 import { Subscription } from 'rxjs';
 import * as _ from 'google-libphonenumber';
 import { PhoneNumberUtils } from './phone-number-utils';
-import { isDefined } from '../../utils/type-utils';
+import { isDefined } from '../../utils';
 
 export class PhoneNumberValidator {
   static ValidatePhoneNumber(control: AbstractControl) {

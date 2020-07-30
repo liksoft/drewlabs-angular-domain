@@ -22,5 +22,6 @@ export interface IUserManager {
    * @param user Application user instance
    * @param role Role label assignable to an application user
    */
+  // tslint:disable-next-line: deprecation
   hasRole(user: AuthUser, role: any): boolean;
 }

@@ -14,7 +14,7 @@ export interface IFileRessource {
 }
 
 @Injectable()
-export class FileHelperService implements OnDestroy {
+export class FileHelperService {
 
   /**
    * @description Instance constructor
@@ -75,6 +75,4 @@ export class FileHelperService implements OnDestroy {
   downloadFile(url: string, filename: string, extension: string = null) {
     return this.client.downloadFile(url, filename, extension);
   }
-
-  ngOnDestroy() { }
 }

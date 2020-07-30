@@ -3,7 +3,7 @@ import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { postRessource, postManyRessources, putRessource, getRessource, getRessources, deleteRessource } from '../contracts/abstract-request-client';
 import { IResponseBody } from '../http/core';
 import { IEntityServiceProvider } from '../contracts/entity-service-provider';
-import { isDefined } from '../utils/type-utils';
+import { isDefined } from '../utils';
 
 @Injectable()
 export class DefaultEntityHandler<T> {
@@ -44,6 +44,7 @@ export class DefaultEntityHandler<T> {
    * @param params [[object|null]]
    */
   public update(provider: IEntityServiceProvider, ressourcePath: string, value: any, id?: string | number, params?: object) {
+    // tslint:disable-next-line: deprecation
     return putRessource<IResponseBody>(provider, ressourcePath, id, value, params);
   }
 
@@ -55,6 +56,7 @@ export class DefaultEntityHandler<T> {
    * @param params [[object|null]]
    */
   public delete(provider: IEntityServiceProvider, ressourcePath: string, id?: string | number, params?: object) {
+    // tslint:disable-next-line: deprecation
     return deleteRessource<IResponseBody>(provider, ressourcePath, id, params);
   }
 

@@ -6,7 +6,6 @@ export interface ILoginResponse {
   statusCode: number;
 }
 
-
 export interface ILoginResponseBody {
   errorMessage: string;
   responseData: ILoginResponseData;

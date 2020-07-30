@@ -1,6 +1,5 @@
 import { IDynamicForm, DynamicForm } from './dynamic-form';
-import { isArray } from '../../../../utils/type-utils';
-import { ArrayUtils } from '../../../../utils/array-utils';
+import { isArray, ArrayUtils } from '../../../../utils';
 import { IHTMLFormControl } from './dynamic-input-interface';
 
 /**

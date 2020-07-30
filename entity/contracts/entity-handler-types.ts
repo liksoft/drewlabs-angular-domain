@@ -20,7 +20,11 @@ export type EntityPaginator<T> = {
  * @param params [[object|null]]
  */
 // tslint:disable-next-line: max-line-length
-type Create<T> = (provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, ressourcePath: string, value: any, params?: object) => Promise<IResponseBody | T>;
+type Create<T> = (
+  provider: IEntityServiceProvider,
+  builder: ISerializableBuilder<T>,
+  // tslint:disable-next-line: deprecation
+  ressourcePath: string, value: any, params?: object) => Promise<IResponseBody | T>;
 
 /**
  * @description Add/Insert a new entry to the ressource storage
@@ -29,6 +33,7 @@ type Create<T> = (provider: IEntityServiceProvider, builder: ISerializableBuilde
  * @param value [[any[]]]
  * @param params [[object|null]]
  */
+// tslint:disable-next-line: deprecation
 type CreateMany = (provider: IEntityServiceProvider, ressourcePath: string, value: any[], params?: object) => Promise<IResponseBody>;
 
 
@@ -41,6 +46,7 @@ type CreateMany = (provider: IEntityServiceProvider, ressourcePath: string, valu
  * @param params [[object|null]]
  */
 type Update =
+  // tslint:disable-next-line: deprecation
   (provider: IEntityServiceProvider, ressourcePath: string, value: any, id?: string | number, params?: object) => Promise<IResponseBody>;
 
 /**
@@ -52,6 +58,7 @@ type Update =
  * @param params [[object|null]]
  */
 type Delete =
+  // tslint:disable-next-line: deprecation
   (provider: IEntityServiceProvider, ressourcePath: string, id?: string | number, params?: object) => Promise<IResponseBody>;
 
 /**

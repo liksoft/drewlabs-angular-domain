@@ -30,6 +30,7 @@ export interface AuthUser {
    * @param body [[IResponseBody]]
    * @param builder [[ISerializableBuilder<AuthUser>]]
    */
+  // tslint:disable-next-line: deprecation
   fromAuthenticationResponseBody(body: IResponseBody, builder: ISerializableBuilder<AuthUser>): AuthUser;
 
   /**
@@ -37,6 +38,7 @@ export interface AuthUser {
    * @param value [[object]]
    * @param builder [[ISerializableBuilder<AuthUser>]]
    */
+  // tslint:disable-next-line: deprecation
   fromStorageObject(value: object, builder: ISerializableBuilder<AuthUser>): AuthUser;
 
   /**

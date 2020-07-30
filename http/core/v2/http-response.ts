@@ -1,6 +1,5 @@
 import { IHttpResourceResponse, IHttpResourceResponseBody, IHttpResponseData } from '../../contracts/http-response';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
-import { Log } from '../../../utils/logger';
 
 export class HttpResourceResponse implements IHttpResourceResponse {
   success: boolean = undefined;

@@ -2,9 +2,6 @@ import { Injectable, Inject } from '@angular/core';
 import { SessionStorage } from '../../storage/core/session-storage.service';
 import { IAuthTokenHandler } from '../contracts/auth-token';
 import { createStateful } from '../../rxjs/helpers';
-import { isDefined } from '../../utils/types/type-utils';
-import { Log } from '../../utils/logger';
-
 
 @Injectable()
 export class AuthTokenService implements IAuthTokenHandler {
