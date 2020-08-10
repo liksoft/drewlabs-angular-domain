@@ -2,18 +2,30 @@ import { AuthUser } from '../contracts';
 import { Injectable, Inject } from '@angular/core';
 import 'rxjs/operators/map';
 import {
-  ServerResponseKeys,
   AuthStorageConfig,
-  AuthServerPathConfig
+  AuthServerPathConfig,
 } from './config';
 import { AuthTokenService } from '../../auth-token/core/auth-token.service';
 import { User, USER_SERIALIZABLE_BUILDER } from '../models/user';
 import { HttpRequestService } from '../../http/core/http-request.service';
-import { ResponseData, IResponseBody, ResponseBody } from '../../http/contracts/http-response-data';
+import {
+  ResponseData,
+  IResponseBody,
+  ResponseBody
+} from '../../http/contracts/http-response-data';
+import {
+  AUTHENTICATED_ATTRIBUTE,
+  LOGIN_RESPONSE_ATTRIBUTE,
+  RESPONSE_DATA_ATTRIBUTE,
+  OAUTH_TOKEN_ATTRIBUTE
+} from '../../http/core/config';
+import {
+  requestHasCompletedSuccessfully
+} from '../../http/core/helpers';
 import { SessionStorage, LocalStorage, DataStoreService } from '../../storage/core';
 import { ISerializableBuilder } from '../../built-value/contracts/serializers';
-import { Subject } from 'rxjs';
 import { AuthRememberTokenService } from '../../auth-token/core/auth-remember-token.service';
+import { isDefined } from '../../utils/type-utils';
 
 @Injectable()
 export class AuthService {
@@ -102,10 +114,8 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       this.httpService.get(AuthServerPathConfig.LOGOUT_PATH).subscribe(
         res => {
-          const responseData: ResponseData = res[ServerResponseKeys.RESPONSE_DATA];
-          if (
-            responseData.success
-          ) {
+          const responseData: ResponseData = res[RESPONSE_DATA_ATTRIBUTE];
+          if (responseData.success) {
             this.sessionStorage.clear();
             this.localStorage.clear();
             this.inMemoryStorage.clear();
@@ -120,17 +130,12 @@ export class AuthService {
   }
 
   private onAuthenticationResponse(res: any, rememberMe: boolean = false) {
-    const responseData: ResponseData =
-      res[ServerResponseKeys.RESPONSE_DATA];
-    const body: IResponseBody = new ResponseBody(responseData.body);
-    if (
-      responseData.success && body.data[ServerResponseKeys.AUTHENTICATED_KEY] === true
-    ) {
+    const responseData: ResponseData = res[RESPONSE_DATA_ATTRIBUTE];
+    const body: IResponseBody = new ResponseBody(Object.assign(responseData.body, { status: res.code }));
+    if (isUserAuthenticated(body, responseData)) {
       this.loggedIn = true;
       this.tokenServiceProvider.removeToken();
-      this.tokenServiceProvider.setToken(
-        body.data[ServerResponseKeys.TOKEN]
-      );
+      this.tokenServiceProvider.setToken(getTokenFromResponseBody(body));
       // Set user data to the store
       const authUser = (new User()).fromAuthenticationResponseBody(body, this.userBuilder);
       this.user = authUser;
@@ -162,3 +167,21 @@ export class AuthService {
     );
   }
 }
+
+/**
+ * @description Get authenticated token from the response body
+ * @param body [[IResponseBody]]
+ */
+function getTokenFromResponseBody(body: IResponseBody): string {
+  const loginResponse = isDefined(body.data[LOGIN_RESPONSE_ATTRIBUTE]) ? body.data[LOGIN_RESPONSE_ATTRIBUTE] : body.data;
+  return loginResponse[OAUTH_TOKEN_ATTRIBUTE];
+}
+
+/**
+ * @description Checks if the user is authenticated using response attributes
+ */
+export function isUserAuthenticated(body: IResponseBody, responseData?: ResponseData) {
+  const loginResponse = isDefined(body.data[LOGIN_RESPONSE_ATTRIBUTE]) ? body.data[LOGIN_RESPONSE_ATTRIBUTE] : body.data;
+  return loginResponse[AUTHENTICATED_ATTRIBUTE] === true && (responseData ? requestHasCompletedSuccessfully(responseData) : true);
+}
+

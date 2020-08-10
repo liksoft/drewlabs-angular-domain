@@ -1,5 +1,5 @@
-import { IDataSourceService, ISource, ISourceRequestQueryParameters } from '../../../components/ng-data-table/ng-data-table.component';
-import { User, USER_SERIALIZABLE_BUILDER } from '../../models/user';
+import { IDataSourceService, ISource } from '../../../components/ng-data-table/ng-data-table.component';
+import { User } from '../../models/user';
 import {
   IRequestClient,
   RequestClient,
@@ -12,10 +12,8 @@ import {
 import { HttpRequestService } from '../../../http/core';
 import { isDefined } from '../../../utils/type-utils';
 import { IResponseBody } from '../../../http/contracts/http-response-data';
-import { Injectable, Inject } from '@angular/core';
-import { Store } from '../../../store';
+import { Injectable } from '@angular/core';
 import { ISerializableBuilder } from '../../../built-value/contracts/serializers';
-import { SessionStorage } from '../../../storage/core/session-storage.service';
 @Injectable()
 export class ApplicationUsersService extends RequestClient
   implements IRequestClient {
@@ -27,10 +25,7 @@ export class ApplicationUsersService extends RequestClient
    * @description Service initializer
    */
   constructor(
-    private client: HttpRequestService,
-    private cache: SessionStorage,
-    private store: Store<User>,
-    @Inject(USER_SERIALIZABLE_BUILDER) private userBuilder: ISerializableBuilder<User>
+    private client: HttpRequestService
   ) {
     super();
   }

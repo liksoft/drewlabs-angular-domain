@@ -149,7 +149,12 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
   }
 }
 
-export interface ToExcelHeaderEventArgs {data: object[]; headers: { [index: string]: string }; datefield?: string[] };
+export interface ToExcelHeaderEventArgs {
+  data: object[];
+  headers: { [index: string]: string };
+  datefield?: string[];
+}
+
 export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableComponent {
 
   private dialog: Dialog;
@@ -169,7 +174,7 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
 
   defaultClrPaginatorSizeOptions = [10, 50, 100, 500, 1000];
   // List of filters to be binded before querying ressources
-  protected filters: {[index: string]: any} = {};
+  protected filters: { [index: string]: any } = {};
 
   constructor(
     injector: Injector,
@@ -190,9 +195,6 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
    */
   initState() {
     this.subscribeToUIActions();
-    // if (this.showLoader) {
-    //   this.appUIStoreManager.initializeUIStoreAction();
-    // }
     // Subscribe to refresh and of the datagrid and debounce reload for 1 seconds
     this.uiStoreSubscriptions.push(this.dataGrid.refresh.asObservable().pipe(
       debounceTime(500),
