@@ -13,7 +13,7 @@ export interface IHTMLFormControl {
   type: string;
   formControlName: string;
   classes: string;
-  requiredIf: HTMLFormControlRequireIfConfig;
+  requiredIf?: HTMLFormControlRequireIfConfig;
   items?: Array<any>;
   rules?: IHTMLFormControlValidationRule;
   placeholder?: string;

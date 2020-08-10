@@ -23,7 +23,7 @@
     </div>
     <div *ngSwitchCase="inputTypes.SELECT_INPUT">
       <div class="clr-form-control">
-        <label class="clr-control-label" *ngIf="showLabelAndDescription"
+        <label class="clr-control-label" *ngIf="showLabelAndDescription && inputConfig.label"
           [for]="asSelectInput(inputConfig).formControlName">
           {{ asSelectInput(inputConfig).label }}
           <small class="required-text" *ngIf="asSelectInput(inputConfig).rules?.isRequired">(*)
