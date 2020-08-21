@@ -21,7 +21,7 @@ import { CustomValidators } from 'src/app/lib/domain/utils/custom-validators';
 import { Form } from 'src/app/lib/domain/components/dynamic-inputs/core/form-control/form';
 import { isDefined, isArray } from 'src/app/lib/domain/utils/type-utils';
 import { AppUIStoreManager } from './app-ui-store-manager.service';
-import { EventEmitter, HostBinding } from '@angular/core';
+import { EventEmitter, HostBinding, Directive } from '@angular/core';
 import { AbstractAlertableComponent } from './component-interfaces';
 import { TranslationService } from '../translator';
 import { ICollection } from '../contracts/collection-interface';
@@ -511,6 +511,7 @@ export abstract class BaseDynamicFormComponent extends AbstractAlertableComponen
   }
 }
 
+@Directive()
 export abstract class DynamicFormPageComponent extends BaseDynamicFormComponent {
 
   @HostBinding('class.content-container') class = true;
