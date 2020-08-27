@@ -42,6 +42,7 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
 
   constructor(private dynamicComponentLoader: DynamicComponentService<RepeatableGroupChildComponent>) { }
 
+  // tslint:disable-next-line: typedef
   ngOnInit() {
     this.addNewGroupButtonContainerClass = this.offsetAddNewGroupButton ? 'clr-col-3 clr-offset-2 clr-offset-margin-right' : '';
     // load the dynamic components from the store and create the corresponding components
@@ -52,12 +53,14 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
     }
   }
 
+  // tslint:disable-next-line: typedef
   collapseChildControlComponents() {
     this.controlsContainerRefs.forEach((ref) => {
       ref.instance.isAccordionOpened = false;
     });
   }
 
+  // tslint:disable-next-line: typedef
   addChildComponent(controlIndex: number, formGroupState: AbstractControl, showEditButton = false) {
     this.totalAddedComponent += 1;
     // const formgroup = ComponentReactiveFormHelpers

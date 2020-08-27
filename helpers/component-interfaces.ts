@@ -1,6 +1,6 @@
 import { AppUIStoreManager, UIState } from './app-ui-store-manager.service';
 import { Subscription } from 'rxjs';
-import { HostBinding } from '@angular/core';
+import { Directive, HostBinding } from '@angular/core';
 import { AbstractControl, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { isDefined } from '../utils';
 
@@ -27,6 +27,10 @@ export interface IFormParentComponent {
  * @description Helper class for applying [[@HostBinding('class.content-container')]] property
  * to the subclass in order to transform it into a clarity main-container view
  */
+@Directive({
+  // tslint:disable-next-line: directive-selector
+  selector: '[elewouPage]'
+})
 export class PageComponent {
   @HostBinding('class.content-container') class = true;
 }
@@ -102,6 +106,12 @@ export abstract class AbstractAlertableComponent {
  * Helper class that apply [[@HostBinding('class.content-container')]] to it subclass and provide methods and properties
  * to component for responding to ui events and actions
  */
+
+@Directive({
+  // tslint:disable-next-line: directive-selector
+  selector: '[elewouAlertablePage]'
+})
+// tslint:disable-next-line: directive-class-suffix
 export class AlertablePageComponent extends AbstractAlertableComponent {
   @HostBinding('class.content-container') class = true;
 

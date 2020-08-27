@@ -16,7 +16,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
         right: 8px;
         max-width: 400px;
         opacity: 1;
-        z-index: 999;
+        z-index: 9999;
       }
     `
   ],

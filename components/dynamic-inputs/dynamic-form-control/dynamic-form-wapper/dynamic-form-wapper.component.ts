@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, AbstractControl, FormArray, ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils';
-import { HTMLFormControlRequireIfConfig, IHTMLFormControl } from '../../core/contracts/dynamic-input-interface';
-import { sortFormByIndex } from 'src/app/lib/domain/components/dynamic-inputs/core/contracts/form-control';
+import { HTMLFormControlRequireIfConfig, IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { isGroupOfIDynamicForm, ComponentReactiveFormHelpers } from 'src/app/lib/domain/helpers/component-reactive-form-helpers';
+import { sortFormByIndex } from '../../core/helpers';
+import * as lodash from 'lodash';
 
 interface IConditionalControlBinding {
   key: string;
@@ -21,11 +22,19 @@ export interface MultiSelectItemRemoveEvent {
 @Component({
   selector: 'app-dynamic-form-wapper',
   templateUrl: './dynamic-form-wapper.component.html',
-  styles: []
+  styles: [],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DynamicFormWapperComponent implements OnInit {
+export class DynamicFormWapperComponent {
 
-  @Input() form: IDynamicForm;
+  // tslint:disable-next-line: variable-name
+  private _form: IDynamicForm;
+  @Input() set form(value: IDynamicForm) {
+    this.setComponentForm(value);
+  }
+  get form(): IDynamicForm {
+    return this._form;
+  }
   @Input() componentFormGroup: FormGroup;
   @Output() controlItemRemoved = new EventEmitter<MultiSelectItemRemoveEvent>();
   @Output() fileAdded = new EventEmitter<any>();
@@ -38,10 +47,10 @@ export class DynamicFormWapperComponent implements OnInit {
   @Output() inputKeypress = new EventEmitter<{formcontrolname: string, value: any}>();
   @Output() inputBlur = new EventEmitter<{formcontrolname: string, value: any}>();
 
-  constructor() { }
+  public isValueDefined: (value: any) => boolean = isDefined.bind(this);
 
-  ngOnInit() {
-    this.form = sortFormByIndex(this.form);
+  setComponentForm(value: IDynamicForm) {
+    this._form = sortFormByIndex(value);
     if (this.isFormGroup(this.form)) {
       this.form.forms.forEach((v) => {
         this.buildConditionalControlBindings(v);
@@ -51,6 +60,7 @@ export class DynamicFormWapperComponent implements OnInit {
     }
   }
 
+  // tslint:disable-next-line: typedef
   buildConditionalControlBindings(v: IDynamicForm) {
     if (isDefined(v.controlConfigs) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
       (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
@@ -73,6 +83,7 @@ export class DynamicFormWapperComponent implements OnInit {
     }
   }
 
+  // tslint:disable-next-line: typedef
   shouldListenforChange(controlName: string) {
     if (isDefined(
       Object.values(this.conditionalControlBindings).find((o, i) => {
@@ -84,6 +95,7 @@ export class DynamicFormWapperComponent implements OnInit {
     return false;
   }
 
+  // tslint:disable-next-line: typedef
   handleControlChanges(event: any) {
     const filteredConfigs = Object.values(this.conditionalControlBindings).filter((o) => {
       return o.binding.formControlName.toString() === event.controlName.toString();
@@ -95,6 +107,7 @@ export class DynamicFormWapperComponent implements OnInit {
     }
   }
 
+  // tslint:disable-next-line: typedef
   applyHiddenOnMatchingControls(
     bindings: IConditionalControlBinding,
     value: string | number,
@@ -110,11 +123,16 @@ export class DynamicFormWapperComponent implements OnInit {
     }
   }
 
+  // tslint:disable-next-line: typedef
   updateControlHiddenValue(v: IDynamicForm, conditionBindings: IConditionalControlBinding, value: string | number) {
-    if (isDefined(v.controlConfigs) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
+    if (this.isValueDefined(v.controlConfigs) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
       (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
         if (c.formControlName === conditionBindings.key) {
-          c.hidden = c.requiredIf.values.indexOf(isDefined(value) ? value.toString() : value) === - 1 ? true : false;
+          value = isNaN(value as any) ? value : lodash.toNumber(value);
+          const requiredIfValues = lodash.isNumber(value) ? c.requiredIf.values.map(item => {
+            return isNaN(item) ? item : lodash.toNumber(item);
+          }) : c.requiredIf.values;
+          c.hidden = !lodash.includes(requiredIfValues, value) ? true : false;
           if (c.hidden) {
             this.componentFormGroup.get(conditionBindings.key).setValue(null);
             ComponentReactiveFormHelpers.clearControlValidators(this.componentFormGroup.get(conditionBindings.key));
@@ -129,6 +147,7 @@ export class DynamicFormWapperComponent implements OnInit {
     }
   }
 
+  // tslint:disable-next-line: typedef
   isFormGroup(f: IDynamicForm) {
     return isGroupOfIDynamicForm(f);
   }
@@ -141,10 +160,12 @@ export class DynamicFormWapperComponent implements OnInit {
     return control as FormGroup;
   }
 
+  // tslint:disable-next-line: typedef
   isDefined(value: any) {
     return isDefined(value);
   }
 
+  // tslint:disable-next-line: typedef
   asArray(value: any) {
     return value as Array<any>;
   }

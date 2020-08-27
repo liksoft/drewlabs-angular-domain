@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { startWith } from 'rxjs/operators';
 import { IResponseBody } from '../http/contracts/http-response-data';
-import { DrewlabsHttpResponseStatusCode, HTTPErrorState } from '../http/core';
-import { createSubject } from '../rxjs/helpers';
-import { createStateful } from '../rxjs/helpers/index';
+import { HTTPErrorState } from '../http/core/http-request.service';
+import { DrewlabsHttpResponseStatusCode } from '../http/core/http-response';
+import { createSubject, createStateful } from '../rxjs/helpers';
 import { isDefined } from '../utils';
 
 
@@ -26,10 +26,12 @@ export class AlertStateStore {
 
   private alertState = createStateful<Partial<AlertConfig>>(initialAlertState);
 
+  // tslint:disable-next-line: typedef
   get alertState$() {
     return this.alertState.asObservable();
   }
 
+  // tslint:disable-next-line: typedef
   setState(state: Partial<AlertConfig>) {
     this.alertState.next(state);
   }
@@ -79,6 +81,7 @@ const initialUIState: UIState = {
 export class AppUIStateProvider {
   private store$ = createSubject<UIState>();
 
+  // tslint:disable-next-line: typedef
   intialize() {
     this.store$.next(initialUIState);
   }
@@ -134,34 +137,20 @@ export class AppUIStoreManager {
     return this.alertStore.alertState$;
   }
 
-  public completeUIStoreAction(message?: string, alertConfigs?: AlertConfig) {
-    this.uiStore.endAction(message);
-    if (alertConfigs) {
-      this.alertStore.setState(alertConfigs);
-    } else {
-      this.alertStore.setState({ type: '', showAlert: false });
-    }
+  public completeUIStoreAction(message?: string, status?: any) {
+    this.uiStore.endAction(message, status);
   }
 
   public completeActionWithWarning(message: string) {
-    this.completeUIStoreAction(message, {
-      type: 'alert-warning',
-      showAlert: true
-    });
+    this.completeUIStoreAction(message, UIStateStatusCode.BAD_REQUEST);
   }
 
   public completeActionWithError(message: string) {
-    this.completeUIStoreAction(message, {
-      type: 'alert-danger',
-      showAlert: true
-    });
+    this.completeUIStoreAction(message, UIStateStatusCode.ERROR);
   }
 
   public completeActionWithSuccess(message: string) {
-    this.completeUIStoreAction(message, {
-      type: 'alert-success',
-      showAlert: true
-    });
+    this.completeUIStoreAction(message, UIStateStatusCode.STATUS_OK);
   }
 
   public initializeUIStoreAction(message?: string, alertConfigs: AlertConfig = {} as AlertConfig) {

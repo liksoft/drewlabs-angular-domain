@@ -2,6 +2,9 @@ import { JsonProperty, ObjectSerializer } from '../../built-value/core/serialize
 import { ISerializer, ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { rebuildJSObjectType, buildJSObjectType, TypeBuilder } from '../../built-value/contracts/type';
 
+/**
+ * @deprecated
+ */
 export class RessourcesWalletBuilder implements ISerializableBuilder<RessourcesWallet>, TypeBuilder<RessourcesWallet> {
   serializer: ISerializer;
 
@@ -43,6 +46,9 @@ export class RessourcesWalletBuilder implements ISerializableBuilder<RessourcesW
 
 }
 
+/**
+ * @deprecated
+ */
 export class RessourcesWallet {
   @JsonProperty('id')
   id: number = undefined;

@@ -3,6 +3,9 @@ import { ISerializableBuilder, ISerializer } from '../../built-value/contracts/s
 import { RessourcesWallet } from './wallet';
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
 
+/**
+ * @deprecated
+ */
 export class OrganisationBuilder implements ISerializableBuilder<OrganisationEntity>, TypeBuilder<OrganisationEntity> {
   serializer: ISerializer;
 
@@ -43,6 +46,9 @@ export class OrganisationBuilder implements ISerializableBuilder<OrganisationEnt
 
 }
 
+/**
+ * @deprecated
+ */
 export class OrganisationEntity {
   @JsonProperty('id')
   id: number = undefined;

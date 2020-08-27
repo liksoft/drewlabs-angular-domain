@@ -1,6 +1,15 @@
-import { IHTMLFormControl } from './dynamic-input-interface';
+import { IHTMLFormControl } from './dynamic-input';
 import { ICollection } from '../../../../contracts/collection-interface';
 import { isDefined } from '../../../../utils';
+/**
+ * @description Interface definition for model that are bind to the dynamic form instance
+ */
+export interface FormViewModel {
+  /**
+   * @description Returns the bindings definitions of the model property keys to form control name attributes
+   */
+  formViewModelBindings(): { [index: string]: any };
+}
 
 /**
  * @description Definitions for entities used as dynamic forms groups
@@ -13,24 +22,11 @@ export interface IDynamicForm {
   endpointURL: string;
 }
 
-export class DynamicForm implements IDynamicForm {
-  forms: IDynamicForm[];
-  title: string;
-  description: string;
-  controlConfigs: IHTMLFormControl[] | ICollection<IHTMLFormControl>;
-  endpointURL: string;
-
-  /**
-   * @description DynamicForm instance initializer
-   */
-  constructor({ title, description, controlConfigs, endpointURL, forms }: IDynamicForm) {
-    this.title = title;
-    this.controlConfigs = controlConfigs;
-    this.description = description;
-    this.endpointURL = endpointURL;
-    this.forms = forms;
-  }
-}
+/**
+ * @description Type definition for function for mapping models to form view bindings
+ * @param model Parameter can be any JS object with properties that can be bind to a dynamic form values
+ */
+export type ModelToFormViewModelBindings = (model: object|any) => { [index: string]: any };
 
 
 /**

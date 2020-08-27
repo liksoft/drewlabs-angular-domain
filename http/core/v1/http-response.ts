@@ -1,6 +1,7 @@
 import { IHttpResponse, TransformResponseHandlerFn } from '../../contracts';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
 import { isDefined } from '../../../utils';
+import { Log } from '../../../utils/logger';
 import {
   IHttpResourceResponse,
   IHttpResourceResponseBody,
@@ -11,6 +12,7 @@ export class V1HttpResourceResponse implements IV1HttpResourceResponse {
   data: IHttpResourceResponse;
 
   // Static method definition for attribute parsing
+  // tslint:disable-next-line: typedef
   static getJsonableProperties() {
     return {
       data: { name: 'data', type: V1HttpResourceResponseContent }
@@ -24,6 +26,7 @@ export class V1HttpResourceResponseContent implements IHttpResourceResponse {
   statusCode: number = undefined;
 
   // Static method definition for attribute parsing
+  // tslint:disable-next-line: typedef
   static getJsonableProperties() {
     return {
       success: 'success',
@@ -39,6 +42,7 @@ export class V1HttpResourceResponseBody implements IHttpResourceResponseBody, IH
   errors: any[] = undefined;
 
   // Static method definition for attribute parsing
+  // tslint:disable-next-line: typedef
   static getJsonableProperties() {
     return {
       error_message: 'errorMessage',
@@ -56,6 +60,7 @@ export const parseV1HttpResponse: TransformResponseHandlerFn = (response: any) =
   if (!isDefined(httpResponse)) {
     return {} as IHttpResponse<any>;
   }
+  Log(httpResponse);
   return {
     errorMessage: httpResponse.body ? (httpResponse.body.errorMessage || null) : null,
     statusCode: httpResponse.statusCode || null,

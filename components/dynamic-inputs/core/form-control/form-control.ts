@@ -1,9 +1,6 @@
 import { JsonProperty, ObjectSerializer } from 'src/app/lib/domain/built-value/core/serializers';
 import { ISerializer, ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from 'src/app/lib/domain/built-value/contracts/type';
-import { IHTMLFormControl } from 'src/app/lib/domain/components/dynamic-inputs/core/contracts/dynamic-input-interface';
-import { InputTypes } from 'src/app/lib/domain/components/dynamic-inputs/core/input-types';
-import { FormControlModel, IDynamicFormBindableModel } from 'src/app/lib/domain/components/dynamic-inputs/core/contracts/form-control';
 // tslint:disable-next-line: max-line-length
 import {
   DateInput,
@@ -18,7 +15,10 @@ import {
   HiddenInput,
   FileInput,
   HMTLInput
-} from 'src/app/lib/domain/components/dynamic-inputs/core';
+} from 'src/app/lib/domain/components/dynamic-inputs/core/input-types';
+import { InputTypes } from '../contracts/input-types';
+import { IHTMLFormControl } from '../contracts/dynamic-input';
+import { FormViewModel } from '../contracts/dynamic-form';
 
 export class FormControlBuilder implements ISerializableBuilder<FormControl>, TypeBuilder<FormControl> {
   serializer: ISerializer;
@@ -40,6 +40,7 @@ export class FormControlBuilder implements ISerializableBuilder<FormControl>, Ty
   /**
    * @inheritdoc
    */
+  // tslint:disable-next-line: typedef
   toSerialized(value: FormControl) {
     return this.serializer.serialize(FormControl, value);
   }
@@ -91,7 +92,7 @@ export function formControlModelToDynamicControl(model: FormControl): IHTMLFormC
   }
 }
 
-export class FormControl implements FormControlModel, IDynamicFormBindableModel {
+export class FormControl implements FormViewModel {
   @JsonProperty('id')
   id: number = undefined;
   @JsonProperty('formId')
@@ -182,40 +183,37 @@ export class FormControl implements FormControlModel, IDynamicFormBindableModel 
    */
   formViewModelBindings(): { [index: string]: any } {
     return {
-      form_controls_label: 'label',
-      form_controls_placeholder: 'placeholder',
-      form_controls_type: 'type',
-      form_controls_classes: 'classes',
-      f_form_controls_required: 'required',
-      f_form_controls_disabled: 'disabled',
-      f_form_controls_read_only: 'readonly',
-      f_form_controls_unique: 'unique',
-      f_form_controls_pattern: 'pattern',
-      form_controls_description: 'description',
-      form_controls_max_length: 'maxLength',
-      form_controls_min_length: 'minLength',
-      form_controls_min: 'min',
-      form_controls_max: 'max',
-      form_controls_min_date: 'minDate',
-      form_controls_max_date: 'maxDate',
-      form_controls_selectable_values: 'selectableValues',
-      form_controls_selectable_model: 'selectableModel',
-      form_controls_multiple: 'multiple',
-      form_controls_columns: 'columns',
-      form_controls_rows: 'rows',
-      f_form_controls_index: 'controlIndex',
-      // 'options',
-      f_form_controls_control_name: 'controlName',
-      f_form_controls_value: 'value',
-      f_form_controls_required_if: 'requiredIf',
-      f_form_controls_form_id: 'formId',
-      f_form_controls_form_control_id: 'id',
-      // controlGroupKey
-      // added keys
-      f_form_controls_upload_url: 'uploadURL',
-      f_form_controls_unique_on: 'uniqueOn',
-      f_form_controls_is_repeatable: 'isRepeatable',
-      f_form_controls_container_class: 'dynamicControlContainerClass'
+      label: 'label',
+      placeholder: 'placeholder',
+      type: 'type',
+      classes: 'classes',
+      required: 'required',
+      disabled: 'disabled',
+      read_only: 'readonly',
+      unique: 'unique',
+      pattern: 'pattern',
+      description: 'description',
+      max_length: 'maxLength',
+      min_length: 'minLength',
+      min: 'min',
+      max: 'max',
+      min_date: 'minDate',
+      max_date: 'maxDate',
+      selectable_values: 'selectableValues',
+      selectable_model: 'selectableModel',
+      multiple: 'multiple',
+      columns: 'columns',
+      rows: 'rows',
+      index: 'controlIndex',
+      control_name: 'controlName',
+      value: 'value',
+      required_if: 'requiredIf',
+      form_id: 'formId',
+      form_control_id: 'id',
+      upload_url: 'uploadURL',
+      unique_on: 'uniqueOn',
+      is_repeatable: 'isRepeatable',
+      container_class: 'dynamicControlContainerClass'
     };
   }
 }

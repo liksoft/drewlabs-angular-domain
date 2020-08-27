@@ -29,7 +29,7 @@ export class LoginResponse implements ILoginResponse {
   statusCode: number = undefined;
 
   // Static method definition for attribute parsing
-  static getJsonableProperties() {
+  static getJsonableProperties = () => {
     return {
       success: 'success',
       body: { name: 'body', type: LoginResponseBody },
@@ -44,7 +44,7 @@ export class LoginResponseBody implements ILoginResponseBody {
   errors: any[] = undefined;
 
   // Static method definition for attribute parsing
-  static getJsonableProperties() {
+  static getJsonableProperties = () => {
     return {
       error_message: 'errorMessage',
       response_data: { name: 'responseData', type: LoginResponseData },
@@ -58,7 +58,7 @@ export class LoginResponseData implements ILoginResponseData {
   user: IAppUser = undefined;
 
   // Static method definition for attribute parsing
-  static getJsonableProperties() {
+  static getJsonableProperties = () => {
     return {
       login_response: { name: 'loginState', type: LoginState },
       user: {name: 'user', type: AppUser},
@@ -72,7 +72,7 @@ export class LoginState implements ILoginState {
   token: string;
 
   // Static method definition for attribute parsing
-  static getJsonableProperties() {
+  static getJsonableProperties = () => {
     return {
       authenticated: 'authenticated',
       double_auth_enabled: 'is2FactorAuthenticationEnabled',

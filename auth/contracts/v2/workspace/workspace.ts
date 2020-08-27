@@ -17,15 +17,15 @@ export class AppWorkspace implements IAppWorkspace {
   description: string;
   status: number|boolean;
   bannerURL: string;
-  profilURL: string;
+  profileURL: string;
   type: string;
   workspaceTypeID: number;
 
-  get isActive() {
+  get isActive(): boolean {
     return isNumber(this.status) ? (+this.status === 1) : Boolean(this.status);
   }
 
-  static getJsonableProperties() {
+  static getJsonableProperties(): {[index: string]: keyof AppWorkspace} {
     return {
       id: 'id',
       label: 'label',
@@ -33,7 +33,6 @@ export class AppWorkspace implements IAppWorkspace {
       status: 'status',
       banner_url: 'bannerURL',
       type : 'type',
-      profil_url: 'profilURL',
       workspace_type_id: 'workspaceTypeID',
       profile_url: 'profileURL'
     };

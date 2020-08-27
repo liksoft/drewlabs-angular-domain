@@ -1,3 +1,7 @@
+
+/**
+ * @deprecated
+ */
 export interface IPermission {
   id: any;
   label: string;

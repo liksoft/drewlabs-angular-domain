@@ -1,7 +1,6 @@
-import { StateAction, DrewlabsFluxStore, createAction } from './rx-state';
+import { StoreAction, DrewlabsFluxStore, createAction } from './rx-state';
 import { Log } from '../../utils/logger';
-import { doLog } from '../operators/index';
-import { observaleOf } from '../helpers';
+import { observableOf } from '../helpers';
 import { delay, map } from 'rxjs/operators';
 import { tick, fakeAsync } from '@angular/core/testing';
 
@@ -18,7 +17,7 @@ class MessageState {
   messages: Message[];
 }
 
-export default function reducer(state: MessageState, action: Partial<StateAction>) {
+export default function reducer(state: MessageState, action: Partial<StoreAction>) {
   switch (action.type) {
     case 'MESSAGE_LIST_LOADING':
       return {
@@ -79,13 +78,13 @@ describe('Rx state test definitions', () => {
       (payload: Message) => {
         return {
           type: 'MESSAGE_LIST_LOADING',
-          payload: observaleOf<Message>(payload)
+          payload: observableOf<Message>(payload)
             .pipe(
               delay(1000),
               map(source => ({
                 type: 'PATCH_MESSAGES',
                 payload: source
-              } as Partial<StateAction>))
+              } as Partial<StoreAction>))
             )
         };
       }

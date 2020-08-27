@@ -1,28 +1,28 @@
-import { createSubject, observaleOf, isObservable } from '../helpers';
+import { createSubject, observableOf, isObservable } from '../helpers';
 import { Observable } from 'rxjs';
 import { scan, startWith, mergeMap, shareReplay, filter } from 'rxjs/operators';
 import { doLog } from '../operators/index';
 import { isDefined } from '../../utils/types/type-utils';
 
-export interface StateAction {
+export interface StoreAction {
   type: string;
   payload?: any;
 }
 
 export enum DefaultStoreAction {
   ASYNC_UI_ACTION = '[ASYNC_REQUEST]',
-  ERROR_ACTION = '[REQUEST_ERROR]'
+  ERROR_ACTION = '[REQUEST_ERROR]',
 }
 
 export type StateReducerFn<T, A> = (state: T, action: A) => T;
 
 export type ActionCreatorHandlerFn<A, K> = (...params: K[]) => A;
 
-export type ActionCreatorFn<A extends Partial<StateAction>, K> = (handlerFunc: (...params: K[]) => A) => A;
+export type ActionCreatorFn<A extends Partial<StoreAction>, K> = (handlerFunc: (...params: K[]) => A) => A;
 
 const instanceOfInjectableStore = (value: any) => 'getInjectedStore' in value;
 
-export interface IInjectableStore<T, A extends Partial<StateAction>> {
+export interface IInjectableStore<T, A extends Partial<StoreAction>> {
   state$: Observable<T>;
 
   /**
@@ -31,7 +31,7 @@ export interface IInjectableStore<T, A extends Partial<StateAction>> {
   getInjectedStore(): DrewlabsFluxStore<T, A>;
 }
 
-export abstract class InjectableStore<T, A extends Partial<StateAction>> implements IInjectableStore<T, A> {
+export abstract class InjectableStore<T, A extends Partial<StoreAction>> implements IInjectableStore<T, A> {
   get state$() {
     return this.getInjectedStore().connect();
   }
@@ -39,7 +39,7 @@ export abstract class InjectableStore<T, A extends Partial<StateAction>> impleme
   abstract getInjectedStore(): DrewlabsFluxStore<T, A>;
 }
 
-export class DrewlabsFluxStore<T, AType extends Partial<StateAction>> {
+export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
 
   // tslint:disable-next-line: variable-name
   state$: Observable<T>;
@@ -52,7 +52,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StateAction>> {
    */
   constructor(reducer: StateReducerFn<T, AType>, initialState?: T) {
     this.state$ = this._actions$.pipe(
-      mergeMap((action) => isObservable(action) ? action as Observable<AType> : observaleOf<AType>(action as AType)),
+      mergeMap((action) => isObservable(action) ? action as Observable<AType> : observableOf<AType>(action as AType)),
       filter(state => isDefined(state)),
       doLog('Action : '),
       startWith(initialState),

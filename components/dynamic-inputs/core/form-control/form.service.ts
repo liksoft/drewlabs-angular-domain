@@ -17,6 +17,8 @@ import { FormControl } from './form-control';
 import { ISourceRequestQueryParameters, IDataSourceService, ISource } from '../../../ng-data-table/ng-data-table.component';
 import { FormControlOptionsEntity } from './form-control-options-entity';
 import { LocalStorage } from '../../../../storage/core/local-storage.service';
+import { Log } from '../../../../utils/logger';
+import { getResponseDataFromHttpResponse } from 'src/app/lib/domain/http/helpers/http-response';
 
 export class FormDataSource implements IDataSourceService<ISource<Form>> {
 
@@ -55,18 +57,21 @@ export class FormDataSource implements IDataSourceService<ISource<Form>> {
         query += `&by=${params.by}&order=${params.order ? params.order : 'desc'}`;
       }
       // tslint:disable-next-line: max-line-length
-      this.ressourcesGetterMethod(this.client, `${this.ressourcesPath}${query}`, { params: this._queryParams }).then(async (res: ResponseData) => {
-        const body: IResponseBody = new ResponseBody(
-          Object.assign(res.body, { status: res.code })
-        );
-        const forms = (res.success === true) ? (body.data.data as Array<any>).map((value) => {
-          return (Form.builder() as ISerializableBuilder<Form>).fromSerialized(value);
-        }) : [];
-        resolve({
-          data: forms,
-          total: body.data.total
-        });
-      })
+      this.ressourcesGetterMethod(this.client, `${this.ressourcesPath}${query}`, { params: this._queryParams })
+        // tslint:disable-next-line: deprecation
+        .then(async (res: ResponseData) => {
+          // tslint:disable-next-line: deprecation
+          const body: IResponseBody = new ResponseBody(
+            Object.assign(res.body, { status: res.code })
+          );
+          const forms = (res.success === true) ? (body.data.data as Array<any>).map((value) => {
+            return (Form.builder() as ISerializableBuilder<Form>).fromSerialized(value);
+          }) : [];
+          resolve({
+            data: forms,
+            total: body.data.total
+          });
+        })
         .catch(err => reject(err));
     });
   }
@@ -92,9 +97,9 @@ export class FormService extends RequestClient
   constructor(private client: HttpRequestService, public readonly cache: LocalStorage) {
     super();
     this.ressourcesPath = 'forms';
-    this.formControlRessourcesPath = 'form_controls';
-    this.formFormControlRessourcesPath = 'form_form_controls';
-    this.bindableEntitiesRessourcesPath = 'form_control_option_models';
+    this.formControlRessourcesPath = 'form-controls';
+    this.formFormControlRessourcesPath = 'form-form-controls';
+    this.bindableEntitiesRessourcesPath = 'form-control-options';
     this.dataSource = new FormDataSource(client, this.get, this.ressourcesPath);
   }
 
@@ -125,7 +130,9 @@ export class FormService extends RequestClient
   public async getForms() {
     return new Promise<Form[]>((resolve, reject) => {
       this.get(this.client, `${this.ressourcesPath}`)
+        // tslint:disable-next-line: deprecation
         .then((res: ResponseData) => {
+          // tslint:disable-next-line: deprecation
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
           );
@@ -147,7 +154,9 @@ export class FormService extends RequestClient
   public async getFormControlOptionsBindableEntities() {
     return new Promise<FormControlOptionsEntity[]>((resolve, reject) => {
       this.get(this.client, `${this.bindableEntitiesRessourcesPath}`)
+        // tslint:disable-next-line: deprecation
         .then((res: ResponseData) => {
+          // tslint:disable-next-line: deprecation
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
           );
@@ -189,8 +198,6 @@ export class FormService extends RequestClient
         const result: Promise<any> = this.loadThroughHttpRequest(id, params);
         result.then((value: any) => {
           if (isDefined(value)) {
-            // Add the loaded form from to the session storage
-            // this.cache.set(`Form__${id}`, value);
             resolve((Form.builder() as ISerializableBuilder<Form>).fromSerialized(value));
           } else {
             resolve(null);
@@ -203,13 +210,19 @@ export class FormService extends RequestClient
 
   private loadThroughHttpRequest(id: string | number, params: object = {}): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.get(this.client, `${this.ressourcesPath}/${id}`, params)
+      this.get(
+        this.client,
+        `${this.ressourcesPath}/${id}`,
+        { params: params ? { ...params, load_bindings: true } : { load_bindings: true } })
+        // tslint:disable-next-line: deprecation
         .then((res: ResponseData) => {
+          // tslint:disable-next-line: deprecation
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
           );
-          if (res.success === true && isDefined(body.data)) {
-            resolve(body.data);
+          const data = getResponseDataFromHttpResponse(body);
+          if (res.success === true && isDefined(data)) {
+            resolve(data);
           }
           resolve(null);
         })
@@ -223,16 +236,20 @@ export class FormService extends RequestClient
    * @param endPointURL [[string]]
    */
   createForm(requestBody: object, endPointURL: string = null) {
+    // tslint:disable-next-line: deprecation
     return new Promise<IResponseBody | Form>((resolve, reject) => {
       this.create(this.client, isDefined(endPointURL) ? endPointURL : this.ressourcesPath, requestBody)
+        // tslint:disable-next-line: deprecation
         .then((res: ResponseData) => {
+          // tslint:disable-next-line: deprecation
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
           );
-          if ((res.success === true) && isDefined(body.data)) {
+          const data = getResponseDataFromHttpResponse(body);
+          if ((res.success === true) && isDefined(data)) {
             // Add the form to the session storage
-            const form = (Form.builder() as ISerializableBuilder<Form>).fromSerialized(body.data);
-            this.cache.set(`Form__${form.id}`, body.data);
+            const form = (Form.builder() as ISerializableBuilder<Form>).fromSerialized(data);
+            this.cache.set(`Form__${form.id}`, data);
             resolve(form);
           } else {
             resolve(body);
@@ -250,13 +267,17 @@ export class FormService extends RequestClient
    * @param endPointURL [[string]]
    */
   updateForm(id: number | string, requestBody: object, endPointURL: string = null) {
+    // tslint:disable-next-line: deprecation
     return new Promise<IResponseBody>((resolve, reject) => {
       this.update(this.client, `${isDefined(endPointURL) ? endPointURL : this.ressourcesPath}`, id, requestBody)
+        // tslint:disable-next-line: deprecation
         .then((res: ResponseData) => {
+          // tslint:disable-next-line: deprecation
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
           );
-          if (res.success === true && isDefined(body.data)) {
+          const data = getResponseDataFromHttpResponse(body);
+          if (res.success === true && isDefined(data)) {
             this.cache.delete(`Form__${id}`);
           }
           resolve(body);
@@ -272,15 +293,19 @@ export class FormService extends RequestClient
    * @param endPointURL [[string]]
    */
   createFormControl(requestBody: object, endPointURL: string = null) {
+    // tslint:disable-next-line: deprecation
     return new Promise<IResponseBody | FormControl>((resolve, reject) => {
       this.create(this.client, isDefined(endPointURL) ? endPointURL : this.formControlRessourcesPath, requestBody)
+        // tslint:disable-next-line: deprecation
         .then((res: ResponseData) => {
+          // tslint:disable-next-line: deprecation
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
           );
-          if ((res.success === true) && isDefined(body.data)) {
+          const data = getResponseDataFromHttpResponse(body);
+          if ((res.success === true) && isDefined(data)) {
             // Add the form to the session storage
-            const form = (FormControl.builder() as ISerializableBuilder<FormControl>).fromSerialized(body.data);
+            const form = (FormControl.builder() as ISerializableBuilder<FormControl>).fromSerialized(data);
             resolve(form);
           } else {
             resolve(body);
@@ -291,41 +316,17 @@ export class FormService extends RequestClient
   }
 
   /**
-   * @description Add the required field to the application storage to associate a form with a
-   * form-control alongs with the required attributes
-   * @param requestBody [[object]]
-   * @param endPointURL [[string]]
-   */
-  createFormFormControlRelation(requestBody: object, endPointURL: string = null) {
-    return new Promise<IResponseBody | Form>((resolve, reject) => {
-      this.create(this.client, this.formFormControlRessourcesPath, requestBody)
-        .then((res: ResponseData) => {
-          const body: IResponseBody = new ResponseBody(
-            Object.assign(res.body, { status: res.code })
-          );
-          if ((res.success === true) && isDefined(body.data)) {
-            // Add the form to the session storage
-            const form = (Form.builder() as ISerializableBuilder<Form>).fromSerialized(body.data);
-            this.cache.set(`Form__${form.id}`, body.data);
-            resolve(form);
-          } else {
-            resolve(body);
-          }
-        })
-        .catch(err => reject(err));
-    });
-  }
-
-  /**
-   * @description Update a form element A.K.A Form control, or FormFormControl relation using the provided id
    * @param endPointURL [[string]]
    * @param elementId [[number|string]]
    * @param requestBody [[object]]
    */
-  updateFormElement(endPointURL: string, elementId: string | number, requestBody: object) {
+  updateFormControl(endPointURL: string, elementId: string | number, requestBody: object) {
+    // tslint:disable-next-line: deprecation
     return new Promise<IResponseBody>((resolve, reject) => {
       this.update(this.client, endPointURL, elementId, requestBody)
+        // tslint:disable-next-line: deprecation
         .then((res: ResponseData) => {
+          // tslint:disable-next-line: deprecation
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
           );
@@ -341,9 +342,12 @@ export class FormService extends RequestClient
    * @param elementId [[number|string]]
    */
   deleteFormElement(endPointURL: string, elementId: string | number) {
+    // tslint:disable-next-line: deprecation
     return new Promise<IResponseBody>((resolve, reject) => {
       this.delete(this.client, endPointURL, elementId)
+        // tslint:disable-next-line: deprecation
         .then((res: ResponseData) => {
+          // tslint:disable-next-line: deprecation
           const body: IResponseBody = new ResponseBody(
             Object.assign(res.body, { status: res.code })
           );

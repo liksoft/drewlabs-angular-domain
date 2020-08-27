@@ -3,8 +3,10 @@ import { JsonProperty, ObjectSerializer } from '../../built-value/core/serialize
 import { ISerializer, ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
 import { Permission } from './permission';
-import { FormViewModel } from '../../components/dynamic-inputs/core/contracts';
 
+/**
+ * @deprecated
+ */
 export class RoleBuilder implements ISerializableBuilder<Role>, TypeBuilder<Role> {
   serializer: ISerializer;
 
@@ -57,7 +59,10 @@ export abstract class RoleAsViewable {
   }
 }
 
-export class Role extends RoleAsViewable implements IRole, FormViewModel {
+/**
+ * @deprecated
+ */
+export class Role extends RoleAsViewable implements IRole {
   @JsonProperty('label')
   label: string = undefined;
   @JsonProperty('display_label')

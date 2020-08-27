@@ -1,0 +1,1 @@
+export { PaginationData } from './types';

@@ -1,6 +1,9 @@
 import { Observable } from 'rxjs';
 import { AuthUser } from './user';
 
+/**
+ * @deprecated
+ */
 export interface IUserManager {
 
   // authenticate(userSecret: string, identifier: string): Promise<any> | Observable<any>;

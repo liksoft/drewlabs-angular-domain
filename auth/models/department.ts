@@ -4,8 +4,10 @@ import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built
 import { OrganisationEntity } from './organisation';
 import { Role } from './role';
 import { isDefined } from '../../utils/types/type-utils';
-import { FormViewModel } from '../../components/dynamic-inputs/core/contracts';
 
+/**
+ * @deprecated
+ */
 export class DepartmentBuilder implements ISerializableBuilder<Department>, TypeBuilder<Department> {
   serializer: ISerializer;
 
@@ -46,7 +48,10 @@ export class DepartmentBuilder implements ISerializableBuilder<Department>, Type
 
 }
 
-export class Department implements FormViewModel {
+/**
+ * @deprecated
+ */
+export class Department {
   @JsonProperty('id')
   id: number = undefined;
   @JsonProperty('name')

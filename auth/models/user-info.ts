@@ -2,9 +2,11 @@ import { JsonProperty, ObjectSerializer } from '../../built-value/core/serialize
 import { ISerializer, ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { OrganisationEntity } from './organisation';
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
-import { RessourcesWallet } from './wallet';
 import { Agence } from './agence';
 
+/**
+ * @deprecated
+ */
 export class UserInfoBuilder implements ISerializableBuilder<UserInfoEntity>, TypeBuilder<UserInfoEntity> {
 
   serializer: ISerializer;
@@ -46,6 +48,9 @@ export class UserInfoBuilder implements ISerializableBuilder<UserInfoEntity>, Ty
 
 }
 
+/**
+ * @deprecated
+ */
 export class UserInfoEntity {
   @JsonProperty('parent_id')
   parentId: number = undefined;

@@ -7,6 +7,7 @@ export class HttpResourceResponse implements IHttpResourceResponse {
   statusCode: number = undefined;
 
   // Static method definition for attribute parsing
+  // tslint:disable-next-line: typedef
   static getJsonableProperties() {
     return {
       success: 'success',
@@ -22,6 +23,7 @@ class HttpResourceResponseBody implements IHttpResourceResponseBody, IHttpRespon
   errors: any[] = undefined;
 
   // Static method definition for attribute parsing
+  // tslint:disable-next-line: typedef
   static getJsonableProperties() {
     return {
       error_message: 'errorMessage',
@@ -32,6 +34,7 @@ class HttpResourceResponseBody implements IHttpResourceResponseBody, IHttpRespon
   getData = () => this.responseData;
 }
 
+// tslint:disable-next-line: typedef
 export function parseV2HttpResponse(response: any) {
   const httpResponse = (new GenericUndecoratedSerializaleSerializer<HttpResourceResponse>()).fromSerialized(HttpResourceResponse, response);
   return {

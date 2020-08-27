@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, combineLatest } from 'rxjs';
-import { AppUIStateWrapper } from '../../../ui-store';
 import { map } from 'rxjs/operators';
+import { AppUIStoreManager } from 'src/app/lib/domain/helpers/app-ui-store-manager.service';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -34,7 +34,7 @@ export class ActionAlertComponent {
 
   public uiStoreSubscriptions: Subscription[] = [];
 
-  constructor(public readonly uiStore: AppUIStateWrapper) { }
+  constructor(public readonly uiStore: AppUIStoreManager) { }
 
   get vm$() {
     return combineLatest([

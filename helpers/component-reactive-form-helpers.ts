@@ -15,17 +15,20 @@ import {
   NumberInput,
   IDynamicForm,
   DynamicForm,
+  toDynamicControl
 } from 'src/app/lib/domain/components/dynamic-inputs/core';
 import { of } from 'rxjs';
-import { Form } from 'src/app/lib/domain/components/dynamic-inputs/core/form-control/form';
 import { AppUIStoreManager } from './app-ui-store-manager.service';
-import { EventEmitter, HostBinding } from '@angular/core';
+import { Directive, EventEmitter, HostBinding } from '@angular/core';
 import { AbstractAlertableComponent } from './component-interfaces';
 import { TranslationService } from '../translator';
 import { ICollection } from '../contracts/collection-interface';
 import { ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { CustomValidators, UniqueValueService } from '../validators';
 import { isArray, isDefined, MomentUtils } from '../utils';
+import { Log } from '../utils/logger';
+import { IDynamicFormConfig } from '../components/dynamic-inputs/core/compact/types';
+// import { toDynamicControl } from '../components/dynamic-inputs/core/compact/helpers';
 
 /**
  * @description Checks if a dynamic form contains other form
@@ -362,8 +365,8 @@ export class DynamicFormHelpers {
    * @param form [[Form]]
    * @param translate [[TranslatorService]]
    */
-  public static async buildDynamicForm(form: Form, translate: TranslationService) {
-    const configGeneratorFn = async (f: Form, t: TranslationService) => {
+  public static async buildDynamicForm(form: IDynamicFormConfig, translate: TranslationService) {
+    const configGeneratorFn = async (f: IDynamicFormConfig, t: TranslationService) => {
       let configs: IHTMLFormControl[] = [];
       const translatables: string[] = [];
       let translations: any[];
@@ -405,7 +408,7 @@ export class DynamicFormHelpers {
       if (isArray(f.formControls) && (f.formControls.length > 0)) {
         configs = f.formControls.map((control) => {
           // Update the control label, description and placeholder values
-          const config = control.toDynamicControl();
+          const config = toDynamicControl(control);
           // tslint:disable-next-line: max-line-length
           return Object.assign(config, {
             label: translations ? translations[control.label] : control.label,
@@ -509,7 +512,13 @@ export abstract class BaseDynamicFormComponent extends AbstractAlertableComponen
   }
 }
 
-export abstract class DynamicFormPageComponent extends BaseDynamicFormComponent {
+
+@Directive({
+  // tslint:disable-next-line: directive-selector
+  selector: '[elewouDynamicFormPage]'
+})
+// tslint:disable-next-line: directive-class-suffix
+export class DynamicFormPageComponent extends BaseDynamicFormComponent {
 
   @HostBinding('class.content-container') class = true;
   /**

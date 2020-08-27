@@ -1,5 +1,6 @@
 import { IAppUserDetails, AppUserDetails } from './user-details';
 import * as lodash from 'lodash';
+import { isArray, isDefined } from '../../../../utils/types/type-utils';
 
 /**
  * Checkis if a given authorizable instance has any of the provided authorization
@@ -52,6 +53,7 @@ export class AppUser implements IAppUser, NotifiableUserDetails, Authorizable {
   twoFactorActive: number = undefined;
   authorizations: string[];
   roles: string[] = undefined;
+  roleIDs: number[] = undefined;
   userDetails: IAppUserDetails = undefined;
   verified: number | boolean = undefined;
   active: number | boolean = undefined;
@@ -59,29 +61,77 @@ export class AppUser implements IAppUser, NotifiableUserDetails, Authorizable {
   channels: object[] = undefined;
 
 
-  get isVerified() {
+  get isVerified(): boolean {
     return Boolean(this.verified);
   }
 
-  get isActive() {
+  get isActive(): boolean {
     return Boolean(this.active);
   }
 
-  get is2FactorAuthActive() {
+  get is2FactorAuthActive(): boolean {
     return Boolean(this.doubleAuthActive);
   }
 
-  static getJsonableProperties() {
+  get userInfo(): IAppUserDetails { return this.userDetails; }
+
+  get rolesAsString() {
+    return isDefined(this.roles) ? isArray(this.roles) ? this.roles.join(', ') : this.roles : '';
+  }
+
+  static getJsonableProperties(): {[index: string]: keyof AppUser}|{[index: string]: any} {
     return {
       username: 'username',
       is_verified: 'verified',
-      active: 'active',
+      is_active: 'active',
       double_auth_active: 'doubleAuthActive',
       remember_token: 'rememberToken',
       roles: 'roles',
+      role_ids: 'roleIDs',
       permissions: 'authorizations',
       channels: 'channels',
       user_info: { name: 'userDetails', type: AppUserDetails }
     } as { [index: string]: keyof AppUser } | { [index: string]: any };
   }
 }
+
+export const userFormViewModel = () => {
+  return {
+    is_active: 'active',
+    double_auth_active: 'active',
+    roles: 'roles',
+    firstname: 'userDetails.firstname',
+    lastname: 'userDetails.lastname',
+    address: 'userDetails.address',
+    email: 'userDetails.email',
+    other_email: 'userDetails.otherEmail',
+    phone_number: 'userDetails.phoneNumber',
+    postal_code: 'userDetails.postalCode',
+    birthdate: 'userDetails.birthdate',
+    sex: 'userDetails.sex',
+    organisation_name: 'userDetails.company',
+    is_affiliated_to_department: '',
+    department_id: 'userDetails.departmentID',
+    agence_id: 'userDetails.agenceID',
+    is_manager: 'userDetails.isManager',
+    is_department_manager: 'userDetails.isManager'
+  };
+};
+
+export const userDetailsFormViewModel = () => {
+  return {
+    firstname: 'firstname',
+    lastname: 'lastname',
+    address: 'address',
+    email: 'email',
+    other_email: 'otherEmail',
+    phone_number: 'phoneNumber',
+    postal_code: 'postalCode',
+    birthdate: 'birthdate',
+    sex: 'sex',
+    organisation_id: 'organisationID',
+    department_id: 'departmentID',
+    agence_id: 'agenceID',
+    is_manager: 'isManager',
+  };
+};

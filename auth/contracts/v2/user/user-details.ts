@@ -1,4 +1,4 @@
-import { IAppWorkspace } from '../workspace/workspace';
+import { AppWorkspace, IAppWorkspace } from '../workspace/workspace';
 
 export interface IAppUserDetails extends IWorkspaceUserDetails {
   id: number | string;
@@ -12,6 +12,10 @@ export interface IAppUserDetails extends IWorkspaceUserDetails {
   company?: string;
   disvision?: string;
   department?: string;
+  email: string;
+  isManager?: boolean;
+  departmentID: number;
+  agenceID: number;
 }
 
 export interface IWorkspaceUserDetails {
@@ -34,10 +38,15 @@ export class AppUserDetails implements IAppUserDetails {
   company: string;
   disvision: string;
   department: string;
+  isManager?: boolean;
+  workspaces: IAppWorkspace[]; // organisation_id
+  departmentID: number;
+  agenceID: number;
+  organisationID: number;
 
-  workspaces: IAppWorkspace[];
+  get email(): string { return this.emails[0]; }
 
-  static getJsonableProperties() {
+  static getJsonableProperties(): {[index: string]: keyof AppUserDetails}|{[index: string]: any} {
     return {
       id: 'id',
       firstname: 'firstname',
@@ -51,7 +60,11 @@ export class AppUserDetails implements IAppUserDetails {
       organisation_name: 'company',
       division: 'disvision',
       department: 'department',
-      // workspaces: {name: 'workspaces', type: AppWorkspace}
+      agence_id: 'agenceID',
+      department_id: 'departmentID',
+      organisation_id: 'organisationID',
+      is_manager: 'isManager',
+      workspaces: {name: 'workspaces', type: AppWorkspace}
     };
   }
 }

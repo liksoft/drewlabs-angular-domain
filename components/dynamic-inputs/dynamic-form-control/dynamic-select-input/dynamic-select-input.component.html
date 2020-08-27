@@ -1,0 +1,26 @@
+<div class="clr-form-control">
+  <label class="clr-control-label" *ngIf="showLabelAndDescription"
+    [for]="inputTypeHelper.asSelectInput(inputConfig).formControlName">
+    {{ inputTypeHelper.asSelectInput(inputConfig).label }}
+    <small class="required-text" *ngIf="inputTypeHelper.asSelectInput(inputConfig).rules?.isRequired">(*)</small>
+  </label>
+  <ng-container *ngIf="inputItems$ | async as inputItems">
+    <ng-select [class]="inputConfig?.multiple ? '' : 'not-multiple'" [virtualScroll]="true" [items]="inputItems" [bindLabel]="inputConfig?.optionsLabel"
+      [bindValue]="inputConfig?.optionsValueIndex" [multiple]="inputConfig.multiple"
+      [placeholder]="inputConfig?.placeholder" [formControl]="control"
+      [groupBy]="inputTypeHelper.asSelectInput(inputConfig).groupByKey" [clearable]="true"
+      (remove)="multiSelectItemRemove.emit($event)">
+      <ng-template ng-option-tmp let-item="item" let-index="index" let-item$="item$">
+        <div>
+          <label class="form-check-label ml-2">
+            {{ item[inputTypeHelper.asSelectInput(inputConfig).optionsLabel] }}
+          </label>
+        </div>
+      </ng-template>
+    </ng-select>
+  </ng-container>
+  <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span
+      [translate]="'validation.required'"></span></clr-control-error>
+  <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span
+      [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
+</div>

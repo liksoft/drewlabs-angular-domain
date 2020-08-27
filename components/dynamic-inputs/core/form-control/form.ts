@@ -2,8 +2,10 @@ import { JsonProperty, ObjectSerializer } from 'src/app/lib/domain/built-value/c
 import { ISerializer, ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from 'src/app/lib/domain/built-value/contracts/type';
 import { FormControl } from './form-control';
-import { IDynamicFormBindableModel } from '../contracts/form-control';
 import { ArrayUtils, isArray } from '../../../../utils';
+import { FormViewModel } from '../contracts';
+import { DynamicControlConfig } from '../contracts/dynamic-form-control';
+import { IDynamicFormConfig } from '../compact/types';
 
 /**
  * @description Sort form loaded from backend server by control index
@@ -55,7 +57,7 @@ export class FormBuilder implements ISerializableBuilder<Form>, TypeBuilder<Form
 
 }
 
-export class Form implements IDynamicFormBindableModel {
+export class Form implements FormViewModel, IDynamicFormConfig {
   @JsonProperty('id')
   id: number = undefined;
   @JsonProperty('title')
@@ -67,7 +69,7 @@ export class Form implements IDynamicFormBindableModel {
   @JsonProperty({name: 'children', valueType: Form})
   children: Form[] = undefined;
   @JsonProperty({name: 'formControls', valueType: FormControl})
-  formControls: FormControl[] = undefined;
+  formControls: FormControl[]|DynamicControlConfig[] = undefined;
   @JsonProperty('url')
   url: string = undefined;
   @JsonProperty('status')
@@ -82,10 +84,10 @@ export class Form implements IDynamicFormBindableModel {
 
   formViewModelBindings(): {[index: string]: any} {
     return {
-      forms_title: 'title',
-      forms_description: 'description',
-      forms_parent_id: 'parentId',
-      forms_endpoint_url: 'url'
+      title: 'title',
+      description: 'description',
+      parent_id: 'parentId',
+      endpoint_url: 'url'
     };
   }
 }

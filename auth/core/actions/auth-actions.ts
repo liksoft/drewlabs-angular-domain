@@ -1,5 +1,5 @@
 import { IUserRememberTokenParam } from '../../../auth-token/contracts';
-import { createAction, DrewlabsFluxStore, StateAction } from '../../../rxjs/state/rx-state';
+import { createAction, DrewlabsFluxStore, StoreAction } from '../../../rxjs/state/rx-state';
 import { Authorizable, IAppUser, NotifiableUserDetails } from '../../contracts/v2';
 
 /**
@@ -27,7 +27,7 @@ export enum AuthStoreActions {
   AUTHENTICATION_REQUEST_COMPLETED = '[AUTHENTICATION_COMPLETED]'
 }
 
-export interface AuthStateAction extends StateAction {
+export interface AuthStateAction extends StoreAction {
   payload: Partial<AuthState> | boolean;
 }
 

@@ -19,6 +19,7 @@ import * as lodash from 'lodash';
 import { HandlersResultMsg } from '../entity/contracts/entity-handler-types';
 import { ArrayUtils, isDefined } from '../utils';
 import { Collection } from '../collections/collection';
+import { Log } from '../utils/logger';
 
 /**
  * @description Definition of form request configuration object

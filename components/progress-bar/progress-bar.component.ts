@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { AppUIStateProvider } from '../../ui-store';
+import { AppUIStateProvider } from '../../helpers/app-ui-store-manager.service';
 
 @Component({
   selector: 'app-progress-bar',

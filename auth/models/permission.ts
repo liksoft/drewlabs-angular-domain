@@ -4,6 +4,9 @@ import { ISerializer, ISerializableBuilder } from '../../built-value/contracts/s
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
 
 
+/**
+ * @deprecated
+ */
 export class PermissionBuilder implements ISerializableBuilder<Permission>, TypeBuilder<Permission> {
   serializer: ISerializer;
 

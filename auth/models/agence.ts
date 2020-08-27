@@ -1,8 +1,10 @@
 import { JsonProperty, ObjectSerializer } from '../../built-value/core/serializers';
 import { ISerializableBuilder, ISerializer } from '../../built-value/contracts/serializers';
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../../built-value/contracts/type';
-import { FormViewModel } from '../../components/dynamic-inputs/core/contracts';
 
+/**
+ * @deprecated
+ */
 export class AgenceBuilder implements ISerializableBuilder<Agence>, TypeBuilder<Agence> {
   serializer: ISerializer;
 
@@ -43,7 +45,10 @@ export class AgenceBuilder implements ISerializableBuilder<Agence>, TypeBuilder<
 
 }
 
-export class Agence implements FormViewModel {
+/**
+ * @deprecated
+ */
+export class Agence {
   @JsonProperty('id')
   id: number = undefined;
   @JsonProperty('label')

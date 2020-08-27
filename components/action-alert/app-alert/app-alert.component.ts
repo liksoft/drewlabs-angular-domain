@@ -32,24 +32,8 @@ import { createSubject } from '../../../rxjs/helpers';
   styles: [
     `
        .action-alert {
-          /*  min-height: 100px !important;
-          max-width: 320px !important;
-          position: absolute !important;
-          top: 58px !important;
-          right: 0;
-          box-shadow: 0rem 0rem 2px #d7d7d7;
-          transition-property: position;
-          transition-timing-function: linear;
-          transition-duration: 10s; */
           z-index: 9999;
-
         }
-        /* .action-alert .alert-text {
-            text-align: center;
-        }
-        .alert-icon-wrapper {
-            align-self: inherit !important;
-        } */
     `
   ],
   changeDetection: ChangeDetectionStrategy.OnPush

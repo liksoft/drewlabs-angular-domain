@@ -1,18 +1,18 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { AuthServerPathConfig, AuthPathConfig } from './config';
 import { AuthTokenService } from '../../auth-token/core/auth-token.service';
 import { HttpRequestService, HTTPErrorState } from '../../http/core/http-request.service';
 import { AuthRememberTokenService } from '../../auth-token/core/auth-remember-token.service';
-import { createSubject, observaleOf } from '../../rxjs/helpers';
+import { createSubject, observableOf } from '../../rxjs/helpers';
 import { mapToHttpResponse, doLog } from '../../rxjs/operators';
 import { mergeMap, catchError, takeUntil, tap, filter, delay } from 'rxjs/operators';
-import { throwError, merge } from 'rxjs';
+import { throwError, merge, Observable } from 'rxjs';
 import { ILoginRequest, ILoginResponse } from '../contracts/v2';
 import { DrewlabsV2LoginResultHandlerFunc, onAuthenticationResultEffect } from '../../rxjs/operators';
 import { UserStorageProvider } from './services/user-storage';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ILoginResponseBody } from '../contracts/v2/login.response';
-import { IAppUser } from '../contracts/v2/user/user';
+import { IAppUser, Authorizable, NotifiableUserDetails } from '../contracts/v2/user/user';
 import { isDefined } from '../../utils/types/type-utils';
 import { SessionStorage } from '../../storage/core/session-storage.service';
 import { Router } from '@angular/router';
@@ -23,6 +23,7 @@ import { intitAuthStateAction, authenticatingAction, authenticationRequestComple
 import { authReducer } from './reducers';
 import { isEmpty } from 'lodash';
 import { Log } from '../../utils/logger';
+import { MapToHandlerResponse } from '../../rxjs/types';
 
 const initalState: AuthState = {
   isLoggedIn: false,
@@ -46,7 +47,7 @@ export class AuthService implements OnDestroy {
 
   // tslint:disable-next-line: variable-name
   private _authStore$ = createStore(authReducer, { authenticating: false, isInitialState: null } as AuthState);
-  get state$() {
+  get state$(): Observable<Partial<AuthState>> {
     return this._authStore$.connect().pipe(
       filter(state => !isEmpty(state))
     );
@@ -55,7 +56,7 @@ export class AuthService implements OnDestroy {
   /**
    * @deprecated
    */
-  get user() {
+  get user(): IAppUser|Authorizable|NotifiableUserDetails {
     return this.userStorage.user;
   }
 
@@ -65,9 +66,10 @@ export class AuthService implements OnDestroy {
     private rememberTokenProvider: AuthRememberTokenService,
     private httpClient: HttpRequestService,
     private sessionStorage: SessionStorage,
-    private router: Router
+    private router: Router,
+    @Inject('LOGIN_RESPONSE_HANDLER_FUNC') private loginResponseHandlerFunc: MapToHandlerResponse<any>
   ) {
-    merge(this.httpClient.errorState$, observaleOf({} as HTTPErrorState).
+    merge(this.httpClient.errorState$, observableOf({} as HTTPErrorState).
       pipe(
         takeUntil(this._destroy$),
         delay(0)
@@ -108,14 +110,14 @@ export class AuthService implements OnDestroy {
    * @description Authenticate user using server credentials and try logging in user
    * @param body Login request body {@link ILogginRequest}
    */
-  public authenticate(body: ILoginRequest) {
+  public authenticate = (body: ILoginRequest) => {
     authenticatingAction(this._authStore$)();
     return this.httpClient
       .post(
         AuthServerPathConfig.LOGIN_PATH,
         Object.assign(body, { remember_me: body.remember || false })
       ).pipe(
-        mapToHttpResponse<ILoginResponse>(DrewlabsV2LoginResultHandlerFunc),
+        mapToHttpResponse<ILoginResponse>(this.loginResponseHandlerFunc || DrewlabsV2LoginResultHandlerFunc),
         onAuthenticationResultEffect(this.userStorage, this.oAuthTokenProvider, this.rememberTokenProvider, body.remember || false),
         mergeMap(source => {
           authenticationRequestCompletedAction(this._authStore$)({
@@ -127,11 +129,11 @@ export class AuthService implements OnDestroy {
             token: this.oAuthTokenProvider.token,
             rememberToken: this.rememberTokenProvider.token
           } as AuthState);
-          return observaleOf(source.loginResponse);
+          return observableOf(source.loginResponse);
         }),
         catchError((err) => {
           if (err instanceof HttpErrorResponse) {
-            return observaleOf({
+            return observableOf({
               success: false,
               body: { errorMessage: err.statusText, responseData: null, errors: [] } as ILoginResponseBody,
               statusCode: err.status
@@ -145,13 +147,13 @@ export class AuthService implements OnDestroy {
   /**
    * @description Handler for authenticating a user via user id and a remember token
    */
-  public authenticateViaRememberToken(body: { id: string | number, token: string }) {
+  public authenticateViaRememberToken = (body: { id: string | number, token: string }) => {
     authenticatingAction(this._authStore$)();
     return this.httpClient.post(
       `${AuthServerPathConfig.LOGIN_PATH}/${body.id}`,
       { remember_token: body.token }
     ).pipe(
-      mapToHttpResponse<ILoginResponse>(DrewlabsV2LoginResultHandlerFunc),
+      mapToHttpResponse<ILoginResponse>(this.loginResponseHandlerFunc || DrewlabsV2LoginResultHandlerFunc),
       onAuthenticationResultEffect(this.userStorage, this.oAuthTokenProvider, this.rememberTokenProvider, false),
       mergeMap(source => {
         authenticationRequestCompletedAction(this._authStore$)({
@@ -163,11 +165,11 @@ export class AuthService implements OnDestroy {
           token: this.oAuthTokenProvider.token,
           rememberToken: this.rememberTokenProvider.token
         } as AuthState);
-        return observaleOf(source.loginResponse);
+        return observableOf(source.loginResponse);
       }),
       catchError((err) => {
         if (err instanceof HttpErrorResponse) {
-          return observaleOf({
+          return observableOf({
             success: false,
             body: { errorMessage: err.statusText, responseData: null, errors: [] } as ILoginResponseBody,
             statusCode: err.status
@@ -181,7 +183,7 @@ export class AuthService implements OnDestroy {
   /**
    * @description Logout the application user
    */
-  public logout() {
+  public logout = () => {
     return this.httpClient
       .get(
         AuthServerPathConfig.LOGOUT_PATH
@@ -199,7 +201,7 @@ export class AuthService implements OnDestroy {
     this.setAuthenticationStateFromStoredValues({ user, token, rememberToken });
   }
 
-  setAuthenticationStateFromStoredValues(state: Partial<AuthStorageValues>) {
+  setAuthenticationStateFromStoredValues = (state: Partial<AuthStorageValues>) => {
     try {
       let payload = {};
       if ((isDefined(state.user) && isDefined(state.token))) {
