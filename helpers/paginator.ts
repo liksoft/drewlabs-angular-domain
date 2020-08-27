@@ -3,7 +3,7 @@ import { IDataSourceService, ISource, ISourceRequestQueryParameters } from '../c
 import { HttpGetAllRequestFn, RequestClient } from '../contracts/abstract-request-client';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { HttpRequestService, ResponseData, IResponseBody, ResponseBody } from '../http/core';
-// import { SessionStorage } from '../storage/core';
+import { SessionStorage } from '../storage/core';
 import { isArray, isDefined } from '../utils/type-utils';
 import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { AbstractAlertableComponent } from './component-interfaces';
@@ -33,7 +33,7 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
 
   constructor(
     public readonly client: HttpRequestService,
-    // private cache: SessionStorage
+    cache?: SessionStorage
   ) {
     this._getMethod = new RequestClient().get;
     this.client = client;
