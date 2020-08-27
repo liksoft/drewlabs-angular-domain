@@ -150,7 +150,7 @@ import { Subscription } from 'rxjs';
   ]
 })
 export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(DropzoneDirective)
+  @ViewChild(DropzoneDirective, {static: false})
   dropzoneDirective: DropzoneDirective;
 
   @Input() dropzoneConfig: DropzoneConfigInterface;

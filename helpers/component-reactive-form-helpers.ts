@@ -511,8 +511,11 @@ export abstract class BaseDynamicFormComponent extends AbstractAlertableComponen
   }
 }
 
-@Directive()
-export abstract class DynamicFormPageComponent extends BaseDynamicFormComponent {
+@Directive({
+  selector: '[appDynamicFormPage]'
+})
+// tslint:disable-next-line: directive-class-suffix
+export class DynamicFormPageComponent extends BaseDynamicFormComponent {
 
   @HostBinding('class.content-container') class = true;
   /**

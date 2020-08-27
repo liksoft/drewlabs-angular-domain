@@ -71,7 +71,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   // Property for handling File Input types
   public dropzoneConfigs: DropzoneConfigInterface;
   public dropzoneConfig: DropzoneConfigInterface;
-  @ViewChild('dropzoneContainer')
+  @ViewChild('dropzoneContainer', {static: false})
   dropzoneContainer: DropzoneComponent;
 
   @Output() fileAdded = new EventEmitter<any>();
