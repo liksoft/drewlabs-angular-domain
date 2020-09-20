@@ -43,6 +43,7 @@ export class AuthService implements OnDestroy {
   private _destroy$ = createSubject<{}>();
   // tslint:disable-next-line: variable-name
   private _logoutSubject$ = createSubject<boolean>();
+
   public readonly logoutState$ = this._logoutSubject$.asObservable();
 
   // tslint:disable-next-line: variable-name

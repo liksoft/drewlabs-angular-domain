@@ -3,7 +3,6 @@ import { AbstractControl } from '@angular/forms';
 import { DynamicInputTypeHelper } from '../input-type.service';
 import { SelectInput } from '../../core/input-types';
 import { createStateful } from '../../../../rxjs/helpers/index';
-import { Log } from '../../../../utils/logger';
 
 @Component({
   selector: 'app-dynamic-select-input',
