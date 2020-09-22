@@ -2,9 +2,8 @@ import { Injectable, OnDestroy, Injector, } from '@angular/core';
 import { FormService } from '../components/dynamic-inputs/core/form-control/form.service';
 import { TranslationService } from '../translator';
 import { DynamicFormHelpers, ComponentReactiveFormHelpers } from './component-reactive-form-helpers';
-import { Subscription, Subject } from 'rxjs';
 import { ICollection } from '../contracts/collection-interface';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { AbstractEntityProvider } from '../entity/abstract-entity';
 import { AbstractAlertableComponent } from 'src/app/lib/domain/helpers/component-interfaces';
 import { FormGroup } from '@angular/forms';
@@ -19,7 +18,7 @@ import * as lodash from 'lodash';
 import { HandlersResultMsg } from '../entity/contracts/entity-handler-types';
 import { ArrayUtils, isDefined } from '../utils';
 import { Collection } from '../collections/collection';
-import { Log } from '../utils/logger';
+import { createSubject } from '../rxjs/helpers';
 
 /**
  * @description Definition of form request configuration object
@@ -39,30 +38,22 @@ export class FormHelperService implements OnDestroy {
    * @description Load dynamic form subject instance
    * @var [[BehaviorSubject]]
    */
-  public loadForms = new Subject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
+  public loadForms = createSubject<{ configs: IFormRequestConfig[], result: HandlersResultMsg }>();
 
   /**
    * @description Form successfully loaded subject instance
    */
   // tslint:disable-next-line: variable-name
-  protected _formLoaded = new Subject<ICollection<IDynamicForm>>();
+  protected _formLoaded = createSubject<ICollection<IDynamicForm>>();
   get formLoaded$() {
-    return this._formLoaded.asObservable();
+    return this._formLoaded.asObservable().pipe(takeUntil(this.destroy$));
   }
-
-  private subscriptions: Subscription[] = [];
-  // tslint:disable-next-line: variable-name
-  private _publishers: Subject<any>[];
+  public readonly destroy$ = createSubject();
 
   /**
    * @description Instance constructor
    */
-  constructor(public readonly form: FormService, private translate: TranslationService) {
-    this._publishers = [
-      this.loadForms,
-      this._formLoaded
-    ];
-  }
+  constructor(public readonly form: FormService, private translate: TranslationService) { }
 
   public getFormById(id: number | string) {
     return new Promise<IDynamicForm>((resolve, _) => {
@@ -79,51 +70,48 @@ export class FormHelperService implements OnDestroy {
   suscribe() {
     // Initialize publishers
     // Register to publishers events
-    this.subscriptions.push(
-      // Dynamic form loader publisher
-      ...[
-        this.loadForms.asObservable().pipe(
-          filter((source) => isDefined(source))
-        ).subscribe(async (source) => {
-          try {
-            const collection: ICollection<IDynamicForm> = new Collection();
-            // Get list of form ids that are not in the in-memory forms collection
-            const configs = source.configs.filter((item) => {
-              return !isDefined(this.inMemoryFormCollection.get(item.id.toString()));
-            });
-            // Get list of form ids that are in the in-memory forms collection
-            const inmemoryConfigs = source.configs.filter((item) => {
-              return isDefined(this.inMemoryFormCollection.get(item.id.toString()));
-            });
-            // Get form configurations that are not in the in-memory forms' collection from the backend provider
-            const values = await Promise.all(configs.map((i) => this.getFormById(i.id)));
-            configs.forEach((item) => {
-              collection.add(item.label, Object.assign(values[configs.indexOf(item)]));
-              // Add loaded form configurations to the in-memory collection
-              this.inMemoryFormCollection.add(item.id.toString(), Object.assign(values[configs.indexOf(item)]));
-            });
-            inmemoryConfigs.forEach((item) => {
-              // Get the dynamic form configuration from the in-memory forms' collection
-              collection.add(item.label, Object.assign({}, this.inMemoryFormCollection.get(item.id.toString())));
-            });
-            this._formLoaded.next(lodash.cloneDeep(collection));
-            if (isDefined(source.result.success)) {
-              source.result.success();
-            }
-          } catch (error) {
-            if (isDefined(source.result.error)) {
-              throw source.result.error(error);
-            }
-          }
-        }),
-      ]);
+    this.loadForms.asObservable().pipe(
+      takeUntil(this.destroy$),
+      filter((source) => isDefined(source))
+    ).subscribe(async (source) => {
+      try {
+        const collection: ICollection<IDynamicForm> = new Collection();
+        // Get list of form ids that are not in the in-memory forms collection
+        const configs = source.configs.filter((item) => {
+          return !isDefined(this.inMemoryFormCollection.get(item.id.toString()));
+        });
+        // Get list of form ids that are in the in-memory forms collection
+        const inmemoryConfigs = source.configs.filter((item) => {
+          return isDefined(this.inMemoryFormCollection.get(item.id.toString()));
+        });
+        // Get form configurations that are not in the in-memory forms' collection from the backend provider
+        const values = await Promise.all(configs.map((i) => this.getFormById(i.id)));
+        configs.forEach((item) => {
+          collection.add(item.label, Object.assign(values[configs.indexOf(item)]));
+          // Add loaded form configurations to the in-memory collection
+          this.inMemoryFormCollection.add(item.id.toString(), Object.assign(values[configs.indexOf(item)]));
+        });
+        inmemoryConfigs.forEach((item) => {
+          // Get the dynamic form configuration from the in-memory forms' collection
+          collection.add(item.label, Object.assign({}, this.inMemoryFormCollection.get(item.id.toString())));
+        });
+        this._formLoaded.next(lodash.cloneDeep(collection));
+        if (isDefined(source.result.success)) {
+          source.result.success();
+        }
+      } catch (error) {
+        if (isDefined(source.result.error)) {
+          throw source.result.error(error);
+        }
+      }
+    });
   }
 
   /**
    * @description Unsubscribe from publishers events
    */
   unsubscribe() {
-    this.subscriptions.forEach((s) => s.unsubscribe());
+    this.destroy$.next({});
     return this;
   }
 
@@ -131,17 +119,12 @@ export class FormHelperService implements OnDestroy {
    * @description Handles sujects completers
    * @param actions [[Subjeect]]
    */
-  onCompleActionListeners(actions: Subject<any>[]) {
-    actions.forEach((a) => {
-      a.observers.forEach((ob) => {
-        ob.complete();
-      });
-    });
+  onCompleActionListeners(actions: any[] = null) {
+    this.destroy$.next({});
   }
 
   public ngOnDestroy() {
-    this._publishers.forEach((s) => s.complete());
-    this.subscriptions.forEach((s) => s.unsubscribe());
+    this.destroy$.next({});
   }
 }
 
@@ -154,7 +137,6 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
   submissionEndpointURL: string;
   componentFormGroup: FormGroup;
   public selected: T;
-  public publishers: Subject<any>[] = [];
   public readonly typeHelper: TypeUtilHelper;
   private formHelper: FormHelperService;
 
@@ -173,13 +155,6 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
     this.appUIStoreManager.initializeUIStoreAction();
     // Call service subscription method to subscribe to event
     this.formHelper.suscribe();
-    this.publishers.push(
-      ...[
-        this.formHelper.loadForms,
-        this.entityProvider.createRequest,
-        this.entityProvider.updateRequest,
-      ]
-    );
     // Triggers form loading event
     this.formHelper.loadForms.next({
       configs: this.getFormConfigs(),
@@ -196,25 +171,23 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
       }
     }
     );
-    this.uiStoreSubscriptions.push(
-      ...[
-        // Register to form loading event response
-        this.formHelper.formLoaded$.pipe(
-          filter((form) => {
-            return this.typeHelper.isDefined(form) && (
-              ArrayUtils.containsAll(form.keys(), this.getFormConfigs().map(i => i.label))
-            );
-          })
-        )
-          .subscribe((forms) => {
-            if (forms) {
-              this.onFormCollectionLoaded(forms);
-              this.suscribeToFormControlChanges();
-            }
-          }, (err) => {
-            console.log(err);
-          }),
-      ]);
+    // Register to form loading event response
+    this.formHelper.formLoaded$.pipe(
+      takeUntil(this.formHelper.destroy$),
+      filter((form) => {
+        return this.typeHelper.isDefined(form) && (
+          ArrayUtils.containsAll(form.keys(), this.getFormConfigs().map(i => i.label))
+        );
+      })
+    )
+      .subscribe((forms) => {
+        if (forms) {
+          this.onFormCollectionLoaded(forms);
+          this.suscribeToFormControlChanges();
+        }
+      }, (err) => {
+        console.log(err);
+      });
   }
 
   async onFormSubmit() {
@@ -242,8 +215,8 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
   }
 
   dispose() {
-    this.entityProvider.unsubscribe().onCompleActionListeners(this.publishers);
-    this.formHelper.unsubscribe().onCompleActionListeners(this.publishers);
+    this.entityProvider.unsubscribe();
+    this.formHelper.unsubscribe();
     this.clearUIActionSubscriptions();
     this.resetUIStore();
   }
@@ -284,7 +257,6 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
  */
 export abstract class FormViewContainerComponent<T> extends AbstractAlertableComponent {
 
-  protected publishers: Subject<any>[] = [];
   public typeHelper: TypeUtilHelper;
   // tslint:disable-next-line: variable-name
   private _translate: TranslationService;
@@ -302,32 +274,27 @@ export abstract class FormViewContainerComponent<T> extends AbstractAlertableCom
   }
 
   async initState() {
-    this.publishers.push(
-      ...[
-        this._entityProvider.deleteRequest,
-      ]
-    );
     this._entityProvider.subscribe();
     const translations = await this._translate.loadTranslations(this._tranlationConfigs.keys, this._tranlationConfigs.translateParams);
-    this.uiStoreSubscriptions.push(
-      ...[
-        this._entityProvider.deleteResult$.pipe(
-          filter((source) => this.typeHelper.isDefined(source))
-        ).subscribe((res) => {
-          this.onDeleteActionResult(res);
-        }, _ => this.appUIStoreManager.completeActionWithError(`${translations.serverRequestFailed}`)),
+    this._entityProvider.deleteResult$.pipe(
+      takeUntil(this._entityProvider.destroy$),
+      filter((source) => this.typeHelper.isDefined(source))
+    ).subscribe((res) => {
+      this.onDeleteActionResult(res);
+    }, _ => this.appUIStoreManager.completeActionWithError(`${translations.serverRequestFailed}`));
 
-        this._entityProvider.createResult$.pipe(
-          filter((form) => this.typeHelper.isDefined(form))
-        ).subscribe((res) => {
-          this.onCreateActionResult(res);
-        }, _ => this.appUIStoreManager.completeActionWithError(`${translations.serverRequestFailed}`)),
-        this._entityProvider.updateResult$.pipe(
-          filter((source) => this.typeHelper.isDefined(source))
-        ).subscribe((res) => {
-          this.onUpdateActionResult(res);
-        }, _ => this.appUIStoreManager.completeActionWithError(`${translations.serverRequestFailed}`)),
-      ]);
+    this._entityProvider.createResult$.pipe(
+      takeUntil(this._entityProvider.destroy$),
+      filter((form) => this.typeHelper.isDefined(form))
+    ).subscribe((res) => {
+      this.onCreateActionResult(res);
+    }, _ => this.appUIStoreManager.completeActionWithError(`${translations.serverRequestFailed}`));
+    this._entityProvider.updateResult$.pipe(
+      takeUntil(this._entityProvider.destroy$),
+      filter((source) => this.typeHelper.isDefined(source))
+    ).subscribe((res) => {
+      this.onUpdateActionResult(res);
+    }, _ => this.appUIStoreManager.completeActionWithError(`${translations.serverRequestFailed}`));
   }
 
   /**
@@ -372,17 +339,17 @@ export abstract class FormViewContainerComponent<T> extends AbstractAlertableCom
    * @param result [[IResponseBody]]
    */
   // tslint:disable-next-line: deprecation
-  abstract async onUpdateActionResult(result: IResponseBody): Promise<void>;
+  abstract onUpdateActionResult(result: IResponseBody): Promise<void>;
 
   /**
    * @description Provides implentations of create result handler that gets call when create request get completed
    * @param result [[IResponseBody]]
    */
   // tslint:disable-next-line: deprecation
-  abstract async onCreateActionResult(result: IResponseBody | T | boolean): Promise<void>;
+  abstract onCreateActionResult(result: IResponseBody | T | boolean): Promise<void>;
 
   dispose() {
-    this._entityProvider.unsubscribe().onCompleActionListeners(this.publishers);
+    this._entityProvider.unsubscribe();
     this.clearUIActionSubscriptions();
     this.resetUIStore();
   }

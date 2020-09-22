@@ -1,8 +1,8 @@
-import { Subscription, Subject } from 'rxjs';
+// import { Subject } from 'rxjs';
 import { CreateReq, UpdateReq, DeleteReq, GetReq, GetAllReq } from './contracts/requests';
 import { IResponseBody } from '../http/contracts/http-response-data';
 import { ISource } from '../components/ng-data-table/ng-data-table.component';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { TypeUtilHelper } from '../helpers/type-utils-helper';
 import { Injectable, OnDestroy } from '@angular/core';
@@ -10,6 +10,7 @@ import { IEntityServiceProvider } from '../contracts/entity-service-provider';
 import { DefaultEntityHandler } from './entity-handler-provider';
 import { EntityPaginator, EntityHandlers } from './contracts/entity-handler-types';
 import { isDefined } from '../utils';
+import { createSubject } from '../rxjs/helpers';
 
 @Injectable()
 export class AbstractEntityProvider<T> implements OnDestroy {
@@ -17,27 +18,27 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   /**
    * @description Triggers entity creation event
    */
-  public readonly createRequest = new Subject<{ builder: ISerializableBuilder<T>, req: CreateReq }>();
+  public readonly createRequest = createSubject<{ builder: ISerializableBuilder<T>, req: CreateReq }>();
 
   /**
    * @description Triggers entity update event
    */
-  public readonly updateRequest = new Subject<{ builder?: ISerializableBuilder<T>, req: UpdateReq }>();
+  public readonly updateRequest = createSubject<{ builder?: ISerializableBuilder<T>, req: UpdateReq }>();
 
   /**
    * @description Triggers entity delete event
    */
-  public readonly deleteRequest = new Subject<{ builder?: ISerializableBuilder<T>, req: DeleteReq }>();
+  public readonly deleteRequest = createSubject<{ builder?: ISerializableBuilder<T>, req: DeleteReq }>();
 
   /**
    * @description Triggers /GET entity event
    */
-  public readonly getRequest = new Subject<{ builder: ISerializableBuilder<T>, req: GetReq }>();
+  public readonly getRequest = createSubject<{ builder: ISerializableBuilder<T>, req: GetReq }>();
 
   /**
    * @description Triggers /GETALL entity event
    */
-  public readonly getAllRequest = new Subject<{ builder: ISerializableBuilder<T>, req: GetAllReq }>();
+  public readonly getAllRequest = createSubject<{ builder: ISerializableBuilder<T>, req: GetAllReq }>();
 
   /**
    * @description Get triggers when entity create event gets completed successfully
@@ -45,7 +46,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   // tslint:disable-next-line: variable-name
   protected _createResult =
     // tslint:disable-next-line: deprecation
-    new Subject<T | IResponseBody | boolean>();
+    createSubject<T | IResponseBody | boolean>();
   get createResult$() {
     return this._createResult.asObservable();
   }
@@ -56,7 +57,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   // tslint:disable-next-line: variable-name
   public readonly _updateResult =
     // tslint:disable-next-line: deprecation
-    new Subject<IResponseBody>();
+    createSubject<IResponseBody>();
   get updateResult$() {
     return this._updateResult.asObservable();
   }
@@ -67,7 +68,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   // tslint:disable-next-line: variable-name
   public readonly _deleteResult =
     // tslint:disable-next-line: deprecation
-    new Subject<IResponseBody>();
+    createSubject<IResponseBody>();
   get deleteResult$() {
     return this._deleteResult.asObservable();
   }
@@ -76,7 +77,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    * @description Get triggers when entity /GET event gets completed
    */
   // tslint:disable-next-line: variable-name
-  public readonly _getResult = new Subject<T>();
+  public readonly _getResult = createSubject<T>();
   get getResult$() {
     return this._getResult.asObservable();
   }
@@ -84,7 +85,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    * @description Get triggers when entity /GET event gets completed
    */
   // tslint:disable-next-line: variable-name
-  public readonly _getAllResult = new Subject<T[]>();
+  public readonly _getAllResult = createSubject<T[]>();
   get getAllResult$() {
     return this._getAllResult.asObservable();
   }
@@ -93,7 +94,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    * @description Paginator data source observable
    */
   // tslint:disable-next-line: variable-name
-  protected _paginatorDataSource = new Subject<ISource<T>>();
+  protected _paginatorDataSource = createSubject<ISource<T>>();
   get paginatorDataSource$() {
     return this._paginatorDataSource.asObservable();
   }
@@ -102,12 +103,11 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    * @description A subject provider that gets triggers when pagination data changes
    */
   // tslint:disable-next-line: max-line-length
-  public readonly loadPaginatorData = new Subject<EntityPaginator<T>>();
+  public readonly loadPaginatorData = createSubject<EntityPaginator<T>>();
 
+  public readonly destroy$ = createSubject();
   // tslint:disable-next-line: variable-name
-  protected _subjects: Subject<any>[];
-
-  protected subscriptions: Subscription[] = [];
+  private _completePagination$ = createSubject();
 
   /**
    * @var [[EntityHandlers<T>]]
@@ -123,10 +123,6 @@ export class AbstractEntityProvider<T> implements OnDestroy {
     private typeHelper: TypeUtilHelper,
     entityHandler: DefaultEntityHandler<T>
   ) {
-    this._subjects = [this.createRequest, this.updateRequest,
-    this.deleteRequest, this._createResult, this._updateResult,
-    this._deleteResult, this._paginatorDataSource, this.loadPaginatorData
-    ];
     this.handlers = {
       create: entityHandler.create, createMany: entityHandler.createMany, update: entityHandler.update,
       delete: entityHandler.delete, get: entityHandler.get, getAll: entityHandler.getAll
@@ -170,23 +166,24 @@ export class AbstractEntityProvider<T> implements OnDestroy {
     if (!this.typeHelper.isDefined(this.handlers) || (Object.keys(this.handlers).length < 0)) {
       throw Error('CRUD handlers must not be null... Please set required properties on the handlers');
     }
-    // Subscribe to load form event
-    this.subscriptions.push(
-      ...[
-        // /POST/[id]?params entity handler publisher
-        this.createRequest.asObservable().pipe(
-          filter((source) => this.typeHelper.isDefined(source)),
-        ).subscribe(async (source) => {
-          try {
-            // tslint:disable-next-line: max-line-length
-            this._createResult.next(await this.handlers.create(this.provider, source.builder, source.req.path, source.req.body));
-          } catch (error) {
-            // Show an error message en case of error
-            throw error;
-          }
-        }),
-        // /PUT/[id]?params entity handler publisher
-        this.updateRequest.asObservable().pipe(
+    // /POST/[id]?params entity handler publisher
+    this.createRequest.asObservable()
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((source) => this.typeHelper.isDefined(source)),
+      ).subscribe(async (source) => {
+        try {
+          // tslint:disable-next-line: max-line-length
+          this._createResult.next(await this.handlers.create(this.provider, source.builder, source.req.path, source.req.body));
+        } catch (error) {
+          // Show an error message en case of error
+          throw error;
+        }
+      }),
+      // /PUT/[id]?params entity handler publisher
+      this.updateRequest.asObservable()
+        .pipe(
+          takeUntil(this.destroy$),
           filter((source) => this.typeHelper.isDefined(source))
         ).subscribe(async (source) => {
           try {
@@ -197,8 +194,10 @@ export class AbstractEntityProvider<T> implements OnDestroy {
             throw error;
           }
         }),
-        // /DELETE/[id]?params entity handler publisher
-        this.deleteRequest.asObservable().pipe(
+      // /DELETE/[id]?params entity handler publisher
+      this.deleteRequest.asObservable()
+        .pipe(
+          takeUntil(this.destroy$),
           filter((source) => this.typeHelper.isDefined(source))
         ).subscribe(async (source) => {
           try {
@@ -208,8 +207,10 @@ export class AbstractEntityProvider<T> implements OnDestroy {
             throw error;
           }
         }),
-        // /GET/[id] entity handler publisher
-        this.getRequest.asObservable().pipe(
+      // /GET/[id] entity handler publisher
+      this.getRequest.asObservable()
+        .pipe(
+          takeUntil(this.destroy$),
           filter((source) => this.typeHelper.isDefined(source))
         ).subscribe(async (source) => {
           try {
@@ -219,8 +220,10 @@ export class AbstractEntityProvider<T> implements OnDestroy {
             throw error;
           }
         }),
-        // /GET[?params] entity handler publisher
-        this.getAllRequest.asObservable().pipe(
+      // /GET[?params] entity handler publisher
+      this.getAllRequest.asObservable()
+        .pipe(
+          takeUntil(this.destroy$),
           filter((source) => this.typeHelper.isDefined(source))
         ).subscribe(async (source) => {
           try {
@@ -230,15 +233,16 @@ export class AbstractEntityProvider<T> implements OnDestroy {
             // Show an error message en case of error
             throw error;
           }
-        })
-      ]);
+        });
   }
 
   /**
    * @description Subscribe to clarity data grid paginator changes
    */
   public subscribeToPaginationChanges() {
-    this.loadPaginatorData.asObservable().pipe(
+    this.loadPaginatorData.asObservable()
+    .pipe(
+      takeUntil(this._completePagination$),
       filter((state) => isDefined(state))
     ).subscribe(async (state) => {
       try {
@@ -274,16 +278,16 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   }
 
   unsubscribe() {
-    this.subscriptions.forEach((s) => s.unsubscribe());
+    this.destroy$.next({});
     return this;
   }
 
-  onCompleActionListeners(actions: Subject<any>[]) {
-    actions.forEach((a) => a.observers.forEach((ob) => ob.complete()));
+  onCompleActionListeners(actions: any[]  =  null) {
+    this.destroy$.next({});
   }
 
   public ngOnDestroy() {
-    this._subjects.forEach((s) => s.complete());
-    this.subscriptions.forEach((s) => s.unsubscribe());
+    this.destroy$.next({});
+    this._completePagination$.next({});
   }
 }
