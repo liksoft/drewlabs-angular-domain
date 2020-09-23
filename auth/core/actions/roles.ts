@@ -234,3 +234,11 @@ export const addToList = (store: DrewlabsFluxStore<RolesState, Partial<StoreActi
       payload
     };
   });
+
+export const resetRolesCacheAction = (store: DrewlabsFluxStore<RolesState, Partial<StoreAction>>) =>
+  createAction(store, () => {
+    return {
+      type: RoleStoreActions.INIT_ITEMS_CACHE_ACTION,
+      payload: []
+    };
+  });

@@ -1,7 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { isDefined } from '../types/type-utils';
-
-declare var saveAs: any;
+import { saveAs } from 'file-saver';
 
 type WindowEvent = (self: Window, ev?: Event) => any;
 

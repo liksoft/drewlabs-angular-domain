@@ -36,6 +36,7 @@ export {
   updateRoleAction,
   roleUpdatedAction,
   deleteRoleAction,
+  resetRolesCacheAction
 } from './roles';
 
 
