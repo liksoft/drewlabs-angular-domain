@@ -20,6 +20,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   /**
    * {@inheritdoc}
    */
+  // tslint:disable-next-line: typedef
   create(path: string, body: any, params?: object) {
     return this.httpClient.post(path, body, params).pipe(
       mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))
@@ -29,6 +30,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   /**
    * @inheritdoc
    */
+  // tslint:disable-next-line: typedef
   get(path: string, params?: object) {
     return this.httpClient.get(path, params).pipe(
       mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null)),
@@ -38,6 +40,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   /**
    * {@inheritdoc}
    */
+  // tslint:disable-next-line: typedef
   getUsingID(path: string, id: string | number, params?: object) {
     return this.httpClient.get(`${path}/${id}`, params).pipe(
       mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))
@@ -47,6 +50,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   /**
    * {@inheritdoc}
    */
+  // tslint:disable-next-line: typedef
   update(
     path: string, body: any, params?: object) {
     return this.httpClient.put(path, body, params)
@@ -58,6 +62,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   /**
    * {@inheritdoc}
    */
+  // tslint:disable-next-line: typedef
   updateUsingID(
     path: string, id: string | number, body: RequestBody, params?: object) {
     return this.httpClient.put(`${path}/${id}`, body, params)
@@ -69,6 +74,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   /**
    * {@inheritdoc}
    */
+  // tslint:disable-next-line: typedef
   delete(path: string, params: object) {
     return this.httpClient.put(`${path}`, params)
       .pipe(
@@ -79,6 +85,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   /**
    * @inheritdoc
    */
+  // tslint:disable-next-line: typedef
   deleteUsingID(path: string, id: string | number, params?: object) {
     return this.httpClient.delete(`${path}/${id}`, params)
       .pipe(
@@ -90,6 +97,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
    * @description Convert HTTP Error response error object into an HTTpResponse onbject
    * @param error Erro object
    */
+  // tslint:disable-next-line: typedef
   handleErrorResponse(error: HttpErrorResponse) {
     const errorResponse = this.responseTransformHandler(error.error);
     if (error.status === DrewlabsHttpResponseStatusCode.BAD_REQUEST) {

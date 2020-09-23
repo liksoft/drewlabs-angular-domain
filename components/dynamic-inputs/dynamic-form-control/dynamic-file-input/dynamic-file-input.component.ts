@@ -8,6 +8,7 @@ import { DynamicInputTypeHelper } from '../input-type.service';
 import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { FileInput } from '../../core';
 import { FileFormControl } from '../dynamic-form-control.component';
+import { Log } from '../../../../utils/logger';
 
 @Component({
   selector: 'app-dynamic-file-input',
@@ -71,9 +72,8 @@ export class DynamicFileInputComponent implements OnInit {
     });
   }
 
-
-
   // Files Handlers event method
+  // tslint:disable-next-line: typedef
   async onDropzoneFileAdded() {
     setTimeout(async () => {
       const files = this.dropzoneContainer.dropzone().getAcceptedFiles();
@@ -98,9 +98,10 @@ export class DynamicFileInputComponent implements OnInit {
         this.dropzoneContainer.disabled = true;
       }
       this.addedEvent.emit(this.control.value);
-    }, 100);
+    }, 50);
   }
 
+  // tslint:disable-next-line: typedef
   onDropzoneFileRemoved(event: any) {
     if ((this.inputConfig as FileInput).multiple) {
       if (isDefined(this.control.value)) {

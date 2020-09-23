@@ -49,7 +49,7 @@ export class ObjectSerializer implements ISerializer {
   /**
    * @inheritdoc
    */
-  deserialize<T>(bluePrint: new () => T, jsonObject: any) {
+  deserialize = <T>(bluePrint: new () => T, jsonObject: any) => {
     // Checks if the Class blueprint is undefined
     if ((bluePrint === undefined) || (jsonObject === undefined)) {
       return undefined;
@@ -110,8 +110,9 @@ export class ObjectSerializer implements ISerializer {
     }
     // Creates an instance of the bluprint
     const $serialized: object = {};
-    const obj = value.constructor;
-    // const obj = new bluePrint();
+    // const obj = value.constructor || new bluePrint();
+    bluePrint = bluePrint ? bluePrint : value.constructor as any;
+    const obj = new bluePrint();
     Object.keys(value).forEach((key) => {
       const metadata = getJsonProperty<T>(obj, key);
       if (metadata) {

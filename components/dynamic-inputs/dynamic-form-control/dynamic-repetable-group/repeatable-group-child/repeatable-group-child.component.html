@@ -1,5 +1,5 @@
 <clr-accordion>
-    <clr-accordion-panel [(clrAccordionPanelOpen)]="isAccordionOpened">
+    <clr-accordion-panel [clrAccordionPanelOpen]="true" [clrAccordionPanelDisabled]="true">
         <clr-accordion-title>
             Bénéficiaire {{ index }}
             <button class="icon-variant" *ngIf="!showEditButton">

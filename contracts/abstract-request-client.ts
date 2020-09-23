@@ -43,13 +43,13 @@ export function loadThroughHttpRequest(
  * @param cacheEntriesKey [[string]]
  * @param builder [[ISerializableBuilder<T>]]
  */
-export async function loadRessourceFromCacheOrGetFromServer<T extends any>(
+export const loadRessourceFromCacheOrGetFromServer = async <T extends any>(
   cache: IAppStorage,
   client: IEntityServiceProvider,
   ressourcesPath: string,
   id: number | string,
   cacheEntriesKey: string,
-  builder: ISerializableBuilder<T>) {
+  builder: ISerializableBuilder<T>) => {
   // Try getting the form from the cache
   const forms = cache.get(cacheEntriesKey);
   return new Promise<T>(async (resolve, reject) => {
@@ -71,7 +71,7 @@ export async function loadRessourceFromCacheOrGetFromServer<T extends any>(
       reject(error);
     }
   });
-}
+};
 
 /**
  * @description Get a list a ressources from the backend server using an HTTP request
@@ -79,13 +79,13 @@ export async function loadRessourceFromCacheOrGetFromServer<T extends any>(
  * @param ressourcesPath [[string]]
  * @param ressourceBuilder [[ISerializableBuilder<T>]]
  */
-export function getRessources<T>(
+export const getRessources = <T>(
   client: IEntityServiceProvider,
   ressourcesPath: string,
   ressourceBuilder: ISerializableBuilder<T>,
   dataKey?: string,
   params?: object
-) {
+) => {
   return new Promise<T[]>(async (_, __) => {
     const result = await loadThroughHttpRequest(client, ressourcesPath, null, params);
     const responseData = isDefined(dataKey) ? result[dataKey] : result;
@@ -96,7 +96,7 @@ export function getRessources<T>(
     }
     _([]);
   });
-}
+};
 
 /**
  * @description Get and item from the data storage base on query conditions
@@ -104,12 +104,12 @@ export function getRessources<T>(
  * @param ressourcesPath [[string]]
  * @param ressourceBuilder [[ISerializableBuilder<T>]]
  */
-export function getRessource<T>(
+export const getRessource = <T>(
   client: IEntityServiceProvider,
   ressourcesPath: string,
   ressourceBuilder: ISerializableBuilder<T>,
   params?: object
-) {
+) => {
   return new Promise<T>(async (_, __) => {
     const result = await loadThroughHttpRequest(client, ressourcesPath, null, params);
     if (isDefined(result)) {
@@ -118,7 +118,7 @@ export function getRessource<T>(
     }
     _(null);
   });
-}
+};
 
 /**
  * @description  Make an Http Request for creating many ressource items
@@ -127,15 +127,18 @@ export function getRessource<T>(
  * @param requestBody [[object]]
  * @param params [[object]]
  */
-export function postManyRessources(
+export const postManyRessources = (
   client: IEntityServiceProvider,
   ressourcesPath: string,
   requestBody: object[] | object,
   params?: object
-) {
+) => {
+  // tslint:disable-next-line: deprecation
   return new Promise<IResponseBody>((resolve, reject) => {
     (new RequestClient()).create(client, `${ressourcesPath}`, requestBody, params)
+      // tslint:disable-next-line: deprecation
       .then((res: ResponseData) => {
+        // tslint:disable-next-line: deprecation
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );
@@ -143,7 +146,7 @@ export function postManyRessources(
       })
       .catch(_ => reject(_));
   });
-}
+};
 
 /**
  * @description Make an HTTP request for creating a new ressource
@@ -153,10 +156,13 @@ export function postManyRessources(
  * @param ressourceBuilder [[ISerializableBuilder<T>]]
  */
 // tslint:disable-next-line: max-line-length
-export function postRessource<T>(client: IEntityServiceProvider, ressourcesPath: string, requestBody: object, ressourceBuilder?: ISerializableBuilder<T>, params?: object) {
+export const postRessource = <T>(client: IEntityServiceProvider, ressourcesPath: string, requestBody: object, ressourceBuilder?: ISerializableBuilder<T>, params?: object) => {
+  // tslint:disable-next-line: deprecation
   return new Promise<IResponseBody | T>((resolve, reject) => {
     (new RequestClient()).create(client, `${ressourcesPath}`, requestBody, params)
+      // tslint:disable-next-line: deprecation
       .then((res: ResponseData) => {
+        // tslint:disable-next-line: deprecation
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );
@@ -168,7 +174,7 @@ export function postRessource<T>(client: IEntityServiceProvider, ressourcesPath:
       })
       .catch(_ => reject(_));
   });
-}
+};
 
 /**
  * @description Make an HTTP PUT request to the ressources endpoint to update ressources information in the database
@@ -179,10 +185,13 @@ export function postRessource<T>(client: IEntityServiceProvider, ressourcesPath:
  * @param params [[object|null]]
  */
 // tslint:disable-next-line: max-line-length
-export function putRessource<T>(client: IEntityServiceProvider, ressourcesPath: string, id: number | string, requestBody: object, params?: object) {
+export const putRessource = <T>(client: IEntityServiceProvider, ressourcesPath: string, id: number | string, requestBody: object, params?: object) => {
+  // tslint:disable-next-line: deprecation
   return new Promise<IResponseBody>((resolve, reject) => {
     (new RequestClient()).update(client, `${ressourcesPath}`, id, requestBody, params)
+      // tslint:disable-next-line: deprecation
       .then((res: ResponseData) => {
+        // tslint:disable-next-line: deprecation
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );
@@ -190,7 +199,7 @@ export function putRessource<T>(client: IEntityServiceProvider, ressourcesPath: 
       })
       .catch(err => reject(err));
   });
-}
+};
 
 /**
  *
@@ -200,10 +209,17 @@ export function putRessource<T>(client: IEntityServiceProvider, ressourcesPath: 
  * @param id  [[number|string]]
  */
 // tslint:disable-next-line: max-line-length
-export function deleteRessource<T>(client: IEntityServiceProvider, ressourcesPath: string, id: number | string, params?: object): Promise<IResponseBody> {
+export const deleteRessource = <T>(
+  client: IEntityServiceProvider,
+  ressourcesPath: string,
+  id: number | string,
+  // tslint:disable-next-line: deprecation
+  params?: object): Promise<IResponseBody> => {
   return new Promise((resolve, reject) => {
     (new RequestClient()).delete(client, `${ressourcesPath}`, id, params)
+      // tslint:disable-next-line: deprecation
       .then((res: ResponseData) => {
+        // tslint:disable-next-line: deprecation
         const body: IResponseBody = new ResponseBody(
           Object.assign(res.body, { status: res.code })
         );
@@ -211,7 +227,7 @@ export function deleteRessource<T>(client: IEntityServiceProvider, ressourcesPat
       })
       .catch(err => reject(err));
   });
-}
+};
 
 /**
  * @description Get ressources/ request handler
@@ -220,6 +236,7 @@ export function deleteRessource<T>(client: IEntityServiceProvider, ressourcesPat
  */
 export type HttpGetAllRequestFn = (
   client: IEntityServiceProvider, ressourcePath: string, options?: object
+  // tslint:disable-next-line: deprecation
 ) => Promise<ResponseData>;
 
 /**
@@ -230,6 +247,7 @@ export type HttpGetAllRequestFn = (
  */
 export type HttpGetRequestFn = (
   client: IEntityServiceProvider, ressourcePath: string, id: number | any, options?: object
+  // tslint:disable-next-line: deprecation
 ) => Promise<ResponseData>;
 
 /**
@@ -240,6 +258,7 @@ export type HttpGetRequestFn = (
  */
 export type HttpPostRequestFn = (
   client: IEntityServiceProvider, ressources: string, requestBody: object | any, options?: object
+// tslint:disable-next-line: deprecation
 ) => Promise<ResponseData>;
 
 /**
@@ -250,6 +269,7 @@ export type HttpPostRequestFn = (
  */
 export type HttpDeleteRequestFn = (
   client: IEntityServiceProvider, ressources: string, id: number | any, options?: object
+// tslint:disable-next-line: deprecation
 ) => Promise<ResponseData>;
 
 /**
@@ -261,6 +281,7 @@ export type HttpDeleteRequestFn = (
 // tslint:disable-next-line: max-line-length
 export type HttpPutRequestFn = (
   client: IEntityServiceProvider, ressources: string, id: number | any, values: object | any, options?: object
+// tslint:disable-next-line: deprecation
 ) => Promise<ResponseData>;
 
 export interface IRequestClient {
@@ -296,10 +317,12 @@ export class RequestClient implements IRequestClient {
   public get: HttpGetAllRequestFn = (
     client: IEntityServiceProvider, ressources: string, options?: object
   ) => {
+    // tslint:disable-next-line: deprecation
     return new Promise<ResponseData>((resolve, reject) => {
       client.get(ressources, options).subscribe(
         res => {
           // Handle the response object
+          // tslint:disable-next-line: deprecation
           const responseData: ResponseData =
             res[ServerResponseKeys.RESPONSE_DATA];
           resolve(responseData);
@@ -314,10 +337,12 @@ export class RequestClient implements IRequestClient {
   public getById: HttpGetRequestFn = (
     client: IEntityServiceProvider, ressources: string, id: any, options?: object
   ) => {
+    // tslint:disable-next-line: deprecation
     return new Promise<ResponseData>((resolve, reject) => {
       client.get(`${ressources}/${id}`, options).subscribe(
         res => {
           // Handle the response object
+          // tslint:disable-next-line: deprecation
           const responseData: ResponseData =
             res[ServerResponseKeys.RESPONSE_DATA];
           resolve(responseData);
@@ -331,10 +356,12 @@ export class RequestClient implements IRequestClient {
   public create: HttpPostRequestFn = (
     client: IEntityServiceProvider, ressources: string, requestBody: object | string, options?: object
   ) => {
+    // tslint:disable-next-line: deprecation
     return new Promise<ResponseData>((resolve, reject) => {
       client.post(ressources, requestBody, options).subscribe(
         res => {
           // Handle the response object
+          // tslint:disable-next-line: deprecation
           const responseData: ResponseData =
             res[ServerResponseKeys.RESPONSE_DATA];
           resolve(responseData);
@@ -348,10 +375,12 @@ export class RequestClient implements IRequestClient {
   public delete: HttpDeleteRequestFn = (
     client: IEntityServiceProvider, ressources: string, id: any, options?: object
   ) => {
+    // tslint:disable-next-line: deprecation
     return new Promise<ResponseData>((resolve, reject) => {
       client.delete(`${ressources}/${id}`, options).subscribe(
         res => {
           // Handle the response object
+          // tslint:disable-next-line: deprecation
           const responseData: ResponseData =
             res[ServerResponseKeys.RESPONSE_DATA];
           resolve(responseData);
@@ -365,11 +394,13 @@ export class RequestClient implements IRequestClient {
   public update: HttpPutRequestFn = (
     client: IEntityServiceProvider, ressources: string, id?: any, updateValues = {}, options?: object
   ) => {
+    // tslint:disable-next-line: deprecation
     return new Promise<ResponseData>((resolve, reject) => {
       ressources = id ? `${ressources}/${id}` : `${ressources}`;
       client.put(ressources, updateValues, options).subscribe(
         res => {
           // Handle the response object
+          // tslint:disable-next-line: deprecation
           const responseData: ResponseData =
             res[ServerResponseKeys.RESPONSE_DATA];
           resolve(responseData);

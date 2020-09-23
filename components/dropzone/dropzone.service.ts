@@ -9,6 +9,7 @@ export class DropzoneService {
   constructor(private tranlate: TranslateService) {
   }
 
+  // tslint:disable-next-line: typedef
   public dzDefaultPreviewTemplate(fileTypeClass: string = 'fa fa-file-alt') {
     return `
     <div>
@@ -25,6 +26,7 @@ export class DropzoneService {
     `;
   }
 
+  // tslint:disable-next-line: typedef
   public dzDefaultConfig(config: DropzoneConfigInterface, acceptedFilesTypeName: string = 'images') {
     return new Promise((resolve, _) => {
       this.tranlate.get([

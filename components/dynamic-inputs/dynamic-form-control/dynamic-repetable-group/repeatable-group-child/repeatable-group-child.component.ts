@@ -20,7 +20,7 @@ import { AppUIStoreManager } from '../../../../../helpers/app-ui-store-manager.s
     `
   ],
 })
-export class RepeatableGroupChildComponent extends AbstractAlertableComponent implements OnInit, OnDestroy {
+export class RepeatableGroupChildComponent extends AbstractAlertableComponent {
 
   @Output() componentDestroyer =  new EventEmitter();
   @Output() create = new EventEmitter<AbstractControl>();
@@ -34,8 +34,4 @@ export class RepeatableGroupChildComponent extends AbstractAlertableComponent im
   // @Input() showCreateButton = false;
 
   constructor(uiStore: AppUIStoreManager) { super(uiStore); }
-
-  ngOnInit() {}
-
-  ngOnDestroy() { }
 }

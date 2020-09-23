@@ -21,7 +21,8 @@ export class DefaultEntityHandler<T> {
    * @param value [[any]]
    * @param params [[object|null]]
    */
-  public create(provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, ressourcePath: string, value: any, params?: object) {
+  public create = (
+    provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, ressourcePath: string, value: any, params?: object) => {
     return postRessource<T>(provider, ressourcePath, value, builder, params);
   }
   /**
@@ -31,7 +32,7 @@ export class DefaultEntityHandler<T> {
    * @param value [[any[]]]
    * @param params [[object|null]]
    */
-  public createMany(provider: IEntityServiceProvider, ressourcePath: string, value: any[], params?: object) {
+  public createMany = (provider: IEntityServiceProvider, ressourcePath: string, value: any[], params?: object) => {
     return postManyRessources(provider, ressourcePath, value, params);
   }
 
@@ -43,7 +44,7 @@ export class DefaultEntityHandler<T> {
    * @param id [[number]]
    * @param params [[object|null]]
    */
-  public update(provider: IEntityServiceProvider, ressourcePath: string, value: any, id?: string | number, params?: object) {
+  public update = (provider: IEntityServiceProvider, ressourcePath: string, value: any, id?: string | number, params?: object) => {
     // tslint:disable-next-line: deprecation
     return putRessource<IResponseBody>(provider, ressourcePath, id, value, params);
   }
@@ -55,7 +56,7 @@ export class DefaultEntityHandler<T> {
    * @param id [[number]]
    * @param params [[object|null]]
    */
-  public delete(provider: IEntityServiceProvider, ressourcePath: string, id?: string | number, params?: object) {
+  public delete = (provider: IEntityServiceProvider, ressourcePath: string, id?: string | number, params?: object) => {
     // tslint:disable-next-line: deprecation
     return deleteRessource<IResponseBody>(provider, ressourcePath, id, params);
   }
@@ -68,7 +69,8 @@ export class DefaultEntityHandler<T> {
    * @param id [[string|number|null]]
    * @param params [[object|null]]
    */
-  public get(provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, path: string, id?: string | number, params?: object) {
+  // tslint:disable-next-line: max-line-length
+  public get = (provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, path: string, id?: string | number, params?: object) => {
     return getRessource<T>(provider, isDefined(id) ? `${path}/${id}` : `${path}`, builder, params);
   }
 
@@ -80,7 +82,8 @@ export class DefaultEntityHandler<T> {
    * @param key [[string]]
    * @param params [[object]]
    */
-  public getAll(provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, ressourcePath: string, params?: object, key?: string) {
+  public getAll = (
+    provider: IEntityServiceProvider, builder: ISerializableBuilder<T>, ressourcePath: string, params?: object, key?: string) => {
     return getRessources<T>(provider, ressourcePath, builder, key, params);
   }
 }

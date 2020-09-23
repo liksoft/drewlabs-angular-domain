@@ -1,4 +1,3 @@
-// import { Subject } from 'rxjs';
 import { CreateReq, UpdateReq, DeleteReq, GetReq, GetAllReq } from './contracts/requests';
 import { IResponseBody } from '../http/contracts/http-response-data';
 import { ISource } from '../components/ng-data-table/ng-data-table.component';
@@ -47,6 +46,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   protected _createResult =
     // tslint:disable-next-line: deprecation
     createSubject<T | IResponseBody | boolean>();
+  // tslint:disable-next-line: typedef
   get createResult$() {
     return this._createResult.asObservable();
   }
@@ -58,6 +58,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   public readonly _updateResult =
     // tslint:disable-next-line: deprecation
     createSubject<IResponseBody>();
+  // tslint:disable-next-line: typedef
   get updateResult$() {
     return this._updateResult.asObservable();
   }
@@ -69,6 +70,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   public readonly _deleteResult =
     // tslint:disable-next-line: deprecation
     createSubject<IResponseBody>();
+  // tslint:disable-next-line: typedef
   get deleteResult$() {
     return this._deleteResult.asObservable();
   }
@@ -78,6 +80,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    */
   // tslint:disable-next-line: variable-name
   public readonly _getResult = createSubject<T>();
+  // tslint:disable-next-line: typedef
   get getResult$() {
     return this._getResult.asObservable();
   }
@@ -86,6 +89,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    */
   // tslint:disable-next-line: variable-name
   public readonly _getAllResult = createSubject<T[]>();
+  // tslint:disable-next-line: typedef
   get getAllResult$() {
     return this._getAllResult.asObservable();
   }
@@ -95,6 +99,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    */
   // tslint:disable-next-line: variable-name
   protected _paginatorDataSource = createSubject<ISource<T>>();
+  // tslint:disable-next-line: typedef
   get paginatorDataSource$() {
     return this._paginatorDataSource.asObservable();
   }
@@ -133,6 +138,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    * @description Setter method for [[provider]] property
    * @param provider [[IEntityServiceProvider]]
    */
+  // tslint:disable-next-line: typedef
   public setProvider(provider: IEntityServiceProvider) {
     this.provider = provider;
     return this;
@@ -141,6 +147,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   /**
    * @description Getter method for [[provider]] property
    */
+  // tslint:disable-next-line: typedef
   public getProvider() {
     return this.provider;
   }
@@ -149,8 +156,10 @@ export class AbstractEntityProvider<T> implements OnDestroy {
    * @description [[hanlders]] property setter
    * @param _handlers [[EntityHandlers<T>]]
    */
-  // tslint:disable-next-line: variable-name
-  public setHandlers(_handlers: EntityHandlers<T>) {
+  // tslint:disable-next-line: typedef
+  public setHandlers(
+    // tslint:disable-next-line: variable-name
+    _handlers: EntityHandlers<T>) {
     this.handlers = _handlers;
     return this;
   }
@@ -158,10 +167,12 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   /**
    * @description Returns the list of CRUD hanlders for the entity object
    */
+  // tslint:disable-next-line: typedef
   public getHandlers() {
     return this.handlers;
   }
 
+  // tslint:disable-next-line: typedef
   public subscribe() {
     if (!this.typeHelper.isDefined(this.handlers) || (Object.keys(this.handlers).length < 0)) {
       throw Error('CRUD handlers must not be null... Please set required properties on the handlers');
@@ -239,27 +250,27 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   /**
    * @description Subscribe to clarity data grid paginator changes
    */
-  public subscribeToPaginationChanges() {
+  public subscribeToPaginationChanges = () => {
     this.loadPaginatorData.asObservable()
-    .pipe(
-      takeUntil(this._completePagination$),
-      filter((state) => isDefined(state))
-    ).subscribe(async (state) => {
-      try {
-        const data = await this.queryRessource(state);
-        this._paginatorDataSource.next(data);
-      } catch (error) {
-        // Show an error message en case of error
-        throw error;
-      }
-    });
+      .pipe(
+        takeUntil(this._completePagination$),
+        filter((state) => isDefined(state))
+      ).subscribe(async (state) => {
+        try {
+          const data = await this.queryRessource(state);
+          this._paginatorDataSource.next(data);
+        } catch (error) {
+          // Show an error message en case of error
+          throw error;
+        }
+      });
   }
 
   /**
    * @description Ressources pagination provider
    * @param source [[EntityPaginator<T>]]
    */
-  public async queryRessource(source: EntityPaginator<T>) {
+  public queryRessource = async (source: EntityPaginator<T>) => {
     return (source.provider)
       .resetScope()
       .setRessourcePath(source.path)
@@ -273,19 +284,20 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   /**
    * @description Close subscription to [[_paginatorDataSource]] events
    */
-  public unsubscribeToPaginatorDataChanges() {
+  public unsubscribeToPaginatorDataChanges = () => {
     this._paginatorDataSource.observers.forEach((ob) => ob.complete());
   }
 
-  unsubscribe() {
+  unsubscribe = () => {
     this.destroy$.next({});
     return this;
   }
 
-  onCompleActionListeners(actions: any[]  =  null) {
+  onCompleActionListeners = (actions: any[] = null) => {
     this.destroy$.next({});
   }
 
+  // tslint:disable-next-line: typedef
   public ngOnDestroy() {
     this.destroy$.next({});
     this._completePagination$.next({});

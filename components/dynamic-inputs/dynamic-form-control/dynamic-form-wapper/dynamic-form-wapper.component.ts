@@ -49,6 +49,7 @@ export class DynamicFormWapperComponent {
 
   public isValueDefined: (value: any) => boolean = isDefined.bind(this);
 
+  // tslint:disable-next-line: typedef
   setComponentForm(value: IDynamicForm) {
     this._form = sortFormByIndex(value);
     if (this.isFormGroup(this.form)) {

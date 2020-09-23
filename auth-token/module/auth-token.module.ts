@@ -5,7 +5,7 @@ import { AuthRememberTokenService } from '../core';
 interface AuthModuleConfigInterface {
   rememberTokenStorageKeyName?: string;
   authUserStorageKeyName?: string;
-  OauthTokenStorageKeyName?: string;
+  oauthTokenStorageKeyName?: string;
 }
 
 @NgModule()
@@ -26,7 +26,7 @@ export class AuthTokenModule {
         },
         {
           provide: 'DREWLABS_USER_TOKEN_KEY',
-          useValue: configs.OauthTokenStorageKeyName || 'X_Auth_Token'
+          useValue: configs.oauthTokenStorageKeyName || 'X_Auth_Token'
         }
       ]
     };

@@ -104,6 +104,7 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
     );
   }
 
+  // tslint:disable-next-line: typedef
   ngOnDestroy() {
     this.componentDestroyerSubscription.forEach((e) => e.unsubscribe());
   }
