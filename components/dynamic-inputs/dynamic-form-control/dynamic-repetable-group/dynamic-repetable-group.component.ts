@@ -24,11 +24,13 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
   @Input() form: IDynamicForm;
   @Input() addButtonText = 'Plus';
   @Input() hideAddNewFormgroupButton = false;
+  @Input() prefixLabel: string;
+  @Input() offsetAddNewGroupButton = true;
+
   @Output() childCreate = new EventEmitter<AbstractControl>();
   @Output() childEdit = new EventEmitter<AbstractControl>();
   @Output() updateParentValueAndValidity = new EventEmitter<object>();
   @Output() removedControlGroup = new EventEmitter<object>();
-  @Input() offsetAddNewGroupButton = true;
 
   // Output event
   @Output() addNewControlGroup: EventEmitter<object> = new EventEmitter();
@@ -74,6 +76,7 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
     controlComponentRef.instance.formGroup = formGroupState as FormGroup;
     controlComponentRef.instance.form = Object.assign({}, this.form);
     controlComponentRef.instance.index = (Object.assign({ index: this.totalAddedComponent })).index;
+    controlComponentRef.instance.label = `${this.prefixLabel} ${(Object.assign({ index: this.totalAddedComponent })).index}`;
     controlComponentRef.instance.formGroup.addControl('index', new FormControl(controlComponentRef.instance.index));
     controlComponentRef.instance.showEditButton = showEditButton;
     // controlComponentRef.instance.showCreateButton = showCreateButton;

@@ -3,6 +3,7 @@ import { FormGroup, AbstractControl } from '@angular/forms';
 import { IDynamicForm } from '../../../core/contracts/dynamic-form';
 import { AbstractAlertableComponent } from '../../../../../helpers/component-interfaces';
 import { AppUIStoreManager } from '../../../../../helpers/app-ui-store-manager.service';
+import { TypeUtilHelper } from '../../../../../helpers/type-utils-helper';
 
 @Component({
   selector: 'app-repetable-group-child',
@@ -31,7 +32,7 @@ export class RepeatableGroupChildComponent extends AbstractAlertableComponent {
   @Input() index: number;
   @Output() isAccordionOpenedChange: EventEmitter<boolean> = new EventEmitter();
   @Input() showEditButton = false;
-  // @Input() showCreateButton = false;
+  @Input() label: string;
 
-  constructor(uiStore: AppUIStoreManager) { super(uiStore); }
+  constructor(uiStore: AppUIStoreManager, public readonly typeHelper: TypeUtilHelper) { super(uiStore); }
 }

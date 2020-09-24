@@ -19,6 +19,7 @@ import { HandlersResultMsg } from '../entity/contracts/entity-handler-types';
 import { ArrayUtils, isDefined } from '../utils';
 import { Collection } from '../collections/collection';
 import { createSubject } from '../rxjs/helpers';
+import { Observable } from 'rxjs';
 
 /**
  * @description Definition of form request configuration object
@@ -45,7 +46,7 @@ export class FormHelperService implements OnDestroy {
    */
   // tslint:disable-next-line: variable-name
   protected _formLoaded = createSubject<ICollection<IDynamicForm>>();
-  get formLoaded$() {
+  get formLoaded$(): Observable<ICollection<IDynamicForm>> {
     return this._formLoaded.asObservable().pipe(takeUntil(this.destroy$));
   }
   public readonly destroy$ = createSubject();
@@ -55,7 +56,7 @@ export class FormHelperService implements OnDestroy {
    */
   constructor(public readonly form: FormService, private translate: TranslationService) { }
 
-  public getFormById(id: number | string) {
+  getFormById = (id: number | string) => {
     return new Promise<IDynamicForm>((resolve, _) => {
       this.form.getForm(id).then(async (f) => {
         if (isDefined(f)) {
@@ -67,7 +68,7 @@ export class FormHelperService implements OnDestroy {
     });
   }
 
-  suscribe() {
+  suscribe = () => {
     // Initialize publishers
     // Register to publishers events
     this.loadForms.asObservable().pipe(
@@ -110,7 +111,7 @@ export class FormHelperService implements OnDestroy {
   /**
    * @description Unsubscribe from publishers events
    */
-  unsubscribe() {
+  unsubscribe = () => {
     this.destroy$.next({});
     return this;
   }
@@ -119,11 +120,11 @@ export class FormHelperService implements OnDestroy {
    * @description Handles sujects completers
    * @param actions [[Subjeect]]
    */
-  onCompleActionListeners(actions: any[] = null) {
+  onCompleActionListeners = (actions: any[] = null) => {
     this.destroy$.next({});
   }
 
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.destroy$.next({});
   }
 }
@@ -150,7 +151,7 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
     this.formHelper = injector.get(FormHelperService);
   }
 
-  async initState() {
+  async initState(): Promise<any> {
     this.subscribeToUIActions();
     this.appUIStoreManager.initializeUIStoreAction();
     // Call service subscription method to subscribe to event
@@ -190,7 +191,7 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
       });
   }
 
-  async onFormSubmit() {
+  async onFormSubmit(): Promise<void> {
     ComponentReactiveFormHelpers.validateFormGroupFields(
       this.componentFormGroup
     );
@@ -214,7 +215,7 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
     }
   }
 
-  dispose() {
+  dispose(): void {
     this.entityProvider.unsubscribe();
     this.formHelper.unsubscribe();
     this.clearUIActionSubscriptions();
@@ -238,6 +239,7 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
    * @overridable
    * @param value [[object|any]]
    */
+  // tslint:disable-next-line: typedef
   protected onFormGroupRawValue(value: object | any) {
     return value;
   }
@@ -246,7 +248,7 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
    * @description Should be override to provide handler for form control value changes
    * @overridable
    */
-  protected suscribeToFormControlChanges() {
+  protected suscribeToFormControlChanges(): void {
     // Provide method implementation in subclasse if needed
   }
 }
@@ -273,7 +275,7 @@ export abstract class FormViewContainerComponent<T> extends AbstractAlertableCom
     this._translate = injector.get(TranslationService);
   }
 
-  async initState() {
+  async initState(): Promise<void> {
     this._entityProvider.subscribe();
     const translations = await this._translate.loadTranslations(this._tranlationConfigs.keys, this._tranlationConfigs.translateParams);
     this._entityProvider.deleteResult$.pipe(
@@ -300,6 +302,7 @@ export abstract class FormViewContainerComponent<T> extends AbstractAlertableCom
   /**
    * @description [[_entityProvider]] property getter
    */
+  // tslint:disable-next-line: typedef
   get entityProvider() {
     return this._entityProvider;
   }
@@ -307,6 +310,7 @@ export abstract class FormViewContainerComponent<T> extends AbstractAlertableCom
   /**
    * @description [[_translate]] property getter
    */
+  // tslint:disable-next-line: typedef
   get translate() {
     return this._translate;
   }
@@ -314,6 +318,7 @@ export abstract class FormViewContainerComponent<T> extends AbstractAlertableCom
   /**
    * @description [[_tranlationConfigs]] property getter
    */
+  // tslint:disable-next-line: typedef
   get tranlationConfigs() {
     return this._tranlationConfigs;
   }
@@ -325,7 +330,7 @@ export abstract class FormViewContainerComponent<T> extends AbstractAlertableCom
    * @param result [[IResponseBody]]
    */
   // tslint:disable-next-line: deprecation
-  async onDeleteActionResult(result: IResponseBody) {
+  async onDeleteActionResult(result: IResponseBody): Promise<void> {
     const translations = await this._translate.loadTranslations(this._tranlationConfigs.keys, this._tranlationConfigs.translateParams);
     this.appUIStoreManager.onActionResponse({
       res: result,
@@ -348,7 +353,7 @@ export abstract class FormViewContainerComponent<T> extends AbstractAlertableCom
   // tslint:disable-next-line: deprecation
   abstract onCreateActionResult(result: IResponseBody | T | boolean): Promise<void>;
 
-  dispose() {
+  dispose(): void {
     this._entityProvider.unsubscribe();
     this.clearUIActionSubscriptions();
     this.resetUIStore();

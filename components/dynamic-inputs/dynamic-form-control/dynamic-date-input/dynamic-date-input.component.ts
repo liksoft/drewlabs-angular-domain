@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Inject, Input, LOCALE_ID } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { DynamicInputTypeHelper } from '../input-type.service';
@@ -33,10 +33,11 @@ export class DynamicDateInputComponent {
 
   today = MomentUtils.parseDate();
 
-  constructor(public readonly inputTypeHelper: DynamicInputTypeHelper) { }
+  constructor(public readonly inputTypeHelper: DynamicInputTypeHelper, @Inject(LOCALE_ID) private appLocalID: string) { }
 
+  // tslint:disable-next-line: typedef
   onDateInputBlur() {
-    const locale = MomentUtils.locale();
+    const locale = this.appLocalID;
     if (isDefined(this.control.value)) {
       const value: string = this.control.value as string;
       if ((value === '') || (value.length === 0)) {

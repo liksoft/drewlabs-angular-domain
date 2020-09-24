@@ -13,14 +13,15 @@ export interface IFileRessource {
   showldownload?: boolean;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class FileHelperService {
 
   /**
    * @description Instance constructor
    */
-  constructor(private client: HttpRequestService) {
-  }
+  constructor(private client: HttpRequestService) {}
 
   /**
    * @description Load file from the server and convert it to a dataURI
@@ -35,6 +36,7 @@ export class FileHelperService {
    * @param url [[string]]
    * @param filename [[string]]
    */
+  // tslint:disable-next-line: typedef
   async urlToFileFileRessource(url: string, filename: string, shouldDownload: boolean = false, extension?: string) {
     const v = await this.loadFileAsDataURI(url);
     if (v) {
@@ -57,6 +59,7 @@ export class FileHelperService {
    * @param ressource [[string]]
    * @param filename [[string]]
    */
+  // tslint:disable-next-line: typedef
   async saveDataURLAsBlob(ressource: string, filename: string) {
     const blocks = ressource.split(';');
     // Get the content type of the image
@@ -72,6 +75,7 @@ export class FileHelperService {
    * @param filename [[string]]
    * @param extension [[string]]
    */
+  // tslint:disable-next-line: typedef
   downloadFile(url: string, filename: string, extension: string = null) {
     return this.client.downloadFile(url, filename, extension);
   }
