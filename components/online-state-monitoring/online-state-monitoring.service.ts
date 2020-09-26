@@ -13,23 +13,28 @@ enum EventType {
 })
 export class OnlineStateMonitoringService implements OnDestroy {
 
-  public readonly connectionStatus: BehaviorSubject<number> = new BehaviorSubject(1);
+  // tslint:disable-next-line: variable-name
+  private _connectionStatus: BehaviorSubject<number> = new BehaviorSubject(1);
+  connectionStatus$ = this._connectionStatus.asObservable();
 
   constructor(private windowRef: WindowRef) { }
 
-  registerToConnectionStates() {
+  registerToConnectionStates = () => {
     this.windowRef.nativeWindow.addEventListener(EventType.ONLINE_EVENT, () => {
-      this.connectionStatus.next(ConnectionStatus.ONLINE);
+      this._connectionStatus.next(ConnectionStatus.ONLINE);
     });
-
     this.windowRef.nativeWindow.addEventListener(EventType.OFFLINE_EVENT, () => {
-      this.connectionStatus.next(ConnectionStatus.OFFLINE);
+      this._connectionStatus.next(ConnectionStatus.OFFLINE);
     });
   }
 
-  ngOnDestroy() {
+  setState = (state: ConnectionStatus) => {
+    this._connectionStatus.next(state);
+  }
+
+  ngOnDestroy(): void {
     this.windowRef.nativeWindow.removeEventListener(EventType.ONLINE_EVENT, () => {});
     this.windowRef.nativeWindow.removeEventListener(EventType.OFFLINE_EVENT, () => {});
-    this.connectionStatus.complete();
+    this._connectionStatus.complete();
   }
 }

@@ -1,10 +1,10 @@
 import { DefaultStoreAction, StoreAction } from '../../../rxjs/state/rx-state';
 import { AppUsersState, AppUserStoreActions } from '../actions/app-users';
 import * as lodash from 'lodash';
+import { addItemToCache, insertOrUpdateValuesUsingID, listItemToIdMaps, removeItemFromCache } from '../../../rxjs/helpers';
 
 export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>) => {
-  let items = [];
-  const { item, updateResult, deleteResult } = action.payload || {};
+  const { updateResult, deleteResult } = action.payload || {};
   switch (action.type) {
     case DefaultStoreAction.ASYNC_UI_ACTION:
       return {
@@ -27,7 +27,7 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
     case AppUserStoreActions.INIT_ITEMS_CACHE_ACTION:
       return {
         ...state,
-        items: [...action.payload],
+        items: listItemToIdMaps(action.payload),
         performingAction: false,
         error: null,
         createdUser: null,
@@ -35,32 +35,14 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
         deleteResult: null,
       } as AppUsersState;
     case AppUserStoreActions.INSERT_OR_UPDATE_ACTION:
-      items = [...state.items];
-      if (action.payload) {
-        const user = items.findIndex(
-          (i) => i.id === action.payload.id);
-        items.splice(user, 1, action.payload);
-      } else {
-        items = [...items, action.payload];
-      }
       return {
         ...state,
-        items,
+        items: insertOrUpdateValuesUsingID(state.items, action.payload),
         createdUser: null,
         updateResult: null,
         deleteResult: null,
         performingAction: false,
         error: null
-      } as AppUsersState;
-    case AppUserStoreActions.CONNECTED_USER_CHILDREN_ACTION:
-      return {
-        ...state,
-        manageableUsers: [...action.payload],
-        performingAction: false,
-        error: null,
-        createdUser: null,
-        updateResult: null,
-        deleteResult: null,
       } as AppUsersState;
     case AppUserStoreActions.PAGINATION_DATA_ACTION:
       return {
@@ -75,7 +57,7 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
     case AppUserStoreActions.ADD_USER_ACTION:
       return {
         ...state,
-        items: [...state.items, ...(!lodash.isEmpty(action.payload) ? [action.payload] : [])],
+        items: addItemToCache(state.items, !lodash.isEmpty(action.payload) ? action.payload : {}),
         createdUser: action.payload,
         performingAction: false,
         error: null,
@@ -83,18 +65,9 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
         deleteResult: null,
       } as AppUsersState;
     case AppUserStoreActions.UPDATE_USER_ACTION:
-      const values = [...state.items];
-      if (item) {
-        values.splice
-          (items.findIndex(
-            (i) => i.id === item.id),
-            1,
-            action.payload
-          );
-      }
       return {
         ...state,
-        items: [...values],
+        items: insertOrUpdateValuesUsingID(state.items, action.payload),
         performingAction: false,
         updateResult,
         error: null,
@@ -102,13 +75,9 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
         deleteResult: null,
       } as AppUsersState;
     case AppUserStoreActions.DELETE_USER_ACTION:
-      items = [...state.items];
-      if (item) {
-        lodash.remove(values, (v) => v.id === item.id);
-      }
       return {
         ...state,
-        items: [...values],
+        items: removeItemFromCache(state.items, action.payload),
         performingAction: false,
         deleteResult,
         error: null,
@@ -119,4 +88,3 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
       return state;
   }
 };
-

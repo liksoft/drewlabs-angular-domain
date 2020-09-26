@@ -18,9 +18,9 @@ export class OnlineStateMonitoringComponent implements OnInit, OnDestroy {
 
   constructor(private provider: OnlineStateMonitoringService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.provider.registerToConnectionStates();
-    this.subscriptions.push(this.provider.connectionStatus.subscribe((value) => {
+    this.subscriptions.push(this.provider.connectionStatus$.subscribe((value) => {
       if (isDefined(value)) {
         this.hideSuccessAfterTimeout = false;
         if (value === 0) {
@@ -39,11 +39,12 @@ export class OnlineStateMonitoringComponent implements OnInit, OnDestroy {
   /**
    * @description Getter for component [[_online]] property
    */
+  // tslint:disable-next-line: typedef
   get online() {
     return this._online;
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscriptions.forEach((v) => v.unsubscribe());
   }
 }

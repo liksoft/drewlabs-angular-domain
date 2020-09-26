@@ -38,3 +38,13 @@ export type LoginReponseHandlerFunc<T extends LoginResponseWithAuthenticationRes
 export interface HandlerResult<T> {
   data: T;
 }
+
+export type PaginationDataState<T> = {
+  currentPage: number,
+  items: { [index: string]: T },
+  total: number,
+  latests: T[],
+  lastPage: number,
+  nextPageURL: string,
+  lastPageURL: string
+};

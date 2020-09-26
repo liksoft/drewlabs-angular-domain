@@ -8,6 +8,7 @@ import { RequestBody, TransformResponseHandlerFn } from '../contracts/resource';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DrewlabsHttpResponseStatusCode } from './http-response';
 import { UIStateStatusCode } from '../../helpers/app-ui-store-manager.service';
+import { doLog } from '../../rxjs/operators';
 
 @Injectable()
 export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHttpResponse<any>> {
@@ -22,9 +23,11 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
    */
   // tslint:disable-next-line: typedef
   create(path: string, body: any, params?: object) {
-    return this.httpClient.post(path, body, params).pipe(
-      mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))
-    ) as Observable<IHttpResponse<any>>;
+    return this.httpClient.post(path, body, params)
+      .pipe(
+        doLog(`/POST ${path} - Request response: `),
+        mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))
+      ) as Observable<IHttpResponse<any>>;
   }
 
   /**
@@ -32,9 +35,11 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
    */
   // tslint:disable-next-line: typedef
   get(path: string, params?: object) {
-    return this.httpClient.get(path, params).pipe(
-      mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null)),
-    ) as Observable<IHttpResponse<any>>;
+    return this.httpClient.get(path, params)
+      .pipe(
+        doLog(`/GET ${path} - Request response: `),
+        mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null)),
+      ) as Observable<IHttpResponse<any>>;
   }
 
   /**
@@ -42,9 +47,11 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
    */
   // tslint:disable-next-line: typedef
   getUsingID(path: string, id: string | number, params?: object) {
-    return this.httpClient.get(`${path}/${id}`, params).pipe(
-      mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))
-    ) as Observable<IHttpResponse<any>>;
+    return this.httpClient.get(`${path}/${id}`, params)
+      .pipe(
+        doLog(`/GET ${path}/${id} - Request response: `),
+        mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))
+      ) as Observable<IHttpResponse<any>>;
   }
 
   /**
@@ -55,6 +62,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
     path: string, body: any, params?: object) {
     return this.httpClient.put(path, body, params)
       .pipe(
+        doLog(`/PUT ${path} - Request response: `),
         mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))
       ) as Observable<IHttpResponse<any>>;
   }
@@ -67,6 +75,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
     path: string, id: string | number, body: RequestBody, params?: object) {
     return this.httpClient.put(`${path}/${id}`, body, params)
       .pipe(
+        doLog(`/PUT ${path}/${id} - Request response: `),
         mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))
       ) as Observable<IHttpResponse<any>>;
   }
@@ -78,6 +87,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   delete(path: string, params: object) {
     return this.httpClient.put(`${path}`, params)
       .pipe(
+        doLog(`/DELETE ${path} - Request response: `),
         mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))
       ) as Observable<IHttpResponse<any>>;
   }
@@ -89,6 +99,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   deleteUsingID(path: string, id: string | number, params?: object) {
     return this.httpClient.delete(`${path}/${id}`, params)
       .pipe(
+        doLog(`/DELETE ${path}/${id} - Request response: `),
         mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))
       ) as Observable<IHttpResponse<any>>;
   }

@@ -75,6 +75,7 @@ export class AppUser implements IAppUser, NotifiableUserDetails, Authorizable {
 
   get userInfo(): IAppUserDetails { return this.userDetails; }
 
+  // tslint:disable-next-line: typedef
   get rolesAsString() {
     return isDefined(this.roles) ? isArray(this.roles) ? this.roles.join(', ') : this.roles : '';
   }

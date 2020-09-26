@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { isArray, isPrimitive, isDefined } from '../../utils/types/type-utils';
 import { IJsonMetaData, ISerializer } from '../contracts/serializers';
+import { Log } from '../../utils/logger';
 
 /**
  * @description A key use to retrieve json metadata from Reflect package
@@ -122,7 +123,7 @@ export class ObjectSerializer implements ISerializer {
           // tslint:disable-next-line: max-line-length
           $serialized[entryKey] = isDefined(value[key]) ? (value[key] as Array<any>).map((k) => {
             if (typeof metadata.valueType === 'undefined') {
-              return value;
+              return k;
             }
             return this.serialize(metadata.valueType, k);
           }) : null;

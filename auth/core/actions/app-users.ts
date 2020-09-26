@@ -8,9 +8,10 @@ import { isArray, isDefined, isObject } from '../../../utils';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
 import { emptyObservable } from '../../../rxjs/helpers';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Log } from '../../../utils/logger';
 
 export const initialUsersState: AppUsersState = {
-  items: [],
+  items: {},
   manageableUsers: [],
   pagination: {} as PaginationData<User>,
   createdUser: null,
@@ -23,7 +24,7 @@ export const initialUsersState: AppUsersState = {
 export interface AppUsersState {
   performingAction: boolean;
   error: any;
-  items: User[];
+  items: { [index: string]: User };
   pagination: PaginationData<User>;
   createdUser: User;
   manageableUsers: User[];
@@ -53,24 +54,22 @@ export const getUsersAction = (store: DrewlabsFluxStore<AppUsersState, Partial<S
     client: DrewlabsRessourceServerClient,
     path: string,
     params: { [index: string]: any } = {}
-  ) => {
-    return {
-      type: DefaultStoreAction.ASYNC_UI_ACTION,
-      payload: client.get(`${path}`, { params })
-        .pipe(
-          map(state => {
-            const data = getResponseDataFromHttpResponse(state);
-            if (isDefined(data) && isArray(data)) {
-              usersDataAction(store)((data as any[]).map((current) => deserializeSerializedUser(current)));
-            }
-          }),
-          catchError(err => {
-            onErrorAction(store)(err);
-            return emptyObservable();
-          })
-        )
-    };
-  });
+  ) => ({
+    type: DefaultStoreAction.ASYNC_UI_ACTION,
+    payload: client.get(`${path}`, { params })
+      .pipe(
+        map(state => {
+          const data = getResponseDataFromHttpResponse(state);
+          if (isDefined(data) && isArray(data)) {
+            usersDataAction(store)((data as any[]).map((current) => deserializeSerializedUser(current)));
+          }
+        }),
+        catchError(err => {
+          onErrorAction(store)(err);
+          return emptyObservable();
+        })
+      )
+  }));
 
 export const usersDataAction = (store: DrewlabsFluxStore<AppUsersState, Partial<StoreAction>>) =>
   createAction(store, (payload: User[]) => {
@@ -272,28 +271,28 @@ export const resetUserStore = (store: DrewlabsFluxStore<AppUsersState, Partial<S
 export const getUserUsingID = (
   store: DrewlabsFluxStore<AppUsersState, Partial<StoreAction>>) =>
   createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: string | number) =>
-    ({
-      type: DefaultStoreAction.ASYNC_UI_ACTION,
-      payload: client.getUsingID(path, id)
-        .pipe(
-          map((state) => {
-            // tslint:disable-next-line: one-variable-per-declaration
-            const data = getResponseDataFromHttpResponse(state);
-            if (isDefined(data)) {
-              return addUserToList(store)(deserializeSerializedUser(data));
-            }
-          }),
-          catchError(err => {
-            if (err instanceof HttpErrorResponse) {
-              const errorResponse = client.handleErrorResponse(err);
-              onErrorAction(store)(errorResponse);
-            } else {
-              onErrorAction(err);
-            }
-            return emptyObservable();
-          })
-        )
-    }));
+  ({
+    type: DefaultStoreAction.ASYNC_UI_ACTION,
+    payload: client.getUsingID(path, id)
+      .pipe(
+        map((state) => {
+          // tslint:disable-next-line: one-variable-per-declaration
+          const data = getResponseDataFromHttpResponse(state);
+          if (isDefined(data)) {
+            return addUserToList(store)(deserializeSerializedUser(data));
+          }
+        }),
+        catchError(err => {
+          if (err instanceof HttpErrorResponse) {
+            const errorResponse = client.handleErrorResponse(err);
+            onErrorAction(store)(errorResponse);
+          } else {
+            onErrorAction(err);
+          }
+          return emptyObservable();
+        })
+      )
+  }));
 
 export const addUserToList = (store: DrewlabsFluxStore<AppUsersState, Partial<StoreAction>>) =>
   createAction(store, (payload: AppUsersState) => {
