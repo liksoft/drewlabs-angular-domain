@@ -47,7 +47,7 @@ export const builLinkFromRoutesMap = (map: RoutesMap[], translations: any) => {
         return {
           routePath: v.route,
           routeDescription: translations[v.key],
-          routeIcon: m.routeIcon,
+          routeIcon: v.routeIcon,
           routePermission: v.permissions ? v.permissions : []
         };
       });
@@ -55,7 +55,8 @@ export const builLinkFromRoutesMap = (map: RoutesMap[], translations: any) => {
         key: m.key,
         value: {
           routeDescription: translations[m.key],
-          children
+          children,
+          routeIcon: m.routeIcon
         }
       } as IRouteLinkCollectionItem;
     } else {
@@ -70,4 +71,5 @@ export const builLinkFromRoutesMap = (map: RoutesMap[], translations: any) => {
       } as IRouteLinkCollectionItem;
     }
   });
-}
+};
+
