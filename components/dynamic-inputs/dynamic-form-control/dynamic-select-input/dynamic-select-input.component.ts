@@ -33,6 +33,10 @@ import { createStateful } from '../../../../rxjs/helpers/index';
     .clr-input-wrapper .clr-input:disabled {
       background: rgba(244, 244, 244, .3);
     }
+    :host ::ng-deep .ng-select .ng-select-single {
+      min-height: 26px;
+      height: 26px;
+    }
     `
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
