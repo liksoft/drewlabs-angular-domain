@@ -22,6 +22,7 @@ import { PhoneNumberUtils } from './phone-number-utils';
 import { isDefined } from '../../utils';
 
 export class PhoneNumberValidator {
+  // tslint:disable-next-line: typedef
   static ValidatePhoneNumber(control: AbstractControl) {
     if (control.validator) {
       const validator = control.validator({} as AbstractControl);
@@ -78,7 +79,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       : [];
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.preferredCountries.length > 0) {
       this.preferredCountries.forEach(iso2 => {
         const preferredCountry = this.allCountries.filter(c => {
@@ -142,7 +143,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _initializePhoneNumberControl() {
+  private _initializePhoneNumberControl(): void {
     this.phoneControl = new FormControl({ value: null, disabled: this.disabled });
     // Set the initial country to show
     if (isDefined(this.control.value)) {
@@ -170,14 +171,14 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
     this.control.updateValueAndValidity({ onlySelf: true });
   }
 
-  private setControlValue(dialCode: string, phoneNumber: string) {
+  private setControlValue(dialCode: string, phoneNumber: string): void {
     if (this.control.value === `${dialCode}${phoneNumber}`) {
       return;
     }
     this.control.setValue(`${dialCode}${phoneNumber}`);
   }
 
-  setPhoneControlValue(value: string) {
+  setPhoneControlValue(value: string): void {
     const controlState = value;
     const tmpCountryCode: number = this.intelInputService.getCountryCode(controlState);
     if (tmpCountryCode) {
@@ -197,7 +198,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.phoneControlSubscription.unsubscribe();
     this.allCountries = [];
   }

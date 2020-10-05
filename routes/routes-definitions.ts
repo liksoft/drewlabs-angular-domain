@@ -36,7 +36,7 @@ export interface IRouteLinkCollectionItem {
  * @param map [[RoutesMap[]]]
  * @param translations [[any]]
  */
-export function builLinkFromRoutesMap(map: RoutesMap[], translations: any) {
+export const builLinkFromRoutesMap = (map: RoutesMap[], translations: any) => {
   if (!isDefined(map) || map.length === 0) {
     return [];
   }

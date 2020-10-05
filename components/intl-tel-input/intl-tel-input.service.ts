@@ -37,6 +37,7 @@ export class IntlTelInputService {
     return null;
   }
 
+  // tslint:disable-next-line: typedef
   public parse(input: string) {
     if (!isDefined(input)) {
       return null;
@@ -48,11 +49,11 @@ export class IntlTelInputService {
       return null;
     }
   }
-  public isValidPhoneNumber(n: _.PhoneNumber) {
+  public isValidPhoneNumber(n: _.PhoneNumber): boolean {
     return this.googlePhoneUtilInstance.isValidNumber(n);
   }
 
-  public format(phoneNumber: _.PhoneNumber, format: _.PhoneNumberFormat) {
+  public format(phoneNumber: _.PhoneNumber, format: _.PhoneNumberFormat): string {
     return this.googlePhoneUtilInstance.format(phoneNumber, format);
   }
   protected getPhoneNumberPlaceHolder(countryCode: string): string {
