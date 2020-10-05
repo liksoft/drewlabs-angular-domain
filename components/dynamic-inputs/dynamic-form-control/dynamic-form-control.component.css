@@ -3,26 +3,6 @@
   color: rgb(241, 50, 50);
 }
 
-.clr-control-container textarea {
-  min-width: 100% !important;
-}
-
-.clr-select-wrapper {
-  min-width: 100% !important;
-}
-
-.ng-select {
-  min-width: 100% !important;
-}
-
-.ng-select.flat {
-  border-radius: 0 !important;
-}
-
-.ng-select.flat .ng-select-container {
-  border-radius: 0 !important;
-}
-
 .password-clr-input-wrapper {
   position: relative;
 }
@@ -36,4 +16,8 @@
 
 .clr-input-wrapper .clr-input:disabled {
   background: rgba(244, 244, 244, .3);
+}
+
+:host ::ng-deep .clr-input-wrapper {
+  max-width: 100%;
 }

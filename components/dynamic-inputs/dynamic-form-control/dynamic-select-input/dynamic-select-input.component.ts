@@ -33,8 +33,10 @@ import { createStateful } from '../../../../rxjs/helpers/index';
     .clr-input-wrapper .clr-input:disabled {
       background: rgba(244, 244, 244, .3);
     }
-    :host ::ng-deep .ng-select .ng-select-single {
+    :host ::ng-deep .ng-select .ng-select-container, :host ::ng-deep .ng-select.ng-select-single .ng-select-container {
       min-height: 26px;
+    }
+    :host ::ng-deep .ng-select.ng-select-single .ng-select-container {
       height: 26px;
     }
     `
@@ -46,7 +48,7 @@ export class DynamicSelectInputComponent {
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name
   _inputItems$ = createStateful([]);
-  @Input() set inputItems(value: {[index: string]: any}[]) {
+  @Input() set inputItems(value: { [index: string]: any }[]) {
     this._inputItems$.next(value);
   }
   inputItems$ = this._inputItems$.asObservable();
@@ -62,6 +64,6 @@ export class DynamicSelectInputComponent {
   }
   @Output() multiSelectItemRemove = new EventEmitter<any>();
 
-  constructor(public readonly inputTypeHelper: DynamicInputTypeHelper) {}
+  constructor(public readonly inputTypeHelper: DynamicInputTypeHelper) { }
 
 }
