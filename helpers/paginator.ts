@@ -3,7 +3,7 @@ import { IDataSourceService, ISource, ISourceRequestQueryParameters } from '../c
 import { HttpGetAllRequestFn, RequestClient } from '../contracts/abstract-request-client';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { HttpRequestService, ResponseData, IResponseBody, ResponseBody } from '../http/core';
-import { SessionStorage } from '../storage/core';
+// import { SessionStorage } from '../storage/core';
 import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { AbstractAlertableComponent } from './component-interfaces';
 import { TranslationService } from '../translator/translator.service';
@@ -32,7 +32,7 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
 
   constructor(
     public readonly client: HttpRequestService,
-    private cache: SessionStorage
+    // private cache: SessionStorage
   ) {
     this._getMethod = new RequestClient().get;
     this.client = client;
@@ -42,7 +42,7 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
    * @description Set the status of the ressource to query
    * @param value [[number]]
    */
-  setStatus(value: number) {
+  setStatus(value: number): GenericPaginatorDatasource<T> {
     this._status = value;
     return this;
   }
@@ -51,7 +51,7 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
    * @description Set the builder of the returned json model
    * @param builder [[ISerializableBuilder]]
    */
-  setBuider(builder: ISerializableBuilder<T>) {
+  setBuider(builder: ISerializableBuilder<T>): GenericPaginatorDatasource<T> {
     this._builder = builder;
     return this;
   }
@@ -60,7 +60,7 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
    * @description Set the additionnal query parameters that will be applied when querying the ressource
    * @param value [[string]]
    */
-  setInlineQuery(value: string | string[]) {
+  setInlineQuery(value: string | string[]): GenericPaginatorDatasource<T> {
     this._inlineQuery = value;
     return this;
   }
@@ -69,7 +69,7 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
    * @description Object that will be passed as params to the current request
    * @param params [[object]]
    */
-  setQueryParameters(params: object) {
+  setQueryParameters(params: object): GenericPaginatorDatasource<T> {
     this._queryParams = params;
     return this;
   }
@@ -78,7 +78,7 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
    * @description Set the ressource path of the query that will be executed on the backend endpoint
    * @param value [[string]]
    */
-  setRessourcePath(value: string) {
+  setRessourcePath(value: string): GenericPaginatorDatasource<T> {
     this._ressourcePath = value;
     return this;
   }
@@ -87,12 +87,12 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
    * Set the json key that holds the response data
    * @param key [[string]]
    */
-  setResponseJsonKey(key: string) {
+  setResponseJsonKey(key: string): GenericPaginatorDatasource<T> {
     this._responseJsonKey = key;
     return this;
   }
 
-  getItems(params: ISourceRequestQueryParameters) {
+  getItems(params: ISourceRequestQueryParameters): Promise<ISource<T>> {
     if (!isDefined(this._ressourcePath)) {
       throw new Error('Unspecified ressource path. Set ressource path before proceeding with the request');
     }
@@ -137,7 +137,7 @@ export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource
   /**
    * @description Reset request and response configurable variables
    */
-  resetScope() {
+  resetScope(): GenericPaginatorDatasource<T> {
     this._builder = null;
     this._inlineQuery = null;
     this._responseJsonKey = null;
@@ -194,7 +194,7 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
   /**
    * Register observables and provides listeners to paginator state events
    */
-  initState() {
+  initState(): void {
     this.subscribeToUIActions();
     // Subscribe to refresh and of the datagrid and debounce reload for 1 seconds
     this.uiStoreSubscriptions.push(this.dataGrid.refresh.asObservable().pipe(
@@ -225,7 +225,7 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
    * @description Handle user click event to update entity values
    * @param item [[T]]
    */
-  async onSelectedItem(item: T) {
+  async onSelectedItem(item: T): Promise<void> {
     this.selectedItem.emit(item);
   }
 
@@ -233,14 +233,14 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
    * @description Handle user click events to delete entity
    * @param config [[T]]
    */
-  async onDeleteItem(config: T) {
+  async onDeleteItem(config: T): Promise<void> {
     const translations = await this.translate.loadTranslations(['prompt']);
     if (this.dialog.confirm(translations.prompt)) {
       this.deleteItem.emit(config);
     }
   }
 
-  entityAssignmentCompleted() {
+  entityAssignmentCompleted(): void {
     this.dgRefesh();
     setTimeout(() => {
       this.appUIStoreManager.completeUIStoreAction();
@@ -250,7 +250,7 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
   /**
    * @description Responds to user create new action
    */
-  onCreateItem() {
+  onCreateItem(): void {
     this.createItem.emit({});
   }
 
@@ -258,7 +258,7 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
    * @description Override this function to provide data exportation to class extending this class
    * @overridable
    */
-  onExportToExcel() {
+  onExportToExcel(): void {
     // Provide implementation for excel data exportation
     throw new Error('UnImplement method calls...');
   }
@@ -267,7 +267,8 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
    * @description Handler for the ClrDataGrid refresh event
    * @param state [[ClrDatagridStateInterface]]
    */
-  public async refresh(state: ClrDatagridStateInterface) {
+  public async refresh(state: ClrDatagridStateInterface)
+    : Promise<{ filters: { [prop: string]: any[] }, params: ISourceRequestQueryParameters }> {
     // We convert the filters from an array to a map,
     // because that's what our backend-calling service is expecting
     this.currentGridState = state;
@@ -290,11 +291,11 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
     return { filters, params };
   }
 
-  dgRefesh() {
+  dgRefesh(): void {
     this.dataGrid.refresh.emit(this.currentGridState);
   }
 
-  dispose() {
+  dispose(): void {
     this.resetUIStore();
   }
 }
