@@ -47,6 +47,7 @@ export class AgenceBuilder implements ISerializableBuilder<Agence>, TypeBuilder<
 
 /**
  * @deprecated
+ * Preffered used of [[DivisionV2]] Model
  */
 export class Agence {
   @JsonProperty('id')
