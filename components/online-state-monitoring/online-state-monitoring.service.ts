@@ -1,7 +1,16 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ConnectionStatus } from './connection-status';
 import { WindowRef } from '../../utils';
+import { createStateful } from '../../rxjs/helpers';
+
+/**
+ * @description Enumerated values specifying the connection status of the current application navigator
+ */
+export enum ConnectionStatus {
+  OFFLINE = 0,
+  ONLINE = 1,
+}
+
 
 enum EventType {
   ONLINE_EVENT = 'online',
@@ -14,7 +23,7 @@ enum EventType {
 export class OnlineStateMonitoringService implements OnDestroy {
 
   // tslint:disable-next-line: variable-name
-  private _connectionStatus: BehaviorSubject<number> = new BehaviorSubject(1);
+  private _connectionStatus: BehaviorSubject<ConnectionStatus> = createStateful(ConnectionStatus.ONLINE);
   connectionStatus$ = this._connectionStatus.asObservable();
 
   constructor(private windowRef: WindowRef) { }
