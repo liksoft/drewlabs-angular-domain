@@ -29,7 +29,7 @@ export interface IFormParentComponent {
  */
 @Directive({
   // tslint:disable-next-line: directive-selector
-  selector: '[elewouPage]'
+  selector: '[appPageComponentDirective]'
 })
 export class PageComponent {
   @HostBinding('class.content-container') class = true;
@@ -109,7 +109,7 @@ export abstract class AbstractAlertableComponent {
 
 @Directive({
   // tslint:disable-next-line: directive-selector
-  selector: '[elewouAlertablePage]'
+  selector: '[appAlertablePageComponent]'
 })
 // tslint:disable-next-line: directive-class-suffix
 export class AlertablePageComponent extends AbstractAlertableComponent {

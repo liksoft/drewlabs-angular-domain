@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup, FormArray } from '@angular/forms';
 import { FileFormControl } from '../components/dynamic-inputs/dynamic-form-control/dynamic-form-control.component';
 import { IDynamicForm } from '../components/dynamic-inputs/core';
 import { isGroupOfIDynamicForm } from './component-reactive-form-helpers';
@@ -41,6 +41,14 @@ export class TypeUtilHelper implements OnDestroy {
    */
   asFormGroup(control: AbstractControl) {
     return control as FormGroup;
+  }
+
+  /**
+   * @description Returns an abstract control as a form array
+   * @param control [[AbstractControl]]
+   */
+  asFormArray(control: AbstractControl) {
+    return control as FormArray;
   }
 
   transformIFileFormControl(value: FileFormControl) {

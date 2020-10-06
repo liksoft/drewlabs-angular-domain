@@ -28,7 +28,6 @@ import { CustomValidators, UniqueValueService } from '../validators';
 import { isArray, isDefined, MomentUtils } from '../utils';
 import { Log } from '../utils/logger';
 import { IDynamicFormConfig } from '../components/dynamic-inputs/core/compact/types';
-// import { toDynamicControl } from '../components/dynamic-inputs/core/compact/helpers';
 
 /**
  * @description Checks if a dynamic form contains other form
@@ -515,7 +514,7 @@ export abstract class BaseDynamicFormComponent extends AbstractAlertableComponen
 
 @Directive({
   // tslint:disable-next-line: directive-selector
-  selector: '[elewouDynamicFormPage]'
+  selector: '[appDynamicFormPage]'
 })
 // tslint:disable-next-line: directive-class-suffix
 export class DynamicFormPageComponent extends BaseDynamicFormComponent {

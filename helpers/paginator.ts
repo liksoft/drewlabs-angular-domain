@@ -3,7 +3,6 @@ import { IDataSourceService, ISource, ISourceRequestQueryParameters } from '../c
 import { HttpGetAllRequestFn, RequestClient } from '../contracts/abstract-request-client';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
 import { HttpRequestService, ResponseData, IResponseBody, ResponseBody } from '../http/core';
-// import { SessionStorage } from '../storage/core';
 import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { AbstractAlertableComponent } from './component-interfaces';
 import { TranslationService } from '../translator/translator.service';

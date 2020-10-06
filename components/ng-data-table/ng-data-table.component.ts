@@ -78,7 +78,7 @@ export class NgDataTableComponent<T extends ISource<T>>
   public loading = true;
   public currentGridState: ClrDatagridStateInterface;
 
-  @ViewChild('clrDataGrid', { static: false }) dataGrid: ClrDatagrid;
+  @ViewChild('clrDataGrid', {static: false}) dataGrid: ClrDatagrid;
 
   ngOnInit() { }
 
