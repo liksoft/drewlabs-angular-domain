@@ -1,4 +1,4 @@
-import { Observable, Subject, BehaviorSubject, of, EMPTY } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, of, EMPTY, from, ObservableInput } from 'rxjs';
 import { GenericObserverHandlerFunc } from '../types';
 
 /**
@@ -28,7 +28,9 @@ export const createObservable = <T>(handlerFunc: GenericObserverHandlerFunc<T>) 
 };
 
 
-export const  observableOf = <T>(stream: T) => of(stream);
+export const observableOf = <T>(stream: T) => of(stream);
+
+export const observableFrom = <T>(stream: ObservableInput<T>) => from(stream);
 
 /**
  * @description Check if a given value is an observable

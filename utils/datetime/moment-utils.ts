@@ -59,7 +59,7 @@ export class MomentUtils {
    * Checks if date provided is a valid date
    * @param date [[Date]]
    */
-  public static isValidDate(date: Date | string) {
+  public static isValidDate(date: Date | string): boolean {
     return moment.isDate(date);
   }
 
@@ -73,14 +73,14 @@ export class MomentUtils {
     date?: Date | string,
     outputformat?: string,
     inputformat?: string
-  ) {
+  ): string {
     outputformat = isDefined(outputformat) ? outputformat :  moment.localeData().longDateFormat('L');
     inputformat = isDefined(inputformat) ? inputformat :  moment.localeData('en-gb').longDateFormat('L');
     const value = moment(date, inputformat).format(outputformat);
     return value;
   }
 
-  protected static ensureDate(date: any) {
+  protected static ensureDate(date: any): Date {
     try {
       if (!(date instanceof Date)) {
         return new Date(date);
@@ -95,7 +95,7 @@ export class MomentUtils {
    * @description Get the month part of a provided date
    * @param date [[Date|string]]
    */
-  public static getMonth(date: Date | string) {
+  public static getMonth(date: Date | string): number {
     return moment(date, this.longDateFormat()).month();
   }
 
@@ -103,7 +103,7 @@ export class MomentUtils {
    * @description Get the month part of a provided date
    * @param date [[Date|string]]
    */
-  public static getYear(date: Date | string) {
+  public static getYear(date: Date | string): number {
     return moment(date, this.longDateFormat()).year();
   }
 
@@ -113,7 +113,7 @@ export class MomentUtils {
    * @param interval [[moment.unitOfTime.DurationConstructor]]
    * @param precise [[boolean]]
    */
-  public static diff(date: moment.MomentInput, interval: moment.unitOfTime.DurationConstructor, precise?: boolean) {
+  public static diff(date: moment.MomentInput, interval: moment.unitOfTime.DurationConstructor, precise?: boolean): number {
     return moment().diff(date, interval, precise);
   }
 
@@ -122,14 +122,14 @@ export class MomentUtils {
    * is passed or a formatted date string based on the parameter
    * @param format [[string]]
    */
-  public static now(format: string = null) {
+  public static now(format: string = null): moment.Moment {
     return moment(null, format);
   }
 
   /**
    * @description Wrapper to get the default application configured moment locale
    */
-  public static defaultLocale(locale?: string) {
+  public static defaultLocale(locale?: string): moment.Locale {
     return moment.localeData(locale);
   }
 
@@ -139,7 +139,7 @@ export class MomentUtils {
    *
    * @param locale [[string]]
    */
-  public static longDateFormat(locale?: string) {
+  public static longDateFormat(locale?: string): string {
     return MomentUtils.defaultLocale(locale).longDateFormat('L');
   }
 
@@ -147,7 +147,7 @@ export class MomentUtils {
    * @description Get application locale, or set and returns the locale being passed as parameter
    * @param lang [[string]]
    */
-  public static locale(lang?: string) {
+  public static locale(lang?: string): string {
     return moment.locale();
   }
 }
