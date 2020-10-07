@@ -34,7 +34,7 @@ export class DynamicFileInputComponent implements OnInit {
   // Property for handling File Input types
   public dropzoneConfigs: DropzoneConfigInterface;
   public dropzoneConfig: DropzoneConfigInterface;
-  @ViewChild('dropzoneContainer', { static: false })
+  @ViewChild('dropzoneContainer')
   dropzoneContainer: DropzoneComponent;
   // Configuration parameters of the input
   @Input() inputConfig: IHTMLFormControl;
