@@ -17,9 +17,9 @@ import { InputTypes } from '../../core/contracts/input-types';
     .clr-input-wrapper .clr-input:disabled {
       background: rgba(244, 244, 244, .3);
     }
-    .clr-subtext {
+    /* .clr-subtext {
         margin-top: 1rem !important;
-    }
+    } */
     `
   ]
 })

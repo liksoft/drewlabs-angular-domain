@@ -16,9 +16,9 @@ import { DynamicInputTypeHelper } from '../input-type.service';
     .clr-input-wrapper .clr-input:disabled {
       background: rgba(244, 244, 244, .3);
     }
-    .clr-subtext {
+    /* .clr-subtext {
         margin-top: 1rem !important;
-    }
+    } */
     `
   ]
 })
