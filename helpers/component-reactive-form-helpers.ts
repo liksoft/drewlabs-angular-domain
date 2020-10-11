@@ -26,14 +26,13 @@ import { ICollection } from '../contracts/collection-interface';
 import { ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { CustomValidators, UniqueValueService } from '../validators';
 import { isArray, isDefined, MomentUtils } from '../utils';
-import { Log } from '../utils/logger';
 import { IDynamicFormConfig } from '../components/dynamic-inputs/core/compact/types';
 
 /**
  * @description Checks if a dynamic form contains other form
  * @param f [[IDynamicForm]]
  */
-export function isGroupOfIDynamicForm(f: IDynamicForm) {
+export function isGroupOfIDynamicForm(f: IDynamicForm): boolean {
   if (isDefined(f) && isDefined(f.forms)) {
     return true;
   }
@@ -101,7 +100,7 @@ export function formGroupFromCollectionOfDynamicControls(
   builder: FormBuilder,
   collection: ICollection<IDynamicForm>,
   uniqueValidator: UniqueValueService = null
-) {
+): FormGroup {
   const group = builder.group({});
   collection.keys().forEach((k) => {
     group.addControl(k,
@@ -301,7 +300,7 @@ export class ComponentReactiveFormHelpers {
    * @description Clear validators on a control and update it value and validation rules
    * @param control [[AbstractControl]]
    */
-  public static clearControlValidators(control: AbstractControl) {
+  public static clearControlValidators(control: AbstractControl): void {
     if (isDefined(control)) {
       control.clearValidators();
       control.updateValueAndValidity();
@@ -312,7 +311,7 @@ export class ComponentReactiveFormHelpers {
    * @description Clear async validators on a control and update it value and validation rules
    * @param control [[AbstractControl]]
    */
-  public static clearAsyncValidators(control: AbstractControl) {
+  public static clearAsyncValidators(control: AbstractControl): void {
     if (isDefined(control)) {
       control.clearAsyncValidators();
       control.updateValueAndValidity();
@@ -322,7 +321,7 @@ export class ComponentReactiveFormHelpers {
    * @description Set new validators on a control and update it value and validation rules
    * @param control [[AbstractControl]]
    */
-  public static setValidators(control: AbstractControl, validators: ValidatorFn | ValidatorFn[]) {
+  public static setValidators(control: AbstractControl, validators: ValidatorFn | ValidatorFn[]): void {
     if (isDefined(control)) {
       control.setValidators(validators);
       control.updateValueAndValidity();
@@ -345,7 +344,7 @@ export class TranslationHelpers {
    * @description Removes the translation part from the translation label
    * @param value [[string]]
    */
-  public static trimtranslatableValue(value: string) {
+  public static trimtranslatableValue(value: string): string {
     if (value.startsWith(TranslationHelpers.translatableValuePrefixs[0])) {
       return value.substring(TranslationHelpers.translatableValuePrefixs[0].length);
     }
@@ -364,7 +363,7 @@ export class DynamicFormHelpers {
    * @param form [[Form]]
    * @param translate [[TranslatorService]]
    */
-  public static async buildDynamicForm(form: IDynamicFormConfig, translate: TranslationService) {
+  public static async buildDynamicForm(form: IDynamicFormConfig, translate: TranslationService): Promise<IDynamicForm> {
     const configGeneratorFn = async (f: IDynamicFormConfig, t: TranslationService) => {
       let configs: IHTMLFormControl[] = [];
       const translatables: string[] = [];
@@ -482,7 +481,7 @@ export abstract class BaseDynamicFormComponent extends AbstractAlertableComponen
    * @description Checks if the param is a FormGroup
    * @param f [[IDynamicForm]]
    */
-  isFormGroup(f: IDynamicForm) {
+  isFormGroup(f: IDynamicForm): boolean {
     return isGroupOfIDynamicForm(f);
   }
 
@@ -490,7 +489,7 @@ export abstract class BaseDynamicFormComponent extends AbstractAlertableComponen
    * @description Validate a form group and return it back
    * @param formgroup [[FormGroup]]
    */
-  validateAndReturnFormGroup(formgroup: FormGroup) {
+  validateAndReturnFormGroup(formgroup: FormGroup): FormGroup {
     // Mark componentFormGroup controls as touched
     ComponentReactiveFormHelpers.validateFormGroupFields(
       formgroup
@@ -503,7 +502,7 @@ export abstract class BaseDynamicFormComponent extends AbstractAlertableComponen
    * @param formgroup [[FormGroup]]
    * @param requestURL [[string]]
    */
-  submitFormGroupValue(formgroup: FormGroup, requestURL: string) {
+  submitFormGroupValue(formgroup: FormGroup, requestURL: string): void {
     if (formgroup.valid) {
       // Fire formSubmitted event with the formGroup value
       this.formSubmitted.emit({ body: formgroup.getRawValue(), requestURL });
