@@ -21,6 +21,9 @@ import { isDefined } from '../../../../utils/types/type-utils';
     /* .clr-subtext {
         margin-top: 1rem !important;
     } */
+    :host ::ng-deep .clr-validate-icon.ng-star-inserted {
+      display: none;
+    }
     `
   ]
 })

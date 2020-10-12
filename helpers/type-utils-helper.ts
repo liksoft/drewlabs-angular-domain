@@ -10,20 +10,20 @@ import { Collection } from '../collections/collection';
 @Injectable({
   providedIn: 'root'
 })
-export class TypeUtilHelper implements OnDestroy {
+export class TypeUtilHelper {
 
   /**
    * @description Checks if the value of the parameter is defined or not
    * @param value [[any]]
    */
-  isDefined(value: any) {
+  isDefined(value: any): boolean {
     return isDefined(value);
   }
   /**
    * Return any value as collection of items
    * @param value [[any]]
    */
-  asCollection(value: any) {
+  asCollection<T extends any>(value: any): Collection<T> {
     return value as Collection<any>;
   }
 
@@ -31,7 +31,7 @@ export class TypeUtilHelper implements OnDestroy {
    * @description Checks if a given value is an array
    * @param value [[any]]
    */
-  isArray(value: any) {
+  isArray(value: any): boolean {
     return isArray(value);
   }
 
@@ -39,7 +39,7 @@ export class TypeUtilHelper implements OnDestroy {
    * @description Returns an abstract control as a formgroup
    * @param control [[AbstractControl]]
    */
-  asFormGroup(control: AbstractControl) {
+  asFormGroup(control: AbstractControl): FormGroup {
     return control as FormGroup;
   }
 
@@ -47,21 +47,19 @@ export class TypeUtilHelper implements OnDestroy {
    * @description Returns an abstract control as a form array
    * @param control [[AbstractControl]]
    */
-  asFormArray(control: AbstractControl) {
+  asFormArray(control: AbstractControl): FormArray {
     return control as FormArray;
   }
 
-  transformIFileFormControl(value: FileFormControl) {
-    return Object.assign({}, {file: value.dataURL, extension: value.extension});
+  transformIFileFormControl(value: FileFormControl): { content: string, extension: string } {
+    return Object.assign({}, { content: value.dataURL, extension: value.extension });
   }
 
   /**
    * @description Checks if the param is a FormGroup
    * @param f [[IDynamicForm]]
    */
-  isFormGroup(f: IDynamicForm) {
+  isFormGroup(f: IDynamicForm): boolean {
     return isGroupOfIDynamicForm(f);
   }
-
-  ngOnDestroy() {}
 }
