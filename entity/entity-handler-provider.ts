@@ -8,10 +8,10 @@ import { isDefined } from '../utils';
 @Injectable()
 export class DefaultEntityHandler<T> {
 
-  /**
-   * @description Oject initializer fn
-   */
-  constructor() { }
+  // /**
+  //  * @description Oject initializer fn
+  //  */
+  // constructor() { }
 
   /**
    * @description Add/Insert a new entry to the ressource storage
