@@ -8,7 +8,6 @@ import { isArray, isDefined, isObject } from '../../../utils';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
 import { emptyObservable } from '../../../rxjs/helpers';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Log } from '../../../utils/logger';
 
 export const initialUsersState: AppUsersState = {
   items: {},

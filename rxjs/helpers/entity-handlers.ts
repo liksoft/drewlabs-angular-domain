@@ -3,6 +3,7 @@
 
 import { isArray } from '../../utils/types';
 import { PaginationDataState } from '../types';
+import * as _ from 'lodash';
 
 export const updatePaginationData = <T extends { id: string | number }>(
   values: PaginationDataState<{ [index: string]: T }>, payload: any) => {
@@ -35,17 +36,19 @@ export const updatePaginationData = <T extends { id: string | number }>(
 };
 
 export const insertOrUpdateValuesUsingID = <T extends { id: string | number }>(
-  items: { [index: string]: T }, payload: T[]) => {
+  items: { [index: string]: T }, payload: T[] | T) => {
   // tslint:disable-next-line: variable-name
   const _items = items || {};
-  if (payload && isArray(payload)) {
-    (payload as T[]).forEach((value) => {
-      const key = value.id.toString();
-      if (_items[key]) {
-        _items[key] = value;
+  if (payload) {
+    payload = (isArray(payload) ? payload : [payload as T]) as T[];
+    return _.reduce(payload, (acc, current) => {
+      const newItem = {};
+      if (acc) {
+        const key = current.id.toString();
+        newItem[key] = current;
       }
-      _items[key] = value;
-    });
+      return { ...acc, ...newItem };
+    }, _items);
   }
   return _items;
 };
