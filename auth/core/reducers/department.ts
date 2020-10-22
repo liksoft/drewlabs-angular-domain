@@ -44,7 +44,7 @@ export const departmentsReducer = (state: DepartmentV2sState, action: Partial<St
       return {
         ...state,
         items,
-        clientSelectedDepartment: action.payload,
+        selected: action.payload,
         createdDepartment: null,
         updateResult: null,
         deleteResult: null,

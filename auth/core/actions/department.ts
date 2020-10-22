@@ -8,13 +8,14 @@ import { emptyObservable } from '../../../rxjs/helpers';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DepartmentV2 } from '../../contracts/v2/company/department';
 import { getResponseDataFromHttpResponse } from '../../../http/helpers/http-response';
+import { Log } from '../../../utils/logger';
 
 export interface DepartmentV2sState {
   performingAction: boolean;
   items: DepartmentV2[];
   pagination: PaginationData<DepartmentV2>;
   createdDepartment: DepartmentV2;
-  clientSelectedDepartment: DepartmentV2;
+  selected: DepartmentV2;
   updateResult: boolean;
   deleteResult: boolean;
   error: any;
@@ -187,8 +188,9 @@ export const departmentDeletedAction = (
 
 export const getDepartmentUsingID = (
   store: DrewlabsFluxStore<DepartmentV2sState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: string | number) =>
-    ({
+  createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: string | number) => {
+    Log('Getting department...');
+    return {
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.getUsingID(path, id)
         .pipe(
@@ -209,7 +211,8 @@ export const getDepartmentUsingID = (
             return emptyObservable();
           })
         )
-    }));
+    }
+  });
 
 export const addDepartmentToList = (store: DrewlabsFluxStore<DepartmentV2sState, Partial<StoreAction>>) =>
   createAction(store, (payload: DepartmentV2) => {
@@ -224,7 +227,7 @@ export const initialDepartmentsState: DepartmentV2sState = {
   pagination: {} as PaginationData<DepartmentV2>,
   createdDepartment: null,
   performingAction: false,
-  clientSelectedDepartment: null,
+  selected: null,
   error: null,
   updateResult: null,
   deleteResult: null
