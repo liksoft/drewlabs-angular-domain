@@ -1,6 +1,6 @@
-import { createSubject, observableOf, isObservable } from '../helpers';
-import { Observable } from 'rxjs';
-import { scan, startWith, mergeMap, shareReplay, filter } from 'rxjs/operators';
+import { createSubject, observableOf } from '../helpers';
+import { isObservable, Observable } from 'rxjs';
+import { scan, startWith, mergeMap, shareReplay, filter, delay, first } from 'rxjs/operators';
 import { doLog } from '../operators/index';
 import { isDefined } from '../../utils/types/type-utils';
 
@@ -65,8 +65,20 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
   public bindActionCreator = <K>(handler: ActionCreatorHandlerFn<AType, K>) => (...args: any) => {
     const action = handler.call(null, ...args) as AType;
     this._actions$.next(action);
-    if (isObservable(action.payload)) {
-      this._actions$.next(action.payload);
+    if (isObservable<any>(action.payload)) {
+      // Simulate a wait before calling the next method
+      observableOf([action.payload])
+        .pipe(
+          first(),
+          delay(10)
+        )
+        .subscribe(state => {
+          this._actions$.next(state[0]);
+        });
+      // setTimeout(() => {
+      //   this._actions$.next(action.payload);
+      // }, 10);
+      // this._actions$.next(action.payload);
     }
     return action;
   }
