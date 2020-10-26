@@ -23,7 +23,7 @@ export const updatePaginationData = <T extends { id: string | number }>(
     }
     _values = {
       ..._values,
-      latests: payload.data || _values.latests,
+      data: payload.data || _values.data,
       total: payload.total || _values.total,
       items: _items,
       currentPage: payload.page || _values.currentPage,

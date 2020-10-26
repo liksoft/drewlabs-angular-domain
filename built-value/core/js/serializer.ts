@@ -1,9 +1,9 @@
-import { UnDecoratedObjectSerializer, IGenericSerializableBuilder } from '../../contracts/serializers';
+import { IGenericSerializableBuilder, ISerializer } from '../../contracts/serializers';
 import { deserializeJsObject, serializeJsObject } from './helper';
 import { GenericTypeBuilder } from '../type-builder';
 import { isDefined } from '../../../utils/types/type-utils';
 
-export class UndecoratedSerializer implements UnDecoratedObjectSerializer {
+export class UndecoratedSerializer implements ISerializer {
 
   /**
    * @inheritdoc
@@ -18,11 +18,11 @@ export class UndecoratedSerializer implements UnDecoratedObjectSerializer {
 }
 
 export class GenericUndecoratedSerializaleSerializer<T> extends GenericTypeBuilder<T> implements IGenericSerializableBuilder<T> {
-  serializer: UnDecoratedObjectSerializer;
+  serializer: ISerializer;
 
-  constructor() {
+  constructor(serializer?: ISerializer) {
     super();
-    this.serializer = new UndecoratedSerializer();
+    this.serializer = serializer || new UndecoratedSerializer();
   }
 
   /**
@@ -38,7 +38,7 @@ export class GenericUndecoratedSerializaleSerializer<T> extends GenericTypeBuild
   /**
    * @inheritdoc
    */
-  toSerialized(value: T) {
-    return this.serializer.serialize(value);
+  toSerialized(value: T): { [prop: string]: any } {
+    return this.serializer.serialize(value.constructor as new () => T, value);
   }
 }

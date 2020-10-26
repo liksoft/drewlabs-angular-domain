@@ -258,7 +258,7 @@ export type HttpGetRequestFn = (
  */
 export type HttpPostRequestFn = (
   client: IEntityServiceProvider, ressources: string, requestBody: object | any, options?: object
-// tslint:disable-next-line: deprecation
+  // tslint:disable-next-line: deprecation
 ) => Promise<ResponseData>;
 
 /**
@@ -269,7 +269,7 @@ export type HttpPostRequestFn = (
  */
 export type HttpDeleteRequestFn = (
   client: IEntityServiceProvider, ressources: string, id: number | any, options?: object
-// tslint:disable-next-line: deprecation
+  // tslint:disable-next-line: deprecation
 ) => Promise<ResponseData>;
 
 /**
@@ -281,7 +281,7 @@ export type HttpDeleteRequestFn = (
 // tslint:disable-next-line: max-line-length
 export type HttpPutRequestFn = (
   client: IEntityServiceProvider, ressources: string, id: number | any, values: object | any, options?: object
-// tslint:disable-next-line: deprecation
+  // tslint:disable-next-line: deprecation
 ) => Promise<ResponseData>;
 
 export interface IRequestClient {

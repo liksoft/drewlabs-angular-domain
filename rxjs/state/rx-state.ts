@@ -12,6 +12,7 @@ export interface StoreAction {
 export enum DefaultStoreAction {
   ASYNC_UI_ACTION = '[ASYNC_REQUEST]',
   ERROR_ACTION = '[REQUEST_ERROR]',
+  INITIALIZE_STORE_STATE = '[RESET_STORE_STATE]'
 }
 
 export type StateReducerFn<T, A> = (state: T, action: A) => T;
@@ -32,7 +33,7 @@ export interface IInjectableStore<T, A extends Partial<StoreAction>> {
 }
 
 export abstract class InjectableStore<T, A extends Partial<StoreAction>> implements IInjectableStore<T, A> {
-  get state$() {
+  get state$(): Observable<T> {
     return this.getInjectedStore().connect();
   }
 
@@ -52,6 +53,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
    */
   constructor(reducer: StateReducerFn<T, AType>, initialState?: T) {
     this.state$ = this._actions$.pipe(
+      doLog('Before merge mapping: '),
       mergeMap((action) => isObservable(action) ? action as Observable<AType> : observableOf<AType>(action as AType)),
       filter(state => isDefined(state)),
       doLog('Action : '),
@@ -90,6 +92,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
 }
 
 
+// tslint:disable-next-line: typedef
 export function createAction<T, A, K>(
   rxStore: DrewlabsFluxStore<T, A> | IInjectableStore<T, A>, actionCreator: ActionCreatorHandlerFn<A, K>
 ) {
@@ -107,3 +110,8 @@ export const onErrorAction = <T, A>(
   store: DrewlabsFluxStore<T, Partial<A>>) =>
   createAction(store, (payload: any) =>
     ({ type: DefaultStoreAction.ERROR_ACTION, payload } as any));
+
+export const onInitStoreStateAction = <T, A>(
+  store: DrewlabsFluxStore<T, Partial<A>>) =>
+  createAction(store, (payload: T = {} as T) =>
+    ({ type: DefaultStoreAction.INITIALIZE_STORE_STATE, payload } as any));
