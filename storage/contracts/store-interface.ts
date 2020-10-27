@@ -32,7 +32,7 @@ interface ISecureStorageOption {
   decrypt: DecrypterFn;
 }
 
-export abstract class SecureStorage {
+export abstract class SecureStorage implements Storage {
 
   // tslint:disable-next-line: variable-name
   private _storage: Storage;
@@ -80,14 +80,14 @@ export abstract class SecureStorage {
     return this._storage.clear();
   }
 
-  key(id: number) {
+  key(id: number): string {
     return this._storage.key(id);
   }
 
   /**
    * @description Getter for the length of items in the store
    */
-  get length() { return this._storage.length; }
+  get length(): number { return this._storage.length; }
 
 }
 

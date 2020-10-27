@@ -6,6 +6,7 @@ import { SessionStorage } from '../../../storage/core';
 import { AuthStorageConfig } from '../config';
 import { AppUser, Authorizable, NotifiableUserDetails } from '../../contracts/v2/user/user';
 import { createStateful } from '../../../rxjs/helpers';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class UserStorageProvider implements IUserStorageHandler {
@@ -16,11 +17,11 @@ export class UserStorageProvider implements IUserStorageHandler {
 
   // tslint:disable-next-line: variable-name
   public _appUser$ = createStateful<IAppUser | Authorizable | NotifiableUserDetails>(null);
-  get appUser$() {
+  get appUser$(): Observable<IAppUser | Authorizable | NotifiableUserDetails> {
     return this._appUser$.asObservable();
   }
 
-  get user() {
+  get user(): IAppUser | Authorizable | NotifiableUserDetails {
     return this.getUserFromCache();
   }
 

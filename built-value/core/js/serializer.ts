@@ -13,7 +13,7 @@ export class UndecoratedSerializer implements ISerializer {
   /**
    * @inheritdoc
    */
-  serialize = <T>(value: T) => serializeJsObject(value);
+  serialize = <T>(bluePrint: new () => T, value: T) => serializeJsObject(value);
 
 }
 
