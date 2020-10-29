@@ -10,7 +10,6 @@ import { DefaultEntityHandler } from './entity-handler-provider';
 import { EntityPaginator, EntityHandlers } from './contracts/entity-handler-types';
 import { isDefined } from '../utils';
 import { createSubject } from '../rxjs/helpers';
-import { Log } from '../utils/logger';
 
 @Injectable()
 export class AbstractEntityProvider<T> implements OnDestroy {
@@ -239,7 +238,6 @@ export class AbstractEntityProvider<T> implements OnDestroy {
           filter((source) => this.typeHelper.isDefined(source))
         ).subscribe(async (source) => {
           try {
-            Log('Request object', this.provider, source.builder, source.req.path, source.req.params);
             // tslint:disable-next-line: max-line-length
             this._getAllResult.next(await this.handlers.getAll(this.provider, source.builder, source.req.path, source.req.params, source.req.dataKey));
           } catch (error) {

@@ -67,20 +67,20 @@ export const listItemToIdMaps = <T extends { id: string | number }>(list: T[]) =
   return _cache;
 };
 
-export const addItemToCache = <T extends { id: string | number }>(cache: { [index: string]: T }, newItem: T) => {
+export const addItemToCache = <T extends { id: string | number }>(cache: { [index: string]: T }, match: T) => {
   // tslint:disable-next-line: variable-name
   const _cache = { ...cache };
-  if (!isDefined(newItem.id)) {
+  if (!isDefined(match) || !isDefined(match.id)) {
     return _cache;
   }
-  _cache[newItem.id.toString()] = newItem;
+  _cache[match.id.toString()] = match;
   return _cache;
 };
 
 export const removeItemFromCache = <T extends { id: string | number }>(cache: { [index: string]: T }, match: T) => {
   // tslint:disable-next-line: variable-name
   const _cache = { ...cache };
-  if (!isDefined(match.id)) {
+  if (!isDefined(match) || !isDefined(match.id)) {
     return _cache;
   }
   delete _cache[match.id.toString()];
