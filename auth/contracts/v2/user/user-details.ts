@@ -10,7 +10,7 @@ export interface IAppUserDetails extends IWorkspaceUserDetails {
   sex?: string;
   profileURL?: string;
   company?: string;
-  disvision?: string;
+  division?: string;
   department?: string;
   email: string;
   isManager?: boolean;
@@ -36,10 +36,10 @@ export class AppUserDetails implements IAppUserDetails {
   sex: string;
   profileURL: string;
   company: string;
-  disvision: string;
+  division: string;
   department: string;
   isManager?: boolean;
-  workspaces: IAppWorkspace[]; // organisation_id
+  workspaces: IAppWorkspace[];
   departmentID: number;
   agenceID: number;
   organisationID: number;
@@ -58,7 +58,7 @@ export class AppUserDetails implements IAppUserDetails {
       sex: 'sex',
       profile_url: 'profileURL',
       organisation_name: 'company',
-      division: 'disvision',
+      subsidiary_company: 'division',
       department: 'department',
       agence_id: 'agenceID',
       department_id: 'departmentID',

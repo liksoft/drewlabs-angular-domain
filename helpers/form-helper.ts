@@ -125,7 +125,7 @@ export class FormHelperService implements OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.destroy$.next({});
+    this.unsubscribe();
   }
 }
 

@@ -33,7 +33,7 @@ export interface UnDecoratedObjectSerializer extends IDeserializer {
    * @description Convert an object into a JSON formatted object
    * @param value [[any]] Instance to be serialize
    */
-  serialize<T>(value: T): object;
+  serialize<T>(bluePrint: new () => T, value: T): object;
 }
 
 export interface SerializableBuilder<T> {

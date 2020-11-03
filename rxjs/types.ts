@@ -40,11 +40,11 @@ export interface HandlerResult<T> {
 }
 
 export type PaginationDataState<T> = {
-  currentPage: number,
   items: { [index: string]: T },
   total: number,
-  latests: T[],
-  lastPage: number,
-  nextPageURL: string,
-  lastPageURL: string
+  data: T[],
+  lastPage?: number,
+  nextPageURL?: string,
+  lastPageURL?: string,
+  currentPage?: number,
 };

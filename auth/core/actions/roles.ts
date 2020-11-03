@@ -8,10 +8,11 @@ import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/co
 import { emptyObservable } from '../../../rxjs/helpers';
 import { HttpErrorResponse } from '@angular/common/http';
 import { getResponseDataFromHttpResponse } from '../../../http/helpers/http-response';
+import { Log } from '../../../utils/logger';
 
 export interface RolesState {
   performingAction: boolean;
-  items: RoleV2[];
+  items: { [prop: string]: RoleV2 };
   pagination: PaginationData<RoleV2>;
   createdRole: RoleV2;
   updateResult: boolean;
@@ -184,7 +185,7 @@ export const roleDeletedAction = (
     ({ type: RoleStoreActions.ROLE_DELETED_ACTION, payload }));
 
 export const initialRolesState: RolesState = {
-  items: [],
+  items: {},
   pagination: {} as PaginationData<RoleV2>,
   createdRole: null,
   performingAction: false,
@@ -202,9 +203,9 @@ export const resetRolesStore = (store: DrewlabsFluxStore<RolesState, Partial<Sto
   });
 
 export const getRoleUsingID = (
-  store: DrewlabsFluxStore<RolesState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: string | number) =>
-    ({
+  store: DrewlabsFluxStore<RolesState, Partial<StoreAction>>) => {
+  return createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: string | number) => {
+    return {
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.getUsingID(path, id)
         .pipe(
@@ -225,7 +226,9 @@ export const getRoleUsingID = (
             return emptyObservable();
           })
         )
-    }));
+    }
+  });
+};
 
 export const addToList = (store: DrewlabsFluxStore<RolesState, Partial<StoreAction>>) =>
   createAction(store, (payload: RoleV2) => {

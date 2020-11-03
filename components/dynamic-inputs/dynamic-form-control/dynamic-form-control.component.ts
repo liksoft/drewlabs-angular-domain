@@ -9,14 +9,12 @@ import {
   Input,
   Output,
   EventEmitter,
-  OnDestroy,
-  ChangeDetectionStrategy
+  OnDestroy
 } from '@angular/core';
 import { createSubject } from '../../../rxjs/helpers';
 import { takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { CheckboxItem, ISelectItem, RadioItem } from '../core/contracts/control-item';
-import { Log } from '../../../utils/logger';
 
 export interface FileFormControl {
   uuid: string;

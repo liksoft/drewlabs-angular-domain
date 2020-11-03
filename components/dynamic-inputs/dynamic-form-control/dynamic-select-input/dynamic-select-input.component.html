@@ -5,9 +5,9 @@
     <small class="required-text" *ngIf="inputTypeHelper.asSelectInput(inputConfig).rules?.isRequired">(*)</small>
   </label>
   <ng-container *ngIf="inputItems$ | async as inputItems">
-    <ng-select [class]="inputConfig?.multiple ? '' : 'not-multiple'" [virtualScroll]="true" [items]="inputItems" [bindLabel]="inputConfig?.optionsLabel"
-      [bindValue]="inputConfig?.optionsValueIndex" [multiple]="inputConfig.multiple"
-      [placeholder]="inputConfig?.placeholder" [formControl]="control"
+    <ng-select [class]="inputConfig?.multiple ? '' : 'not-multiple'" [virtualScroll]="true" [items]="inputItems"
+      [bindLabel]="inputConfig?.optionsLabel" [bindValue]="inputConfig?.optionsValueIndex"
+      [multiple]="inputConfig.multiple" [placeholder]="inputConfig?.placeholder" [formControl]="control"
       [groupBy]="inputTypeHelper.asSelectInput(inputConfig).groupByKey" [clearable]="true"
       (remove)="multiSelectItemRemove.emit($event)">
       <ng-template ng-option-tmp let-item="item" let-index="index" let-item$="item$">

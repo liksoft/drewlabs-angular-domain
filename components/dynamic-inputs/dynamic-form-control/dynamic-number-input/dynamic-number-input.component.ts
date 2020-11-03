@@ -16,9 +16,9 @@ import { DynamicInputTypeHelper } from '../input-type.service';
     .clr-input-wrapper .clr-input:disabled {
       background: rgba(244, 244, 244, .3);
     }
-    .clr-subtext {
+    /* .clr-subtext {
         margin-top: 1rem !important;
-    }
+    } */
     `
   ]
 })
@@ -36,11 +36,11 @@ export class DynamicNumberInputComponent {
 
   constructor(public readonly inputTypeHelper: DynamicInputTypeHelper) { }
 
-  maxNumberSize() {
+  maxNumberSize(): number {
     return Math.pow(2, 31) - 1;
   }
 
-  getErrorAsNumber(value: object | number, key: string = null) {
+  getErrorAsNumber(value: object | number, key: string = null): number|string {
     return typeof value === 'number' ? value : value[key];
   }
 }

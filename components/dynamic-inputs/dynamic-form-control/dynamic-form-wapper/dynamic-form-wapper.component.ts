@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, AbstractControl, FormArray, ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils';
@@ -42,12 +42,15 @@ export class DynamicFormWapperComponent {
   public conditionalControlBindings: { [index: string]: IConditionalControlBinding } = {};
 
   // Text/Type input event
-  @Output() inputKeyUp = new EventEmitter<{formcontrolname: string, value: any}>();
-  @Output() inputKeyDown = new EventEmitter<{formcontrolname: string, value: any}>();
-  @Output() inputKeypress = new EventEmitter<{formcontrolname: string, value: any}>();
-  @Output() inputBlur = new EventEmitter<{formcontrolname: string, value: any}>();
+  @Output() inputKeyUp = new EventEmitter<{ formcontrolname: string, value: any }>();
+  @Output() inputKeyDown = new EventEmitter<{ formcontrolname: string, value: any }>();
+  @Output() inputKeypress = new EventEmitter<{ formcontrolname: string, value: any }>();
+  @Output() inputBlur = new EventEmitter<{ formcontrolname: string, value: any }>();
 
   public isValueDefined: (value: any) => boolean = isDefined.bind(this);
+
+  @Input() singleColumnControl = false;
+  @Input() controlContainerClass = 'clr-col-12';
 
   // tslint:disable-next-line: typedef
   setComponentForm(value: IDynamicForm) {
@@ -148,6 +151,13 @@ export class DynamicFormWapperComponent {
     }
   }
 
+  getControlContainerClass(clazz: string): string {
+    if (this.singleColumnControl) {
+      return this.controlContainerClass;
+    }
+    return isDefined(clazz) ? clazz : this.controlContainerClass;
+  }
+
   // tslint:disable-next-line: typedef
   isFormGroup(f: IDynamicForm) {
     return isGroupOfIDynamicForm(f);
@@ -160,12 +170,6 @@ export class DynamicFormWapperComponent {
   asFormGroup(control: AbstractControl): FormGroup {
     return control as FormGroup;
   }
-
-  // tslint:disable-next-line: typedef
-  isDefined(value: any) {
-    return isDefined(value);
-  }
-
   // tslint:disable-next-line: typedef
   asArray(value: any) {
     return value as Array<any>;

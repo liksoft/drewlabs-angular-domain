@@ -18,7 +18,7 @@ import { Err } from '../../utils/logger';
  * Derives file name from the http response by looking inside content-disposition
  * @param res http Response
  */
-function fileNameFromResponseHeaders(res: any) {
+function fileNameFromResponseHeaders(res: any): string {
   if (res instanceof Blob) {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }
@@ -109,7 +109,7 @@ export class HttpRequestService implements IHttpService {
   /**
    * {@inheritdoc}
    */
-  handleError(error: HttpErrorResponse) {
+  handleError(error: HttpErrorResponse): Observable<never> {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       Err('An error occurred:', error.error.message);
@@ -133,7 +133,7 @@ export class HttpRequestService implements IHttpService {
    * @description provide a file download functionnality to the application
    * @param url [[string]]
    */
-  downloadFile(url: string, filename?: string, fileExtension?: string) {
+  downloadFile(url: string, filename?: string, fileExtension?: string): Promise<any> {
     url = URLUtils.isWebURL(url) ? `${url}` : `${this.serverUrl}${url}`;
     const headers = new HttpHeaders();
     headers.append('Accept', 'text/plain');
@@ -154,7 +154,7 @@ export class HttpRequestService implements IHttpService {
    * @description Load a file from the backend server
    * @param url [[string]]
    */
-  loadServerFile(url: string) {
+  loadServerFile(url: string): Promise<any> {
     const headers = new HttpHeaders();
     headers.append('Accept', 'text/plain');
     headers.append('Content-type', 'application/octet-stream');

@@ -1,8 +1,9 @@
 // This file contains methods for working with entity object with
 // a unique field / property named [[id]]
 
-import { isArray } from '../../utils/types';
+import { isArray, isDefined } from '../../utils/types';
 import { PaginationDataState } from '../types';
+import * as _ from 'lodash';
 
 export const updatePaginationData = <T extends { id: string | number }>(
   values: PaginationDataState<{ [index: string]: T }>, payload: any) => {
@@ -22,7 +23,7 @@ export const updatePaginationData = <T extends { id: string | number }>(
     }
     _values = {
       ..._values,
-      latests: payload.data || _values.latests,
+      data: payload.data || _values.data,
       total: payload.total || _values.total,
       items: _items,
       currentPage: payload.page || _values.currentPage,
@@ -35,17 +36,22 @@ export const updatePaginationData = <T extends { id: string | number }>(
 };
 
 export const insertOrUpdateValuesUsingID = <T extends { id: string | number }>(
-  items: { [index: string]: T }, payload: T[]) => {
+  items: { [index: string]: T }, payload: T[] | T) => {
   // tslint:disable-next-line: variable-name
   const _items = items || {};
-  if (payload && isArray(payload)) {
-    (payload as T[]).forEach((value) => {
-      const key = value.id.toString();
-      if (_items[key]) {
-        _items[key] = value;
+  if (payload) {
+    payload = (isArray(payload) ? payload as T[] : [payload as T]) as T[];
+    return _.reduce(payload, (acc, current) => {
+      if (!isDefined(current.id)) {
+        return { ...acc };
       }
-      _items[key] = value;
-    });
+      const newItem = {};
+      if (acc) {
+        const key = current.id.toString();
+        newItem[key] = current;
+      }
+      return { ...acc, ...newItem };
+    }, _items);
   }
   return _items;
 };
@@ -54,21 +60,29 @@ export const listItemToIdMaps = <T extends { id: string | number }>(list: T[]) =
   // tslint:disable-next-line: variable-name
   const _cache = {};
   list.forEach(item => {
-    _cache[item.id.toString()] = item;
+    if (isDefined(item.id)) {
+      _cache[item.id.toString()] = item;
+    }
   });
   return _cache;
 };
 
-export const addItemToCache = <T extends { id: string | number }>(cache: { [index: string]: T }, newItem: T) => {
+export const addItemToCache = <T extends { id: string | number }>(cache: { [index: string]: T }, match: T) => {
   // tslint:disable-next-line: variable-name
   const _cache = { ...cache };
-  _cache[newItem.id.toString()] = newItem;
+  if (!isDefined(match) || !isDefined(match.id)) {
+    return _cache;
+  }
+  _cache[match.id.toString()] = match;
   return _cache;
 };
 
 export const removeItemFromCache = <T extends { id: string | number }>(cache: { [index: string]: T }, match: T) => {
   // tslint:disable-next-line: variable-name
   const _cache = { ...cache };
+  if (!isDefined(match) || !isDefined(match.id)) {
+    return _cache;
+  }
   delete _cache[match.id.toString()];
   return _cache;
 };

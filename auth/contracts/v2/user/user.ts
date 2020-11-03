@@ -16,6 +16,12 @@ export type ScopeFunc = (authorizable: Authorizable, authorization: string) => b
  * @description Handler function for checking a given user have any of the provided authorizations
  */
 export const userCanAny = (authorizable: Authorizable, authorizations: string[]) => {
+  if (!isDefined(authorizable)) {
+    return false;
+  }
+  if (authorizations.length === 0) {
+    return true;
+  }
   return lodash.intersection(authorizable.authorizations, authorizations).length > 0;
 };
 

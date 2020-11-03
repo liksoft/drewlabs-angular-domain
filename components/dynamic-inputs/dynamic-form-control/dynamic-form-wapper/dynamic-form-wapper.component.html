@@ -2,17 +2,18 @@
   <div class="form" *ngIf="componentFormGroup && conditionalControlBindings">
     <div class="form form-container clr-row" *ngIf="componentFormGroup">
       <ng-container *ngIf="form?.controlConfigs && asArray(form?.controlConfigs).length > 0">
-        <app-dynamic-inputs (inputKeyUp)="inputKeyUp.emit($event)" (inputKeyDown)="inputKeyDown.emit($event)"
-          (inputBlur)="inputBlur.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
-          (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)"
-          *ngFor="let value of form?.controlConfigs" [class]="
-              isDefined(value.containerClass) ? value.containerClass : 'clr-col-12'" (multiSelectItemRemove)="
-              controlItemRemoved.emit({ event: $event, control: value })" (valueChange)="
-              handleControlChanges({ event: $event, controlName: value.formControlName })"
-          [listenForChanges]="shouldListenforChange(value.formControlName)" [hidden]="value.hidden"
-          [control]="componentFormGroup.controls[value.formControlName]" [inputConfig]="value"
-          [listItems]="value.items">
-        </app-dynamic-inputs>
+        <ng-container *ngFor="let value of form?.controlConfigs">
+          <app-dynamic-inputs (inputKeyUp)="inputKeyUp.emit($event)" (inputKeyDown)="inputKeyDown.emit($event)"
+            (inputBlur)="inputBlur.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
+            (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)"
+            [class]="getControlContainerClass(value?.containerClass)" (multiSelectItemRemove)="
+                controlItemRemoved.emit({ event: $event, control: value })" (valueChange)="
+                handleControlChanges({ event: $event, controlName: value.formControlName })"
+            [listenForChanges]="shouldListenforChange(value.formControlName)" [hidden]="value.hidden"
+            [control]="componentFormGroup.controls[value.formControlName]" [inputConfig]="value"
+            [listItems]="value.items">
+          </app-dynamic-inputs>
+        </ng-container>
       </ng-container>
     </div>
   </div>
@@ -28,8 +29,8 @@
             <app-dynamic-inputs (inputKeyUp)="inputKeyUp.emit($event)" (inputKeyDown)="inputKeyDown.emit($event)"
               (inputBlur)="inputBlur.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
               (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)"
-              *ngFor="let value of item.controlConfigs" [class]="
-                isDefined(value.containerClass) ? value.containerClass : 'clr-col-12' " (multiSelectItemRemove)="
+              *ngFor="let value of item.controlConfigs" [class]="getControlContainerClass(value?.containerClass)"
+              (multiSelectItemRemove)="
                 controlItemRemoved.emit({ event: $event, control: value }) " (valueChange)="
                 handleControlChanges({ event: $event, controlName: value.formControlName
                 })" [listenForChanges]="shouldListenforChange(value.formControlName)" [hidden]="value.hidden"
@@ -41,8 +42,8 @@
           <app-dynamic-inputs (inputKeyUp)="inputKeyUp.emit($event)" (inputKeyDown)="inputKeyDown.emit($event)"
             (inputBlur)="inputBlur.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
             (fileAdded)="fileAdded.emit($event)" (fileRemoved)="fileRemoved.emit($event)"
-            *ngFor="let value of form?.controlConfigs"
-            [class]="isDefined(value.containerClass)  ? value.containerClass  : 'clr-col-12'" (multiSelectItemRemove)="
+            *ngFor="let value of form?.controlConfigs" [class]="getControlContainerClass(value?.containerClass)"
+            (multiSelectItemRemove)="
               controlItemRemoved.emit({ event: $event, control: value })" (valueChange)="
               handleControlChanges({event: $event, controlName: value.formControlName})" [hidden]="value.hidden"
             [listenForChanges]="shouldListenforChange(value.formControlName)"

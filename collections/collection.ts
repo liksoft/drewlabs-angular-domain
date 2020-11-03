@@ -9,7 +9,7 @@ export class Collection<T> implements ICollection<T> {
    * @description Build a new collection from a predefined collection. Provide a shalow copy of the collection passed as parameter
    * @param c [[ICollection<T>]]
    */
-  static from<T>(c: ICollection<T>) {
+  static from<T>(c: ICollection<T>): ICollection<T>  {
     const col = new Collection<T>();
     c.keys().forEach((k) => {
       col.add(k, c.get(k));
@@ -48,7 +48,7 @@ export class Collection<T> implements ICollection<T> {
   /**
    * @inheritdoc
    */
-  set(key: string, value: T) {
+  set(key: string, value: T): void {
     this.items[key] = value;
   }
 
@@ -76,7 +76,7 @@ export class Collection<T> implements ICollection<T> {
     return this;
   }
 
-  private deleteKey(key: string) {
+  private deleteKey(key: string): void {
     if (!this.contains(key)) {
       return null;
     }
@@ -105,7 +105,7 @@ export class Collection<T> implements ICollection<T> {
   /**
    * @inheritdoc
    */
-  clear() {
+  clear(): void {
     this.items = {};
     this.counter = 0;
   }
@@ -116,7 +116,7 @@ export class Collection<T> implements ICollection<T> {
  * @description Convert a list of [T] items into a collection of [T] items
  * @param controls [[T]]
  */
-export function collect<T>(controls: T[], using: string = null) {
+export function collect<T>(controls: T[], using: string = null): ICollection<T>  {
   const collection = new Collection<T>();
   controls.forEach((v: T, index: number) => {
     collection.add(isDefined(using) ? v[using] : index.toString(), v);

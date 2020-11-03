@@ -4,14 +4,15 @@ import { postRessource, postManyRessources, putRessource, getRessource, getResso
 import { IResponseBody } from '../http/core';
 import { IEntityServiceProvider } from '../contracts/entity-service-provider';
 import { isDefined } from '../utils';
+import { Log } from '../utils/logger';
 
 @Injectable()
 export class DefaultEntityHandler<T> {
 
-  /**
-   * @description Oject initializer fn
-   */
-  constructor() { }
+  // /**
+  //  * @description Oject initializer fn
+  //  */
+  // constructor() { }
 
   /**
    * @description Add/Insert a new entry to the ressource storage

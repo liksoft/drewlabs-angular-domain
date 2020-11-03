@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { IResponseBody } from '../http/contracts/http-response-data';
 import { HTTPErrorState } from '../http/core/http-request.service';
@@ -86,13 +87,13 @@ export class AppUIStateProvider {
     this.store$.next(initialUIState);
   }
 
-  get uiState() {
+  get uiState(): Observable<UIState> {
     return this.store$.pipe(
       startWith(initialUIState)
     );
   }
 
-  startAction(message?: string) {
+  startAction(message?: string): void {
     this.store$.next({
       performingAction: true,
       uiMessage: message,
@@ -101,7 +102,7 @@ export class AppUIStateProvider {
     });
   }
 
-  endAction(message?: string, status?: UIStateStatusCode) {
+  endAction(message?: string, status?: UIStateStatusCode): void {
     this.store$.next({
       performingAction: false,
       uiMessage: message,
@@ -110,7 +111,7 @@ export class AppUIStateProvider {
     });
   }
 
-  resetState() {
+  resetState(): void {
     this.store$.next(initialUIState);
   }
 }
@@ -133,33 +134,33 @@ export class AppUIStoreManager {
     return this.uiStore;
   }
 
-  get alertState$() {
+  get alertState$(): Observable<Partial<AlertConfig>> {
     return this.alertStore.alertState$;
   }
 
-  public completeUIStoreAction(message?: string, status?: any) {
+  public completeUIStoreAction(message?: string, status?: any): void {
     this.uiStore.endAction(message, status);
   }
 
-  public completeActionWithWarning(message: string) {
+  public completeActionWithWarning(message: string): void {
     this.completeUIStoreAction(message, UIStateStatusCode.BAD_REQUEST);
   }
 
-  public completeActionWithError(message: string) {
+  public completeActionWithError(message: string): void {
     this.completeUIStoreAction(message, UIStateStatusCode.ERROR);
   }
 
-  public completeActionWithSuccess(message: string) {
+  public completeActionWithSuccess(message: string): void {
     this.completeUIStoreAction(message, UIStateStatusCode.STATUS_OK);
   }
 
-  public initializeUIStoreAction(message?: string, alertConfigs: AlertConfig = {} as AlertConfig) {
+  public initializeUIStoreAction(message?: string, alertConfigs: AlertConfig = {} as AlertConfig): void {
     this.uiStore.startAction(message);
     this.alertStore.setState(alertConfigs);
   }
 
 
-  public onActionResponse(params: ActionResponseParams) {
+  public onActionResponse(params: ActionResponseParams): void {
     try {
       if (typeof params.res === 'boolean') {
         this.completeActionWithSuccess(params.okMsg);
@@ -177,7 +178,7 @@ export class AppUIStoreManager {
     }
   }
 
-  public resetUIStore() {
+  public resetUIStore(): void {
     this.uiStore.intialize();
     this.alertStore.setState({});
   }

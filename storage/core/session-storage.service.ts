@@ -12,7 +12,7 @@ export class SessionStorage implements IAppStorage {
    * @description Browser SessionStorage Object
    * @var {Storage}
    */
-  store: SecureStorage;
+  store: Storage;
 
   constructor(@Inject('APP_SECRET') private secret: string) {
     this.store = this.initStorage();
@@ -49,7 +49,7 @@ export class SessionStorage implements IAppStorage {
   /**
    * @description Initialize le LocalStorage
    */
-  private initStorage(): SecureStorage {
+  private initStorage(): Storage {
     if (window) {
       return new SecureWebStorage(window.sessionStorage, this.secret);
       // return window.sessionStorage;

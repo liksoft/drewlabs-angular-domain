@@ -35,3 +35,12 @@ export class PositiveNumber implements PipeTransform {
       return Math.abs(value);
     }
 }
+
+@Pipe({name: 'parseInt'})
+
+export class ParseInt implements PipeTransform {
+    transform(value: string): number {
+      return parseInt(value, 10);
+    }
+}
+
