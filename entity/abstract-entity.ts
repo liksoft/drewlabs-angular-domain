@@ -294,7 +294,7 @@ export class AbstractEntityProvider<T> implements OnDestroy {
   }
 
   onCompleActionListeners = (actions: any[] = null) => {
-    this.destroy$.next({});
+    this.unsubscribe();
   }
 
   // tslint:disable-next-line: typedef
