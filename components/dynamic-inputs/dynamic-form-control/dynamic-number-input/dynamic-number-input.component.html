@@ -19,9 +19,9 @@
         [placeholder]="inputTypeHelper.asEmailInput(inputConfig).placeholder ? inputTypeHelper.asEmailInput(inputConfig).placeholder : ''" />
     </div>
     <clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched"><span [translate]="'validation.required'"></span></clr-control-error>
-    <clr-control-error class="field-has-error" *ngIf="control.hasError('min') && control.touched"><span [translate]="'validation.min'" [translateParams]="{ value: inputTypeHelper.asNumberInput(inputConfig).min ? inputTypeHelper.asNumberInput(inputConfig).min : getErrorAsNumber(control.errors['min'], 'min') }"></span>
+    <clr-control-error class="field-has-error" *ngIf="control.hasError('min') && control.touched"><span [translate]="'validation.min'" [translateParams]="{ value: getErrorAsNumber(control.errors['min'], 'min') ?  getErrorAsNumber(control.errors['min'], 'min') : inputTypeHelper.asNumberInput(inputConfig).min }"></span>
     </clr-control-error>
-    <clr-control-error class="field-has-error" *ngIf="control.hasError('max') && control.touched"><span [translate]="'validation.max'" [translateParams]="{ value: inputTypeHelper.asNumberInput(inputConfig).max ? inputTypeHelper.asNumberInput(inputConfig).max : getErrorAsNumber(control.errors['max'], 'max')  }"></span>
+    <clr-control-error class="field-has-error" *ngIf="control.hasError('max') && control.touched"><span [translate]="'validation.max'" [translateParams]="{ value: getErrorAsNumber(control.errors['max'], 'max') ?  getErrorAsNumber(control.errors['max'], 'max') : inputTypeHelper.asNumberInput(inputConfig).max  }"></span>
     </clr-control-error>
     <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
   </div>
