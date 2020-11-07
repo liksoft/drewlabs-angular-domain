@@ -6,14 +6,14 @@ export abstract class AbstractHTMLFormControl implements IHTMLFormControl {
   type: string;
   formControlName: string;
   classes: string;
-  requiredIf: HTMLFormControlRequireIfConfig;
+  requiredIf?: HTMLFormControlRequireIfConfig;
   rules: IHTMLFormControlValidationRule;
   placeholder?: string;
   items?: Array<any>;
   value?: any;
   descriptionText?: string;
-  disabled: boolean;
-  readOnly: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
   formControlIndex?: number;
   formControlGroupKey?: string;
   hidden?: boolean;
