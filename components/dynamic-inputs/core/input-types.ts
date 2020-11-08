@@ -100,7 +100,7 @@ export class DateInput extends AbstractHTMLFormControl {
   minDate: Date | string;
   maxDate: Date | string;
   currentDate: Date | string;
-  dateInputFormat = 'dd/mm/yyyy';
+  dateInputFormat?: string;
 
   /**
    * @description Instance initializer
@@ -111,7 +111,7 @@ export class DateInput extends AbstractHTMLFormControl {
     this.minDate = value.minDate;
     this.maxDate = value.maxDate;
     this.currentDate = value.currentDate;
-    this.dateInputFormat = value.dateInputFormat;
+    this.dateInputFormat = value.dateInputFormat || 'dd/mm/yyyy';
   }
 
 
