@@ -40,7 +40,7 @@ export class HttpRequestService implements IHttpService {
   // tslint:disable-next-line: variable-name
   private _errorState$ = createSubject<HTTPErrorState>();
   errorState$ = this._errorState$.pipe(
-    startWith({}  as HTTPErrorState)
+    startWith({} as HTTPErrorState)
   );
 
   constructor(
@@ -133,13 +133,13 @@ export class HttpRequestService implements IHttpService {
    * @description provide a file download functionnality to the application
    * @param url [[string]]
    */
-  downloadFile(url: string, filename?: string, fileExtension?: string): Promise<any> {
+  downloadFile(url: string, filename?: string, fileExtension?: string, params?: { [prop: string]: any }): Promise<any> {
     url = URLUtils.isWebURL(url) ? `${url}` : `${this.serverUrl}${url}`;
     const headers = new HttpHeaders();
     headers.append('Accept', 'text/plain');
     headers.append('Content-type', 'application/octet-stream');
     return new Promise((_, __) => {
-      this.loadServerFile(url)
+      this.loadServerFile(url, params)
         .then((res: any) => {
           if (!isDefined(filename)) {
             filename = isDefined(fileExtension) ? `${fileNameFromResponseHeaders(res)}.${fileExtension}` : `${fileNameFromResponseHeaders(res)}`;
@@ -154,13 +154,13 @@ export class HttpRequestService implements IHttpService {
    * @description Load a file from the backend server
    * @param url [[string]]
    */
-  loadServerFile(url: string): Promise<any> {
+  loadServerFile(url: string, params?: { [prop: string]: any }): Promise<any> {
     const headers = new HttpHeaders();
     headers.append('Accept', 'text/plain');
     headers.append('Content-type', 'application/octet-stream');
     return new Promise((_, __) => {
       this.http
-        .get(url, { headers, responseType: 'blob' })
+        .get(url, { headers, responseType: 'blob', params })
         .toPromise()
         .then((res: any) => {
           _(res);
