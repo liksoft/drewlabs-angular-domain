@@ -94,6 +94,7 @@ export class FormControlRequestBody {
   maxDate: string;
   selectableValues: string;
   selectableModel: string;
+  modelFilters: string;
   multiple: boolean;
   columns: number;
   rows: number;
@@ -113,6 +114,7 @@ export class FormControlRequestBody {
       max_date: 'maxDate',
       selectable_values: 'selectableValues',
       selectable_model: 'selectableModel',
+      model_filters: 'modelFilters',
       multiple: 'multiple',
       columns: 'columns',
       rows: 'rows'
@@ -145,6 +147,7 @@ export class FormFormControlRequestBody {
   repeatable: boolean;
   uniqueOn: string;
   containerClass: string;
+
   public static getJsonableProperties() {
     return {
       form_id: 'formId',
