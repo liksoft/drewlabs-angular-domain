@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { readFileAsDataURI, Browser, b64toBlob } from '../utils/browser';
 import { HttpRequestService } from '../http/core/http-request.service';
 
@@ -10,26 +10,20 @@ export interface IFileRessource {
   content: string;
   extension?: string;
   type?: string;
+
+  // Conditional properties definitions
   showldownload?: boolean;
+  isImageRessource?: boolean;
+  isVideoRessource?: boolean;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
-export class FileHelperService {
-
-  /**
-   * @description Instance constructor
-   */
-  constructor(private client: HttpRequestService) {}
-
+export interface UploadedFileHelperInterface
+{
   /**
    * @description Load file from the server and convert it to a dataURI
    * @param url [[string]]
    */
-  async loadFileAsDataURI(url: string): Promise<string> {
-    return readFileAsDataURI(await this.client.loadServerFile(url) as Blob);
-  }
+  loadFileAsDataURI(url: string): Promise<string>;
 
   /**
    * @description Download contents from a url and return a fileStats
@@ -37,7 +31,52 @@ export class FileHelperService {
    * @param filename [[string]]
    */
   // tslint:disable-next-line: typedef
-  async urlToFileFileRessource(url: string, filename: string, shouldDownload: boolean = false, extension?: string) {
+  urlToFileFileRessource(url: string, filename: string, shouldDownload?: boolean, extension?: string): Promise<IFileRessource>;
+
+  /**
+   * @description Use Browser API for saving a base64 string as a blob file
+   * @param ressource [[string]]
+   * @param filename [[string]]
+   */
+  // tslint:disable-next-line: typedef
+  saveDataURLAsBlob(ressource: string, filename: string): Promise<null|void>;
+
+  /**
+   * @Description Provide file download from backend server
+   * @param url [[string]]
+   * @param filename [[string]]
+   * @param extension [[string]]
+   */
+  // tslint:disable-next-line: typedef
+  downloadFile(url: string, filename: string, extension?: string): Promise<any>;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class FileHelperService implements UploadedFileHelperInterface {
+
+  /**
+   * @description Instance constructor
+   */
+  constructor(private client: HttpRequestService) { }
+
+  /**
+   * @inheritdoc
+   */
+  async loadFileAsDataURI(url: string): Promise<string> {
+    return readFileAsDataURI(await this.client.loadServerFile(url) as Blob);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  // tslint:disable-next-line: typedef
+  async urlToFileFileRessource(
+    url: string, filename: string,
+    shouldDownload: boolean = false,
+    extension?: string
+  ) {
     const v = await this.loadFileAsDataURI(url);
     if (v) {
       const block = v.split(';');
@@ -55,9 +94,7 @@ export class FileHelperService {
   }
 
   /**
-   * @description Use Browser API for saving a base64 string as a blob file
-   * @param ressource [[string]]
-   * @param filename [[string]]
+   * @inheritdoc
    */
   // tslint:disable-next-line: typedef
   async saveDataURLAsBlob(ressource: string, filename: string) {
@@ -70,13 +107,10 @@ export class FileHelperService {
   }
 
   /**
-   * @Description Provide file download from backend server
-   * @param url [[string]]
-   * @param filename [[string]]
-   * @param extension [[string]]
+   * @inheritdoc
    */
   // tslint:disable-next-line: typedef
-  downloadFile(url: string, filename: string, extension: string = null) {
-    return this.client.downloadFile(url, filename, extension);
+  downloadFile(url: string, filename: string, extension: string = null, params?: { [prop: string]: any }) {
+    return this.client.downloadFile(url, filename, extension, params);
   }
 }
