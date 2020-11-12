@@ -1,4 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { UIStateStatusCode } from '../../../helpers';
 import { IHttpResponse } from '../types';
 import { RequestBody } from './types';
 
@@ -50,7 +52,7 @@ export interface IResourcesServerClient<T extends IHttpResponse<any>> {
    * @param params request query parameters
    */
   updateUsingID(
-    path: string, id: string|number, body: RequestBody, params?: object
+    path: string, id: string | number, body: RequestBody, params?: object
   ): Observable<T>;
 
   /**
@@ -67,5 +69,12 @@ export interface IResourcesServerClient<T extends IHttpResponse<any>> {
    * @param id request body object
    * @param params request query parameters
    */
-  deleteUsingID(path: string, id: string|number, params?: object): Observable<T>;
+  deleteUsingID(path: string, id: string | number, params?: object): Observable<T>;
+
+  /**
+   * @description Convert HTTP Error response error object into an HTTpResponse onbject
+   * @param error Erro object
+   */
+  handleErrorResponse(
+    error: HttpErrorResponse): HttpErrorResponse | { status: UIStateStatusCode, validationErrors: { [prop: string]: any } };
 }

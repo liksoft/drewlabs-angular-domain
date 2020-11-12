@@ -105,8 +105,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   }
 
   /**
-   * @description Convert HTTP Error response error object into an HTTpResponse onbject
-   * @param error Erro object
+   * {@inheritdoc}
    */
   // tslint:disable-next-line: typedef
   handleErrorResponse(error: HttpErrorResponse) {
