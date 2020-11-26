@@ -4,16 +4,19 @@
     {{ inputTypeHelper.asSelectInput(inputConfig).label }}
     <small class="required-text" *ngIf="inputTypeHelper.asSelectInput(inputConfig).rules?.isRequired">(*)</small>
   </label>
+  <!-- inputConfig?.optionsLabel -->
+  <!-- inputConfig?.optionsValueIndex -->
   <ng-container *ngIf="inputItems$ | async as inputItems">
     <ng-select [class]="inputConfig?.multiple ? '' : 'not-multiple'" [virtualScroll]="true" [items]="inputItems"
-      [bindLabel]="inputConfig?.optionsLabel" [bindValue]="inputConfig?.optionsValueIndex"
+      [bindLabel]="'name'" [bindValue]="'value'"
       [multiple]="inputConfig.multiple" [placeholder]="inputConfig?.placeholder" [formControl]="control"
       [groupBy]="inputTypeHelper.asSelectInput(inputConfig).groupByKey" [clearable]="true"
       (remove)="multiSelectItemRemove.emit($event)">
       <ng-template ng-option-tmp let-item="item" let-index="index" let-item$="item$">
         <div>
           <label class="form-check-label ml-2">
-            {{ item[inputTypeHelper.asSelectInput(inputConfig).optionsLabel] }}
+            <!-- {{ item[inputTypeHelper.asSelectInput(inputConfig).optionsLabel] }} -->
+            {{ item?.name }}
           </label>
         </div>
       </ng-template>

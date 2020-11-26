@@ -15,6 +15,7 @@ export interface FormViewModel {
  * @description Definitions for entities used as dynamic forms groups
  */
 export interface IDynamicForm {
+  id: number|string;
   title: string;
   description: string;
   forms: IDynamicForm[];
@@ -26,17 +27,18 @@ export interface IDynamicForm {
  * @description Type definition for function for mapping models to form view bindings
  * @param model Parameter can be any JS object with properties that can be bind to a dynamic form values
  */
-export type ModelToFormViewModelBindings = (model: object|any) => { [index: string]: any };
+export type ModelToFormViewModelBindings = (model: object | any) => { [index: string]: any };
 
 
 /**
  * @description Create a copy of the IDynamic form object
  * @param value [[IDynamicForm]]
  */
-export function clone(value: IDynamicForm) {
-  return Object.assign(value, {
+export function clone(value: IDynamicForm): IDynamicForm {
+  return {
+    ...value,
     // tslint:disable-next-line: max-line-length
     controlConfigs: isDefined(value.controlConfigs) ? [...(value.controlConfigs as IHTMLFormControl[]).map(i => Object.assign({}, i))] : null,
     forms: isDefined(value.forms) ? (value.forms as IDynamicForm[]).map(i => clone(i)) : null
-  });
+  };
 }

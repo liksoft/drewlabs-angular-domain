@@ -1,8 +1,8 @@
-import { GenericUndecoratedSerializaleSerializer } from '../../../../../built-value/core/js/serializer';
-import { DynamicControlConfig } from '../../contracts/dynamic-form-control';
+import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts';
+import { GenericSerializaleSerializer, GenericUndecoratedSerializaleSerializer, UndecoratedSerializer } from '../../../../../built-value/core/js/serializer';
+import { DynamicFormControlInterface } from '../../compact/types';
 
-
-export class FormControlV2 implements DynamicControlConfig {
+export class FormControlV2 implements DynamicFormControlInterface {
   id: number = undefined;
   formId: number = undefined;
   formFormControlId: number = undefined;
@@ -35,9 +35,16 @@ export class FormControlV2 implements DynamicControlConfig {
   requiredIf: string = undefined;
   uploadURL: string = undefined;
   isRepeatable: number = undefined;
-  children: FormControlV2[] = undefined;
+  children: DynamicFormControlInterface[] = undefined;
   uniqueOn: string = undefined;
   dynamicControlContainerClass: string = undefined;
+  valuefield: string = undefined;
+  groupfield: string = undefined;
+  keyfield: string = undefined;
+
+  static builder(): ISerializableBuilder<FormControlV2> {
+    return new GenericSerializaleSerializer(FormControlV2, new UndecoratedSerializer());
+  }
 
   public static getJsonableProperties(): { [index: string]: keyof FormControlV2 | { name: string, type: any } } {
     return {
@@ -76,6 +83,9 @@ export class FormControlV2 implements DynamicControlConfig {
       children: { name: 'children', type: FormControlV2 },
       uniqueOn: 'uniqueOn',
       containerClass: 'dynamicControlContainerClass',
+      valuefield: 'valuefield',
+      groupfield: 'groupfield',
+      keyfield: 'keyfield'
     };
   }
 }
@@ -99,7 +109,11 @@ export class FormControlRequestBody {
   columns: number;
   rows: number;
 
-  public static getJsonableProperties() {
+  static builder(): ISerializableBuilder<FormControlRequestBody> {
+    return new GenericSerializaleSerializer(FormControlRequestBody, new UndecoratedSerializer());
+  }
+
+  public static getJsonableProperties(): { [prop: string]: keyof FormControlRequestBody } {
     return {
       label: 'label',
       placeholder: 'placeholder',
@@ -121,7 +135,7 @@ export class FormControlRequestBody {
     };
   }
 
-  public toSerialize() {
+  public toSerialize(): { [prop: string]: any } {
     const serialized = {};
     Object.entries(FormControlRequestBody.getJsonableProperties()).forEach(([key, value]) => {
       serialized[key] = this[value];
@@ -148,7 +162,11 @@ export class FormFormControlRequestBody {
   uniqueOn: string;
   containerClass: string;
 
-  public static getJsonableProperties() {
+  static builder(): ISerializableBuilder<FormFormControlRequestBody> {
+    return new GenericSerializaleSerializer(FormFormControlRequestBody, new UndecoratedSerializer());
+  }
+
+  public static getJsonableProperties(): { [prop: string]: keyof FormFormControlRequestBody } {
     return {
       form_id: 'formId',
       form_control_id: 'formControlId',
@@ -169,7 +187,7 @@ export class FormFormControlRequestBody {
     };
   }
 
-  public toSerialize() {
+  public toSerialize(): { [prop: string]: any } {
     const serialized = {};
     Object.entries(FormFormControlRequestBody.getJsonableProperties()).forEach(([key, value]) => {
       serialized[key] = this[value];

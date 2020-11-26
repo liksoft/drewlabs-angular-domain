@@ -60,7 +60,6 @@ export const parseV1HttpResponse: TransformResponseHandlerFn = (response: any) =
   if (!isDefined(httpResponse)) {
     return {} as IHttpResponse<any>;
   }
-  Log(httpResponse);
   return {
     errorMessage: httpResponse.body ? (httpResponse.body.errorMessage || null) : null,
     statusCode: httpResponse.statusCode || null,

@@ -10,7 +10,6 @@ import { Log } from '../../../../utils/logger';
  */
 export const DrewlabsV1LoginResultHandlerFunc: MapToHandlerResponse<any> = (response: any) => {
   response = isDefined(response.data) ? response.data : response;
-  Log('Login response : ', response);
   return ({
     data: (new GenericUndecoratedSerializaleSerializer<LoginResponse>()).fromSerialized(LoginResponse, response)
   } as HandlerResult<LoginResponse>);

@@ -1,63 +1,23 @@
 import { JsonProperty, ObjectSerializer } from 'src/app/lib/domain/built-value/core/serializers';
-import { ISerializer, ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
-import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from 'src/app/lib/domain/built-value/contracts/type';
+import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
+import { TypeBuilder } from 'src/app/lib/domain/built-value/contracts/type';
 import { FormControl } from './form-control';
 import { ArrayUtils, isArray } from '../../../../utils';
 import { FormViewModel } from '../contracts';
-import { DynamicControlConfig } from '../contracts/dynamic-form-control';
-import { IDynamicFormConfig } from '../compact/types';
+import { DynamicFormInterface } from '../compact/types';
+import { GenericSerializaleSerializer } from 'src/app/lib/domain/built-value/core/js/serializer';
 
 /**
  * @description Sort form loaded from backend server by control index
  * @param f [[Form]]
  */
-export function sortFormFormControlsByIndex(f: Form) {
+export function sortFormFormControlsByIndex(f: Form): DynamicFormInterface {
   if (isArray(f.formControls) && (f.formControls as Array<FormControl>).length > 0) {
     f.formControls = ArrayUtils.sort((f.formControls as Array<FormControl>), 'controlIndex', 1) as FormControl[];
   }
   return f;
 }
-export class FormBuilder implements ISerializableBuilder<Form>, TypeBuilder<Form> {
-  serializer: ISerializer;
-
-  /**
-   *
-   */
-  constructor() {
-    this.serializer = new ObjectSerializer();
-  }
-
-  /**
-   * @inheritdoc
-   */
-  fromSerialized(serialized: any): Form {
-    return this.serializer.deserialize(Form, serialized);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  toSerialized(value: Form) {
-    return this.serializer.serialize(Form, value);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  build(bluePrint: new () => Form, params: object): Form {
-    return buildJSObjectType(bluePrint, params);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  rebuild(instance: Form, params: object | Form): Form {
-    return rebuildJSObjectType(instance, params);
-  }
-
-}
-
-export class Form implements FormViewModel, IDynamicFormConfig {
+export class Form implements FormViewModel, DynamicFormInterface {
   @JsonProperty('id')
   id: number = undefined;
   @JsonProperty('title')
@@ -69,7 +29,7 @@ export class Form implements FormViewModel, IDynamicFormConfig {
   @JsonProperty({name: 'children', valueType: Form})
   children: Form[] = undefined;
   @JsonProperty({name: 'formControls', valueType: FormControl})
-  formControls: FormControl[]|DynamicControlConfig[] = undefined;
+  formControls: FormControl[] = undefined;
   @JsonProperty('url')
   url: string = undefined;
   @JsonProperty('status')
@@ -78,8 +38,8 @@ export class Form implements FormViewModel, IDynamicFormConfig {
   /**
    * @description Calls to get the builder provider of the current class|type
    */
-  static builder(): TypeBuilder<Form> | ISerializableBuilder<Form> {
-    return new FormBuilder();
+  static builder(): TypeBuilder<DynamicFormInterface> | ISerializableBuilder<DynamicFormInterface> {
+    return new GenericSerializaleSerializer(Form, new ObjectSerializer());
   }
 
   formViewModelBindings(): {[index: string]: any} {

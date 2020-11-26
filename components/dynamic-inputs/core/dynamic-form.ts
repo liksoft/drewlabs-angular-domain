@@ -1,18 +1,19 @@
-import { ICollection } from '../../../contracts/collection-interface';
 import { IDynamicForm } from './contracts/dynamic-form';
 import { IHTMLFormControl } from './contracts/dynamic-input';
 
 export class DynamicForm implements IDynamicForm {
+  id: number | string;
   forms: IDynamicForm[];
   title: string;
   description: string;
-  controlConfigs: IHTMLFormControl[]|any;
+  controlConfigs: IHTMLFormControl[] | any;
   endpointURL: string;
 
   /**
    * @description DynamicForm instance initializer
    */
-  constructor({title, description, controlConfigs, endpointURL, forms}: IDynamicForm) {
+  constructor({ id, title, description, controlConfigs, endpointURL, forms }: IDynamicForm) {
+    this.id = id;
     this.title = title;
     this.controlConfigs = controlConfigs;
     this.description = description;

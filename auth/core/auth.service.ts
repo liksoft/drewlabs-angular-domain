@@ -82,6 +82,7 @@ export class AuthService implements OnDestroy {
             if (state && state.status === 401) {
               this.userStorage.removeUserFromCache();
               this.oAuthTokenProvider.removeToken();
+              this.sessionStorage.clear();
               intitAuthStateAction(this._authStore$)();
               this.sessionStorage.set(HttpRequestConfigs.sessionExpiredStorageKey, true);
               // To be review

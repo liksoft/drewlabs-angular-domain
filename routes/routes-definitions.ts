@@ -19,7 +19,7 @@ export interface RouteLink {
   routePath?: string;
   routeDescription: string;
   routeIcon?: string;
-  routePermission?: string[];
+  routePermissions?: string[];
   children?: RouteLink[];
 }
 
@@ -48,7 +48,7 @@ export const builLinkFromRoutesMap = (map: RoutesMap[], translations: any) => {
           routePath: v.route,
           routeDescription: translations[v.key],
           routeIcon: v.routeIcon,
-          routePermission: v.permissions ? v.permissions : []
+          routePermissions: v.permissions ? v.permissions : []
         };
       });
       return {
@@ -66,7 +66,7 @@ export const builLinkFromRoutesMap = (map: RoutesMap[], translations: any) => {
           routePath: m.route,
           routeDescription: translations[m.key],
           routeIcon: m.routeIcon,
-          routePermission: m.permissions ? m.permissions : []
+          routePermissions: m.permissions ? m.permissions : []
         }
       } as IRouteLinkCollectionItem;
     }

@@ -45,7 +45,6 @@ export const onPaginateFormsAction = (store: DrewlabsFluxStore<FormState, Partia
             // const { data, total } = getResponseDataFromHttpResponse(state);
             const { data, total } = isDefined(state.data)
               && (isDefined(state.data.data)) ? state.data : state;
-            Log('Form pagination request response body', data);
             if (isDefined(data) && isArray(data)) {
               onFormPaginationDataLoaded(store)({
                 data: (data as any[]).map(

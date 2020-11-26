@@ -26,7 +26,7 @@ import { ICollection } from '../contracts/collection-interface';
 import { ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { CustomValidators, UniqueValueService } from '../validators';
 import { isArray, isDefined, MomentUtils } from '../utils';
-import { IDynamicFormConfig } from '../components/dynamic-inputs/core/compact/types';
+import { DynamicFormInterface } from '../components/dynamic-inputs/core/compact/types';
 
 /**
  * @description Checks if a dynamic form contains other form
@@ -363,8 +363,8 @@ export class DynamicFormHelpers {
    * @param form [[Form]]
    * @param translate [[TranslatorService]]
    */
-  public static async buildDynamicForm(form: IDynamicFormConfig, translate: TranslationService): Promise<IDynamicForm> {
-    const configGeneratorFn = async (f: IDynamicFormConfig, t: TranslationService) => {
+  public static async buildDynamicForm(form: DynamicFormInterface, translate: TranslationService): Promise<IDynamicForm> {
+    const configGeneratorFn = async (f: DynamicFormInterface, t: TranslationService) => {
       let configs: IHTMLFormControl[] = [];
       const translatables: string[] = [];
       let translations: any[];
@@ -422,6 +422,7 @@ export class DynamicFormHelpers {
         }));
       }
       return new DynamicForm({
+        id: f.id,
         title: translations ? translations[f.title] : f.title,
         description: translations ? translations[f.description] : f.description,
         endpointURL: f.url,

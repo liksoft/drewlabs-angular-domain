@@ -3,9 +3,8 @@ import { IDynamicForm } from './contracts/dynamic-form';
 import { isArray, isDefined } from '../../../utils/types/type-utils';
 import { ArrayUtils } from '../../../utils/types/array-utils';
 import { CheckboxItem, ISelectItem, RadioItem } from './contracts/control-item';
-import { DynamicControlConfig } from './contracts/dynamic-form-control';
 import { DynamicForm } from './dynamic-form';
-import { Log } from '../../../utils/logger';
+import { DynamicFormControlInterface } from './compact/types';
 
 /**
  * @description Sort a dynamic form control configs by their [[formControlIndex]] property in the ascending order
@@ -26,9 +25,10 @@ export function sortFormByIndex(form: IDynamicForm): IDynamicForm {
   return loopThroughFormsFn(form);
 }
 
-export function rebuildFormControlConfigs(form: IDynamicForm, controlConfigs: Array<IHTMLFormControl>) {
+export function rebuildFormControlConfigs(form: IDynamicForm, controlConfigs: Array<IHTMLFormControl>): IDynamicForm {
   return sortFormByIndex(
     new DynamicForm({
+      id: form.id,
       title: form.title,
       endpointURL: form.endpointURL,
       description: form.description,
@@ -42,11 +42,11 @@ export function rebuildFormControlConfigs(form: IDynamicForm, controlConfigs: Ar
  * @description Helper method for creating a new dynmaic form
  * @param formConfigs Object with the shape of the IDynamicForm interface
  */
-export function createDynamicForm(formConfigs: IDynamicForm) {
+export function createDynamicForm(formConfigs: IDynamicForm): IDynamicForm {
   return new DynamicForm(formConfigs);
 }
 
-function parseControlItemsConfigs(model: DynamicControlConfig) {
+function parseControlItemsConfigs(model: DynamicFormControlInterface): { keyfield: string, valuefield: string } {
   const items = model.selectableModel.split('|');
   const keyfield = items[2].replace('keyfield:', '');
   const valuefield = items[4].replace('valuefield:', '');
@@ -65,7 +65,7 @@ export function buildRequiredIfConfig(stringifiedConfig: string): HTMLFormContro
   };
 }
 
-export function buildCheckboxItems(model: DynamicControlConfig): CheckboxItem[] {
+export function buildCheckboxItems(model: DynamicFormControlInterface): CheckboxItem[] {
   if (isDefined(model.selectableValues)) {
     const items = model.selectableValues.split('|');
     return items.map((v, i) => {
@@ -88,9 +88,9 @@ export function buildCheckboxItems(model: DynamicControlConfig): CheckboxItem[] 
     const { keyfield, valuefield } = parseControlItemsConfigs(model);
     return model.options ? model.options.map((v, index) => {
       return {
-        value: v[keyfield],
+        value: v[model.keyfield || keyfield],
         checked: index === 0,
-        description: v[valuefield]
+        description: v[model.valuefield || valuefield]
       } as CheckboxItem;
     }) : [];
   } else {
@@ -98,20 +98,20 @@ export function buildCheckboxItems(model: DynamicControlConfig): CheckboxItem[] 
   }
 }
 
-export function buildSelectItems(model: DynamicControlConfig): ISelectItem[] {
+export function buildSelectItems(model: DynamicFormControlInterface): ISelectItem[] {
   if (isDefined(model.selectableValues)) {
     const items = model.selectableValues.split('|');
     return items.map((v, i) => {
       if (v.indexOf(':') !== -1) {
         const idValueFields = v.split(':');
         return {
-          id: idValueFields[0].trim(),
+          value: idValueFields[0].trim(),
           name: idValueFields[1].trim(),
           description: idValueFields[1].trim()
         } as ISelectItem;
       } else {
         return {
-          id: isNaN(+v.trim()) ? v.trim() : +v.trim(),
+          value: isNaN(+v.trim()) ? v.trim() : +v.trim(),
           name: v.trim(),
           description: v.trim()
         } as ISelectItem;
@@ -122,9 +122,10 @@ export function buildSelectItems(model: DynamicControlConfig): ISelectItem[] {
     const { keyfield, valuefield } = parseControlItemsConfigs(model);
     return model.options ? model.options.map((v) => {
       return {
-        id: v[keyfield],
-        description: v[valuefield],
-        name: v[valuefield]
+        value: v[model.keyfield || keyfield],
+        description: v[model.valuefield || valuefield],
+        name: v[model.valuefield || valuefield],
+        type: model.groupfield ? v[model.groupfield] : null
       } as ISelectItem;
     }) : [];
   } else {
@@ -132,7 +133,7 @@ export function buildSelectItems(model: DynamicControlConfig): ISelectItem[] {
   }
 }
 
-export function buildRadioInputItems(model: DynamicControlConfig): RadioItem[] {
+export function buildRadioInputItems(model: DynamicFormControlInterface): RadioItem[] {
   if (isDefined(model.selectableValues)) {
     const items = model.selectableValues.split('|');
     return items.map((v, i) => {

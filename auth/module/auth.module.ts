@@ -1,6 +1,6 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthGuardService, PermissionsGuardGuard, RootComponentGuard } from '../core/auth-guard.service';
+import { AuthGuardService, AuthorizationsGuard, PermissionsGuardGuard, RootComponentGuard } from '../core/auth-guard.service';
 import { AuthUserService } from '../core/user.service';
 import { UserStorageProvider } from '../core/services/user-storage';
 import { GenericUndecoratedSerializaleSerializer } from '../../built-value/core/js/serializer';
@@ -36,6 +36,7 @@ export class AuthModule {
         AuthGuardService,
         AuthUserService,
         UserStorageProvider,
+        AuthorizationsGuard,
         // AuthService
         {
           provide: 'LOGIN_RESPONSE_HANDLER_FUNC',
