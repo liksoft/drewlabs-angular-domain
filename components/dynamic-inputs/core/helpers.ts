@@ -46,11 +46,12 @@ export function createDynamicForm(formConfigs: IDynamicForm): IDynamicForm {
   return new DynamicForm(formConfigs);
 }
 
-function parseControlItemsConfigs(model: DynamicFormControlInterface): { keyfield: string, valuefield: string } {
+function parseControlItemsConfigs(model: DynamicFormControlInterface): { keyfield: string, valuefield: string, groupfield: string } {
   const items = model.selectableModel.split('|');
   const keyfield = items[2].replace('keyfield:', '');
+  const groupfield = items[3].replace('groupfield:', '');
   const valuefield = items[4].replace('valuefield:', '');
-  return { keyfield, valuefield };
+  return { keyfield, valuefield, groupfield };
 }
 
 
@@ -85,12 +86,15 @@ export function buildCheckboxItems(model: DynamicFormControlInterface): Checkbox
       }
     });
   } else if (isDefined(model.selectableModel)) {
-    const { keyfield, valuefield } = parseControlItemsConfigs(model);
+    let { keyfield, valuefield, groupfield } = parseControlItemsConfigs(model);
+    keyfield = model.keyfield || keyfield;
+    valuefield = model.valuefield || valuefield;
+    groupfield = model.groupfield;
     return model.options ? model.options.map((v, index) => {
       return {
-        value: v[model.keyfield || keyfield],
+        value: v[keyfield],
         checked: index === 0,
-        description: v[model.valuefield || valuefield]
+        description: v[valuefield]
       } as CheckboxItem;
     }) : [];
   } else {
@@ -119,13 +123,16 @@ export function buildSelectItems(model: DynamicFormControlInterface): ISelectIte
     });
 
   } else if (isDefined(model.selectableModel)) {
-    const { keyfield, valuefield } = parseControlItemsConfigs(model);
+    let { keyfield, valuefield, groupfield } = parseControlItemsConfigs(model);
+    keyfield = model.keyfield || keyfield;
+    valuefield = model.valuefield || valuefield;
+    groupfield = model.groupfield;
     return model.options ? model.options.map((v) => {
       return {
-        value: v[model.keyfield || keyfield],
-        description: v[model.valuefield || valuefield],
-        name: v[model.valuefield || valuefield],
-        type: model.groupfield ? v[model.groupfield] : null
+        value: v[keyfield],
+        description: v[valuefield],
+        name: v[valuefield],
+        type: groupfield && (keyfield !== groupfield) && (valuefield !== groupfield) ? v[groupfield] : null
       } as ISelectItem;
     }) : [];
   } else {
@@ -154,7 +161,10 @@ export function buildRadioInputItems(model: DynamicFormControlInterface): RadioI
     });
 
   } else if (isDefined(model.selectableModel)) {
-    const { keyfield, valuefield } = parseControlItemsConfigs(model);
+    let { keyfield, valuefield, groupfield } = parseControlItemsConfigs(model);
+    keyfield = model.keyfield || keyfield;
+    valuefield = model.valuefield || valuefield;
+    groupfield = model.groupfield;
     return model.options ? model.options.map((v, index) => {
       return {
         value: v[keyfield],

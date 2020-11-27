@@ -10,7 +10,7 @@
     <ng-select [class]="inputConfig?.multiple ? '' : 'not-multiple'" [virtualScroll]="true" [items]="inputItems"
       [bindLabel]="'name'" [bindValue]="'value'"
       [multiple]="inputConfig.multiple" [placeholder]="inputConfig?.placeholder" [formControl]="control"
-      [groupBy]="inputTypeHelper.asSelectInput(inputConfig).groupByKey" [clearable]="true"
+      [groupBy]="'type'" [clearable]="true"
       (remove)="multiSelectItemRemove.emit($event)">
       <ng-template ng-option-tmp let-item="item" let-index="index" let-item$="item$">
         <div>
