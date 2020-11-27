@@ -1,12 +1,51 @@
-import { DynamicControlConfig } from '../contracts/dynamic-form-control';
 
-export class IDynamicFormConfig {
-  id: number = undefined;
-  title: string = undefined;
-  parentId: string = undefined;
-  description: string = undefined;
-  children: IDynamicFormConfig[] = undefined;
-  formControls: DynamicControlConfig[] = undefined;
-  url: string = undefined;
-  status: number = undefined;
+export interface DynamicFormInterface {
+  id: number;
+  title: string;
+  parentId: string;
+  description: string;
+  children: DynamicFormInterface[];
+  formControls: DynamicFormControlInterface[];
+  url: string;
+  status: number;
+}
+
+export interface DynamicFormControlInterface {
+  id: number;
+  label: string;
+  placeholder?: string;
+  type: string;
+  classes?: string;
+  requiredIf: string;
+  required: number;
+  disabled: number;
+  readonly: number;
+  unique: number;
+  pattern: string;
+  description: string;
+  maxLength?: number;
+  minLength?: number;
+  min: number;
+  max: number;
+  minDate: string;
+  maxDate: string;
+  selectableValues: string;
+  selectableModel: string;
+  multiple: number;
+  controlGroupKey: string;
+  controlName: string;
+  controlIndex: number;
+  options: object[];
+  rows: number;
+  columns: number;
+  value: string;
+  uploadURL: string;
+  isRepeatable: number;
+  children: DynamicFormControlInterface[];
+  uniqueOn: string;
+  dynamicControlContainerClass: string;
+  // Added properties
+  valuefield: string;
+  groupfield: string;
+  keyfield: string;
 }

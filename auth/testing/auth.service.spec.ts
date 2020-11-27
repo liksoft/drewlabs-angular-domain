@@ -95,7 +95,6 @@ describe('Authentication Service provider tests', () => {
       .pipe(
         filter(state => !state.authenticating && isDefined(state.isInitialState))
       ).subscribe(state => {
-        Log('Testing state [Azandrew]: ', JSON.stringify(state));
         expect(state.isLoggedIn).toBe(false);
         done();
       });
@@ -114,7 +113,6 @@ describe('Authentication Service provider tests', () => {
     // Assert
     // result$.subscribe({
     //   next: (source) => {
-    //     Log('Returned source', source);
     //     expect(source.statusCode).toBe(500);
     //     done();
     //   },

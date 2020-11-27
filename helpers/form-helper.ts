@@ -3,7 +3,7 @@ import { FormService } from '../components/dynamic-inputs/core/form-control/form
 import { TranslationService } from '../translator';
 import { DynamicFormHelpers, ComponentReactiveFormHelpers } from './component-reactive-form-helpers';
 import { ICollection } from '../contracts/collection-interface';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, startWith, takeUntil } from 'rxjs/operators';
 import { AbstractEntityProvider } from '../entity/abstract-entity';
 import { AbstractAlertableComponent } from 'src/app/lib/domain/helpers/component-interfaces';
 import { FormGroup } from '@angular/forms';
@@ -20,6 +20,9 @@ import { ArrayUtils, isDefined } from '../utils';
 import { Collection } from '../collections/collection';
 import { createSubject } from '../rxjs/helpers';
 import { Observable } from 'rxjs';
+import { isArray } from 'lodash';
+import { Log } from '../utils/logger';
+import { DynamicFormInterface } from '../components/dynamic-inputs/core/compact/types';
 
 /**
  * @description Definition of form request configuration object
@@ -47,7 +50,7 @@ export class FormHelperService implements OnDestroy {
   // tslint:disable-next-line: variable-name
   protected _formLoaded = createSubject<ICollection<IDynamicForm>>();
   get formLoaded$(): Observable<ICollection<IDynamicForm>> {
-    return this._formLoaded.asObservable().pipe(takeUntil(this.destroy$));
+    return this._formLoaded.pipe(startWith(this.inMemoryFormCollection), takeUntil(this.destroy$));
   }
   public readonly destroy$ = createSubject();
 
@@ -68,6 +71,14 @@ export class FormHelperService implements OnDestroy {
     });
   }
 
+  getForms = async (params: { [prop: string]: any }) => {
+    const values = await this.form.getForms(params);
+    return values && isArray(values) ? Promise.all(
+      values.map(
+        value => DynamicFormHelpers.buildDynamicForm(value, this.translate))
+    ) : Promise.all([]);
+  }
+
   suscribe = () => {
     // Initialize publishers
     // Register to publishers events
@@ -86,11 +97,24 @@ export class FormHelperService implements OnDestroy {
           return isDefined(this.inMemoryFormCollection.get(item.id.toString()));
         });
         // Get form configurations that are not in the in-memory forms' collection from the backend provider
-        const values = await Promise.all(configs.map((i) => this.getFormById(i.id)));
+        const values = (await this.getForms({
+          _query: JSON.stringify({
+            whereIn: {
+              column: 'id',
+              match: configs.map(config => config.id)
+            }
+          }),
+          with_controls: true
+        }) as IDynamicForm[]).reduce((acc, current) => {
+          const obj = {} as { [prop: string]: any };
+          obj[current.id.toString()] = current;
+          return { ...acc, ...obj };
+        }, {}) as { [prop: string]: IDynamicForm };
+        Log('Form values: ', values);
         configs.forEach((item) => {
-          collection.add(item.label, Object.assign(values[configs.indexOf(item)]));
+          collection.add(item.label, { ...values[item.id.toString()] });
           // Add loaded form configurations to the in-memory collection
-          this.inMemoryFormCollection.add(item.id.toString(), Object.assign(values[configs.indexOf(item)]));
+          this.inMemoryFormCollection.add(item.id.toString(), { ...values[item.id.toString()] });
         });
         inmemoryConfigs.forEach((item) => {
           // Get the dynamic form configuration from the in-memory forms' collection
@@ -161,13 +185,11 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
       configs: this.getFormConfigs(),
       result: {
         error: (error: any) => {
-          console.log(error);
         },
         success: () => {
           this.appUIStoreManager.completeUIStoreAction();
         },
         warnings: (errors: any) => {
-          console.log(errors);
         }
       }
     }

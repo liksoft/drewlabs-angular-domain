@@ -6,14 +6,14 @@ import { PaginationDataState } from '../types';
 import * as _ from 'lodash';
 
 export const updatePaginationData = <T extends { id: string | number }>(
-  values: PaginationDataState<{ [index: string]: T }>, payload: any) => {
+  values: PaginationDataState<T>, payload: any) => {
   // tslint:disable-next-line: variable-name
   let _values = { ...values };
   // tslint:disable-next-line: variable-name
   const _items = _values.items || {};
   if (payload) {
     if (payload.data) {
-      (payload.data as { [index: string]: any }[]).forEach((value) => {
+      (payload.data as T[]).forEach((value) => {
         const key = value.id.toString();
         if (_items[key]) {
           _items[key] = value;

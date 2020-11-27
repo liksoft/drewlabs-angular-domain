@@ -4,10 +4,10 @@ import { InputTypes } from './contracts/input-types';
 import { buildRequiredIfConfig, buildCheckboxItems, buildRadioInputItems, buildSelectItems } from './helpers';
 import { CheckboxItem, ISelectItem, RadioItem } from './contracts/control-item';
 import { AbstractHTMLFormControl } from './dynamic-input';
-import { DynamicControlConfig } from './contracts/dynamic-form-control';
 import { IHTMLFormControl } from './contracts/dynamic-input';
+import { DynamicFormControlInterface } from './compact/types';
 
-export function toDynamicControl(model: DynamicControlConfig): IHTMLFormControl {
+export function toDynamicControl(model: DynamicFormControlInterface): IHTMLFormControl {
   switch (model.type) {
     case InputTypes.DATE_INPUT:
       return DateInput.fromFormControlModel(model);
@@ -62,7 +62,7 @@ export class TextInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new TextInput(
       {
         label: model.label,
@@ -119,7 +119,7 @@ export class DateInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new DateInput(
       {
         label: model.label,
@@ -170,7 +170,7 @@ export class CheckBoxInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new CheckBoxInput(
       {
         label: model.label,
@@ -207,7 +207,7 @@ export class HiddenInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new HiddenInput(
       {
         label: model.label,
@@ -254,7 +254,7 @@ export class NumberInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new NumberInput(
       {
         label: model.label,
@@ -301,7 +301,7 @@ export class PasswordInput extends TextInput {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new PasswordInput(
       {
         label: model.label,
@@ -351,7 +351,7 @@ export class PhoneInput extends TextInput {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new PhoneInput(
       {
         label: model.label,
@@ -402,7 +402,7 @@ export class RadioInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new RadioInput(
       {
         label: model.label,
@@ -458,7 +458,7 @@ export class SelectInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new SelectInput(
       {
         label: model.label,
@@ -511,7 +511,7 @@ export class TextAreaInput extends TextInput {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new TextAreaInput(
       {
         label: model.label,
@@ -562,7 +562,7 @@ export class FileInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new FileInput(
       {
         label: model.label,
@@ -607,7 +607,7 @@ export class HMTLInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new HMTLInput(
       {
         label: model.label,
@@ -650,7 +650,7 @@ export class InputGroup extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicControlConfig): IHTMLFormControl {
+  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
     return new InputGroup(
       {
         label: model.label,

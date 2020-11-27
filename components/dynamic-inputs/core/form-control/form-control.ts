@@ -1,6 +1,6 @@
 import { JsonProperty, ObjectSerializer } from 'src/app/lib/domain/built-value/core/serializers';
-import { ISerializer, ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
-import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from 'src/app/lib/domain/built-value/contracts/type';
+import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
+import { TypeBuilder } from 'src/app/lib/domain/built-value/contracts/type';
 // tslint:disable-next-line: max-line-length
 import {
   DateInput,
@@ -18,50 +18,10 @@ import {
 } from 'src/app/lib/domain/components/dynamic-inputs/core/input-types';
 import { InputTypes } from '../contracts/input-types';
 import { IHTMLFormControl } from '../contracts/dynamic-input';
-import { FormViewModel } from '../contracts/dynamic-form';
+import { GenericSerializaleSerializer } from 'src/app/lib/domain/built-value/core/js/serializer';
+import { DynamicFormControlInterface } from '../compact/types';
 
-export class FormControlBuilder implements ISerializableBuilder<FormControl>, TypeBuilder<FormControl> {
-  serializer: ISerializer;
-
-  /**
-   *
-   */
-  constructor() {
-    this.serializer = new ObjectSerializer();
-  }
-
-  /**
-   * @inheritdoc
-   */
-  fromSerialized(serialized: any): FormControl {
-    return this.serializer.deserialize(FormControl, serialized);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  // tslint:disable-next-line: typedef
-  toSerialized(value: FormControl) {
-    return this.serializer.serialize(FormControl, value);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  build(bluePrint: new () => FormControl, params: object): FormControl {
-    return buildJSObjectType(bluePrint, params);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  rebuild(instance: FormControl, params: object | FormControl): FormControl {
-    return rebuildJSObjectType(instance, params);
-  }
-
-}
-
-export function formControlModelToDynamicControl(model: FormControl): IHTMLFormControl {
+export function formControlModelToDynamicControl(model: DynamicFormControlInterface): IHTMLFormControl {
   switch (model.type) {
     case InputTypes.DATE_INPUT:
       return DateInput.fromFormControlModel(model);
@@ -92,7 +52,7 @@ export function formControlModelToDynamicControl(model: FormControl): IHTMLFormC
   }
 }
 
-export class FormControl implements FormViewModel {
+export class FormControl implements DynamicFormControlInterface {
   @JsonProperty('id')
   id: number = undefined;
   @JsonProperty('formId')
@@ -158,17 +118,21 @@ export class FormControl implements FormViewModel {
   @JsonProperty('isRepeatable')
   isRepeatable: number = undefined;
   @JsonProperty({ name: 'children', valueType: FormControl })
-  children: FormControl[] = undefined;
+  children: DynamicFormControlInterface[] = undefined;
   @JsonProperty('uniqueOn')
   uniqueOn: string = undefined;
   @JsonProperty('containerClass')
   dynamicControlContainerClass: string = undefined;
+  @JsonProperty('valuefield')
+  valuefield: string = undefined;
+  @JsonProperty('groupfield')
+  groupfield: string = undefined;
+  @JsonProperty('keyfield')
+  keyfield: string = undefined;
 
-  /**
-   * @description Calls to get the builder provider of the current class|type
-   */
+
   static builder(): TypeBuilder<FormControl> | ISerializableBuilder<FormControl> {
-    return new FormControlBuilder();
+    return new GenericSerializaleSerializer(FormControl, new ObjectSerializer());
   }
 
   /**

@@ -12,7 +12,7 @@ export interface CheckboxItem {
  * @description Interface definitions of a item of HTML select control
  */
 export interface ISelectItem {
-  id: any;
+  value: any;
   name: string;
   type: string;
   description?: string;

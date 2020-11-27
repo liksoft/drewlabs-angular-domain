@@ -66,7 +66,7 @@ export class DynamicFormWapperComponent {
 
   // tslint:disable-next-line: typedef
   buildConditionalControlBindings(v: IDynamicForm) {
-    if (isDefined(v.controlConfigs) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
+    if (isDefined(v.controlConfigs) && isDefined(this.componentFormGroup) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
       (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
         if (isDefined(c.requiredIf)) {
           this.conditionalControlBindings[c.formControlName] = {

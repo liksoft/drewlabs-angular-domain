@@ -189,7 +189,6 @@ export const departmentDeletedAction = (
 export const getDepartmentUsingID = (
   store: DrewlabsFluxStore<DepartmentV2sState, Partial<StoreAction>>) =>
   createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: string | number) => {
-    Log('Getting department...');
     return {
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.getUsingID(path, id)

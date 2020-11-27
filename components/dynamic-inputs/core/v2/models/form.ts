@@ -1,16 +1,21 @@
-import { DynamicControlConfig } from '../../contracts/dynamic-form-control';
 import { FormControlV2 } from './form-control';
-import { IDynamicFormConfig } from '../../compact/types';
+import { DynamicFormControlInterface, DynamicFormInterface } from '../../compact/types';
+import { GenericSerializaleSerializer, UndecoratedSerializer } from '../../../../../built-value/core/js/serializer';
+import { ISerializableBuilder } from '../../../../../built-value/contracts';
 
-export class FormV2 implements IDynamicFormConfig {
+export class FormV2 implements DynamicFormInterface {
   id: number = undefined;
   title: string = undefined;
   parentId: string = undefined;
   description: string = undefined;
   children: FormV2[] = undefined;
-  formControls: DynamicControlConfig[] = undefined;
+  formControls: DynamicFormControlInterface[] = undefined;
   url: string = undefined;
   status: number = undefined;
+
+  static builder(): ISerializableBuilder<FormV2> {
+    return new GenericSerializaleSerializer(FormV2, new UndecoratedSerializer());
+  }
 
   public static getJsonableProperties(): { [index: string]: keyof FormV2 | { name: string, type: any } } {
     return {
@@ -20,7 +25,8 @@ export class FormV2 implements IDynamicFormConfig {
       children: { name: 'children', type: FormV2 },
       formControls: { name: 'formControls', type: FormControlV2 },
       url: 'url',
-      status: 'status'
+      status: 'status',
+      id: 'id'
     };
   }
 }
@@ -33,6 +39,11 @@ export class FormControlOption {
   groupfield: string = undefined;
   description: string = undefined;
   displayLabel: string = undefined;
+
+
+  static builder(): ISerializableBuilder<FormControlOption> {
+    return new GenericSerializaleSerializer(FormControlOption, new UndecoratedSerializer());
+  }
 
   public static getJsonableProperties(): { [index: string]: keyof FormControlOption | { name: string, type: any } } {
     return {

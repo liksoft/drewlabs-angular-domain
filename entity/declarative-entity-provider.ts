@@ -11,10 +11,8 @@ export class DeclarativeEntityProvider<T> {
 
   // Provide list of entity of type T
   allEntity$ = this.allEntityAction$.pipe(
-    tap(source => console.log('Event: ', JSON.stringify(source))),
     filter(source => Boolean(source)),
     mergeMap(source => this.provider.get(source.path, source.params)),
-    tap(source => console.log('Values: ', JSON.stringify(source))),
     map(source => {
       const { data } = source;
       return data;

@@ -1,47 +1,7 @@
 import { JsonProperty, ObjectSerializer } from 'src/app/lib/domain/built-value/core/serializers';
-import { ISerializer, ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
-import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from 'src/app/lib/domain/built-value/contracts/type';
-
-export class FormControlOptionsEntityBuilder
-implements ISerializableBuilder<FormControlOptionsEntity>, TypeBuilder<FormControlOptionsEntity> {
-  serializer: ISerializer;
-
-  /**
-   *
-   */
-  constructor() {
-    this.serializer = new ObjectSerializer();
-  }
-
-  /**
-   * @inheritdoc
-   */
-  fromSerialized(serialized: any): FormControlOptionsEntity {
-    return this.serializer.deserialize(FormControlOptionsEntity, serialized);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  toSerialized(value: FormControlOptionsEntity) {
-    return this.serializer.serialize(FormControlOptionsEntity, value);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  build(bluePrint: new () => FormControlOptionsEntity, params: object): FormControlOptionsEntity {
-    return buildJSObjectType(bluePrint, params);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  rebuild(instance: FormControlOptionsEntity, params: object | FormControlOptionsEntity): FormControlOptionsEntity {
-    return rebuildJSObjectType(instance, params);
-  }
-
-}
+import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
+import { TypeBuilder } from 'src/app/lib/domain/built-value/contracts/type';
+import { GenericSerializaleSerializer } from 'src/app/lib/domain/built-value/core/js/serializer';
 
 export class FormControlOptionsEntity {
   @JsonProperty('id')
@@ -61,6 +21,6 @@ export class FormControlOptionsEntity {
    * @description Calls to get the builder provider of the current class|type
    */
   static builder(): TypeBuilder<FormControlOptionsEntity> | ISerializableBuilder<FormControlOptionsEntity> {
-    return new FormControlOptionsEntityBuilder();
+    return new GenericSerializaleSerializer(FormControlOptionsEntity, new ObjectSerializer());
   }
 }

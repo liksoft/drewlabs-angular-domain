@@ -34,7 +34,6 @@ export const createControlAction = (
           map((state) => {
             // tslint:disable-next-line: one-variable-per-declaration
             const data = getResponseDataFromHttpResponse(state);
-            Log('Form control creation request response body:', data);
             if (isDefined(data)) {
               return controlCreatedAction(store)((new GenericUndecoratedSerializaleSerializer()
                 .fromSerialized(FormControlV2, data)) as FormControlV2);
@@ -68,7 +67,6 @@ export const updateFormControlAction = (
           map((state) => {
             // tslint:disable-next-line: one-variable-per-declaration
             const data = getResponseDataFromHttpResponse(state);
-            Log('Form control update request response body: ', data);
             if (isDefined(data)) {
               if (isObject(data)) {
                 return formControlUpdatedAction(store)({
@@ -110,7 +108,6 @@ export const deleteFormControlAction = (
           map((state) => {
             // tslint:disable-next-line: one-variable-per-declaration
             const data = getResponseDataFromHttpResponse(state);
-            Log('Form control delete request response body: ', data);
             if (isDefined(data)) {
               if (isObject(data)) {
                 return formControlDeletedAction(store)({

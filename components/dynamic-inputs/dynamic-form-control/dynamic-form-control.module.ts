@@ -2,7 +2,6 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DynamicFormControlComponent } from './dynamic-form-control.component';
-import { HTMLFormControlService } from './dynamic-input.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgSelectModule} from '@ng-select/ng-select';
 import { IntlTelInputModule } from 'src/app/lib/domain/components/intl-tel-input';

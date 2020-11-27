@@ -6,7 +6,6 @@ import { Log } from '../../../utils/logger';
 describe('Drewlabs server response v2 parser', () => {
   it('should have an HttpResponse object with status ok and error message null', () => {
     const response = parseV2HttpResponse(SERVER_RESPONSE);
-    Log('Parse HTTP v2 Response resutl : ', response);
     expect(response.errorMessage).toBeNull('Expect response.errorMessage to be null');
     expect(response.statusCode).toEqual(200, 'Expect response.statusCode to be 200');
     expect(response.data).toBeTruthy('Expect response.data to not be null');
