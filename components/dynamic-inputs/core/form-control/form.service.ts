@@ -43,7 +43,7 @@ export class FormService {
    * @description Get the form with the provided using the loaded form id
    */
   public async getForm(id: string | number, params?: { [prop: string]: any }): Promise<DynamicFormInterface> {
-    return this.client.get(`${this.ressourcesPath}/${id}`, params).pipe(
+    return this.client.get(`${this.ressourcesPath}/${id}`, { params }).pipe(
       map(state => {
         const data = getResponseDataFromHttpResponse(state);
         return (isDefined(data)) ? (FormV2.builder() as ISerializableBuilder<FormV2>).fromSerialized(data) : null;
@@ -54,8 +54,8 @@ export class FormService {
   /**
    * @description Get all forms from the data source
    */
-  public async getForms(params: {[prop: string]: any}): Promise<DynamicFormInterface[]> {
-    return this.client.get(`${this.ressourcesPath}`, {params}).pipe(
+  public async getForms(params: { [prop: string]: any }): Promise<DynamicFormInterface[]> {
+    return this.client.get(`${this.ressourcesPath}`, { params }).pipe(
       map(state => {
         const data = getResponseDataFromHttpResponse(state);
         return (isDefined(data) && isArray(data)) ? (data as { [prop: string]: any }[])
@@ -149,9 +149,9 @@ export class FormService {
   updateFormControl(endPointURL: string, elementId: string | number, requestBody: object): Promise<any> {
     // tslint:disable-next-line: deprecation
     return this.client.update(endPointURL, elementId, requestBody)
-    .pipe(
-      map(state => state)
-    ).toPromise();
+      .pipe(
+        map(state => state)
+      ).toPromise();
   }
 
   /**
@@ -163,8 +163,8 @@ export class FormService {
   deleteFormElement(endPointURL: string, elementId: string | number): Promise<any> {
     // tslint:disable-next-line: deprecation
     return this.client.update(endPointURL, elementId)
-    .pipe(
-      map(state => state)
-    ).toPromise();
+      .pipe(
+        map(state => state)
+      ).toPromise();
   }
 }
