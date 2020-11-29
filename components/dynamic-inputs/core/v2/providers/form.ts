@@ -1,20 +1,29 @@
-import { PaginationData } from '../../../../../pagination/types';
 import { createStore } from '../../../../../rxjs/state/rx-state';
 import { FormState } from '../actions';
-import { FormV2 } from '../models/form';
 import { formsReducer } from '../reducers';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 const initialState: FormState = {
-  items: [],
-  pagination: {} as PaginationData<FormV2>,
+  collections: {
+    currentPage: 1,
+    total: 0,
+    items: {},
+    data: [],
+    lastPage: null,
+    nextPageURL: null,
+    lastPageURL: null
+  },
   selectedFormId: null,
-  createdForm: null,
+  currentForm: null,
   performingAction: false,
   error: null,
+  createResult: null,
   updateResult: null,
-  deleteResult: null
+  deleteResult: null,
+  createControlResult: null,
+  updateControlResult: null,
+  deleteControlResult: null,
 };
 
 @Injectable({

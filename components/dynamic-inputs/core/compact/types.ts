@@ -2,14 +2,13 @@
 export interface DynamicFormInterface {
   id: number;
   title: string;
-  parentId: string;
-  description: string;
-  children: DynamicFormInterface[];
-  formControls: DynamicFormControlInterface[];
-  url: string;
-  status: number;
+  parentId?: string;
+  description?: string;
+  children?: Partial<DynamicFormInterface>[];
+  formControls: Partial<DynamicFormControlInterface>[];
+  url?: string;
+  status?: number;
 }
-
 export interface DynamicFormControlInterface {
   id: number;
   label: string;
@@ -40,8 +39,8 @@ export interface DynamicFormControlInterface {
   columns: number;
   value: string;
   uploadURL: string;
-  isRepeatable: number;
-  children: DynamicFormControlInterface[];
+  isRepeatable?: number;
+  children: Partial<DynamicFormControlInterface>[];
   uniqueOn: string;
   dynamicControlContainerClass: string;
   // Added properties

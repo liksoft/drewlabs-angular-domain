@@ -12,6 +12,8 @@ import { map } from 'rxjs/operators';
 import { FormV2 } from '../v2/models/form';
 import { FormControlV2 } from '../v2/models';
 import { DynamicFormInterface } from '../compact/types';
+import { IHttpResponse } from 'src/app/lib/domain/http/contracts';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +24,6 @@ export class FormService {
   public readonly formControlRessourcesPath: string;
   public readonly formFormControlRessourcesPath: string;
   public readonly bindableEntitiesRessourcesPath: string;
-  // public readonly dataSource: IDataSourceService<ISource<Form>>;
-  // private formId: number;
 
   /**
    * @description Service initializer
@@ -36,7 +36,6 @@ export class FormService {
     this.formControlRessourcesPath = 'form-controls';
     this.formFormControlRessourcesPath = 'form-form-controls';
     this.bindableEntitiesRessourcesPath = 'form-control-options';
-    // this.dataSource = new FormDataSource(client, this.get, this.ressourcesPath);
   }
 
   /**
@@ -52,9 +51,21 @@ export class FormService {
   }
 
   /**
+   * @description Get the form with the provided using the loaded form id
+   */
+  public rxGetForm(id: string | number, params?: { [prop: string]: any }): Observable<DynamicFormInterface> {
+    return this.client.get(`${this.ressourcesPath}/${id}`, params).pipe(
+      map(state => {
+        const data = getResponseDataFromHttpResponse(state);
+        return (isDefined(data)) ? (FormV2.builder() as ISerializableBuilder<FormV2>).fromSerialized(data) : null;
+      })
+    );
+  }
+
+  /**
    * @description Get all forms from the data source
    */
-  public async getForms(params: {[prop: string]: any}): Promise<DynamicFormInterface[]> {
+  public async getForms(params: {[prop: string]: any} = {}): Promise<DynamicFormInterface[]> {
     return this.client.get(`${this.ressourcesPath}`, {params}).pipe(
       map(state => {
         const data = getResponseDataFromHttpResponse(state);
@@ -96,7 +107,7 @@ export class FormService {
    * @param endPointURL [[string]]
    */
   // tslint:disable-next-line: deprecation
-  createForm(requestBody: object, endPointURL: string = null): Promise<DynamicFormInterface | any> {
+  createForm(requestBody: object, endPointURL: string = null): Promise<DynamicFormInterface | IHttpResponse<any>> {
     // tslint:disable-next-line: deprecation
     return this.client.create(isDefined(endPointURL) ? endPointURL : this.ressourcesPath, requestBody)
       .pipe(
@@ -115,7 +126,7 @@ export class FormService {
    * @param endPointURL [[string]]
    */
   // tslint:disable-next-line: deprecation
-  updateForm(id: number | string, requestBody: object, endPointURL: string = null): Promise<any> {
+  updateForm(id: number | string, requestBody: object, endPointURL: string = null): Promise<IHttpResponse<any>> {
     // tslint:disable-next-line: deprecation
     return this.client.update(`${isDefined(endPointURL) ? endPointURL : this.ressourcesPath}`, id, requestBody)
       .pipe(
@@ -130,7 +141,7 @@ export class FormService {
    * @param endPointURL [[string]]
    */
   // tslint:disable-next-line: deprecation
-  createFormControl(requestBody: object, endPointURL: string = null): Promise<any | FormControl | FormControlV2> {
+  createFormControl(requestBody: object, endPointURL: string = null): Promise<IHttpResponse<any> | FormControl | FormControlV2> {
     return this.client.create(isDefined(endPointURL) ? endPointURL : this.formControlRessourcesPath, requestBody)
       .pipe(
         map(state => {
@@ -146,7 +157,7 @@ export class FormService {
    * @param requestBody [[object]]
    */
   // tslint:disable-next-line: deprecation
-  updateFormControl(endPointURL: string, elementId: string | number, requestBody: object): Promise<any> {
+  updateFormControl(endPointURL: string, elementId: string | number, requestBody: object): Promise<IHttpResponse<any>> {
     // tslint:disable-next-line: deprecation
     return this.client.update(endPointURL, elementId, requestBody)
     .pipe(
@@ -160,7 +171,7 @@ export class FormService {
    * @param elementId [[number|string]]
    */
   // tslint:disable-next-line: deprecation
-  deleteFormElement(endPointURL: string, elementId: string | number): Promise<any> {
+  deleteFormElement(endPointURL: string, elementId: string | number): Promise<IHttpResponse<any>> {
     // tslint:disable-next-line: deprecation
     return this.client.update(endPointURL, elementId)
     .pipe(

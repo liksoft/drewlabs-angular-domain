@@ -25,7 +25,7 @@ export abstract class AbstractHTMLFormControl implements IHTMLFormControl {
    * @description Instance initializer
    * @param param Required input configuration object
    */
-  constructor(param: IHTMLFormControl) {
+  constructor(param: Partial<IHTMLFormControl>) {
     this.label = param.label;
     this.type = param.type;
     this.formControlName = param.formControlName;

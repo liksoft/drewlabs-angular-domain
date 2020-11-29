@@ -6,20 +6,8 @@ export {
   formUpdatedAction,
   onPaginateFormsAction,
   onFormPaginationDataLoaded,
-  onAddFormToStackAction,
+  onNewFormAction as onAddFormToStackAction,
   updateFormAction,
   deleteFormAction,
   selectFormAction
 } from './form';
-
-
-export {
-  FormControlState,
-  FormControlStoreActions,
-  createControlAction,
-  controlCreatedAction,
-  updateFormControlAction,
-  deleteFormControlAction,
-  formControlDeletedAction,
-  formControlUpdatedAction,
-} from './form-control';

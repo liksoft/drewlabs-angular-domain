@@ -1,3 +1,5 @@
+import { RadioItem } from '../input-types';
+import { CheckboxItem, ISelectItem } from './control-item';
 import { IHTMLFormControlValidationRule } from './input-rules';
 
 export interface HTMLFormControlRequireIfConfig {
@@ -27,4 +29,13 @@ export interface IHTMLFormControl {
   isRepeatable: boolean;
   uniqueCondition?: string;
   containerClass: string;
+}
+
+export interface BindingControlInterface {
+  serverBindings?: string;
+  clientBindings?: string;
+  groupfield: string;
+  valuefield: string;
+  keyfield: string;
+  items: CheckboxItem[]|ISelectItem[]|RadioItem[];
 }

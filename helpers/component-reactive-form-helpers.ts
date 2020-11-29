@@ -363,8 +363,8 @@ export class DynamicFormHelpers {
    * @param form [[Form]]
    * @param translate [[TranslatorService]]
    */
-  public static async buildDynamicForm(form: DynamicFormInterface, translate: TranslationService): Promise<IDynamicForm> {
-    const configGeneratorFn = async (f: DynamicFormInterface, t: TranslationService) => {
+  public static async buildDynamicForm(form: Partial<DynamicFormInterface>, translate: TranslationService): Promise<IDynamicForm> {
+    const configGeneratorFn = async (f: Partial<DynamicFormInterface>, t: TranslationService) => {
       let configs: IHTMLFormControl[] = [];
       const translatables: string[] = [];
       let translations: any[];

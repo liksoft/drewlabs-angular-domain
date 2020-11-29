@@ -21,8 +21,6 @@ import { Collection } from '../collections/collection';
 import { createSubject } from '../rxjs/helpers';
 import { Observable } from 'rxjs';
 import { isArray } from 'lodash';
-import { Log } from '../utils/logger';
-import { DynamicFormInterface } from '../components/dynamic-inputs/core/compact/types';
 
 /**
  * @description Definition of form request configuration object
@@ -110,7 +108,6 @@ export class FormHelperService implements OnDestroy {
           obj[current.id.toString()] = current;
           return { ...acc, ...obj };
         }, {}) as { [prop: string]: IDynamicForm };
-        Log('Form values: ', values);
         configs.forEach((item) => {
           collection.add(item.label, { ...values[item.id.toString()] });
           // Add loaded form configurations to the in-memory collection

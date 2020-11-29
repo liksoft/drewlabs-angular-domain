@@ -85,7 +85,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
    */
   // tslint:disable-next-line: typedef
   delete(path: string, params: object) {
-    return this.httpClient.put(`${path}`, params)
+    return this.httpClient.delete(`${path}`, params)
       .pipe(
         doLog(`/DELETE ${path} - Request response: `),
         mapToHttpResponse<IHttpResponse<any>>(this.responseTransformHandler.bind(null))

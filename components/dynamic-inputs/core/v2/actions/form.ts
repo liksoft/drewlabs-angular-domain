@@ -1,4 +1,3 @@
-import { PaginationData } from '../../../../../pagination/types';
 import { FormV2 } from '../models/form';
 import { createAction, DefaultStoreAction, DrewlabsFluxStore, onErrorAction, StoreAction } from '../../../../../rxjs/state/rx-state';
 import { DrewlabsRessourceServerClient } from '../../../../../http/core/ressource-server-client';
@@ -8,27 +7,35 @@ import { emptyObservable } from '../../../../../rxjs/helpers';
 import { GenericUndecoratedSerializaleSerializer } from '../../../../../built-value/core/js/serializer';
 import { isArray, isDefined, isObject } from '../../../../../utils/types';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Log } from '../../../../../utils/logger';
+import { UIStateStatusCode } from '../../../../../helpers';
+import { DynamicFormInterface } from '../../compact/types';
+import { PaginationDataState } from 'src/app/lib/domain/rxjs/types';
+import { FormControlV2 } from '../models';
 
 export interface FormState {
   performingAction: boolean;
-  items: FormV2[];
-  pagination: PaginationData<FormV2>;
+  collections: PaginationDataState<DynamicFormInterface>;
   selectedFormId: number;
-  createdForm: FormV2;
-  // loadedForm: FormV2;
-  updateResult: boolean;
-  deleteResult: boolean;
+  currentForm: FormV2;
+  createResult: UIStateStatusCode;
+  updateResult: UIStateStatusCode;
+  deleteResult: UIStateStatusCode;
+  createControlResult: UIStateStatusCode;
+  updateControlResult: UIStateStatusCode;
+  deleteControlResult: UIStateStatusCode;
   error: any;
 }
 
 export enum FormStoreActions {
   FORM_SELECTED_ACTION = '[FORM_SELECTED]',
   FORM_PAGINATION_DATA_ACTION = '[FORM_PAGINATION_DATA]',
-  CREATED_FORM_ACTION = '[CREATED_FORM]',
-  ADD_TO_FORMS_STACK_ACTION = '[ADD_TO_FORMS_STACK]',
-  FORM_UPDATED_ACTION = '[FORM_UPDATED]',
-  FORM_DELETED_ACTION = '[FORM_DELETED]'
+  CREATE_RESULT_ACTION = '[CREATED_FORM]',
+  NEW_VALUE_ACTION = '[ADD_TO_FORMS_STACK]',
+  UPDATE_RESULT_ACTION = '[FORM_UPDATED]',
+  DELETE_RESULT_ACTION = '[FORM_DELETED]',
+  CONTROL_CREATE_RESULT_ACTION = '[FORM_CONTROL_CREATED]',
+  CONTROL_UPDATE_RESULT_ACTION = '[FORM_CONTROL_UPDATED]',
+  CONTROL_DELETE_RESULT_ACTION = '[FORM_CONTROL_REMOVED]',
 }
 
 export const onPaginateFormsAction = (store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
@@ -66,7 +73,7 @@ export const onPaginateFormsAction = (store: DrewlabsFluxStore<FormState, Partia
 
 
 export const onFormPaginationDataLoaded = (store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
-  createAction(store, (payload: PaginationData<FormV2>) => {
+  createAction(store, (payload: PaginationDataState<FormV2>) => {
     return {
       type: FormStoreActions.FORM_PAGINATION_DATA_ACTION,
       payload
@@ -76,149 +83,268 @@ export const onFormPaginationDataLoaded = (store: DrewlabsFluxStore<FormState, P
 export const createFormAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (client: DrewlabsRessourceServerClient, path: string, body: { [index: string]: any }) =>
-    ({
-      type: DefaultStoreAction.ASYNC_UI_ACTION,
-      payload: client.create(path, body)
-        .pipe(
-          map((state) => {
-            // tslint:disable-next-line: one-variable-per-declaration
-            const data = getResponseDataFromHttpResponse(state);
-            if (isDefined(data)) {
-              return formCreatedAction(store)((new GenericUndecoratedSerializaleSerializer()
-                .fromSerialized(FormV2, data)) as FormV2);
-            }
-          }),
-          catchError(err => {
-            if (err instanceof HttpErrorResponse) {
-              const errorResponse = client.handleErrorResponse(err);
-              onErrorAction(store)(errorResponse);
-            } else {
-              onErrorAction(err);
-            }
-            return emptyObservable();
-          })
-        )
-    }));
+  ({
+    type: DefaultStoreAction.ASYNC_UI_ACTION,
+    payload: client.create(path, body)
+      .pipe(
+        map((state) => {
+          // tslint:disable-next-line: one-variable-per-declaration
+          const data = getResponseDataFromHttpResponse(state);
+          if (isDefined(data)) {
+            return formCreatedAction(store)({
+              currentForm: (new GenericUndecoratedSerializaleSerializer()
+                .fromSerialized(FormV2, data)) as FormV2,
+              createResult: UIStateStatusCode.STATUS_CREATED
+            });
+          }
+        }),
+        catchError(err => {
+          if (err instanceof HttpErrorResponse) {
+            const errorResponse = client.handleErrorResponse(err);
+            onErrorAction(store)(errorResponse);
+          } else {
+            onErrorAction(err);
+          }
+          return emptyObservable();
+        })
+      )
+  }));
 
 export const formCreatedAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (payload: FormV2) =>
-    ({ type: FormStoreActions.CREATED_FORM_ACTION, payload }));
+    ({ type: FormStoreActions.CREATE_RESULT_ACTION, payload }));
 
 export const loadFormUsingIDAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: string | number) =>
-    ({
-      type: DefaultStoreAction.ASYNC_UI_ACTION,
-      payload: client.getUsingID(path, id, { params: { load_bindings: true } })
-        .pipe(
-          map((state) => {
-            // tslint:disable-next-line: one-variable-per-declaration
-            const data = getResponseDataFromHttpResponse(state);
-            if (isDefined(data)) {
-              return onAddFormToStackAction(store)((new GenericUndecoratedSerializaleSerializer()
-                .fromSerialized(FormV2, data)) as FormV2);
-            }
-          }),
-          catchError(err => {
-            if (err instanceof HttpErrorResponse) {
-              const errorResponse = client.handleErrorResponse(err);
-              onErrorAction(store)(errorResponse);
-            } else {
-              onErrorAction(err);
-            }
-            return emptyObservable();
-          })
-        )
-    }));
+  createAction(store, (
+    client: DrewlabsRessourceServerClient,
+    path: string,
+    id: string | number,
+    params: { [prop: string]: any } = { load_bindings: true }
+  ) =>
+  ({
+    type: DefaultStoreAction.ASYNC_UI_ACTION,
+    payload: client.getUsingID(path, id, { params: params || { load_bindings: true } })
+      .pipe(
+        map((state) => {
+          // tslint:disable-next-line: one-variable-per-declaration
+          const data = getResponseDataFromHttpResponse(state);
+          if (isDefined(data)) {
+            return onNewFormAction(store)((new GenericUndecoratedSerializaleSerializer()
+              .fromSerialized(FormV2, data)) as FormV2);
+          }
+        }),
+        catchError(err => {
+          if (err instanceof HttpErrorResponse) {
+            const errorResponse = client.handleErrorResponse(err);
+            onErrorAction(store)(errorResponse);
+          } else {
+            onErrorAction(err);
+          }
+          return emptyObservable();
+        })
+      )
+  }));
 
-export const onAddFormToStackAction = (
+export const onNewFormAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (payload: FormV2[] | FormV2) =>
-    ({ type: FormStoreActions.ADD_TO_FORMS_STACK_ACTION, payload }));
+    ({ type: FormStoreActions.NEW_VALUE_ACTION, payload }));
 
 
 export const updateFormAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (client: DrewlabsRessourceServerClient, path: string, body: { [index: string]: any }) =>
-    ({
-      type: DefaultStoreAction.ASYNC_UI_ACTION,
-      payload: client.update(path, body)
-        .pipe(
-          map((state) => {
-            // tslint:disable-next-line: one-variable-per-declaration
-            const data = getResponseDataFromHttpResponse(state);
-            if (isDefined(data)) {
-              if (isObject(data)) {
-                return formUpdatedAction(store)({
-                  item: (new GenericUndecoratedSerializaleSerializer()
-                    .fromSerialized(FormV2, data)) as FormV2,
-                  updateResult: true
-                });
-              } else {
-                return formUpdatedAction(store)({ updateResult: true });
-              }
-            }
-          }),
-          catchError(err => {
-            if (err instanceof HttpErrorResponse) {
-              const errorResponse = client.handleErrorResponse(err);
-              onErrorAction(store)(errorResponse);
+  ({
+    type: DefaultStoreAction.ASYNC_UI_ACTION,
+    payload: client.update(path, body)
+      .pipe(
+        map((state) => {
+          // tslint:disable-next-line: one-variable-per-declaration
+          const data = getResponseDataFromHttpResponse(state);
+          if (isDefined(data)) {
+            if (isObject(data)) {
+              return formUpdatedAction(store)({
+                currentForm: (new GenericUndecoratedSerializaleSerializer()
+                  .fromSerialized(FormV2, data)) as FormV2,
+                updateResult: UIStateStatusCode.STATUS_OK
+              });
             } else {
-              onErrorAction(err);
+              return formUpdatedAction(store)({ updateResult: UIStateStatusCode.BAD_REQUEST });
             }
-            return emptyObservable();
-          })
-        )
-    }));
+          }
+        }),
+        catchError(err => {
+          if (err instanceof HttpErrorResponse) {
+            const errorResponse = client.handleErrorResponse(err);
+            onErrorAction(store)(errorResponse);
+          } else {
+            onErrorAction(err);
+          }
+          return emptyObservable();
+        })
+      )
+  }));
 
 export const formUpdatedAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (payload: { [index: string]: any }) =>
-    ({ type: FormStoreActions.FORM_UPDATED_ACTION, payload }));
+    ({ type: FormStoreActions.UPDATE_RESULT_ACTION, payload }));
 
 
 
 export const deleteFormAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: number | string) =>
-    ({
-      type: DefaultStoreAction.ASYNC_UI_ACTION,
-      payload: client.deleteUsingID(path, id)
-        .pipe(
-          map((state) => {
-            // tslint:disable-next-line: one-variable-per-declaration
-            const data = getResponseDataFromHttpResponse(state);
-            if (isDefined(data)) {
-              if (isObject(data)) {
-                return formDeletedAction(store)({
-                  item: (new GenericUndecoratedSerializaleSerializer()
-                    .fromSerialized(FormV2, data)) as FormV2,
-                  deleteResult: true
-                });
-              } else {
-                return formDeletedAction(store)({ deleteResult: true });
-              }
-            }
-          }),
-          catchError(err => {
-            if (err instanceof HttpErrorResponse) {
-              const errorResponse = client.handleErrorResponse(err);
-              onErrorAction(store)(errorResponse);
+  ({
+    type: DefaultStoreAction.ASYNC_UI_ACTION,
+    payload: client.deleteUsingID(path, id)
+      .pipe(
+        map((state) => {
+          // tslint:disable-next-line: one-variable-per-declaration
+          const data = getResponseDataFromHttpResponse(state);
+          if (isDefined(data)) {
+            if (isObject(data)) {
+              return formDeletedAction(store)({
+                item: { id },
+                deleteResult: UIStateStatusCode.STATUS_OK
+              });
             } else {
-              onErrorAction(err);
+              return formDeletedAction(store)({ deleteResult: UIStateStatusCode.BAD_REQUEST, item: { id } });
             }
-            return emptyObservable();
-          })
-        )
-    }));
+          }
+        }),
+        catchError(err => {
+          if (err instanceof HttpErrorResponse) {
+            const errorResponse = client.handleErrorResponse(err);
+            onErrorAction(store)(errorResponse);
+          } else {
+            onErrorAction(err);
+          }
+          return emptyObservable();
+        })
+      )
+  }));
 
 export const formDeletedAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (payload: { [index: string]: any }) =>
-    ({ type: FormStoreActions.FORM_DELETED_ACTION, payload }));
+    ({ type: FormStoreActions.DELETE_RESULT_ACTION, payload }));
 
 export const selectFormAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (payload: number | string) =>
     ({ type: FormStoreActions.FORM_SELECTED_ACTION, payload }));
+
+export const createFormControlAction = (
+  store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
+  createAction(store, (client: DrewlabsRessourceServerClient, path: string, body: { [index: string]: any }) =>
+  ({
+    type: DefaultStoreAction.ASYNC_UI_ACTION,
+    payload: client.create(path, body)
+      .pipe(
+        map((state) => {
+          // tslint:disable-next-line: one-variable-per-declaration
+          const data = getResponseDataFromHttpResponse(state);
+          if (isDefined(data)) {
+            return formControlCreatedAction(store)({
+              control: (new GenericUndecoratedSerializaleSerializer()
+                .fromSerialized(FormControlV2, data)) as FormControlV2,
+              createControlResult: UIStateStatusCode.STATUS_CREATED
+            });
+          }
+        }),
+        catchError(err => {
+          if (err instanceof HttpErrorResponse) {
+            const errorResponse = client.handleErrorResponse(err);
+            onErrorAction(store)(errorResponse);
+          } else {
+            onErrorAction(err);
+          }
+          return emptyObservable();
+        })
+      )
+  }));
+
+export const formControlCreatedAction = (
+  store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
+  createAction(store, (payload: FormControlV2) =>
+    ({ type: FormStoreActions.CONTROL_CREATE_RESULT_ACTION, payload }));
+
+export const updateFormControlAction = (
+  store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
+  createAction(store, (client: DrewlabsRessourceServerClient, path: string, body: { [index: string]: any }) =>
+  ({
+    type: DefaultStoreAction.ASYNC_UI_ACTION,
+    payload: client.update(path, body)
+      .pipe(
+        map((state) => {
+          // tslint:disable-next-line: one-variable-per-declaration
+          const data = getResponseDataFromHttpResponse(state);
+          if (isDefined(data)) {
+            if (isObject(data)) {
+              return formControlUpdatedAction(store)({
+                control: (new GenericUndecoratedSerializaleSerializer()
+                  .fromSerialized(FormControlV2, data)) as FormControlV2,
+                updateControlResult: UIStateStatusCode.STATUS_OK
+              });
+            } else {
+              return formControlUpdatedAction(store)({ updateControlResult: UIStateStatusCode.STATUS_OK });
+            }
+          }
+        }),
+        catchError(err => {
+          if (err instanceof HttpErrorResponse) {
+            const errorResponse = client.handleErrorResponse(err);
+            onErrorAction(store)(errorResponse);
+          } else {
+            onErrorAction(err);
+          }
+          return emptyObservable();
+        })
+      )
+  }));
+
+export const formControlUpdatedAction = (
+  store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
+  createAction(store, (payload: { [index: string]: any }) =>
+    ({ type: FormStoreActions.CONTROL_UPDATE_RESULT_ACTION, payload }));
+
+
+export const deleteFormFormControl = (
+  store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
+  createAction(store, (
+    client: DrewlabsRessourceServerClient,
+    path: string,
+    params: { [prop: string]: any } = {},
+    controlID?: number) =>
+  ({
+    type: DefaultStoreAction.ASYNC_UI_ACTION,
+    payload: client.delete(path, { params: params || {} })
+      .pipe(
+        map((state) => {
+          // tslint:disable-next-line: one-variable-per-declaration
+          if (controlID) {
+            formControlRemovedAction(store)({
+              deleteControlResult: UIStateStatusCode.STATUS_OK,
+              control: { id: controlID }
+            });
+          }
+        }),
+        catchError(err => {
+          if (err instanceof HttpErrorResponse) {
+            const errorResponse = client.handleErrorResponse(err);
+            onErrorAction(store)(errorResponse);
+          } else {
+            onErrorAction(err);
+          }
+          return emptyObservable();
+        })
+      )
+  }));
+
+export const formControlRemovedAction = (
+  store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
+  createAction(store, (payload: { [index: string]: any }) =>
+    ({ type: FormStoreActions.CONTROL_DELETE_RESULT_ACTION, payload }));
