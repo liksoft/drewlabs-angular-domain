@@ -1,9 +1,15 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Inject, OnDestroy } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { DynamicInputTypeHelper } from '../input-type.service';
 import { SelectInput } from '../../core/input-types';
-import { createStateful } from '../../../../rxjs/helpers/index';
-
+import { createStateful, createSubject } from '../../../../rxjs/helpers/index';
+import { isDefined } from '../../../../utils/types';
+import { DrewlabsRessourceServerClient } from '../../../../http/core';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { getResponseDataFromHttpResponse } from '../../../../http/helpers';
+import { isArray, isEmpty } from 'lodash';
+import { controlBindingsSetter } from '../../core/helpers';
+import { doLog } from '../../../../rxjs/operators';
 @Component({
   selector: 'app-dynamic-select-input',
   templateUrl: './dynamic-select-input.component.html',
@@ -43,13 +49,15 @@ import { createStateful } from '../../../../rxjs/helpers/index';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DynamicSelectInputComponent {
+export class DynamicSelectInputComponent implements OnDestroy {
   @Input() control: AbstractControl;
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name
-  _inputItems$ = createStateful([]);
+  _performingAction$ = createStateful(false);
+  // tslint:disable-next-line: variable-name
+  _inputItems$ = createStateful({ performingAction: false, state: [] });
   @Input() set inputItems(value: { [index: string]: any }[]) {
-    this._inputItems$.next(value);
+    this._inputItems$.next({ performingAction: false, state: value });
   }
   inputItems$ = this._inputItems$.asObservable();
 
@@ -64,6 +72,52 @@ export class DynamicSelectInputComponent {
   }
   @Output() multiSelectItemRemove = new EventEmitter<any>();
 
-  constructor(public readonly inputTypeHelper: DynamicInputTypeHelper) { }
+  // tslint:disable-next-line: variable-name
+  _controlFocusEvent$ = createSubject<{ state: any[] }>();
+
+  // tslint:disable-next-line: variable-name
+  private _destroy$ = createSubject();
+
+  constructor(
+    public readonly inputTypeHelper: DynamicInputTypeHelper,
+    private client: DrewlabsRessourceServerClient,
+    @Inject('CONTROL_BINDINGS_RESOURCES_PATH') private serverPath: string
+  ) {
+    this._controlFocusEvent$.pipe(
+      tap((state) => {
+        this._inputItems$.next({ ...state, performingAction: true });
+      }),
+      doLog('Control focused: '),
+      switchMap(() => this.client.get(this.serverPath, {
+        params: {
+          table_config: this._inputConfig.serverBindings
+        }
+      }).pipe(
+        doLog('Load binding result: '),
+        map(state => {
+          const data = getResponseDataFromHttpResponse(state);
+          if (data && isArray(data)) {
+            return controlBindingsSetter(data)(this._inputConfig).items;
+          }
+        }),
+        takeUntil(this._destroy$),
+        tap(state => {
+          this._inputItems$.next({ performingAction: false, state });
+        })
+      ))
+    ).subscribe();
+  }
+
+  onFocus() {
+    const { state } = this._inputItems$.getValue();
+    if (!isDefined(state) || isEmpty(state) && isDefined(this._inputConfig.serverBindings)) {
+      // Load the data from the remote server
+      this._controlFocusEvent$.next({ state });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next({});
+  }
 
 }

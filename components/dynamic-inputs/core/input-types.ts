@@ -1,13 +1,19 @@
 import { IHTMLFormControlValidationRule } from './contracts/input-rules';
 import { isDefined } from '../../../utils/types/type-utils';
 import { InputTypes } from './contracts/input-types';
-import { buildRequiredIfConfig, buildCheckboxItems, buildRadioInputItems, buildSelectItems } from './helpers';
+import {
+  buildRequiredIfConfig,
+  buildCheckboxItems,
+  buildRadioInputItems,
+  parseControlItemsConfigs,
+  controlBindingsSetter
+} from './helpers';
 import { CheckboxItem, ISelectItem, RadioItem } from './contracts/control-item';
 import { AbstractHTMLFormControl } from './dynamic-input';
-import { IHTMLFormControl } from './contracts/dynamic-input';
+import { BindingControlInterface, IHTMLFormControl } from './contracts/dynamic-input';
 import { DynamicFormControlInterface } from './compact/types';
 
-export function toDynamicControl(model: DynamicFormControlInterface): IHTMLFormControl {
+export function toDynamicControl(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
   switch (model.type) {
     case InputTypes.DATE_INPUT:
       return DateInput.fromFormControlModel(model);
@@ -62,7 +68,7 @@ export class TextInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new TextInput(
       {
         label: model.label,
@@ -77,11 +83,11 @@ export class TextInput extends AbstractHTMLFormControl {
         formControlIndex: model.controlIndex,
         formControlGroupKey: model.controlGroupKey,
         rules: {
-          isRequired: Boolean(model.required ) ? true : false,
+          isRequired: Boolean(model.required) ? true : false,
           maxLength: model.maxLength ? true : false,
           minLength: model.minLength ? true : false,
           email: model.type === InputTypes.EMAIL_INPUT ? true : false,
-          notUnique:  Boolean(model.unique) ? true : false,
+          notUnique: Boolean(model.unique) ? true : false,
           pattern: isDefined(model.pattern) ? true : false,
         } as IHTMLFormControlValidationRule,
         placeholder: model.placeholder,
@@ -119,7 +125,7 @@ export class DateInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new DateInput(
       {
         label: model.label,
@@ -170,7 +176,7 @@ export class CheckBoxInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new CheckBoxInput(
       {
         label: model.label,
@@ -207,7 +213,7 @@ export class HiddenInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new HiddenInput(
       {
         label: model.label,
@@ -254,7 +260,7 @@ export class NumberInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new NumberInput(
       {
         label: model.label,
@@ -301,7 +307,7 @@ export class PasswordInput extends TextInput {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new PasswordInput(
       {
         label: model.label,
@@ -351,7 +357,7 @@ export class PhoneInput extends TextInput {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new PhoneInput(
       {
         label: model.label,
@@ -402,7 +408,7 @@ export class RadioInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new RadioInput(
       {
         label: model.label,
@@ -433,34 +439,52 @@ export class RadioInput extends AbstractHTMLFormControl {
 /**
  * @description Selectable options control configuration definition class
  */
-export class SelectInput extends AbstractHTMLFormControl {
+export class SelectInput extends AbstractHTMLFormControl implements Partial<BindingControlInterface> {
   items: Array<any>;
   optionsLabel?: string;
   optionsValueIndex?: string | number;
   multiple?: boolean;
   groupByKey: string;
 
+  // Added properties for loading data remotely
+  serverBindings?: string;
+  clientBindings?: string;
+  groupfield: string;
+  valuefield: string;
+  keyfield: string;
+
   /**
    * @description Instance initializer
    * @param value Required input configuration object
    */
-  constructor(value: SelectInput) {
+  constructor(value: Partial<SelectInput>) {
     super(value);
     this.items = value.items;
     this.optionsLabel = value.optionsLabel;
     this.optionsValueIndex = value.optionsValueIndex;
     this.multiple = value.multiple ? value.multiple : false;
     this.groupByKey = value.groupByKey;
+    this.serverBindings = value.serverBindings;
+    this.clientBindings = value.clientBindings;
+    this.groupfield = value.groupfield;
+    this.valuefield = value.valuefield;
+    this.keyfield = value.keyfield;
   }
-
 
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
-    return new SelectInput(
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
+    // Parse the model fields
+    let { keyfield, valuefield, groupfield } = model.selectableModel ? parseControlItemsConfigs(model) : model;
+    keyfield = model.keyfield || keyfield;
+    valuefield = model.valuefield || valuefield;
+    groupfield = model.groupfield || groupfield;
+    // ! End Parse model fields
+    return new SelectInput(controlBindingsSetter<SelectInput>(model.options)(
       {
+        ...{ keyfield, valuefield, groupfield },
         label: model.label,
         type: model.type,
         formControlName: model.controlName,
@@ -479,13 +503,14 @@ export class SelectInput extends AbstractHTMLFormControl {
         disabled: Boolean(model.disabled) ? true : false,
         readOnly: Boolean(model.readonly) ? true : false,
         descriptionText: model.description,
-        items: buildSelectItems(model),
         optionsLabel: 'description',
         groupByKey: 'type',
         optionsValueIndex: 'id',
-        multiple: Boolean(model.multiple) ? true : false
+        multiple: Boolean(model.multiple) ? true : false,
+        serverBindings: model.selectableModel,
+        clientBindings: model.selectableValues
       } as SelectInput
-    );
+    ));
   }
 }
 
@@ -511,7 +536,7 @@ export class TextAreaInput extends TextInput {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new TextAreaInput(
       {
         label: model.label,
@@ -562,7 +587,7 @@ export class FileInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new FileInput(
       {
         label: model.label,
@@ -607,7 +632,7 @@ export class HMTLInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new HMTLInput(
       {
         label: model.label,
@@ -650,7 +675,7 @@ export class InputGroup extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: DynamicFormControlInterface): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
     return new InputGroup(
       {
         label: model.label,

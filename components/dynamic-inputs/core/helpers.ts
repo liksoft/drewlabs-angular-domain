@@ -1,4 +1,4 @@
-import { IHTMLFormControl, HTMLFormControlRequireIfConfig } from './contracts/dynamic-input';
+import { IHTMLFormControl, HTMLFormControlRequireIfConfig, BindingControlInterface } from './contracts/dynamic-input';
 import { IDynamicForm } from './contracts/dynamic-form';
 import { isArray, isDefined } from '../../../utils/types/type-utils';
 import { ArrayUtils } from '../../../utils/types/array-utils';
@@ -46,11 +46,24 @@ export function createDynamicForm(formConfigs: IDynamicForm): IDynamicForm {
   return new DynamicForm(formConfigs);
 }
 
-function parseControlItemsConfigs(model: DynamicFormControlInterface): { keyfield: string, valuefield: string, groupfield: string } {
+export function parseControlItemsConfigs(
+  model: Partial<DynamicFormControlInterface>
+): { keyfield: string, valuefield: string, groupfield: string } {
   const items = model.selectableModel.split('|');
-  const keyfield = items[2].replace('keyfield:', '');
-  const groupfield = items[3].replace('groupfield:', '');
-  const valuefield = items[4].replace('valuefield:', '');
+  let keyfield: string;
+  let groupfield: string;
+  let valuefield: string;
+  items.forEach(key => {
+    if (key.match(/keyfield:/)) {
+      keyfield = key.replace('keyfield:', '');
+    }
+    if (key.match(/groupfield:/)) {
+      groupfield = key.replace('groupfield:', '');
+    }
+    if (key.match(/valuefield:/)) {
+      valuefield = key.replace('valuefield:', '');
+    }
+  });
   return { keyfield, valuefield, groupfield };
 }
 
@@ -66,7 +79,7 @@ export function buildRequiredIfConfig(stringifiedConfig: string): HTMLFormContro
   };
 }
 
-export function buildCheckboxItems(model: DynamicFormControlInterface): CheckboxItem[] {
+export function buildCheckboxItems(model: Partial<DynamicFormControlInterface>): CheckboxItem[] {
   if (isDefined(model.selectableValues)) {
     const items = model.selectableValues.split('|');
     return items.map((v, i) => {
@@ -102,7 +115,10 @@ export function buildCheckboxItems(model: DynamicFormControlInterface): Checkbox
   }
 }
 
-export function buildSelectItems(model: DynamicFormControlInterface): ISelectItem[] {
+/**
+ * @deprecated
+ */
+export function buildSelectItems(model: Partial<DynamicFormControlInterface>): ISelectItem[] {
   if (isDefined(model.selectableValues)) {
     const items = model.selectableValues.split('|');
     return items.map((v, i) => {
@@ -140,7 +156,51 @@ export function buildSelectItems(model: DynamicFormControlInterface): ISelectIte
   }
 }
 
-export function buildRadioInputItems(model: DynamicFormControlInterface): RadioItem[] {
+export const controlBindingsSetter = <T extends BindingControlInterface>(values: { [prop: string]: any }[]) => {
+  return (control: Partial<T>) => {
+    let result = [];
+    if (isDefined(control.clientBindings)) {
+      const items = control.clientBindings.split('|');
+      result = [
+        ...(items.map((v, i) => {
+          if (v.indexOf(':') !== -1) {
+            const idValueFields = v.split(':');
+            return {
+              value: idValueFields[0].trim(),
+              name: idValueFields[1].trim(),
+              description: idValueFields[1].trim()
+            } as ISelectItem;
+          } else {
+            return {
+              value: isNaN(+v.trim()) ? v.trim() : +v.trim(),
+              name: v.trim(),
+              description: v.trim()
+            } as ISelectItem;
+          }
+        }))
+      ];
+    } else if (isDefined(control.serverBindings)) {
+      result = [
+        ...(
+          values ? values.map((v) => {
+            return {
+              value: v[control.keyfield],
+              description: v[control.valuefield],
+              name: v[control.valuefield],
+              type: control.groupfield &&
+                (control.keyfield !== control.groupfield) && (control.valuefield !== control.groupfield) ?
+                v[control.groupfield] : null
+            } as ISelectItem;
+          }) : []
+        )
+      ];
+    }
+    return { ...control, items: result } as Partial<T>;
+  };
+};
+
+
+export function buildRadioInputItems(model: Partial<DynamicFormControlInterface>): RadioItem[] {
   if (isDefined(model.selectableValues)) {
     const items = model.selectableValues.split('|');
     return items.map((v, i) => {

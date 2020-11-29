@@ -9,7 +9,7 @@ export class FormV2 implements DynamicFormInterface {
   parentId: string = undefined;
   description: string = undefined;
   children: FormV2[] = undefined;
-  formControls: DynamicFormControlInterface[] = undefined;
+  formControls: DynamicFormControlInterface[] = [];
   url: string = undefined;
   status: number = undefined;
 

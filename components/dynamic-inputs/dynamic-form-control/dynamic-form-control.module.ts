@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DynamicFormControlComponent } from './dynamic-form-control.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgSelectModule} from '@ng-select/ng-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { IntlTelInputModule } from 'src/app/lib/domain/components/intl-tel-input';
 import { ClarityModule } from '@clr/angular';
 import { DynamicFormWapperComponent } from './dynamic-form-wapper/dynamic-form-wapper.component';
@@ -22,6 +22,14 @@ import { DynamicPasswordInputComponent } from './dynamic-password-input/dynamic-
 import { DynamicCheckoxInputComponent } from './dynamic-checkox-input/dynamic-checkox-input.component';
 import { DynamicRadioInputComponent } from './dynamic-radio-input/dynamic-radio-input.component';
 
+type ModuleConfigs = {
+  serverResourcesPath: {
+    formControlOptionsPath: string;
+    controlsPath: string;
+    formsPath: string;
+    controlBindingsPath: string
+  }
+};
 
 @NgModule({
   imports: [
@@ -69,10 +77,31 @@ import { DynamicRadioInputComponent } from './dynamic-radio-input/dynamic-radio-
   providers: []
 })
 export class DynamicFormControlModule {
-  static forRoot(): ModuleWithProviders<DynamicFormControlModule> {
+  static forRoot(configs: ModuleConfigs = {} as ModuleConfigs): ModuleWithProviders<DynamicFormControlModule> {
     return {
       ngModule: DynamicFormControlModule,
-      providers: []
+      providers: [
+        {
+          provide: 'FORM_RESOURCES_PATH',
+          useValue: configs && configs.serverResourcesPath ? configs.serverResourcesPath.formsPath || 'forms' : 'forms'
+        },
+        {
+          provide: 'FORM_CONTROL_RESOURCES_PATH',
+          useValue: configs && configs.serverResourcesPath ? configs.serverResourcesPath.controlsPath || 'form-controls' : 'form-controls'
+        },
+        {
+          provide: 'FORM_FORM_CONTROL_RESOURCES_PATH',
+          useValue: configs && configs.serverResourcesPath ? configs.serverResourcesPath.controlsPath || 'form-form-controls' : 'form-form-controls'
+        },
+        {
+          provide: 'CONTROL_OPTION_RESOURCES_PATH',
+          useValue: configs && configs.serverResourcesPath ? configs.serverResourcesPath.formControlOptionsPath || 'form-control-options' : 'form-control-options'
+        },
+        {
+          provide: 'CONTROL_BINDINGS_RESOURCES_PATH',
+          useValue: configs && configs.serverResourcesPath ? configs.serverResourcesPath.controlBindingsPath || 'control-bindings' : 'control-bindings'
+        }
+      ]
     };
   }
 }
