@@ -11,7 +11,7 @@
         <div class="maring-bottom">
           <div class="clr-row">
             <div class="clr-col-12" [formGroup]="formGroup">
-              <app-dynamic-form-wapper [componentFormGroup]="formGroup" [form]="form"></app-dynamic-form-wapper>
+              <app-dynamic-form-wapper [singleColumnControl]="singleColumnView" [componentFormGroup]="formGroup" [form]="form"></app-dynamic-form-wapper>
             </div>
           </div>
           <div class="button-container" *ngIf="showEditButton">

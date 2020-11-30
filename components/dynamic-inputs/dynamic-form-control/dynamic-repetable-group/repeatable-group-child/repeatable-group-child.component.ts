@@ -33,6 +33,8 @@ export class RepeatableGroupChildComponent extends AbstractAlertableComponent {
   @Output() isAccordionOpenedChange: EventEmitter<boolean> = new EventEmitter();
   @Input() showEditButton = false;
   @Input() label: string;
+  // tslint:disable-next-line: no-inferrable-types
+  @Input() singleColumnView: boolean = false;
 
   constructor(uiStore: AppUIStoreManager, public readonly typeHelper: TypeUtilHelper) { super(uiStore); }
 }

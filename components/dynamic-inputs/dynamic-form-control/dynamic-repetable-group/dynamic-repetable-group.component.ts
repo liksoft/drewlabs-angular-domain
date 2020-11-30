@@ -31,6 +31,8 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
   @Output() childEdit = new EventEmitter<AbstractControl>();
   @Output() updateParentValueAndValidity = new EventEmitter<object>();
   @Output() removedControlGroup = new EventEmitter<object>();
+  // tslint:disable-next-line: no-inferrable-types
+  @Input() singleColumnView: boolean = false;
 
   // Output event
   @Output() addNewControlGroup: EventEmitter<object> = new EventEmitter();
@@ -79,6 +81,7 @@ export class DynamicRepetableGroupComponent implements OnInit, OnDestroy {
     controlComponentRef.instance.label = `${this.prefixLabel} ${(Object.assign({ index: this.totalAddedComponent })).index}`;
     controlComponentRef.instance.formGroup.addControl('index', new FormControl(controlComponentRef.instance.index));
     controlComponentRef.instance.showEditButton = showEditButton;
+    controlComponentRef.instance.singleColumnView = this.singleColumnView;
     // controlComponentRef.instance.showCreateButton = showCreateButton;
     // Ends child component properties initialization
     controlComponentRef.instance.create.subscribe((state) => this.childCreate.emit(state));
