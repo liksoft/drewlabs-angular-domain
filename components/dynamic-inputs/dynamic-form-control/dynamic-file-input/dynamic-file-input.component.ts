@@ -8,7 +8,6 @@ import { DynamicInputTypeHelper } from '../input-type.service';
 import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { FileInput } from '../../core';
 import { FileFormControl } from '../dynamic-form-control.component';
-import { Log } from '../../../../utils/logger';
 
 @Component({
   selector: 'app-dynamic-file-input',
@@ -19,9 +18,11 @@ import { Log } from '../../../../utils/logger';
     .field-has-error {
       color: rgb(241, 50, 50);
     }
-
     .clr-input-wrapper .clr-input:disabled {
       background: rgba(244, 244, 244, .3);
+    }
+    .clr-control-label {
+      margin-bottom: .5rem;
     }
     `
   ]

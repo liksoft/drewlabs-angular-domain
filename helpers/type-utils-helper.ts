@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup, FormArray } from '@angular/forms';
 import { FileFormControl } from '../components/dynamic-inputs/dynamic-form-control/dynamic-form-control.component';
 import { IDynamicForm } from '../components/dynamic-inputs/core';
@@ -51,8 +51,15 @@ export class TypeUtilHelper {
     return control as FormArray;
   }
 
+  /**
+   * @deprecated
+   */
   transformIFileFormControl(value: FileFormControl): { content: string, extension: string } {
-    return Object.assign({}, { content: value.dataURL, extension: value.extension });
+    return { ...{ content: value.dataURL, extension: value.extension } };
+  }
+
+  asServerFileRequesBody(value: FileFormControl): { content: string, extension: string } {
+    return { ...{ content: value.dataURL, extension: value.extension } };
   }
 
   /**

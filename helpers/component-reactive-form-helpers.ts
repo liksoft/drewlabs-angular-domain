@@ -54,6 +54,12 @@ export interface UpdateRequest {
   requestURL?: string;
   params?: object;
 }
+export interface DeleteRequest {
+  id?: number | string;
+  requestURL?: string;
+  params?: object;
+}
+
 
 /**
  * @description Interface definition of a form submission event with the request url

@@ -17,8 +17,11 @@ export interface IFileRessource {
   isVideoRessource?: boolean;
 }
 
-export interface UploadedFileHelperInterface
-{
+export interface ServerFileInterface extends IFileRessource {
+  id: number | string;
+}
+
+export interface UploadedFileHelperInterface {
   /**
    * @description Load file from the server and convert it to a dataURI
    * @param url [[string]]
@@ -39,7 +42,7 @@ export interface UploadedFileHelperInterface
    * @param filename [[string]]
    */
   // tslint:disable-next-line: typedef
-  saveDataURLAsBlob(ressource: string, filename: string): Promise<null|void>;
+  saveDataURLAsBlob(ressource: string, filename: string): Promise<null | void>;
 
   /**
    * @Description Provide file download from backend server
@@ -89,6 +92,34 @@ export class FileHelperService implements UploadedFileHelperInterface {
         showldownload: shouldDownload,
         extension
       } as IFileRessource;
+    }
+    return null;
+  }
+  /**
+   * @inheritdoc
+   */
+  // tslint:disable-next-line: typedef
+  async urlToServerFileInterface(
+    url: string, { id, name, shouldDownload, extension }: Partial<{
+      id: number | string,
+      name: string,
+      shouldDownload: boolean,
+      extension: string
+    }>
+  ) {
+    const v = await this.loadFileAsDataURI(url);
+    if (v) {
+      const block = v.split(';');
+      // Get the content type of the image
+      const contentType = block[0].split(':')[1];
+      return {
+        id,
+        name,
+        content: v,
+        type: contentType,
+        showldownload: shouldDownload,
+        extension
+      } as ServerFileInterface;
     }
     return null;
   }
