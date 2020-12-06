@@ -135,9 +135,9 @@ export class HttpRequestService implements IHttpService {
    */
   downloadFile(url: string, filename?: string, fileExtension?: string, params?: { [prop: string]: any }): Promise<any> {
     url = URLUtils.isWebURL(url) ? `${url}` : `${this.serverUrl}${url}`;
-    const headers = new HttpHeaders();
-    headers.append('Accept', 'text/plain');
-    headers.append('Content-type', 'application/octet-stream');
+    // const headers = new HttpHeaders();
+    // headers.append('Accept', 'text/plain');
+    // headers.append('Content-type', 'application/octet-stream');
     return new Promise((_, __) => {
       this.loadServerFile(url, params)
         .then((res: any) => {
