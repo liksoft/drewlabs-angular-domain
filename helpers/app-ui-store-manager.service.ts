@@ -6,6 +6,7 @@ import { HTTPErrorState } from '../http/core/http-request.service';
 import { DrewlabsHttpResponseStatusCode } from '../http/core/http-response';
 import { createSubject, createStateful } from '../rxjs/helpers';
 import { isDefined } from '../utils';
+import { Log } from '../utils/logger';
 
 
 // tslint:disable-next-line: deprecation
@@ -147,6 +148,7 @@ export class AppUIStoreManager {
   }
 
   public completeActionWithError(message: string): void {
+    Log('Error Message: ', message);
     this.completeUIStoreAction(message, UIStateStatusCode.ERROR);
   }
 

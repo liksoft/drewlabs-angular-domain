@@ -19,6 +19,9 @@ export const userCanAny = (authorizable: Authorizable, authorizations: string[])
   if (!isDefined(authorizable)) {
     return false;
   }
+  if (!isDefined(authorizations)) {
+    return true;
+  }
   if (authorizations.length === 0) {
     return true;
   }
