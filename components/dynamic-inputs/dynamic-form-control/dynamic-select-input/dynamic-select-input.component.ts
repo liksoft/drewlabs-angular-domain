@@ -15,13 +15,10 @@ import { doLog } from '../../../../rxjs/operators';
   templateUrl: './dynamic-select-input.component.html',
   styles: [
     `
-    /* .clr-select-wrapper {
-      min-width: 100% !important;
-    } */
-
-    .ng-select {
-      display: block;
-      min-width: 100% !important;
+    .ng-select, :host ::ng-deep .ng-select {
+        display: block;
+        max-width: 100% !important;
+        width: 100%;
     }
 
     .ng-select.flat {
@@ -108,7 +105,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
     ).subscribe();
   }
 
-  onFocus() {
+  onFocus(): void {
     const { state } = this._inputItems$.getValue();
     if (!isDefined(state) || isEmpty(state) && isDefined(this._inputConfig.serverBindings)) {
       // Load the data from the remote server
