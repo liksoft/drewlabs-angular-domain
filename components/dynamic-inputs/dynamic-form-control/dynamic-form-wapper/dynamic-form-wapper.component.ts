@@ -23,7 +23,7 @@ export interface MultiSelectItemRemoveEvent {
   selector: 'app-dynamic-form-wapper',
   templateUrl: './dynamic-form-wapper.component.html',
   styles: [],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicFormWapperComponent {
 

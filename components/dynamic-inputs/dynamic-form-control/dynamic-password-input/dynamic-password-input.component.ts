@@ -29,7 +29,7 @@ import { createStateful } from '../../../../rxjs/helpers';
       background: rgba(244, 244, 244, .3);
     }
   `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicPasswordInputComponent {
 

@@ -285,7 +285,7 @@ export class ComponentReactiveFormHelpers {
       if (control.get(field) instanceof FormGroup) {
         ComponentReactiveFormHelpers.validateFormGroupFields(control.get(field) as FormGroup);
       } else {
-        ComponentReactiveFormHelpers.markControlAsTouched(control.get(field));
+        ComponentReactiveFormHelpers.markControlAsTouched(control.get(field), field);
       }
     });
   }
@@ -293,11 +293,12 @@ export class ComponentReactiveFormHelpers {
    * Mark control as touched them as touched
    * @param formGroup [[AbstractControl]] reference to form control
    */
-  public static markControlAsTouched(control: AbstractControl): void {
+  public static markControlAsTouched(control: AbstractControl, field: string = null): void {
     if (isDefined(control)) {
-      control.markAsTouched();
-      control.markAsDirty();
-      control.markAsPristine();
+      control.markAsTouched({ onlySelf: true });
+      control.markAsDirty({ onlySelf: true });
+      control.markAsPristine({ onlySelf: true });
+      control.updateValueAndValidity();
     }
 
   }
