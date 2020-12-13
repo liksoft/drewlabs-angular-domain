@@ -298,7 +298,6 @@ export class ComponentReactiveFormHelpers {
       control.markAsTouched({ onlySelf: true });
       control.markAsDirty({ onlySelf: true });
       control.markAsPristine({ onlySelf: true });
-      control.updateValueAndValidity();
     }
 
   }
