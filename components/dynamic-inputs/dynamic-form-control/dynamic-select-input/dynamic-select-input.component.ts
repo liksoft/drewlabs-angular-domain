@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Inject, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, Inject, OnDestroy } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { DynamicInputTypeHelper } from '../input-type.service';
 import { SelectInput } from '../../core/input-types';
@@ -44,7 +44,7 @@ import { doLog } from '../../../../rxjs/operators';
     }
     `
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicSelectInputComponent implements OnDestroy {
   @Input() control: AbstractControl;
