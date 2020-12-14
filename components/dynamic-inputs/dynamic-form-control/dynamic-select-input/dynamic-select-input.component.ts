@@ -47,7 +47,13 @@ import { doLog } from '../../../../rxjs/operators';
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicSelectInputComponent implements OnDestroy {
-  @Input() control: AbstractControl;
+  private _control: AbstractControl;
+  @Input() set control(value: AbstractControl) {
+    this._control = value;
+  }
+  get control() : AbstractControl {
+    return this._control;
+  }
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name
   _performingAction$ = createStateful(false);
