@@ -5,7 +5,6 @@ import { isDefined } from '../../../../utils/types/type-utils';
 import { DropzoneComponent } from '../../../dropzone/dropzone.component';
 import { readFileAsDataURI } from '../../../../utils/browser/browser';
 import { DynamicInputTypeHelper } from '../input-type.service';
-import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { FileInput } from '../../core';
 import { FileFormControl } from '../dynamic-form-control.component';
 
@@ -120,3 +119,16 @@ export class DynamicFileInputComponent implements OnInit {
     this.removedEvent.emit();
   }
 }
+
+// this.dropzoneConfigs = {
+//   maxFiles: this.inputTypeHelper.asFileInput(this.inputConfig).multiple ? 50 : 1,
+//   maxFilesize: this.inputTypeHelper.asFileInput(
+//     this.inputConfig).maxFileSize ? this.inputTypeHelper.asFileInput(this.inputConfig).maxFileSize : 10,
+//   url: isDefined(this.inputTypeHelper.asFileInput(
+//     this.inputConfig).uploadUrl) && this.inputTypeHelper.asFileInput(this.inputConfig).uploadUrl !== '' ?
+//     this.inputTypeHelper.asFileInput(this.inputConfig).uploadUrl : this.path,
+//   uploadMultiple: this.inputTypeHelper.asFileInput(
+//     this.inputConfig).multiple ? this.inputTypeHelper.asFileInput(this.inputConfig).multiple : false,
+//   acceptedFiles: this.inputTypeHelper.asFileInput(
+//     this.inputConfig).pattern ? this.inputTypeHelper.asFileInput(this.inputConfig).pattern : 'image/*'
+// };
