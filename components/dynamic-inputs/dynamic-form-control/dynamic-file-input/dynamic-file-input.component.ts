@@ -38,7 +38,7 @@ export class DynamicFileInputComponent implements OnInit {
   @ViewChild('dropzoneContainer')
   dropzoneContainer: DropzoneComponent;
   // Configuration parameters of the input
-  @Input() inputConfig: IHTMLFormControl;
+  @Input() inputConfig: FileInput;
 
   @Output() addedEvent = new EventEmitter<any>();
   @Output() removedEvent = new EventEmitter<any>();
@@ -50,16 +50,13 @@ export class DynamicFileInputComponent implements OnInit {
 
   ngOnInit(): void {
     this.dropzoneConfigs = {
-      maxFiles: this.inputTypeHelper.asFileInput(this.inputConfig).multiple ? 50 : 1,
-      maxFilesize: this.inputTypeHelper.asFileInput(
-        this.inputConfig).maxFileSize ? this.inputTypeHelper.asFileInput(this.inputConfig).maxFileSize : 10,
+      maxFiles: this.inputConfig.multiple ? 50 : 1,
+      maxFilesize: this.inputConfig.maxFileSize ? this.inputConfig.maxFileSize : 10,
       url: isDefined(this.inputTypeHelper.asFileInput(
-        this.inputConfig).uploadUrl) && this.inputTypeHelper.asFileInput(this.inputConfig).uploadUrl !== '' ?
-        this.inputTypeHelper.asFileInput(this.inputConfig).uploadUrl : this.path,
-      uploadMultiple: this.inputTypeHelper.asFileInput(
-        this.inputConfig).multiple ? this.inputTypeHelper.asFileInput(this.inputConfig).multiple : false,
-      acceptedFiles: this.inputTypeHelper.asFileInput(
-        this.inputConfig).pattern ? this.inputTypeHelper.asFileInput(this.inputConfig).pattern : 'image/*'
+        this.inputConfig).uploadUrl) && this.inputConfig.uploadUrl !== '' ?
+        this.inputConfig.uploadUrl : this.path,
+      uploadMultiple: this.inputConfig.multiple ? this.inputConfig.multiple : false,
+      acceptedFiles: this.inputConfig.pattern
     };
     this.control.valueChanges.subscribe((state) => {
       if (this.control.status.toLowerCase() === 'disabled') {
@@ -89,14 +86,17 @@ export class DynamicFileInputComponent implements OnInit {
           })
         ));
       } else {
-        this.control.setValue(
-          {
-            uuid: files[0].upload.uuid,
-            dataURL: await readFileAsDataURI(files[0]),
-            extension: (files[0].name as string).split('.')[(files[0].name as string).split('.').length - 1]
-          } as FileFormControl
-        );
-        this.dropzoneContainer.disabled = true;
+        const file = files[0];
+        if (file) {
+          this.control.setValue(
+            {
+              uuid: files[0].upload.uuid,
+              dataURL: await readFileAsDataURI(files[0]),
+              extension: (files[0].name as string).split('.')[(files[0].name as string).split('.').length - 1]
+            } as FileFormControl
+          );
+          this.dropzoneContainer.disabled = true;
+        }
       }
       this.addedEvent.emit(this.control.value);
     }, 50);

@@ -46,12 +46,14 @@ export class DropzoneService {
           // tslint:disable-next-line:ban-types
           accept: (file: File, done: Function) => {
             let matches = false;
-            if (isDefined(config.acceptedFiles) && config.acceptedFiles.indexOf(',') !== -1) {
+            if (!isDefined(config.acceptedFiles) || (config.acceptedFiles === '*')) {
+              matches = true;
+            } else if (isDefined(config.acceptedFiles) && config.acceptedFiles.indexOf(',') !== -1) {
               let types = config.acceptedFiles.split(',');
               types = types.filter((v) => file.type.match(v));
               matches = types.length > 0 ? true : false;
             } else {
-              matches = isDefined(file.type.match(config.acceptedFiles)) &&  file.type.match(config.acceptedFiles).length > 0;
+              matches = isDefined(file.type.match(config.acceptedFiles)) && file.type.match(config.acceptedFiles).length > 0;
             }
             if (!matches) {
               done(`${translations.dictAcceptedFilesLabel} ${acceptedFilesTypeName}`);

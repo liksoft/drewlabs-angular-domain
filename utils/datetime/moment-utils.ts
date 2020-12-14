@@ -9,7 +9,7 @@ export class MomentUtils {
    * @param key [[moment.unitOfTime.DurationConstructor]]
    */
   public static add(
-    currentDate: Date,
+    currentDate: Date | moment.Moment,
     value?: moment.DurationInputArg1,
     key?: moment.unitOfTime.DurationConstructor
   ): Date {
@@ -74,8 +74,8 @@ export class MomentUtils {
     outputformat?: string,
     inputformat?: string
   ): string {
-    outputformat = isDefined(outputformat) ? outputformat :  moment.localeData().longDateFormat('L');
-    inputformat = isDefined(inputformat) ? inputformat :  moment.localeData('en-gb').longDateFormat('L');
+    outputformat = isDefined(outputformat) ? outputformat : moment.localeData().longDateFormat('L');
+    inputformat = isDefined(inputformat) ? inputformat : moment.localeData('en-gb').longDateFormat('L');
     const value = moment(date, inputformat).format(outputformat);
     return value;
   }
@@ -149,5 +149,9 @@ export class MomentUtils {
    */
   public static locale(lang?: string): string {
     return moment.locale();
+  }
+
+  static from(date: moment.MomentInput) {
+    return moment(date);
   }
 }
