@@ -18,7 +18,7 @@ export const doLog = <T>(prefix?: string) => {
   return (source$: Observable<T>) => source$.pipe(
     tap(source => {
       // tslint:disable-next-line: no-unused-expression
-      getEnv('production') ? null : (prefix ? Log(prefix, source) : Log(source));
+      getEnv('production') ? null : (prefix ? Log( prefix, source) : Log(source));
     })
   );
 };
