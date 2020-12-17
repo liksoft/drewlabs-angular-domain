@@ -14,6 +14,7 @@
     <div *ngSwitchCase="inputTypes.SELECT_INPUT">
       <app-dynamic-select-input [control]="control" [inputConfig]="inputConfig"
         [showLabelAndDescription]="showLabelAndDescription" (multiSelectItemRemove)="multiSelectItemRemove.emit($event)"
+        (inputSelect)="inputSelect.emit($event)"
         [inputItems]="inputConfig?.items"></app-dynamic-select-input>
     </div>
     <div *ngSwitchCase="inputTypes.PHONE_INPUT">

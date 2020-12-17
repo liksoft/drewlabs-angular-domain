@@ -71,6 +71,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
     return this._inputConfig;
   }
   @Output() multiSelectItemRemove = new EventEmitter<any>();
+  @Output() inputSelect = new EventEmitter<{ formcontrolname: string, value: any }>();
 
   // tslint:disable-next-line: variable-name
   _controlFocusEvent$ = createSubject<{ state: any[] }>();
