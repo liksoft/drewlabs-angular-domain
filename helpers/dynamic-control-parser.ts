@@ -14,6 +14,10 @@ export class DynamicControlParser {
 
   public constructor(private uniqueFieldValidator: UniqueValueService, private fb: FormBuilder, private typeHelper: TypeUtilHelper) { }
 
+  get formBuilder(): FormBuilder {
+    return this.fb;
+  }
+
   /**
    * @description Provides a wrapper arround static method for parsing dynamic controls into an angular formgoup
    * @param inputs [[Array<IHTMLFormControl>]]

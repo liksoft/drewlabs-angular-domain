@@ -23,6 +23,7 @@ import {
 import { DropzoneService } from './dropzone.service';
 import { createSubject, createStateful } from '../../rxjs/helpers/index';
 import { takeUntil } from 'rxjs/operators';
+import { Log } from '../../utils/logger';
 
 @Component({
   selector: 'app-dropzone',
