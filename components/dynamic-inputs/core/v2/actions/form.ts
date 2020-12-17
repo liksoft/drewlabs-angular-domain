@@ -9,7 +9,7 @@ import { isArray, isDefined, isObject } from '../../../../../utils/types';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UIStateStatusCode } from '../../../../../helpers';
 import { DynamicFormInterface } from '../../compact/types';
-import { PaginationDataState } from 'src/app/lib/domain/rxjs/types';
+import { PaginationDataState } from '../../../../../rxjs/types';
 import { FormControlV2 } from '../models';
 
 export interface FormState {

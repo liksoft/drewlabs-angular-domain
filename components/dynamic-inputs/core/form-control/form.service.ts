@@ -1,18 +1,18 @@
 import {
   DrewlabsRessourceServerClient
-} from 'src/app/lib/domain/http/core';
+} from '../../../../http/core';
 import { isDefined, isArray } from '../../../../utils';
 import { Injectable } from '@angular/core';
-import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
+import { ISerializableBuilder } from '../../../../built-value/contracts/serializers';
 import { FormControl } from './form-control';
 import { FormControlOptionsEntity } from './form-control-options-entity';
 import { LocalStorage } from '../../../../storage/core/local-storage.service';
-import { getResponseDataFromHttpResponse } from 'src/app/lib/domain/http/helpers/http-response';
+import { getResponseDataFromHttpResponse } from '../../../../http/helpers/http-response';
 import { map } from 'rxjs/operators';
 import { FormV2 } from '../v2/models/form';
 import { FormControlV2 } from '../v2/models';
 import { DynamicFormInterface } from '../compact/types';
-import { IHttpResponse } from 'src/app/lib/domain/http/contracts';
+import { IHttpResponse } from '../../../../http/contracts';
 import { Observable } from 'rxjs';
 
 @Injectable({

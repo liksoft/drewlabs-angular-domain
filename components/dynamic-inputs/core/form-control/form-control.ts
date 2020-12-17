@@ -1,6 +1,8 @@
-import { JsonProperty, ObjectSerializer } from 'src/app/lib/domain/built-value/core/serializers';
-import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
-import { TypeBuilder } from 'src/app/lib/domain/built-value/contracts/type';
+import { JsonProperty, ObjectSerializer } from '../../../../built-value/core/serializers';
+import { ISerializableBuilder } from '../../../../built-value/contracts/serializers';
+import { TypeBuilder } from '../../../../built-value/contracts/type';
+import { GenericSerializaleSerializer } from '../../../../built-value/core/js/serializer';
+
 // tslint:disable-next-line: max-line-length
 import {
   DateInput,
@@ -15,10 +17,9 @@ import {
   HiddenInput,
   FileInput,
   HMTLInput
-} from 'src/app/lib/domain/components/dynamic-inputs/core/input-types';
+} from '../input-types';
 import { InputTypes } from '../contracts/input-types';
 import { IHTMLFormControl } from '../contracts/dynamic-input';
-import { GenericSerializaleSerializer } from 'src/app/lib/domain/built-value/core/js/serializer';
 import { DynamicFormControlInterface } from '../compact/types';
 
 export function formControlModelToDynamicControl(model: DynamicFormControlInterface): IHTMLFormControl {

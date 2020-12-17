@@ -1,4 +1,4 @@
-import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts';
+import { ISerializableBuilder } from '../../../../../built-value/contracts';
 import { GenericSerializaleSerializer, GenericUndecoratedSerializaleSerializer, UndecoratedSerializer } from '../../../../../built-value/core/js/serializer';
 import { DynamicFormControlInterface } from '../../compact/types';
 

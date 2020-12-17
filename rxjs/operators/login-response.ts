@@ -70,37 +70,5 @@ export const onAuthenticationResultEffect: LoginReponseHandlerFunc<LoginResponse
         return { is2FactorAuthEnabled, isAutenticated, loginResponse };
       })
     );
-    // return createObservable((observer: Subscriber<LoginResponseWithAuthenticationResult>) => {
-    //   // Allow to unsuscribe to source observable as part of teardown
-    //   return source$.subscribe(
-    //     next => {
-    //       let is2FactorAuthEnabled = false;
-    //       let isAutenticated = false;
-    //       const loginResponse = getLoginResponse(next);
-    //       if (drewlabsIsAuthenticationSuccessful(loginResponse)) {
-    //         isAutenticated = true;
-    //         // Check if is double authentication active
-    //         const loginState = getLoginState(loginResponse);
-    //         if (!isDoubleAuthActive(loginState)) {
-    //           is2FactorAuthEnabled = false;
-    //           // Put user details to into app local storage
-    //           tokenProvider.setToken(loginState.token);
-    //           const authenticatedUser = getLoggedInUser(loginResponse);
-    //           if (Boolean(remember)) {
-    //             rememberProvider.setToken({ userId: authenticatedUser.id, token: authenticatedUser.rememberToken });
-    //           }
-    //           userStorageHandler.addUserToCache(authenticatedUser);
-    //         } else {
-    //           is2FactorAuthEnabled = true;
-    //         }
-    //       }
-    //       observer.next({ is2FactorAuthEnabled, isAutenticated, loginResponse });
-    //     },
-    //     // Emit error when error is thrown
-    //     err => observer.error(err),
-    //     // Complete the inner observable when source completes.
-    //     () => observer.complete()
-    //   );
-    // });
   };
 };

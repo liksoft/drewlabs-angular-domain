@@ -1,7 +1,7 @@
-import { JsonProperty, ObjectSerializer } from 'src/app/lib/domain/built-value/core/serializers';
-import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
-import { TypeBuilder } from 'src/app/lib/domain/built-value/contracts/type';
-import { GenericSerializaleSerializer } from 'src/app/lib/domain/built-value/core/js/serializer';
+import { JsonProperty, ObjectSerializer } from '../../../../built-value/core/serializers';
+import { ISerializableBuilder } from '../../../../built-value/contracts/serializers';
+import { TypeBuilder } from '../../../../built-value/contracts/type';
+import { GenericSerializaleSerializer } from '../../../../built-value/core/js/serializer';
 
 export class FormControlOptionsEntity {
   @JsonProperty('id')

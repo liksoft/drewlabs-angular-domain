@@ -14,5 +14,7 @@ export {
   insertOrUpdateValuesUsingID,
   listItemToIdMaps,
   addItemToCache,
-  removeItemFromCache
+  removeItemFromCache,
+  deleteFromListUsingID,
+  updateListUsingID
 } from './entity-handlers';

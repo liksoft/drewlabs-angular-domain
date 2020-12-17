@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DynamicFormControlComponent } from './dynamic-form-control.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { IntlTelInputModule } from 'src/app/lib/domain/components/intl-tel-input';
+import { IntlTelInputModule } from '../../../components/intl-tel-input';
 import { ClarityModule } from '@clr/angular';
 import { DynamicFormWapperComponent } from './dynamic-form-wapper/dynamic-form-wapper.component';
 import { DropzoneModule } from '../../dropzone/dropzone.module';

@@ -1,9 +1,9 @@
 import * as lodash from 'lodash';
 import { FormState, FormStoreActions } from '../actions';
 import { DefaultStoreAction, StoreAction } from '../../../../../rxjs/state/rx-state';
-import { insertOrUpdateValuesUsingID, removeItemFromCache, updatePaginationData } from 'src/app/lib/domain/rxjs/helpers';
+import { insertOrUpdateValuesUsingID, removeItemFromCache, updatePaginationData } from '../../../../../rxjs/helpers';
 import { DynamicFormInterface } from '../../compact/types';
-import { deleteFromListUsingID, updateListUsingID } from 'src/app/lib/domain/rxjs/helpers/entity-handlers';
+import { deleteFromListUsingID, updateListUsingID } from '../../../../../rxjs/helpers/entity-handlers';
 
 export const formsReducer = (state: FormState, action: Partial<StoreAction>) => {
   const {
