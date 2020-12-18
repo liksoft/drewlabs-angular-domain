@@ -15,13 +15,10 @@ import { doLog } from '../../../../rxjs/operators';
   templateUrl: './dynamic-select-input.component.html',
   styles: [
     `
-    /* .clr-select-wrapper {
-      min-width: 100% !important;
-    } */
-
-    .ng-select {
-      display: block;
-      min-width: 100% !important;
+    .ng-select, :host ::ng-deep .ng-select {
+        display: block;
+        max-width: 100% !important;
+        width: 100%;
     }
 
     .ng-select.flat {
@@ -50,7 +47,13 @@ import { doLog } from '../../../../rxjs/operators';
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicSelectInputComponent implements OnDestroy {
-  @Input() control: AbstractControl;
+  private _control: AbstractControl;
+  @Input() set control(value: AbstractControl) {
+    this._control = value;
+  }
+  get control() : AbstractControl {
+    return this._control;
+  }
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name
   _performingAction$ = createStateful(false);
@@ -71,6 +74,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
     return this._inputConfig;
   }
   @Output() multiSelectItemRemove = new EventEmitter<any>();
+  @Output() inputSelect = new EventEmitter<{ formcontrolname: string, value: any }>();
 
   // tslint:disable-next-line: variable-name
   _controlFocusEvent$ = createSubject<{ state: any[] }>();
@@ -108,7 +112,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
     ).subscribe();
   }
 
-  onFocus() {
+  onFocus(): void {
     const { state } = this._inputItems$.getValue();
     if (!isDefined(state) || isEmpty(state) && isDefined(this._inputConfig.serverBindings)) {
       // Load the data from the remote server
