@@ -73,9 +73,18 @@ export function buildRequiredIfConfig(stringifiedConfig: string): HTMLFormContro
   if (!isDefined(stringifiedConfig) || (stringifiedConfig.indexOf(':') === -1)) { return null; }
   // split the string into the two parts
   const parts = stringifiedConfig.split(':');
+  let values = [];
+  // Split by '|' Character
+  const result = parts[1].indexOf('|') !== -1 ? parts[1].split('|') : [parts[1]];
+  // Split by ',' character
+  // @deprecated
+  result.forEach((part) => {
+    const split = part.indexOf(',') !== -1 ? part.split(',') : part;
+    values = [...values, ...split];
+  });
   return {
     formControlName: parts[0].trim(),
-    values: parts[1].indexOf(',') !== -1 ? parts[1].split(',') : [parts[1]]
+    values
   };
 }
 
