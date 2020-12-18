@@ -89,12 +89,18 @@ export const removeItemFromCache = <T extends { id: string | number }>(cache: { 
 
 export const updateListUsingID = <T extends { id: string | number }>(list: T[], value: T) => {
   const listCopy = [...list];
+  if (!isDefined(value) || !isDefined(value.id)) {
+    return listCopy;
+  }
   listCopy.splice(listCopy.findIndex(c => c.id === value.id), 1, value);
   return listCopy;
 };
 
 export const deleteFromListUsingID = <T extends { id: string | number }>(list: T[], value: T) => {
   const listCopy = [...list];
+  if (!isDefined(value) || !isDefined(value.id)) {
+    return listCopy;
+  }
   listCopy.splice(listCopy.findIndex(c => c.id === value.id), 1);
   return listCopy;
 };
