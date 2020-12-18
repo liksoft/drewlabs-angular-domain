@@ -1,7 +1,4 @@
-import { Observable, Subject, Subscriber, TeardownLogic, BehaviorSubject, OperatorFunction } from 'rxjs';
-import { IUserStorageHandler } from '../auth/contracts/v2/user/storage-user';
-import { IAuthTokenHandler, IRememberTokenHandler } from '../auth-token/contracts';
-import { ILoginResponse } from '../auth/contracts/v2';
+import { Observable, Subject, Subscriber, TeardownLogic, BehaviorSubject } from 'rxjs';
 
 // Creates a new observable subject
 export type GenericCreateSubjectFunc<T> = (param?: T) => Subject<T> | BehaviorSubject<T>;
@@ -22,16 +19,6 @@ export type MapToHandlerResponse<T> = (res: any) => HandlerResult<T>;
 
 export type mapToHttpResponseFunc<T> = (handlerFn: MapToHandlerResponse<T>)
   => (source$: Observable<any>) => Observable<HandlerResult<T>>;
-
-export interface LoginResponseWithAuthenticationResult {
-  is2FactorAuthEnabled: boolean;
-  isAutenticated: boolean;
-  loginResponse: ILoginResponse;
-}
-
-export type LoginReponseHandlerFunc<T extends LoginResponseWithAuthenticationResult> = (
-  userStorageHandler: IUserStorageHandler, tokenProvider: IAuthTokenHandler, rememberProvider: IRememberTokenHandler, remember?: boolean)
-  => OperatorFunction<any, T>;
 /**
  * @description Type definition for result of a given handler function
  */

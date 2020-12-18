@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { IDynamicForm } from '../../../core/contracts/dynamic-form';
-import { AbstractAlertableComponent } from '../../../../../helpers/component-interfaces';
 import { AppUIStoreManager } from '../../../../../helpers/app-ui-store-manager.service';
 import { TypeUtilHelper } from '../../../../../helpers/type-utils-helper';
 
@@ -21,7 +20,7 @@ import { TypeUtilHelper } from '../../../../../helpers/type-utils-helper';
     `
   ],
 })
-export class RepeatableGroupChildComponent extends AbstractAlertableComponent {
+export class RepeatableGroupChildComponent {
 
   @Output() componentDestroyer =  new EventEmitter();
   @Output() create = new EventEmitter<AbstractControl>();
@@ -36,5 +35,5 @@ export class RepeatableGroupChildComponent extends AbstractAlertableComponent {
   // tslint:disable-next-line: no-inferrable-types
   @Input() singleColumnView: boolean = false;
 
-  constructor(uiStore: AppUIStoreManager, public readonly typeHelper: TypeUtilHelper) { super(uiStore); }
+  constructor(uiStore: AppUIStoreManager, public readonly typeHelper: TypeUtilHelper) { }
 }

@@ -1,12 +1,13 @@
-import { IAuthTokenHandler, IRememberTokenHandler } from '../../auth-token/contracts';
+import { IAuthTokenHandler, IRememberTokenHandler } from '../../../../auth-token/contracts';
 import { Observable } from 'rxjs';
-import { HandlerResult, LoginResponseWithAuthenticationResult, LoginReponseHandlerFunc } from '../types';
-import { ILoginResponse, IAppUser } from '../../auth/contracts/v2';
-import { LoginResponse, ILoginState } from '../../auth/contracts/v2/login.response';
-import { getResultData } from '../../http/contracts/types';
-import { responseStatusOK } from '../../http/core/helpers';
-import { IUserStorageHandler } from '../../auth/contracts/v2/user/storage-user';
+import { HandlerResult } from '../../../../rxjs/types';
+import { ILoginResponse, IAppUser } from '../../../contracts/v2';
+import { LoginResponse, ILoginState } from '../../../contracts/v2/login.response';
+import { getResultData } from '../../../../http/contracts/types';
+import { responseStatusOK } from '../../../../http/core/helpers';
+import { IUserStorageHandler } from '../../../contracts/v2/user/storage-user';
 import { map } from 'rxjs/operators';
+import { LoginReponseHandlerFunc, LoginResponseWithAuthenticationResult } from '../types';
 
 /**
  * @description Get the login response data structure from the {@link HandlerResult} instance

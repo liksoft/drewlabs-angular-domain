@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup, FormArray } from '@angular/forms';
 import { FileFormControl } from '../components/dynamic-inputs/dynamic-form-control/dynamic-form-control.component';
 import { IDynamicForm } from '../components/dynamic-inputs/core';
-import { isGroupOfIDynamicForm } from './component-reactive-form-helpers';
+import { isGroupOfIDynamicForm } from '../components/dynamic-inputs/core/helpers/dynamic-form-helpers';
 import { isArray, isDefined } from '../utils';
 import { Collection } from '../collections/collection';
 

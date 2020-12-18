@@ -1,7 +1,7 @@
 
-import { MapToHandlerResponse, HandlerResult } from '../../../types';
-import { LoginResponse, ILoginResponse } from '../../../../auth/contracts/v2/login.response';
-import { GenericUndecoratedSerializaleSerializer } from '../../../../built-value/core/js/serializer';
+import { MapToHandlerResponse, HandlerResult } from '../../../../../rxjs/types';
+import { LoginResponse, ILoginResponse } from '../../../../contracts/v2/login.response';
+import { GenericUndecoratedSerializaleSerializer } from '../../../../../built-value/core/js/serializer';
 
 /**
  * @description Parse login response into a {@link LoginResponse} instance

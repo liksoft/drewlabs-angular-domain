@@ -3,9 +3,10 @@ import { FormGroup, AbstractControl, FormArray, ValidatorFn, AsyncValidatorFn } 
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils';
 import { HTMLFormControlRequireIfConfig, IHTMLFormControl } from '../../core/contracts/dynamic-input';
-import { isGroupOfIDynamicForm, ComponentReactiveFormHelpers } from '../../../../helpers/component-reactive-form-helpers';
+import { isGroupOfIDynamicForm } from '../../core/helpers/dynamic-form-helpers';
 import { sortFormByIndex } from '../../core/helpers';
 import * as lodash from 'lodash';
+import { ComponentReactiveFormHelpers } from '../../core/helpers/ng-forms';
 
 interface IConditionalControlBinding {
   key: string;

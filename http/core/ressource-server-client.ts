@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 import { IHttpResponse } from '../contracts/types';
 import { HttpRequestService } from './http-request.service';
-import { mapToHttpResponse } from '../../rxjs/operators/map-to-response-type';
 import { IResourcesServerClient } from '../contracts/resource/ressource-server-client';
 import { Injectable, Inject } from '@angular/core';
 import { RequestBody, TransformResponseHandlerFn } from '../contracts/resource';
@@ -9,6 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DrewlabsHttpResponseStatusCode } from './http-response';
 import { UIStateStatusCode } from '../../helpers/app-ui-store-manager.service';
 import { doLog } from '../../rxjs/operators';
+import { mapToHttpResponse } from './rx/operators/map-to-response-type';
 
 @Injectable()
 export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHttpResponse<any>> {

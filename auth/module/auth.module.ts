@@ -8,8 +8,8 @@ import { AppUser, IAppUser } from '../contracts/v2/user/user';
 import { IGenericSerializableBuilder, ISerializableBuilder } from '../../built-value/contracts';
 import { AuthInterceptorService } from '../core/auth-interceptor.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { DrewlabsV2LoginResultHandlerFunc } from '../../rxjs/operators';
 import { MapToHandlerResponse } from '../../rxjs/types';
+import { DrewlabsV2LoginResultHandlerFunc } from '../core/rx/operators/v2/login-response';
 
 export interface AuthModuleConfigs {
   userSerializer?: IGenericSerializableBuilder<IAppUser> | ISerializableBuilder<IAppUser>;

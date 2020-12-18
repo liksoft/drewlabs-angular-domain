@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { IHTMLFormControl } from '../components/dynamic-inputs/core';
-import { ComponentReactiveFormHelpers, angularAbstractControlFormDynamicForm } from './component-reactive-form-helpers';
+import { IHTMLFormControl } from '..';
+import { ComponentReactiveFormHelpers, angularAbstractControlFormDynamicForm } from './ng-forms';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { TypeUtilHelper } from './type-utils-helper';
-import { IDynamicForm } from '../components/dynamic-inputs/core/contracts/dynamic-form';
-import { ICollection } from '../contracts/collection-interface';
-import { UniqueValueService } from '../validators';
+import { TypeUtilHelper } from '../../../../helpers/type-utils-helper';
+import { IDynamicForm } from '../contracts/dynamic-form';
+import { ICollection } from '../../../../contracts/collection-interface';
+import { UniqueValueService } from '../../../../validators';
 
 @Injectable({
   providedIn: 'root'

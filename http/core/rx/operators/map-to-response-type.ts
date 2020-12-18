@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { MapToHandlerResponse } from '../types';
+import { MapToHandlerResponse } from '../../../../rxjs/types';
 import { map } from 'rxjs/operators';
 
 /**

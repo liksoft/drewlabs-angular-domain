@@ -4,11 +4,12 @@ import { AuthTokenService } from '../../auth-token/core/auth-token.service';
 import { HttpRequestService, HTTPErrorState } from '../../http/core/http-request.service';
 import { AuthRememberTokenService } from '../../auth-token/core/auth-remember-token.service';
 import { createSubject, observableOf } from '../../rxjs/helpers';
-import { mapToHttpResponse, doLog } from '../../rxjs/operators';
+import { doLog } from '../../rxjs/operators';
 import { mergeMap, catchError, takeUntil, tap, filter, delay } from 'rxjs/operators';
 import { throwError, merge, Observable } from 'rxjs';
 import { ILoginRequest, ILoginResponse } from '../contracts/v2';
-import { DrewlabsV2LoginResultHandlerFunc, onAuthenticationResultEffect } from '../../rxjs/operators';
+import { onAuthenticationResultEffect } from './rx/operators/login-response';
+import {DrewlabsV2LoginResultHandlerFunc} from './rx/operators/v2/login-response';
 import { UserStorageProvider } from './services/user-storage';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ILoginResponseBody } from '../contracts/v2/login.response';
@@ -24,6 +25,7 @@ import { authReducer } from './reducers';
 import { isEmpty } from 'lodash';
 import { Log } from '../../utils/logger';
 import { MapToHandlerResponse } from '../../rxjs/types';
+import { mapToHttpResponse } from '../../http/core/rx/operators/map-to-response-type';
 
 const initalState: AuthState = {
   isLoggedIn: false,
