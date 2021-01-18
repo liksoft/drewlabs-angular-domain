@@ -55,6 +55,7 @@ export const builLinkFromRoutesMap = (map: RoutesMap[], translations: any) => {
         key: m.key,
         value: {
           routeDescription: translations[m.key],
+          routePermissions: m.permissions ? m.permissions : [],
           children,
           routeIcon: m.routeIcon
         }
