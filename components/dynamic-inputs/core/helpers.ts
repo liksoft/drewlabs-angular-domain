@@ -5,9 +5,11 @@ import { ArrayUtils } from '../../../utils/types/array-utils';
 import { CheckboxItem, ISelectItem, RadioItem } from './contracts/control-item';
 import { DynamicForm } from './dynamic-form';
 import { DynamicFormControlInterface } from './compact/types';
+import { Order } from '../../../utils/enums';
 
 /**
  * @description Sort a dynamic form control configs by their [[formControlIndex]] property in the ascending order
+ * @deprecated Use {sortDynamicFormByIndex} instead
  * @param form [[IDynamicForm]]
  */
 export function sortFormByIndex(form: IDynamicForm): IDynamicForm {
@@ -25,8 +27,30 @@ export function sortFormByIndex(form: IDynamicForm): IDynamicForm {
   return loopThroughFormsFn(form);
 }
 
+/**
+ * @description Sort a dynamic form control configs by their [[formControlIndex]]
+ * property in the user specified order. Note: By default controls are sorted in the
+ * ascending order
+ * @param form [[IDynamicForm]]
+ */
+export function sortDynamicFormByIndex(form: IDynamicForm): IDynamicForm {
+  const loopThroughFormsFn = (f: IDynamicForm, sortingOrder: Order = Order.ASC) => {
+    if (isArray(f.forms) && f.forms.length > 0) {
+      f.forms.forEach((i) => {
+        loopThroughFormsFn(i);
+      });
+    }
+    if (isArray(f.controlConfigs) && (f.controlConfigs as Array<IHTMLFormControl>).length > 0) {
+      f.controlConfigs = ArrayUtils.sort((f.controlConfigs as Array<IHTMLFormControl>), 'formControlIndex', sortingOrder) as IHTMLFormControl[];
+    }
+    return f;
+  };
+  return loopThroughFormsFn(form);
+}
+
+
 export function rebuildFormControlConfigs(form: IDynamicForm, controlConfigs: Array<IHTMLFormControl>): IDynamicForm {
-  return sortFormByIndex(
+  return sortDynamicFormByIndex(
     new DynamicForm({
       id: form.id,
       title: form.title,
