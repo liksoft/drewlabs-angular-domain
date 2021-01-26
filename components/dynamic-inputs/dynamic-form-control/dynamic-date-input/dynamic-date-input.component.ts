@@ -4,7 +4,6 @@ import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { DynamicInputTypeHelper } from '../input-type.service';
 import { MomentUtils } from '../../../../utils/datetime/moment-utils';
 import { isDefined } from '../../../../utils/types/type-utils';
-import { Log } from 'src/app/lib/domain/utils/logger';
 
 @Component({
   selector: 'app-dynamic-date-input',

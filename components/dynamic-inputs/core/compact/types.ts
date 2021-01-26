@@ -47,4 +47,15 @@ export interface DynamicFormControlInterface {
   valuefield: string;
   groupfield: string;
   keyfield: string;
+  formId: number;
+}
+
+
+export interface ControlOptionInterface {
+  id: number;
+  table: string;
+  keyfield: string;
+  groupfield?: string;
+  description: string;
+  displayLabel: string;
 }

@@ -4,9 +4,20 @@ import { isArray, isDefined } from '../../../utils/types/type-utils';
 import { ArrayUtils } from '../../../utils/types/array-utils';
 import { CheckboxItem, ISelectItem, RadioItem } from './contracts/control-item';
 import { DynamicForm } from './dynamic-form';
-import { DynamicFormControlInterface } from './compact/types';
+import { DynamicFormControlInterface, DynamicFormInterface } from './compact/types';
 import { Order } from '../../../utils/enums';
 import { cloneDeep } from 'lodash';
+
+/**
+ * @description Sort form loaded from backend server by control index
+ * @param f [[Form]]
+ */
+export function sortFormFormControlsByIndex(value: DynamicFormInterface): DynamicFormInterface {
+  if (isArray(value.formControls) && (value.formControls as DynamicFormControlInterface[]).length > 0) {
+    value.formControls = ArrayUtils.sort((value.formControls as DynamicFormControlInterface[]), 'controlIndex', 1) as DynamicFormControlInterface[];
+  }
+  return value;
+}
 
 /**
  * @description Sort a dynamic form control configs by their [[formControlIndex]] property in the ascending order

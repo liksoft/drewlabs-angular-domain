@@ -1,4 +1,3 @@
-import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts';
 import { GenericSerializaleSerializer, GenericUndecoratedSerializaleSerializer, UndecoratedSerializer } from '../../../../../built-value/core/js/serializer';
 import { DynamicFormControlInterface } from '../../compact/types';
 
@@ -42,7 +41,7 @@ export class FormControlV2 implements DynamicFormControlInterface {
   groupfield: string = undefined;
   keyfield: string = undefined;
 
-  static builder(): ISerializableBuilder<FormControlV2> {
+  static builder() {
     return new GenericSerializaleSerializer(FormControlV2, new UndecoratedSerializer());
   }
 
@@ -109,7 +108,7 @@ export class FormControlRequestBody {
   columns: number;
   rows: number;
 
-  static builder(): ISerializableBuilder<FormControlRequestBody> {
+  static builder() {
     return new GenericSerializaleSerializer(FormControlRequestBody, new UndecoratedSerializer());
   }
 
@@ -162,7 +161,7 @@ export class FormFormControlRequestBody {
   uniqueOn: string;
   containerClass: string;
 
-  static builder(): ISerializableBuilder<FormFormControlRequestBody> {
+  static builder() {
     return new GenericSerializaleSerializer(FormFormControlRequestBody, new UndecoratedSerializer());
   }
 

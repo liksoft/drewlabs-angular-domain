@@ -1,19 +1,15 @@
-import {
-  DrewlabsRessourceServerClient
-} from 'src/app/lib/domain/http/core';
+
 import { isDefined, isArray } from '../../../../utils';
 import { Injectable } from '@angular/core';
-import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
-import { FormControl } from './form-control';
-import { FormControlOptionsEntity } from './form-control-options-entity';
-import { LocalStorage } from '../../../../storage/core/local-storage.service';
-import { getResponseDataFromHttpResponse } from 'src/app/lib/domain/http/helpers/http-response';
 import { map } from 'rxjs/operators';
 import { FormV2 } from '../v2/models/form';
 import { FormControlV2 } from '../v2/models';
-import { DynamicFormInterface } from '../compact/types';
-import { IHttpResponse } from 'src/app/lib/domain/http/contracts';
+import { DynamicFormControlInterface, DynamicFormInterface } from '../compact/types';
 import { Observable } from 'rxjs';
+import { getResponseDataFromHttpResponse } from '../../../../http/helpers/http-response';
+import { DrewlabsRessourceServerClient } from '../../../../http/core/ressource-server-client';
+import { LocalStorage } from '../../../../storage/core/local-storage.service';
+import { IHttpResponse } from '../../../../http/contracts/types';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +41,7 @@ export class FormService {
     return this.client.get(`${this.ressourcesPath}/${id}`, { params }).pipe(
       map(state => {
         const data = getResponseDataFromHttpResponse(state);
-        return (isDefined(data)) ? (FormV2.builder() as ISerializableBuilder<FormV2>).fromSerialized(data) : null;
+        return (isDefined(data)) ? (FormV2.builder()).fromSerialized(data) : null;
       })
     ).toPromise();
   }
@@ -57,7 +53,7 @@ export class FormService {
     return this.client.get(`${this.ressourcesPath}/${id}`, params).pipe(
       map(state => {
         const data = getResponseDataFromHttpResponse(state);
-        return (isDefined(data)) ? (FormV2.builder() as ISerializableBuilder<FormV2>).fromSerialized(data) : null;
+        return (isDefined(data)) ? (FormV2.builder()).fromSerialized(data) : null;
       })
     );
   }
@@ -65,13 +61,13 @@ export class FormService {
   /**
    * @description Get all forms from the data source
    */
-  public async getForms(params: {[prop: string]: any} = {}): Promise<DynamicFormInterface[]> {
-    return this.client.get(`${this.ressourcesPath}`, {params}).pipe(
+  public async getForms(params: { [prop: string]: any } = {}): Promise<DynamicFormInterface[]> {
+    return this.client.get(`${this.ressourcesPath}`, { params }).pipe(
       map(state => {
         const data = getResponseDataFromHttpResponse(state);
         return (isDefined(data) && isArray(data)) ? (data as { [prop: string]: any }[])
           .map((value) => {
-            return (FormV2.builder() as ISerializableBuilder<FormV2>).fromSerialized(value);
+            return (FormV2.builder()).fromSerialized(value);
           }) : [];
       })
     ).toPromise();
@@ -79,31 +75,16 @@ export class FormService {
   /**
    * @description Get all forms from the data source
    */
-  public rxGetForms(params: {[prop: string]: any} = {}): Observable<DynamicFormInterface[]> {
-    return this.client.get(`${this.ressourcesPath}`, {params}).pipe(
+  public rxGetForms(params: { [prop: string]: any } = {}): Observable<DynamicFormInterface[]> {
+    return this.client.get(`${this.ressourcesPath}`, { params }).pipe(
       map(state => {
         const data = getResponseDataFromHttpResponse(state);
         return (isDefined(data) && isArray(data)) ? (data as { [prop: string]: any }[])
           .map((value) => {
-            return (FormV2.builder() as ISerializableBuilder<FormV2>).fromSerialized(value);
+            return (FormV2.builder()).fromSerialized(value);
           }) : [];
       })
     );
-  }
-
-  /**
-   * @description Get the list of tables or entities that can be associated with a selectable control input
-   */
-  public async getFormControlOptionsBindableEntities(): Promise<FormControlOptionsEntity[]> {
-    return this.client.get(`${this.bindableEntitiesRessourcesPath}`).pipe(
-      map(state => {
-        const data = getResponseDataFromHttpResponse(state);
-        return (isDefined(data) && isArray(data)) ? (data as { [prop: string]: any }[])
-          .map((value) => {
-            return (FormControlOptionsEntity.builder() as ISerializableBuilder<FormControlOptionsEntity>).fromSerialized(value);
-          }) : [];
-      })
-    ).toPromise();
   }
 
   /**
@@ -127,7 +108,7 @@ export class FormService {
       .pipe(
         map(state => {
           const data = getResponseDataFromHttpResponse(state);
-          return isDefined(data) ? (FormV2.builder() as ISerializableBuilder<FormV2>).fromSerialized(data) : state;
+          return isDefined(data) ? (FormV2.builder()).fromSerialized(data) : state;
         })
       ).toPromise();
   }
@@ -155,12 +136,12 @@ export class FormService {
    * @param endPointURL [[string]]
    */
   // tslint:disable-next-line: deprecation
-  createFormControl(requestBody: object, endPointURL: string = null): Promise<IHttpResponse<any> | FormControl | FormControlV2> {
+  createFormControl(requestBody: object, endPointURL: string = null): Promise<IHttpResponse<any> | DynamicFormControlInterface> {
     return this.client.create(isDefined(endPointURL) ? endPointURL : this.formControlRessourcesPath, requestBody)
       .pipe(
         map(state => {
           const data = getResponseDataFromHttpResponse(state);
-          return isDefined(data) ? (FormControlV2.builder() as ISerializableBuilder<FormControlV2>).fromSerialized(data) : state;
+          return isDefined(data) ? (FormControlV2.builder()).fromSerialized(data) : state;
         })
       ).toPromise();
   }

@@ -16,7 +16,7 @@ import {
   IDynamicForm,
   DynamicForm,
   toDynamicControl
-} from 'src/app/lib/domain/components/dynamic-inputs/core';
+} from '../components/dynamic-inputs/core';
 import { of } from 'rxjs';
 import { AppUIStoreManager } from './app-ui-store-manager.service';
 import { Directive, EventEmitter, HostBinding } from '@angular/core';

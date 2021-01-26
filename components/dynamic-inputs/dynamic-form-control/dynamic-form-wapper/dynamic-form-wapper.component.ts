@@ -3,12 +3,11 @@ import { FormGroup, AbstractControl, FormArray } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils';
 import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
-import { isGroupOfIDynamicForm } from 'src/app/lib/domain/helpers/component-reactive-form-helpers';
 import { createDynamicForm } from '../../core/helpers';
 import { IConditionalControlBinding } from './types';
 import { applyHiddenAttributeToControlFn, applyHiddenAttributeChangeToControl, bindingsFromDynamicForm } from './helpers';
 import { createStateful } from '../../../../rxjs/helpers/creator-functions';
-import { Log } from '../../../../utils/logger';
+import { isGroupOfIDynamicForm } from '../../../../helpers/component-reactive-form-helpers';
 
 
 export interface MultiSelectItemRemoveEvent {

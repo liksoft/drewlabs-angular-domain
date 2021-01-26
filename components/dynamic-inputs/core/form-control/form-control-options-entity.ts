@@ -1,26 +1,28 @@
-import { JsonProperty, ObjectSerializer } from 'src/app/lib/domain/built-value/core/serializers';
-import { ISerializableBuilder } from 'src/app/lib/domain/built-value/contracts/serializers';
-import { TypeBuilder } from 'src/app/lib/domain/built-value/contracts/type';
-import { GenericSerializaleSerializer } from 'src/app/lib/domain/built-value/core/js/serializer';
+// import { GenericSerializaleSerializer, UndecoratedSerializer } from '../../../../built-value/core/js/serializer';
 
-export class FormControlOptionsEntity {
-  @JsonProperty('id')
-  id: number = undefined;
-  @JsonProperty('table')
-  table: string = undefined;
-  @JsonProperty('keyfield')
-  keyfield: string = undefined;
-  @JsonProperty('groupfield')
-  groupfield: string = undefined;
-  @JsonProperty('valuefield')
-  description: string = undefined;
-  @JsonProperty('display_label')
-  displayLabel: string = undefined;
+// export class ControlOption {
+//   id: number = undefined;
+//   table: string = undefined;
+//   keyfield: string = undefined;
+//   groupfield: string = undefined;
+//   description: string = undefined;
+//   displayLabel: string = undefined;
 
-  /**
-   * @description Calls to get the builder provider of the current class|type
-   */
-  static builder(): TypeBuilder<FormControlOptionsEntity> | ISerializableBuilder<FormControlOptionsEntity> {
-    return new GenericSerializaleSerializer(FormControlOptionsEntity, new ObjectSerializer());
-  }
-}
+//   /**
+//    * @description Calls to get the builder provider of the current class|type
+//    */
+//   static builder() {
+//     return new GenericSerializaleSerializer(ControlOption, new UndecoratedSerializer);
+//   }
+
+//   static getJsonableProperties(): { [index: string]: keyof ControlOption } | { [index: string]: { name: string, type: any } } {
+//     return {
+//       id: 'id',
+//       table: 'table',
+//       keyfield: 'keyfield',
+//       groupfield: 'groupfield',
+//       valuefield: 'description',
+//       display_label: 'displayLabel',
+//     };
+//   }
+// }

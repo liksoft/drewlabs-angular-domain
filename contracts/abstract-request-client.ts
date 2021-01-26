@@ -1,10 +1,7 @@
-import {
-  ResponseBody,
-  ResponseData
-} from 'src/app/lib/domain/http/contracts/http-response-data';
-import { ServerResponseKeys } from 'src/app/lib/domain/auth/core';
+
+import { ServerResponseKeys } from '../auth/core';
 import { ISerializableBuilder } from '../built-value/contracts/serializers';
-import { IResponseBody } from '../http/contracts/http-response-data';
+import { IResponseBody, ResponseBody, ResponseData } from '../http/contracts/http-response-data';
 import { IAppStorage } from '../storage/contracts/store-interface';
 import { IEntityServiceProvider } from './entity-service-provider';
 import { isArray, isDefined } from '../utils';

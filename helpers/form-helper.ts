@@ -5,7 +5,7 @@ import { DynamicFormHelpers, ComponentReactiveFormHelpers } from './component-re
 import { ICollection } from '../contracts/collection-interface';
 import { filter, startWith, takeUntil } from 'rxjs/operators';
 import { AbstractEntityProvider } from '../entity/abstract-entity';
-import { AbstractAlertableComponent } from 'src/app/lib/domain/helpers/component-interfaces';
+import { AbstractAlertableComponent } from './component-interfaces';
 import { FormGroup } from '@angular/forms';
 import { IEntity } from '../entity/contracts/entity';
 import { TypeUtilHelper } from './type-utils-helper';

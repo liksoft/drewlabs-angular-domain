@@ -23,8 +23,17 @@ export {
 } from './input-types';
 export {
   sortFormByIndex,
-  rebuildFormControlConfigs
+  rebuildFormControlConfigs,
+  sortFormFormControlsByIndex
 } from './helpers';
 export {
   DynamicForm
 } from './dynamic-form';
+
+export {
+  FormService
+} from './form-control/form.service';
+
+export {
+  STATIC_FORMS
+} from './constants/forms';
