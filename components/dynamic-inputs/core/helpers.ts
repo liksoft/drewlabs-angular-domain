@@ -6,6 +6,7 @@ import { CheckboxItem, ISelectItem, RadioItem } from './contracts/control-item';
 import { DynamicForm } from './dynamic-form';
 import { DynamicFormControlInterface } from './compact/types';
 import { Order } from '../../../utils/enums';
+import { cloneDeep } from 'lodash';
 
 /**
  * @description Sort a dynamic form control configs by their [[formControlIndex]] property in the ascending order
@@ -56,7 +57,7 @@ export function rebuildFormControlConfigs(form: IDynamicForm, controlConfigs: Ar
       title: form.title,
       endpointURL: form.endpointURL,
       description: form.description,
-      controlConfigs,
+      controlConfigs: [...controlConfigs],
       forms: form.forms
     })
   );
@@ -64,11 +65,18 @@ export function rebuildFormControlConfigs(form: IDynamicForm, controlConfigs: Ar
 
 /**
  * @description Helper method for creating a new dynmaic form
- * @param formConfigs Object with the shape of the IDynamicForm interface
+ * @param form Object with the shape of the IDynamicForm interface
  */
-export function createDynamicForm(formConfigs: IDynamicForm): IDynamicForm {
-  return new DynamicForm(formConfigs);
+export function createDynamicForm(form: IDynamicForm): IDynamicForm {
+  return sortDynamicFormByIndex(new DynamicForm(cloneDynamicForm(form)));
 }
+
+/**
+ * @description Creates a deep copy of the dynamic form object
+ * @param form [IDynamic form]
+ * @returns [IDynamicForm]
+ */
+export const cloneDynamicForm = (form: IDynamicForm) => cloneDeep(form) as IDynamicForm;
 
 export function parseControlItemsConfigs(
   model: Partial<DynamicFormControlInterface>
