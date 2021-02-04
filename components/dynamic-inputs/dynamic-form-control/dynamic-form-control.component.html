@@ -9,7 +9,7 @@
       <div [innerHTML]="inputConfig.value | safeWebContent"></div>
     </ng-container>
     <div *ngSwitchCase="inputTypes.HIDDEN_INPUT">
-      <input type="hidden" [class]="inputConfig.classes" [formControl]="control" />
+      <input [tabIndex]="-1" type="hidden" [class]="inputConfig.classes" [formControl]="control" />
     </div>
     <div *ngSwitchCase="inputTypes.SELECT_INPUT">
       <app-dynamic-select-input [control]="control" [inputConfig]="inputConfig"

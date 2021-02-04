@@ -33,6 +33,8 @@ export const getEnv = (key: string) => {
 export { Dialog, WindowRef, readFileAsDataURI, b64toBlob, Browser } from './browser';
 export { MomentUtils, Month, MonthProvider, MONTHS } from './datetime';
 export { ExcelUtils } from './doc-utils';
+
+// JS Types helper functions
 export {
   equals,
   isDefined,
@@ -45,5 +47,12 @@ export {
   ArrayUtils,
   Filtrable
 } from './types';
+
+// Enumeration values that can globally be used
+export { Order } from './enums';
+
+// URL Utilities functions
 export { URLUtils } from './url/url';
+
+// Numbers formatters implementations
 export { AmountFormatter } from './formatters';
