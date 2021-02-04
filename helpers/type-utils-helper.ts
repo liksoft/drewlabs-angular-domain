@@ -4,7 +4,8 @@ import { FileFormControl } from '../components/dynamic-inputs/dynamic-form-contr
 import { IDynamicForm } from '../components/dynamic-inputs/core';
 import { isGroupOfIDynamicForm } from './component-reactive-form-helpers';
 import { isArray, isDefined } from '../utils';
-import { Collection } from '../collections/collection';
+import { collect } from '../collections/collection';
+import { ICollection } from '../contracts/collection-interface';
 
 
 @Injectable({
@@ -23,8 +24,11 @@ export class TypeUtilHelper {
    * Return any value as collection of items
    * @param value [[any]]
    */
-  asCollection<T extends any>(value: any): Collection<T> {
-    return value as Collection<any>;
+  asCollection<T extends any>(value: any): ICollection<T> {
+    if (isArray(value)) {
+      return collect(value as T[]);
+    }
+    return value as ICollection<any>;
   }
 
   /**
