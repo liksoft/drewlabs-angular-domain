@@ -515,7 +515,7 @@ export const STATIC_FORMS = {
             readonly: 0,
             unique: 0,
             pattern: null,
-            description: 'Ces paramètres permette de filtrer les valeurs chargées depuis la base de données. Seul les opérateurs =,<,>,=<,>=,like sont supportés pour rendre le traitement plus simple. (Syntax: column[op]value) <br />Example:column[[=]]value;column[[<]]value;colum3[[like]]value',
+            description: 'Ces paramètres permette de filtrer les valeurs chargées depuis la base de données. Seul les opérateurs =,<,>,=<,>=,like sont supportés pour rendre le traitement plus simple. (Syntax: column[[op]]value) <br />Example:column[[=]]value;column[[<]]value;colum3[[like]]value',
             maxLength: 254,
             minLength: null,
             min: null,
