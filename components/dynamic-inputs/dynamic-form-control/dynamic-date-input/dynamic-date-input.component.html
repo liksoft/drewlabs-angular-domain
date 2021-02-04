@@ -1,8 +1,9 @@
 <clr-date-container>
   <label class="clr-control-label" *ngIf="showLabelAndDescription"
-    [for]="inputTypeHelper.asDateInput(inputConfig).formControlName">{{ inputTypeHelper.asDateInput(inputConfig).label }}
+    [for]="inputTypeHelper.asDateInput(inputConfig).formControlName">{{ inputTypeHelper.asDateInput(inputConfig).label
+    }}
     <span class="required-text" *ngIf="inputTypeHelper.asDateInput(inputConfig).rules?.isRequired">(*)</span></label>
-  <input type="date" (blur)="onDateInputBlur()" [formControl]="control"
+  <input [tabIndex]="inputConfig?.formControlIndex" type="date" (blur)="onDateInputBlur()" [formControl]="control"
     [min]="inputTypeHelper.asDateInput(inputConfig).minDate" [max]="inputTypeHelper.asDateInput(inputConfig).maxDate"
     clrDate />
 </clr-date-container>
