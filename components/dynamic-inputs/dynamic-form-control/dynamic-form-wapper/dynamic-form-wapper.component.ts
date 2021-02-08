@@ -8,7 +8,6 @@ import { createDynamicForm } from '../../core/helpers';
 import { IConditionalControlBinding } from './types';
 import { applyHiddenAttributeToControlFn, applyHiddenAttributeChangeToControl, bindingsFromDynamicForm } from './helpers';
 import { createStateful } from '../../../../rxjs/helpers/creator-functions';
-import { Log } from '../../../../utils/logger';
 
 
 export interface MultiSelectItemRemoveEvent {
