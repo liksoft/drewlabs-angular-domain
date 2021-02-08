@@ -1,4 +1,4 @@
-import { isDefined } from '../../utils/types/type-utils';
+import { isDefined, isNullOrNaN } from '../../utils/types';
 
 export interface TypeBuilder<T> {
 
@@ -26,7 +26,7 @@ export function buildJSObjectType<T extends any>(bluePrint: new () => T, params:
   const obj = new bluePrint();
   Object.keys(params).forEach((key) => {
     if (obj.hasOwnProperty(key)) {
-      obj[key] = params[key];
+      obj[key] = !isNullOrNaN(params[key]) ? Number(params[key]) : params[key];
     }
   });
   return obj;
@@ -38,7 +38,7 @@ export function rebuildJSObjectType<T extends any>(instance: T, params: T|object
   }
   Object.keys(params).forEach((key) => {
     if (instance.hasOwnProperty(key) && isDefined(params[key])) {
-      instance[key] = params[key];
+      instance[key] = !isNullOrNaN(params[key]) ? Number(params[key]) : params[key];
     }
   });
   return instance;

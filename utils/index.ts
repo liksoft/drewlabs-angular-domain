@@ -43,7 +43,8 @@ export {
   getJSObjectPropertyValue,
   check,
   ArrayUtils,
-  Filtrable
+  Filtrable,
+  isNullOrNaN
 } from './types';
 export { URLUtils } from './url/url';
 export { AmountFormatter } from './formatters';

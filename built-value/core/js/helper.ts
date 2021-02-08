@@ -1,6 +1,5 @@
 import * as lodash from 'lodash';
-import { Log } from '../../../utils/logger';
-import { isPrimitive, isDefined, isArray } from '../../../utils/types/type-utils';
+import { isPrimitive, isDefined, isArray, isNullOrNaN } from '../../../utils/types';
 
 /**
  * @description Create an instance of a given class from a mappings definition using only the first level definitions of the object
@@ -25,7 +24,9 @@ export const deserializeJsObject = <T extends any>(bluePrint: new (...params: an
       (typeof designType === 'string' && isArray(innerObj))
     ) {
       index = designType;
-      parsedValue = innerObj;
+      parsedValue = isArray(innerObj) ?
+        (innerObj as any[]).map(p => !isNullOrNaN(p) ? Number(p) : p) :
+        (!isNullOrNaN(innerObj) ? Number(innerObj) : innerObj);
     } else if (
       isDefined(designType) &&
       typeof designType === 'object' &&
@@ -42,7 +43,11 @@ export const deserializeJsObject = <T extends any>(bluePrint: new (...params: an
         }
         parsedValue = [...values];
       }
-    } else if (isDefined(designType) && typeof designType === 'object' && isDefined(innerObj)) {
+    } else if (
+      isDefined(designType) &&
+      typeof designType === 'object' &&
+      isDefined(innerObj)
+    ) {
       if (!isDefined(designType.type)) {
         index = designType.name || index;
         parsedValue = innerObj;
@@ -51,7 +56,7 @@ export const deserializeJsObject = <T extends any>(bluePrint: new (...params: an
         parsedValue = deserializeJsObject(designType.type, innerObj);
       }
     } else {
-      parsedValue = innerObj;
+      parsedValue = !isNullOrNaN(innerObj) ? Number(innerObj) : innerObj;
     }
     obj[index] = parsedValue;
   });

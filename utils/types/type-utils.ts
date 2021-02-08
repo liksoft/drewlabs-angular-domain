@@ -1,3 +1,4 @@
+import { Log } from '../logger';
 export type Callable = () => any;
 export type Fn = (value?: any) => void;
 
@@ -96,6 +97,13 @@ export function isNumber(value: any): boolean {
   return typeof value === 'number' || value instanceof Number || value === Number;
 }
 
+export const isNullOrNaN = (value: any) => {
+  if (!isDefined(value)) {
+    return true;
+  }
+  return isNaN(value);
+}
+
 /**
  * @description Checks if a variable is of Array type
  * @param param [[any]]
@@ -179,8 +187,8 @@ export const check = fn => (params: string[] = []) => {
   const missing = required.filter(param => !(param in params));
 
   if (missing.length) {
-    throw new Error(`${ fn.name }() Missing required parameter(s):
-    ${ missing.join(', ') }`);
+    throw new Error(`${fn.name}() Missing required parameter(s):
+    ${missing.join(', ')}`);
   }
 
   return fn(params);
