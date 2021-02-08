@@ -17,6 +17,14 @@ export interface TypeBuilder<T> {
   rebuild(instance: T, params: T|object): T;
 }
 
+export interface ToJSONSerializable {
+
+  /**
+   * Returns an JSON standard object
+   */
+  toJSONObject();
+}
+
 /**
  * @description Build a javascript object from another object
  * @param bluePrint [[new () => T]]

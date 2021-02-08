@@ -174,7 +174,7 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
 
   defaultClrPaginatorSizeOptions = [10, 50, 100, 500, 1000];
   // List of filters to be binded before querying ressources
-  protected filters: { [index: string]: any } = {};
+  public filters: { [index: string]: any } = {};
 
   constructor(
     injector: Injector,
@@ -196,28 +196,29 @@ export abstract class ClrDatagridBaseComponent<T> extends AbstractAlertableCompo
   initState(): void {
     this.subscribeToUIActions();
     // Subscribe to refresh and of the datagrid and debounce reload for 1 seconds
-    this.uiStoreSubscriptions.push(this.dataGrid.refresh.asObservable().pipe(
-      debounceTime(500),
-      // distinctUntilChanged(),
-      switchMap((state) => from(this.refresh(state))),
-    ).subscribe(async (state) => {
-      try {
-        if (this.showLoader) {
-          this.appUIStoreManager.initializeUIStoreAction();
+    this.uiStoreSubscriptions.push(
+      this.dataGrid.refresh.asObservable().pipe(
+        debounceTime(500),
+        // distinctUntilChanged(),
+        switchMap((state) => from(this.refresh(state))),
+      ).subscribe(async (state) => {
+        try {
+          if (this.showLoader) {
+            this.appUIStoreManager.initializeUIStoreAction();
+          }
+          this.source = await (this.provider)
+            .resetScope()
+            .setResponseJsonKey(this.ressourcesJsonKey)
+            .setRessourcePath(this.ressourcesPath)
+            .setInlineQuery(this._inlineQuery)
+            .setBuider(this.builder)
+            .setQueryParameters({...state.filters, ...(this.filters)})
+            .getItems(state.params);
+          this.appUIStoreManager.completeUIStoreAction();
+        } catch (error) {
+          this.appUIStoreManager.completeUIStoreAction();
         }
-        this.source = await (this.provider)
-          .resetScope()
-          .setResponseJsonKey(this.ressourcesJsonKey)
-          .setRessourcePath(this.ressourcesPath)
-          .setInlineQuery(this._inlineQuery)
-          .setBuider(this.builder)
-          .setQueryParameters(Object.assign(state.filters, this.filters))
-          .getItems(state.params);
-        this.appUIStoreManager.completeUIStoreAction();
-      } catch (error) {
-        this.appUIStoreManager.completeUIStoreAction();
-      }
-    }));
+      }));
   }
 
   /**
