@@ -45,6 +45,7 @@ export class SessionStorage implements IAppStorage {
    */
   clear(): void {
     this.store.clear();
+    localStorage.removeItem('entity_id');
   }
   /**
    * @description Initialize le LocalStorage
