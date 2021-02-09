@@ -1,6 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { AppUIStateProvider } from '../../helpers/app-ui-store-manager.service';
-
 @Component({
   selector: 'app-progress-bar',
   templateUrl: './progress-bar.component.html',
@@ -11,7 +9,8 @@ export class ProgressBarComponent {
   @Input() overlay = false;
   @Input() hidden = false;
   @Input() indeterminate = false;
-  uiState$ = this.appUiStore.uiState;
 
-  constructor(private appUiStore: AppUIStateProvider) {}
+  @Input() performingAction = false;
+
+  constructor() {}
 }
