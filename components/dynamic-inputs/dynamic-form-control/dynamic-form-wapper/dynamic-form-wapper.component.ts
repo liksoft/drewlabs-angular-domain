@@ -1,25 +1,19 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, AbstractControl, FormArray } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils';
-import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { createDynamicForm } from '../../core/helpers';
-import { IConditionalControlBinding } from './types';
+import { IConditionalControlBinding, MultiSelectItemRemoveEvent } from './types';
 import { applyHiddenAttributeToControlFn, applyHiddenAttributeChangeToControl, bindingsFromDynamicForm } from './helpers';
 import { createStateful } from '../../../../rxjs/helpers/creator-functions';
 import { isGroupOfIDynamicForm } from '../../../../helpers/component-reactive-form-helpers';
 
 
-export interface MultiSelectItemRemoveEvent {
-  event: any;
-  control: IHTMLFormControl;
-}
-
 @Component({
   selector: 'app-dynamic-form-wapper',
   templateUrl: './dynamic-form-wapper.component.html',
   styles: [],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicFormWapperComponent {
 
@@ -31,7 +25,13 @@ export class DynamicFormWapperComponent {
   get form(): IDynamicForm {
     return this._form;
   }
-  @Input() componentFormGroup: FormGroup;
+  private _componentFormGroup: FormGroup;
+  @Input() set componentFormGroup(value: FormGroup) {
+    this._componentFormGroup = value;
+  }
+  get componentFormGroup(): FormGroup {
+    return this._componentFormGroup;
+  }
   @Output() controlItemRemoved = new EventEmitter<MultiSelectItemRemoveEvent>();
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();
@@ -56,14 +56,14 @@ export class DynamicFormWapperComponent {
     let cache = this._bindings$.getValue();
     if (isGroupOfIDynamicForm(this._form)) {
       this._form.forms = this._form.forms.map((v) => {
-        const { bindings, form, formgroup } = bindingsFromDynamicForm(v)(this.componentFormGroup);
-        this.componentFormGroup = formgroup as FormGroup;
+        const { bindings, form, formgroup } = bindingsFromDynamicForm(v)(this._componentFormGroup);
+        this._componentFormGroup = formgroup as FormGroup;
         cache = { ...(cache || {}), ...bindings }
         return form;
       });
     } else {
-      const { bindings, form, formgroup } = bindingsFromDynamicForm(this._form)(this.componentFormGroup);
-      this.componentFormGroup = formgroup as FormGroup;
+      const { bindings, form, formgroup } = bindingsFromDynamicForm(this._form)(this._componentFormGroup);
+      this._componentFormGroup = formgroup as FormGroup;
       this._form = form;
       cache = { ...(cache || {}), ...bindings }
     }
@@ -91,8 +91,8 @@ export class DynamicFormWapperComponent {
           item,
           event.event,
           applyHiddenAttributeToControlFn
-        )(this.componentFormGroup);
-        this.componentFormGroup = control as FormGroup;
+        )(this._componentFormGroup);
+        this._componentFormGroup = control as FormGroup;
         this._form = dynamicForm;
       }); //
     }

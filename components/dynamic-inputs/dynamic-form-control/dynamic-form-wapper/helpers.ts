@@ -5,7 +5,6 @@ import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { includes, toNumber, isNumber } from 'lodash';
 import { ComponentReactiveFormHelpers, isGroupOfIDynamicForm } from '../../../../helpers/component-reactive-form-helpers';
 import { AbstractControl } from '@angular/forms';
-import { Log } from '../../../../utils/logger';
 
 export const applyHiddenAttributeToControlFn = (
   form: IDynamicForm,
@@ -19,7 +18,6 @@ export const applyHiddenAttributeToControlFn = (
           const requiredIfValues = isNumber(value) ? c.requiredIf.values.map(item => {
             return isNaN(item) ? item : toNumber(item);
           }) : c.requiredIf.values;
-          Log('Apply Hidden Attribute Check: ', requiredIfValues, value);
           c.hidden = !includes(requiredIfValues, value) ? true : false;
           if (c.hidden) {
             formgroup.get(bidings.key).setValue(null);
@@ -29,8 +27,8 @@ export const applyHiddenAttributeToControlFn = (
             formgroup.get(bidings.key).setValidators(bidings.validators);
             formgroup.get(bidings.key).setAsyncValidators(bidings.asyncValidators);
           }
-          return c;
         }
+        return c;
       });
     }
     return { control: formgroup, form };
@@ -69,7 +67,6 @@ export const bindingsFromDynamicForm = (form: IDynamicForm) => (
         }
       }
     }
-    Log('Control Required If Bindings: ', bindings);
     return { bindings, formgroup, form };
   }
 );
