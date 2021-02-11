@@ -115,3 +115,8 @@ export const onInitStoreStateAction = <T, A>(
   store: DrewlabsFluxStore<T, Partial<A>>) =>
   createAction(store, (payload: T = {} as T) =>
     ({ type: DefaultStoreAction.INITIALIZE_STORE_STATE, payload } as any));
+
+export const asyncUIAction = <T, A>(
+  store: DrewlabsFluxStore<T, Partial<A>>) =>
+  createAction(store, (payload: T = {} as T) =>
+    ({ type: DefaultStoreAction.ASYNC_UI_ACTION, payload } as any));

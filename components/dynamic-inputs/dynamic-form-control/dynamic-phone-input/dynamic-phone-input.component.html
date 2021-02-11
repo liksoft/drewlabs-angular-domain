@@ -5,11 +5,11 @@
       *ngIf="inputTypeHelper.asPhoneInput(inputConfig).rules?.isRequired">(*)</span></label>
   <div class="clr-control-container">
     <div class="clr-input-wrapper">
-      <app-intl-tel-input [controlClass]="inputTypeHelper.asDateInput(inputConfig).classes" [control]="control"
+      <app-intl-tel-input [tabIndex]="inputConfig?.formControlIndex" [controlClass]="inputTypeHelper.asDateInput(inputConfig).classes" [control]="control"
         [disabled]="inputConfig.disabled" [preferredCountries]="['tg', 'bj', 'gh']" [initialCountry]="'tg'">
       </app-intl-tel-input>
     </div>
-    <input [class]="inputTypeHelper.asPhoneInput(inputConfig).classes" [formControl]="control" type="hidden" />
+    <input [tabIndex]="inputConfig?.formControlIndex" [class]="inputTypeHelper.asPhoneInput(inputConfig).classes" [formControl]="control" type="hidden" />
   </div>
   <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription">
     <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>

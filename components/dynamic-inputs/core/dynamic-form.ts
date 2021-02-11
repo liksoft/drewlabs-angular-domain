@@ -15,7 +15,7 @@ export class DynamicForm implements IDynamicForm {
   constructor({ id, title, description, controlConfigs, endpointURL, forms }: IDynamicForm) {
     this.id = id;
     this.title = title;
-    this.controlConfigs = controlConfigs;
+    this.controlConfigs = controlConfigs ? [...controlConfigs] : [];
     this.description = description;
     this.endpointURL = endpointURL;
     this.forms = forms;

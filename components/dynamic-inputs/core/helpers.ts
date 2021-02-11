@@ -5,9 +5,12 @@ import { ArrayUtils } from '../../../utils/types/array-utils';
 import { CheckboxItem, ISelectItem, RadioItem } from './contracts/control-item';
 import { DynamicForm } from './dynamic-form';
 import { DynamicFormControlInterface } from './compact/types';
+import { Order } from '../../../utils/enums';
+import { cloneDeep } from 'lodash';
 
 /**
  * @description Sort a dynamic form control configs by their [[formControlIndex]] property in the ascending order
+ * @deprecated Use {sortDynamicFormByIndex} instead
  * @param form [[IDynamicForm]]
  */
 export function sortFormByIndex(form: IDynamicForm): IDynamicForm {
@@ -25,14 +28,36 @@ export function sortFormByIndex(form: IDynamicForm): IDynamicForm {
   return loopThroughFormsFn(form);
 }
 
+/**
+ * @description Sort a dynamic form control configs by their [[formControlIndex]]
+ * property in the user specified order. Note: By default controls are sorted in the
+ * ascending order
+ * @param form [[IDynamicForm]]
+ */
+export function sortDynamicFormByIndex(form: IDynamicForm): IDynamicForm {
+  const loopThroughFormsFn = (f: IDynamicForm, sortingOrder: Order = Order.ASC) => {
+    if (isArray(f.forms) && f.forms.length > 0) {
+      f.forms.forEach((i) => {
+        loopThroughFormsFn(i);
+      });
+    }
+    if (isArray(f.controlConfigs) && (f.controlConfigs as Array<IHTMLFormControl>).length > 0) {
+      f.controlConfigs = ArrayUtils.sort((f.controlConfigs as Array<IHTMLFormControl>), 'formControlIndex', sortingOrder) as IHTMLFormControl[];
+    }
+    return f;
+  };
+  return loopThroughFormsFn(form);
+}
+
+
 export function rebuildFormControlConfigs(form: IDynamicForm, controlConfigs: Array<IHTMLFormControl>): IDynamicForm {
-  return sortFormByIndex(
+  return sortDynamicFormByIndex(
     new DynamicForm({
       id: form.id,
       title: form.title,
       endpointURL: form.endpointURL,
       description: form.description,
-      controlConfigs,
+      controlConfigs: [...controlConfigs],
       forms: form.forms
     })
   );
@@ -40,11 +65,18 @@ export function rebuildFormControlConfigs(form: IDynamicForm, controlConfigs: Ar
 
 /**
  * @description Helper method for creating a new dynmaic form
- * @param formConfigs Object with the shape of the IDynamicForm interface
+ * @param form Object with the shape of the IDynamicForm interface
  */
-export function createDynamicForm(formConfigs: IDynamicForm): IDynamicForm {
-  return new DynamicForm(formConfigs);
+export function createDynamicForm(form: IDynamicForm): IDynamicForm {
+  return sortDynamicFormByIndex(new DynamicForm(cloneDynamicForm(form)));
 }
+
+/**
+ * @description Creates a deep copy of the dynamic form object
+ * @param form [IDynamic form]
+ * @returns [IDynamicForm]
+ */
+export const cloneDynamicForm = (form: IDynamicForm) => cloneDeep(form) as IDynamicForm;
 
 export function parseControlItemsConfigs(
   model: Partial<DynamicFormControlInterface>
@@ -73,9 +105,18 @@ export function buildRequiredIfConfig(stringifiedConfig: string): HTMLFormContro
   if (!isDefined(stringifiedConfig) || (stringifiedConfig.indexOf(':') === -1)) { return null; }
   // split the string into the two parts
   const parts = stringifiedConfig.split(':');
+  let values = [];
+  // Split by '|' Character
+  const result = parts[1].indexOf('|') !== -1 ? parts[1].split('|') : [parts[1]];
+  // Split by ',' character
+  // @deprecated
+  result.forEach((part) => {
+    const split = part.indexOf(',') !== -1 ? part.split(',') : part;
+    values = [...values, ...split];
+  });
   return {
     formControlName: parts[0].trim(),
-    values: parts[1].indexOf(',') !== -1 ? parts[1].split(',') : [parts[1]]
+    values
   };
 }
 

@@ -32,8 +32,8 @@ import { DynamicFormInterface } from '../components/dynamic-inputs/core/compact/
  * @description Checks if a dynamic form contains other form
  * @param f [[IDynamicForm]]
  */
-export function isGroupOfIDynamicForm(f: IDynamicForm): boolean {
-  if (isDefined(f) && isDefined(f.forms)) {
+export function isGroupOfIDynamicForm(value: IDynamicForm): boolean {
+  if (isDefined(value) && isArray(value.forms)) {
     return true;
   }
   return false;
@@ -298,7 +298,6 @@ export class ComponentReactiveFormHelpers {
       control.markAsTouched({ onlySelf: true });
       control.markAsDirty({ onlySelf: true });
       control.markAsPristine({ onlySelf: true });
-      control.updateValueAndValidity();
     }
 
   }

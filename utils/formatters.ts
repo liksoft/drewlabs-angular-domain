@@ -1,3 +1,5 @@
+import { isDefined } from "./types/type-utils";
+
 export class AmountFormatter {
 
   /**
@@ -9,7 +11,7 @@ export class AmountFormatter {
   public static formatBalance(balance: any, decimal: number, separator: string) {
     let inDecimal: any = Math.round(
       Math.pow(10, decimal) *
-        (Math.abs(balance) - Math.floor(Math.abs(balance)))
+      (Math.abs(balance) - Math.floor(Math.abs(balance)))
     );
     let inBalance = Math.floor(Math.abs(balance));
 
@@ -41,3 +43,10 @@ export class AmountFormatter {
     return balanceFormat;
   }
 }
+
+export const numberToAmountFormat = (value: any, decimal: any | number = 0, separator: string = ' ') => {
+  if (!isDefined(value)) {
+    return '0.00';
+  }
+  return AmountFormatter.formatBalance(value, decimal, separator);
+};
