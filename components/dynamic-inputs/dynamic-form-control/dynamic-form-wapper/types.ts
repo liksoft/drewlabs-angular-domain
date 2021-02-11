@@ -12,4 +12,4 @@ export interface IConditionalControlBinding {
 
 export type ApplyAttributeChangesToControlsFn =
   (form: IDynamicForm, c: IConditionalControlBinding, s: string | number) =>
-    (formgroup: AbstractControl) => AbstractControl;
+    (formgroup: AbstractControl) => { control: AbstractControl, form: IDynamicForm };

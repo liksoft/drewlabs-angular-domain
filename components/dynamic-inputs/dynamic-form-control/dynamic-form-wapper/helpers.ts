@@ -5,6 +5,7 @@ import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { includes, toNumber, isNumber } from 'lodash';
 import { ComponentReactiveFormHelpers, isGroupOfIDynamicForm } from '../../../../helpers/component-reactive-form-helpers';
 import { AbstractControl } from '@angular/forms';
+import { Log } from '../../../../utils/logger';
 
 export const applyHiddenAttributeToControlFn = (
   form: IDynamicForm,
@@ -12,12 +13,13 @@ export const applyHiddenAttributeToControlFn = (
   value: string | number) => (
   (formgroup: AbstractControl) => {
     if (isDefined(form.controlConfigs) && ((form.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
-      (form.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
+      form.controlConfigs = (form.controlConfigs as Array<IHTMLFormControl>).map((c) => {
         if (c.formControlName === bidings.key) {
           value = isNaN(value as any) ? value : toNumber(value);
           const requiredIfValues = isNumber(value) ? c.requiredIf.values.map(item => {
             return isNaN(item) ? item : toNumber(item);
           }) : c.requiredIf.values;
+          Log('Apply Hidden Attribute Check: ', requiredIfValues, value);
           c.hidden = !includes(requiredIfValues, value) ? true : false;
           if (c.hidden) {
             formgroup.get(bidings.key).setValue(null);
@@ -27,11 +29,11 @@ export const applyHiddenAttributeToControlFn = (
             formgroup.get(bidings.key).setValidators(bidings.validators);
             formgroup.get(bidings.key).setAsyncValidators(bidings.asyncValidators);
           }
-          return;
+          return c;
         }
       });
     }
-    return formgroup;
+    return { control: formgroup, form };
   }
 );
 
@@ -56,35 +58,42 @@ export const bindingsFromDynamicForm = (form: IDynamicForm) => (
       });
       for (const [_, value] of Object.entries(bindings)) {
         if (isDefined(formgroup.get(value.binding.formControlName))) {
-          applyHiddenAttributeChangeToControl(
+          const { control, dynamicForm } = applyHiddenAttributeChangeToControl(
             form,
             value,
             formgroup.get(value.binding.formControlName).value,
             applyHiddenAttributeToControlFn
           )(formgroup);
+          formgroup = control;
+          form = dynamicForm;
         }
       }
     }
-    return { ...bindings };
+    Log('Control Required If Bindings: ', bindings);
+    return { bindings, formgroup, form };
   }
 );
 
 // tslint:disable-next-line: typedef
 export const applyHiddenAttributeChangeToControl = (
-  form: IDynamicForm,
+  param: IDynamicForm,
   bindings: IConditionalControlBinding,
   value: string | number,
   fn: ApplyAttributeChangesToControlsFn) => (
   (formgroup: AbstractControl) => {
-    if (isGroupOfIDynamicForm(form)) {
-      form.forms.forEach((v) => {
+    if (isGroupOfIDynamicForm(param)) {
+      param.forms = param.forms.map((v) => {
         // Call the update method here
-        formgroup = fn(v, bindings, value)(formgroup);
+        const { control, form } = fn(v, bindings, value)(formgroup);
+        formgroup = control;
+        return form;
       });
     } else {
       // Calls the update method here
-      formgroup = fn(form, bindings, value)(formgroup);
+      const { control, form } = fn(param, bindings, value)(formgroup);
+      formgroup = control;
+      param = form;
     }
-    return formgroup;
+    return { control: formgroup, dynamicForm: param };
   }
 );

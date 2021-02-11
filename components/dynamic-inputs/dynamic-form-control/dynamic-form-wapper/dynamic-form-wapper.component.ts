@@ -53,15 +53,21 @@ export class DynamicFormWapperComponent {
   // tslint:disable-next-line: typedef
   setComponentForm(value: IDynamicForm) {
     this._form = createDynamicForm(value);
-    let bindings = this._bindings$.getValue();
+    let cache = this._bindings$.getValue();
     if (isGroupOfIDynamicForm(this._form)) {
-      this._form.forms.forEach((v) => {
-        bindings = bindingsFromDynamicForm(v)(this.componentFormGroup);
+      this._form.forms = this._form.forms.map((v) => {
+        const { bindings, form, formgroup } = bindingsFromDynamicForm(v)(this.componentFormGroup);
+        this.componentFormGroup = formgroup as FormGroup;
+        cache = { ...(cache || {}), ...bindings }
+        return form;
       });
     } else {
-      bindings = bindingsFromDynamicForm(this._form)(this.componentFormGroup);
+      const { bindings, form, formgroup } = bindingsFromDynamicForm(this._form)(this.componentFormGroup);
+      this.componentFormGroup = formgroup as FormGroup;
+      this._form = form;
+      cache = { ...(cache || {}), ...bindings }
     }
-    this._bindings$.next(bindings);
+    this._bindings$.next(cache);
   }
 
   // tslint:disable-next-line: typedef
@@ -80,13 +86,15 @@ export class DynamicFormWapperComponent {
     });
     if (isArray(filteredConfigs)) {
       filteredConfigs.forEach((item) => {
-        this.componentFormGroup = applyHiddenAttributeChangeToControl(
+        const { control, dynamicForm } = applyHiddenAttributeChangeToControl(
           this._form,
           item,
           event.event,
           applyHiddenAttributeToControlFn
-        )(this.componentFormGroup) as FormGroup;
-      });
+        )(this.componentFormGroup);
+        this.componentFormGroup = control as FormGroup;
+        this._form = dynamicForm;
+      }); //
     }
   }
 
