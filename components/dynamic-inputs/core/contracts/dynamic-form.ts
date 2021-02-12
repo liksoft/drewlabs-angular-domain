@@ -21,6 +21,7 @@ export interface IDynamicForm {
   forms: IDynamicForm[];
   controlConfigs?: IHTMLFormControl[] | ICollection<IHTMLFormControl>;
   endpointURL: string;
+  appcontext?: string;
 }
 
 /**
