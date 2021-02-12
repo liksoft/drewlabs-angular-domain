@@ -12,6 +12,7 @@ export class FormV2 implements DynamicFormInterface {
   formControls: DynamicFormControlInterface[] = [];
   url: string = undefined;
   status: number = undefined;
+  appcontext: string = undefined;
 
   static builder(): ISerializableBuilder<FormV2> {
     return new GenericSerializaleSerializer(FormV2, new UndecoratedSerializer());
@@ -26,7 +27,8 @@ export class FormV2 implements DynamicFormInterface {
       formControls: { name: 'formControls', type: FormControlV2 },
       url: 'url',
       status: 'status',
-      id: 'id'
+      id: 'id',
+      appcontext: 'appcontext'
     };
   }
 }

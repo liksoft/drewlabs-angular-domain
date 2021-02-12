@@ -1,28 +1,33 @@
 
+
+/**
+ * @description Latest definition type for Platform Select Control
+ */
+export interface SelectSourceInterface {
+  value: any;
+  description?: string;
+}
+
 /**
  * @description Interface definition of an HTNL checkbox contrl
  */
-export interface CheckboxItem {
-  value: string | number;
+export interface CheckboxItem  extends SelectSourceInterface {
   checked?: boolean;
-  description?: string;
 }
 
 /**
  * @description Interface definitions of a item of HTML select control
  */
-export interface ISelectItem {
-  value: any;
+export interface ISelectItem extends SelectSourceInterface {
   name: string;
   type: string;
-  description?: string;
 }
+
 
 /**
  * @description Interface definition of an HTML radio control
  */
-export interface RadioItem {
-  value: string | number;
+export interface RadioItem extends SelectSourceInterface {
   checked?: boolean;
   description?: string;
 }
