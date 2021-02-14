@@ -72,7 +72,7 @@ export class IntlTelInputService {
     const googlePhonelibInstance = _.PhoneNumberUtil.getInstance();
     try {
       let threatedInput: string;
-      threatedInput = PhoneNumberUtils.sanitize(_phoneNumber as string);
+      threatedInput = PhoneNumberUtils.sanitize(String(_phoneNumber) as string);
       const phoneNumber = googlePhonelibInstance.parseAndKeepRawInput(
         threatedInput
       );
