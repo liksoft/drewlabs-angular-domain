@@ -128,13 +128,13 @@ export class FileHelperService implements UploadedFileHelperInterface {
    * @inheritdoc
    */
   // tslint:disable-next-line: typedef
-  async saveDataURLAsBlob(ressource: string, filename: string) {
+  async saveDataURLAsBlob(ressource: string, filename: string, extension: string = null) {
     const blocks = ressource.split(';');
     // Get the content type of the image
     const contentType = blocks[0].split(':')[1];
     // get the real base64 content of the file
     const data = blocks[1].split(',')[1];
-    Browser.saveFile(b64toBlob(data, contentType), filename);
+    Browser.saveFile(b64toBlob(data, contentType), extension ? `${filename}.${extension}` : filename);
   }
 
   /**
