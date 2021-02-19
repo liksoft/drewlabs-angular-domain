@@ -6,13 +6,18 @@ import { TypeUtilHelper } from './type-utils-helper';
 import { IDynamicForm } from '../components/dynamic-inputs/core/contracts/dynamic-form';
 import { ICollection } from '../contracts/collection-interface';
 import { UniqueValueService } from '../validators';
+import { collect } from '../collections/collection';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DynamicControlParser {
 
-  public constructor(private uniqueFieldValidator: UniqueValueService, private fb: FormBuilder, private typeHelper: TypeUtilHelper) { }
+  public constructor(
+    private uniqueFieldValidator: UniqueValueService,
+    private fb: FormBuilder,
+    private typeHelper: TypeUtilHelper
+  ) { }
 
   get formBuilder(): FormBuilder {
     return this.fb;
@@ -74,4 +79,20 @@ export class DynamicControlParser {
     });
     return group;
   }
+}
+
+export const createFormGroupFromDynamicControls = (
+  builder: FormBuilder,
+  values: ICollection<IDynamicForm> | IDynamicForm[]
+) => {
+  const collection = collect(values) as ICollection<IDynamicForm>;
+  const group = builder.group({});
+  collection.keys().forEach((k) => {
+    group.addControl(k,
+      angularAbstractControlFormDynamicForm(
+        builder,
+        collection.get(k))
+    );
+  });
+  return group;
 }
