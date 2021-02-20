@@ -2,7 +2,8 @@ export const formViewModelBindings = () => ({
   title: 'title',
   description: 'description',
   parent_id: 'parentId',
-  endpoint_url: 'url'
+  endpoint_url: 'url',
+  appcontext: 'appcontext'
 });
 
 export const formControlViewModelBindings = (): { [index: string]: any } => ({
