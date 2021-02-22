@@ -98,6 +98,9 @@ export function isNumber(value: any): boolean {
 }
 
 export const isNullOrNaN = (value: any) => {
+  if (isObject(value) || isArray(value)) {
+    return true;
+  }
   if (!isDefined(value)) {
     return true;
   }
