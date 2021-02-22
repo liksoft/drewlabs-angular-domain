@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, Inject, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Inject, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { isDefined } from '../../../../utils/types/type-utils';
@@ -7,6 +7,9 @@ import { readFileAsDataURI } from '../../../../utils/browser/browser';
 import { DynamicInputTypeHelper } from '../input-type.service';
 import { FileInput } from '../../core';
 import { FileFormControl } from '../dynamic-form-control.component';
+import { createSubject } from '../../../../rxjs/helpers/creator-functions';
+import { map } from 'rxjs/operators';
+import { doLog } from '../../../../rxjs/operators/index';
 
 @Component({
   selector: 'app-dynamic-file-input',
@@ -26,7 +29,7 @@ import { FileFormControl } from '../dynamic-form-control.component';
     `
   ]
 })
-export class DynamicFileInputComponent implements OnInit {
+export class DynamicFileInputComponent implements OnInit, OnDestroy {
 
   @Input() control: AbstractControl;
   @Input() showLabelAndDescription = true;
@@ -41,6 +44,8 @@ export class DynamicFileInputComponent implements OnInit {
 
   @Output() addedEvent = new EventEmitter<any>();
   @Output() removedEvent = new EventEmitter<any>();
+
+  private _destroy$ = createSubject();
 
   constructor(
     public readonly inputTypeHelper: DynamicInputTypeHelper,
@@ -57,16 +62,19 @@ export class DynamicFileInputComponent implements OnInit {
       uploadMultiple: this.inputConfig.multiple ? this.inputConfig.multiple : false,
       acceptedFiles: this.inputConfig.pattern
     };
-    this.control.valueChanges.subscribe((state) => {
-      if (this.control.status.toLowerCase() === 'disabled') {
-        this.dropzoneContainer.disabled = true;
-      } else {
-        this.dropzoneContainer.disabled = false;
-      }
-      if (!isDefined(state)) {
-        this.dropzoneContainer.resetDropzone();
-      }
-    });
+    this.control.valueChanges.pipe(
+      doLog('<DynamicFileInputComponent>: Control value changes: '),
+      map((state) => {
+        if (this.control.status.toLowerCase() === 'disabled') {
+          this.dropzoneContainer.disabled = true;
+        } else {
+          this.dropzoneContainer.disabled = false;
+        }
+        if (!isDefined(state)) {
+          this.dropzoneContainer.resetDropzone();
+        }
+      })
+    );
   }
 
   // Files Handlers event method
@@ -118,17 +126,8 @@ export class DynamicFileInputComponent implements OnInit {
     }
     this.removedEvent.emit();
   }
-}
 
-// this.dropzoneConfigs = {
-//   maxFiles: this.inputTypeHelper.asFileInput(this.inputConfig).multiple ? 50 : 1,
-//   maxFilesize: this.inputTypeHelper.asFileInput(
-//     this.inputConfig).maxFileSize ? this.inputTypeHelper.asFileInput(this.inputConfig).maxFileSize : 10,
-//   url: isDefined(this.inputTypeHelper.asFileInput(
-//     this.inputConfig).uploadUrl) && this.inputTypeHelper.asFileInput(this.inputConfig).uploadUrl !== '' ?
-//     this.inputTypeHelper.asFileInput(this.inputConfig).uploadUrl : this.path,
-//   uploadMultiple: this.inputTypeHelper.asFileInput(
-//     this.inputConfig).multiple ? this.inputTypeHelper.asFileInput(this.inputConfig).multiple : false,
-//   acceptedFiles: this.inputTypeHelper.asFileInput(
-//     this.inputConfig).pattern ? this.inputTypeHelper.asFileInput(this.inputConfig).pattern : 'image/*'
-// };
+  ngOnDestroy() {
+    this._destroy$.next();
+  }
+}
