@@ -1,30 +1,19 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { FormGroup, AbstractControl, FormArray, ValidatorFn, AsyncValidatorFn } from '@angular/forms';
+import { FormGroup, AbstractControl, FormArray } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils';
-import { HTMLFormControlRequireIfConfig, IHTMLFormControl } from '../../core/contracts/dynamic-input';
-import { isGroupOfIDynamicForm, ComponentReactiveFormHelpers } from 'src/app/lib/domain/helpers/component-reactive-form-helpers';
-import { sortFormByIndex } from '../../core/helpers';
-import * as lodash from 'lodash';
-import { Log } from '../../../../utils/logger';
+import { createDynamicForm } from '../../core/helpers';
+import { IConditionalControlBinding, MultiSelectItemRemoveEvent } from './types';
+import { applyHiddenAttributeToControlFn, applyHiddenAttributeChangeToControl, bindingsFromDynamicForm } from './helpers';
+import { createStateful } from '../../../../rxjs/helpers/creator-functions';
+import { isGroupOfIDynamicForm } from '../../../../helpers/component-reactive-form-helpers';
 
-interface IConditionalControlBinding {
-  key: string;
-  binding: HTMLFormControlRequireIfConfig;
-  validators: ValidatorFn | ValidatorFn[];
-  asyncValidators: AsyncValidatorFn | AsyncValidatorFn[];
-}
-
-export interface MultiSelectItemRemoveEvent {
-  event: any;
-  control: IHTMLFormControl;
-}
 
 @Component({
   selector: 'app-dynamic-form-wapper',
   templateUrl: './dynamic-form-wapper.component.html',
   styles: [],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicFormWapperComponent {
 
@@ -36,11 +25,16 @@ export class DynamicFormWapperComponent {
   get form(): IDynamicForm {
     return this._form;
   }
-  @Input() componentFormGroup: FormGroup;
+  private _componentFormGroup: FormGroup;
+  @Input() set componentFormGroup(value: FormGroup) {
+    this._componentFormGroup = value;
+  }
+  get componentFormGroup(): FormGroup {
+    return this._componentFormGroup;
+  }
   @Output() controlItemRemoved = new EventEmitter<MultiSelectItemRemoveEvent>();
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();
-  public conditionalControlBindings: { [index: string]: IConditionalControlBinding } = {};
 
   // Text/Type input event
   @Output() inputKeyUp = new EventEmitter<{ formcontrolname: string, value: any }>();
@@ -48,107 +42,59 @@ export class DynamicFormWapperComponent {
   @Output() inputKeypress = new EventEmitter<{ formcontrolname: string, value: any }>();
   @Output() inputBlur = new EventEmitter<{ formcontrolname: string, value: any }>();
 
-  public isValueDefined: (value: any) => boolean = isDefined.bind(this);
-
   @Input() singleColumnControl = false;
   @Input() controlContainerClass = 'clr-col-12';
 
+  private _bindings$ = createStateful<{ [index: string]: IConditionalControlBinding }>({});
+  get bindings$() {
+    return this._bindings$.asObservable();
+  }
+
   // tslint:disable-next-line: typedef
   setComponentForm(value: IDynamicForm) {
-    this._form = sortFormByIndex(value);
-    if (this.isFormGroup(this.form)) {
-      this.form.forms.forEach((v) => {
-        this.buildConditionalControlBindings(v);
+    this._form = createDynamicForm(value);
+    let cache = this._bindings$.getValue();
+    if (isGroupOfIDynamicForm(this._form)) {
+      this._form.forms = this._form.forms.map((v) => {
+        const { bindings, form, formgroup } = bindingsFromDynamicForm(v)(this._componentFormGroup);
+        this._componentFormGroup = formgroup as FormGroup;
+        cache = { ...(cache || {}), ...bindings }
+        return form;
       });
     } else {
-      this.buildConditionalControlBindings(this.form);
+      const { bindings, form, formgroup } = bindingsFromDynamicForm(this._form)(this._componentFormGroup);
+      this._componentFormGroup = formgroup as FormGroup;
+      this._form = form;
+      cache = { ...(cache || {}), ...bindings }
     }
+    this._bindings$.next(cache);
   }
 
   // tslint:disable-next-line: typedef
-  buildConditionalControlBindings(v: IDynamicForm) {
-    if (isDefined(v.controlConfigs) && isDefined(this.componentFormGroup) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
-      (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
-        if (isDefined(c.requiredIf)) {
-          this.conditionalControlBindings[c.formControlName] = {
-            key: c.formControlName,
-            binding: c.requiredIf,
-            validators: this.componentFormGroup.get(c.formControlName).validator,
-            asyncValidators: this.componentFormGroup.get(c.formControlName).asyncValidator,
-          };
-        }
-      });
-      for (const [k, value] of Object.entries(this.conditionalControlBindings)) {
-        if (isDefined(this.componentFormGroup.get(value.binding.formControlName))) {
-          this.applyHiddenOnMatchingControls(value,
-            this.componentFormGroup.get(value.binding.formControlName).value,
-            this.updateControlHiddenValue.bind(this));
-        }
-      }
-    }
-  }
-
-  // tslint:disable-next-line: typedef
-  shouldListenforChange(controlName: string) {
-    if (isDefined(
-      Object.values(this.conditionalControlBindings).find((o, i) => {
+  shouldListenforChange(controlName: string, bindings: { [prop: string]: IConditionalControlBinding }) {
+    return isDefined(
+      Object.values(bindings).find((o, i) => {
         return o.binding.formControlName === controlName;
       })
-    )) {
-      return true;
-    }
-    return false;
+    ) ? true : false;
   }
 
   // tslint:disable-next-line: typedef
-  handleControlChanges(event: any) {
-    const filteredConfigs = Object.values(this.conditionalControlBindings).filter((o) => {
+  handleControlChanges(event: any, bindings: { [prop: string]: IConditionalControlBinding }) {
+    const filteredConfigs = Object.values(bindings).filter((o) => {
       return o.binding.formControlName.toString() === event.controlName.toString();
     });
     if (isArray(filteredConfigs)) {
       filteredConfigs.forEach((item) => {
-        this.applyHiddenOnMatchingControls(item, event.event, this.updateControlHiddenValue.bind(this));
-      });
-    }
-  }
-
-  // tslint:disable-next-line: typedef
-  applyHiddenOnMatchingControls(
-    bindings: IConditionalControlBinding,
-    value: string | number,
-    fn: (f: IDynamicForm, c: IConditionalControlBinding, s: string | number) => void) {
-    if (this.isFormGroup(this.form)) {
-      this.form.forms.forEach((v) => {
-        // Call the update method here
-        fn(v, bindings, value);
-      });
-    } else {
-      // Calls the update method here
-      fn(this.form, bindings, value);
-    }
-  }
-
-  // tslint:disable-next-line: typedef
-  updateControlHiddenValue(v: IDynamicForm, conditionBindings: IConditionalControlBinding, value: string | number) {
-    if (this.isValueDefined(v.controlConfigs) && ((v.controlConfigs as Array<IHTMLFormControl>).length > 0)) {
-      (v.controlConfigs as Array<IHTMLFormControl>).forEach((c) => {
-        if (c.formControlName === conditionBindings.key) {
-          value = isNaN(value as any) ? value : lodash.toNumber(value);
-          const requiredIfValues = lodash.isNumber(value) ? c.requiredIf.values.map(item => {
-            return isNaN(item) ? item : lodash.toNumber(item);
-          }) : c.requiredIf.values;
-          c.hidden = !lodash.includes(requiredIfValues, value) ? true : false;
-          if (c.hidden) {
-            this.componentFormGroup.get(conditionBindings.key).setValue(null);
-            ComponentReactiveFormHelpers.clearControlValidators(this.componentFormGroup.get(conditionBindings.key));
-            ComponentReactiveFormHelpers.clearAsyncValidators(this.componentFormGroup.get(conditionBindings.key));
-          } else {
-            this.componentFormGroup.get(conditionBindings.key).setValidators(conditionBindings.validators);
-            this.componentFormGroup.get(conditionBindings.key).setAsyncValidators(conditionBindings.asyncValidators);
-          }
-          return;
-        }
-      });
+        const { control, dynamicForm } = applyHiddenAttributeChangeToControl(
+          this._form,
+          item,
+          event.event,
+          applyHiddenAttributeToControlFn
+        )(this._componentFormGroup);
+        this._componentFormGroup = control as FormGroup;
+        this._form = dynamicForm;
+      }); //
     }
   }
 

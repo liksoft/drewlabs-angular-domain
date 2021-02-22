@@ -21,7 +21,7 @@ import { TypeUtilHelper } from '../../../../../helpers/type-utils-helper';
     `
   ],
 })
-export class RepeatableGroupChildComponent extends AbstractAlertableComponent {
+export class RepeatableGroupChildComponent {
 
   @Output() componentDestroyer =  new EventEmitter();
   @Output() create = new EventEmitter<AbstractControl>();
@@ -35,6 +35,7 @@ export class RepeatableGroupChildComponent extends AbstractAlertableComponent {
   @Input() label: string;
   // tslint:disable-next-line: no-inferrable-types
   @Input() singleColumnView: boolean = false;
+  @Input() performingAction = false;
 
-  constructor(uiStore: AppUIStoreManager, public readonly typeHelper: TypeUtilHelper) { super(uiStore); }
+  constructor(public readonly typeHelper: TypeUtilHelper) {}
 }

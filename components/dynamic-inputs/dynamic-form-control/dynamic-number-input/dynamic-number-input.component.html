@@ -4,7 +4,7 @@
     <span class="required-text" *ngIf="inputTypeHelper.asNumberInput(inputConfig).rules?.isRequired">(*)</span></label>
   <div class="clr-control-container">
     <div class="clr-input-wrapper">
-      <input (keyup)="inputKeyUp.emit({formcontrolname: inputConfig?.formControlName, value: $event})"
+      <input [tabIndex]="inputConfig?.formControlIndex" (keyup)="inputKeyUp.emit({formcontrolname: inputConfig?.formControlName, value: $event})"
         (keydown)="inputKeyDown.emit({formcontrolname: inputConfig?.formControlName, value: $event})"
         (keypress)="inputKeypress.emit({formcontrolname: inputConfig?.formControlName, value: $event})"
         (blur)="inputBlur.emit({formcontrolname: inputConfig?.formControlName, value: $event})" type="number" [max]="
