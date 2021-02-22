@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DynamicTextAreaInputComponent } from './dynamic-text-area-input.component';
 
@@ -6,7 +6,7 @@ describe('DynamicTextAreaInputComponent', () => {
   // let component: DynamicTextAreaInputComponent;
   // let fixture: ComponentFixture<DynamicTextAreaInputComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DynamicTextAreaInputComponent ]
     })

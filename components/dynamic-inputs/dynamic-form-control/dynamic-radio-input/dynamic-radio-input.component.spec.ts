@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DynamicRadioInputComponent } from './dynamic-radio-input.component';
 
@@ -6,7 +6,7 @@ describe('DynamicRadioInputComponent', () => {
   // let component: DynamicRadioInputComponent;
   // let fixture: ComponentFixture<DynamicRadioInputComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DynamicRadioInputComponent ]
     })

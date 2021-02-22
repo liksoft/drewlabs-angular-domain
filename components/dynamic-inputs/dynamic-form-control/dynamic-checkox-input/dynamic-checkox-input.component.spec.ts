@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DynamicCheckoxInputComponent } from './dynamic-checkox-input.component';
 
@@ -6,7 +6,7 @@ describe('DynamicCheckoxInputComponent', () => {
   // let component: DynamicCheckoxInputComponent;
   // let fixture: ComponentFixture<DynamicCheckoxInputComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DynamicCheckoxInputComponent ]
     })
