@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { IAppStorage, SecureWebStorage, SecureStorage } from '../contracts/store-interface';
 import { storageEntry } from '../../utils';
-// declare const sessionStorage: Storage;
 
 /**
  * @description Browser session storage class for saving data
@@ -45,7 +44,6 @@ export class SessionStorage implements IAppStorage {
    */
   clear(): void {
     this.store.clear();
-    localStorage.removeItem('entity_id');
   }
   /**
    * @description Initialize le LocalStorage
@@ -53,7 +51,6 @@ export class SessionStorage implements IAppStorage {
   private initStorage(): Storage {
     if (window) {
       return new SecureWebStorage(window.sessionStorage, this.secret);
-      // return window.sessionStorage;
     }
     throw new Error('Session Storage is only available in the Browser');
   }
