@@ -72,7 +72,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
       observableOf([action.payload])
         .pipe(
           first(),
-          delay(10)
+          delay(100)
         )
         .subscribe(state => {
           this._actions$.next(state[0]);
