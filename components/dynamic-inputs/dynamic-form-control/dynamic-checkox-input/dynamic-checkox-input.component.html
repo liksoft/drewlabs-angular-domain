@@ -8,7 +8,7 @@
     <div class="clr-control-container clr-control-inline" [formGroup]="formArrayGroup">
       <div class="clr-checkbox-wrapper" formArrayName="formGroupItems"
         *ngFor="let order of inputTypeHelper.asFormArray(formArrayGroup.get('formGroupItems')).controls;let i = index">
-        <input [id]="inputTypeHelper.asCheckBoxInput(inputConfig).formControlName + '_' + i" type="checkbox"
+        <input [tabIndex]="inputConfig?.formControlIndex" [id]="inputTypeHelper.asCheckBoxInput(inputConfig).formControlName + '_' + i" type="checkbox"
           [formControlName]="i" [value]="inputTypeHelper.asCheckBoxInput(inputConfig)?.items[i]?.value"
           class="clr-checkbox" />
         <label [for]="inputTypeHelper.asCheckBoxInput(inputConfig).formControlName + '_' + i" class="clr-control-label"

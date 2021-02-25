@@ -1,6 +1,6 @@
-<div class="intl-tel-input allow-dropdown">
+<div class="intl-tel-input allow-dropdown" *ngIf="disableState$ | async as state">
   <clr-dropdown #clrDropdown>
-    <button [disabled]="disabled" type="button" class="btn btn-sm btn-outline-primary" clrDropdownTrigger>
+    <button [disabled]="state?.disabled" type="button" class="btn btn-sm btn-outline-primary" clrDropdownTrigger>
       +{{ selectedCountry?.dialCode }}
       <clr-icon shape="caret down"></clr-icon>
     </button>
@@ -20,9 +20,10 @@
       </cdk-virtual-scroll-viewport>
     </clr-dropdown-menu>
   </clr-dropdown>
-  <input #phoneControlElement type="tel" [class]="controlClass" autocomplete="off" (keypress)="onInputKeyPress($event)"
-    [formControl]="phoneControl" [placeholder]="selectedCountry.placeHolder" #focusable>
-  <input type="hidden" [formControl]="control" />
+  <input [tabIndex]="tabIndex" #phoneControlElement type="tel" [class]="controlClass" autocomplete="off"
+    (keypress)="onInputKeyPress($event)" [formControl]="phoneControl" [placeholder]="selectedCountry.placeHolder"
+    #focusable />
+  <input [tabIndex]="-1" type="hidden" [formControl]="control" />
 </div>
 <clr-control-error class="field-has-error"
   *ngIf="control.hasError('required') && (phoneControl.touched || control.touched)"><span
