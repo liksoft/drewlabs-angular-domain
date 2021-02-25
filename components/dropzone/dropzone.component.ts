@@ -23,7 +23,7 @@ import {
 import { DropzoneService } from './dropzone.service';
 import { createSubject, createStateful } from '../../rxjs/helpers/index';
 import { takeUntil } from 'rxjs/operators';
-import { Log } from '../../utils/logger';
+import { isEmpty } from 'lodash';
 
 @Component({
   selector: 'app-dropzone',
@@ -31,7 +31,7 @@ import { Log } from '../../utils/logger';
     <ng-container *ngIf="localConfigs$ | async as localConfigs">
     <div
       [class.disabled]="disabled"
-      class="dz-wrapper"
+      [class]="wrapperClass"
       [class.dropzone]="useDropzoneClass"
       [dropzone]="localConfigs"
       [disabled]="disabled"
@@ -67,20 +67,20 @@ import { Log } from '../../utils/logger';
   styles: [
     `
       /* Drew Dropzone design */
-
-      .dropzone.dz-wrapper {
-        /* position: relative !important;
+      .dropzone.dz-wrapper-inline {
+        position: relative !important;
         overflow: auto !important;
-        min-height: 120px !important;
-        border-top: 2px dashed #338bca;
-        border-left: 2px dashed #338bca;
-        border-right: 2px dashed #338bca;
+        /* min-height: 75px !important; */
+        border-top: 2px dashed #d4d9dc;
+        border-left: 2px dashed #d4d9dc;
+        border-right: 2px dashed #d4d9dc;
         color: #666 !important;
         text-align: center !important;
-        background-color: #e6f2fb !important;
+        background-color: rgba(247, 247, 247, .8) !important;
         margin: 0px !important;
-        padding: 10px;*/
-
+        padding: 0px;
+      }
+      .dropzone.dz-wrapper {
         position: relative !important;
         overflow: auto !important;
         min-height: 120px !important;
@@ -128,10 +128,14 @@ import { Log } from '../../utils/logger';
         font-size: 0.649rem;
       }
 
+      .dropzone.dz-wrapper-inline .dz-upload-btn {
+        /* margin-top: 4px; */
+        margin-bottom: -16px;
+      }
+
       .dropzone.dz-wrapper .dz-upload-btn {
         margin-top: 16px;
         margin-bottom: -4px;
-      }
       }
       .dropzone.dz-wrapper .dz-message .dz-text {
         position: relative !important;
@@ -140,15 +144,26 @@ import { Log } from '../../utils/logger';
         transform: translateY(0%) !important;
         cursor: pointer;
       }
+
+      .dropzone.dz-wrapper-inline .dz-message .dz-text {
+        position: relative !important;
+        display: inline-block;
+        padding: 4px !important;
+        transform: translateY(0%) !important;
+        cursor: pointer;
+      }
       .disabled {
         opacity: .5;
+      }
+      .dropzone.dz-wrapper-inline .drop-zone-file-container {
+        margin-top: 1px;
       }
       /* End Drew Dropzone design */
     `
   ]
 })
 export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(DropzoneDirective, {static: false})
+  @ViewChild(DropzoneDirective, { static: false })
   dropzoneDirective: DropzoneDirective;
 
   @Input() dropzoneConfig: DropzoneConfigInterface;
@@ -158,6 +173,15 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() disabled = false;
   @Input() previewFileIcon = 'fa fa-file-alt';
   @Input() acceptedFilesTypeName = null;
+  private _wrapperClass: string;
+  @Input() set wrapperClass(value: string) {
+    value = value ? `${value.replace('clr-input', '')}` : '';
+    this._wrapperClass = !isEmpty(value) ? `${value.replace('clr-input', '')}` : 'dz-wrapper';
+  } //  inline-input
+
+  get wrapperClass() {
+    return this._wrapperClass;
+  }
 
   // tslint:disable-next-line: no-output-rename
   @Output('init') DZ_INIT = new EventEmitter<any>();
