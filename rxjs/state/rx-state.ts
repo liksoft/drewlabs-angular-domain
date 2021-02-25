@@ -77,10 +77,6 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
         .subscribe(state => {
           this._actions$.next(state[0]);
         });
-      // setTimeout(() => {
-      //   this._actions$.next(action.payload);
-      // }, 10);
-      // this._actions$.next(action.payload);
     }
     return action;
   }
