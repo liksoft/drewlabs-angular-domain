@@ -20,7 +20,7 @@ import * as _ from 'google-libphonenumber';
 import { PhoneNumberUtils } from './phone-number-utils';
 import { isDefined } from '../../utils';
 import { createSubject } from '../../rxjs/helpers';
-import { takeUntil, tap } from 'rxjs/operators';
+import { takeUntil, tap, distinctUntilChanged } from 'rxjs/operators';
 import { isEmpty } from 'lodash';
 import { createStateful } from '../../rxjs/helpers/creator-functions';
 
@@ -39,7 +39,7 @@ export class PhoneNumberValidator {
       if (!isDefined(control.value)) {
         return null;
       }
-      threatedInput = PhoneNumberUtils.sanitize(control.value.toString() as string);
+      threatedInput = PhoneNumberUtils.sanitize(String(control.value) as string);
       const phoneNumber = googlePhonelibInstance.parseAndKeepRawInput(
         threatedInput
       );
@@ -120,7 +120,10 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
     }
     // Set the preferred countries
     this.phoneControl.valueChanges
-      .pipe(takeUntil(this._destroy$))
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this._destroy$)
+      )
       .subscribe(
         state => {
           if (isEmpty(state)) {
@@ -134,31 +137,25 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
         }
       );
     this.control.valueChanges
-      .pipe(takeUntil(this._destroy$))
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this._destroy$),
+      )
       .subscribe((state) => {
         if (this.control.status.toLowerCase() === 'disabled') {
-          // if (this.phoneControl.status.toLowerCase() !== 'disabled') {
-          //   this.phoneControl.disable({ onlySelf: true });
-          // }
           this._disableState$.next({ disabled: true });
-          // this.disabled = true;
         } else {
-          // if (this.phoneControl.status.toLowerCase() === 'disabled') {
-          //   this.phoneControl.enable({ onlySelf: true });
-          // }
-          // this.disabled = false;
           this._disableState$.next({ disabled: false });
         }
         if (isDefined(state)) {
           this.setPhoneControlValue(state);
+        } else {
+          this.phoneControl.setValue(null);
         }
       });
   }
 
   public onCountrySelect(country: Country): void {
-    // if (this.disabled) {
-    //   return;
-    // }
     this.selectedCountry = country;
     this.setControlValue(
       country.dialCode,
@@ -221,7 +218,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
         );
       })[0];
       if (this.selectedCountry) {
-        const shortPhoneNumber = (controlState as string).substring(
+        const shortPhoneNumber = (String(controlState)).substring(
           this.selectedCountry.dialCode.length
         );
         const phoneControlValue = this.phoneControl.value?.replace(/[\s\t\/\+\-]/g, '');

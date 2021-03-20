@@ -8,6 +8,7 @@ export interface DynamicFormInterface {
   formControls: Partial<DynamicFormControlInterface>[];
   url?: string;
   status?: number;
+  appcontext?: string;
 }
 export interface DynamicFormControlInterface {
   id: number;
@@ -16,10 +17,10 @@ export interface DynamicFormControlInterface {
   type: string;
   classes?: string;
   requiredIf: string;
-  required: number;
-  disabled: number;
-  readonly: number;
-  unique: number;
+  required: number|boolean;
+  disabled: number|boolean;
+  readonly: number|boolean;
+  unique: number|boolean;
   pattern: string;
   description: string;
   maxLength?: number;
