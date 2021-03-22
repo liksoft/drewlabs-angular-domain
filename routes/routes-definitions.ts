@@ -2,6 +2,7 @@ import { isDefined } from '../utils/types/type-utils';
 
 /**
  * @description Type definition for application links
+ * @deprecated
  */
 export interface RoutesMap {
   key: string;
@@ -14,6 +15,7 @@ export interface RoutesMap {
 
 /**
  * @description Type definition for an application navigation link.This type is use to easily generate topbar and navigation bar links.
+ * @deprecated
  */
 export interface RouteLink {
   routePath?: string;
@@ -25,6 +27,7 @@ export interface RouteLink {
 
 /**
  * @description  Type definition for a route collection item
+ * @deprecated
  */
 export interface IRouteLinkCollectionItem {
   key: string;
@@ -35,6 +38,7 @@ export interface IRouteLinkCollectionItem {
  * @description Global function for building navigation links based on routes map collections
  * @param map [[RoutesMap[]]]
  * @param translations [[any]]
+ * @deprecated
  */
 export const builLinkFromRoutesMap = (map: RoutesMap[], translations: any) => {
   if (!isDefined(map) || map.length === 0) {
