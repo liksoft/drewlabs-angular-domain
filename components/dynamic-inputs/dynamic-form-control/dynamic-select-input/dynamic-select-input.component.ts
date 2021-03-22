@@ -79,6 +79,9 @@ export class DynamicSelectInputComponent implements OnDestroy {
   // tslint:disable-next-line: variable-name
   _controlFocusEvent$ = createSubject<{ state: any[] }>();
 
+  private _actionSubject$ = createStateful(false);
+  performingAction$ = this._actionSubject$.asObservable();
+
   // tslint:disable-next-line: variable-name
   private _destroy$ = createSubject();
 
@@ -90,6 +93,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
     this._controlFocusEvent$.pipe(
       tap((state) => {
         this._inputItems$.next({ ...state, performingAction: true });
+        this._actionSubject$.next(true);
       }),
       doLog('Control focused: '),
       switchMap(() => this.client.get(this.serverPath, {
@@ -107,6 +111,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
         takeUntil(this._destroy$),
         tap(state => {
           this._inputItems$.next({ performingAction: false, state });
+          this._actionSubject$.next(false);
         })
       ))
     ).subscribe();

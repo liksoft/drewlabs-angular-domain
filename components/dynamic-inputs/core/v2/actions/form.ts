@@ -49,7 +49,6 @@ export const onPaginateFormsAction = (store: DrewlabsFluxStore<FormState, Partia
       payload: client.get(`${path}`, { params })
         .pipe(
           map(state => {
-            // const { data, total } = getResponseDataFromHttpResponse(state);
             const { data, total } = isDefined(state.data)
               && (isDefined(state.data.data)) ? state.data : state;
             if (isDefined(data) && isArray(data)) {

@@ -4,7 +4,7 @@ import { formsReducer } from '../reducers';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
-const initialState: FormState = {
+export const initialState: FormState = {
   collections: {
     currentPage: 1,
     total: 0,

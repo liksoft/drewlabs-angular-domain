@@ -4,8 +4,6 @@
     {{ inputTypeHelper.asSelectInput(inputConfig).label }}
     <small class="required-text" *ngIf="inputTypeHelper.asSelectInput(inputConfig).rules?.isRequired">(*)</small>
   </label>
-  <!-- inputConfig?.optionsLabel -->
-  <!-- inputConfig?.optionsValueIndex -->
   <ng-container *ngIf="inputItems$ | async as vm">
     <ng-select [class]="inputConfig?.multiple ? '' : 'not-multiple'" [virtualScroll]="true" [items]="vm?.state"
       [bindLabel]="'name'" [bindValue]="'value'" (focus)="onFocus()" [loading]="vm?.performingAction"

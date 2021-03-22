@@ -1,5 +1,5 @@
 import { FormControlV2 } from './form-control';
-import { DynamicFormControlInterface, DynamicFormInterface } from '../../compact/types';
+import { ControlOptionInterface, DynamicFormControlInterface, DynamicFormInterface } from '../../compact/types';
 import { GenericSerializaleSerializer, UndecoratedSerializer } from '../../../../../built-value/core/js/serializer';
 import { ISerializableBuilder } from '../../../../../built-value/contracts';
 
@@ -34,7 +34,7 @@ export class FormV2 implements DynamicFormInterface {
 }
 
 
-export class FormControlOption {
+export class ControlOption implements ControlOptionInterface {
   id: number = undefined;
   table: string = undefined;
   keyfield: string = undefined;
@@ -42,12 +42,14 @@ export class FormControlOption {
   description: string = undefined;
   displayLabel: string = undefined;
 
-
-  static builder(): ISerializableBuilder<FormControlOption> {
-    return new GenericSerializaleSerializer(FormControlOption, new UndecoratedSerializer());
+  /**
+   * @description Calls to get the builder provider of the current class|type
+   */
+  static builder() {
+    return new GenericSerializaleSerializer(ControlOption, new UndecoratedSerializer);
   }
 
-  public static getJsonableProperties(): { [index: string]: keyof FormControlOption | { name: string, type: any } } {
+  static getJsonableProperties(): { [index: string]: keyof ControlOption } | { [index: string]: { name: string, type: any } } {
     return {
       id: 'id',
       table: 'table',
@@ -58,3 +60,4 @@ export class FormControlOption {
     };
   }
 }
+

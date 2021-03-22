@@ -21,7 +21,6 @@ import { PageComponent, AlertablePageComponent } from '../helpers/component-inte
     ProgressBarModule,
     ClarityModule,
     DropzoneModule,
-    DynamicFormControlModule.forRoot()
   ],
   exports: [
     ProgressBarModule,

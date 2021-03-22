@@ -24,11 +24,12 @@ import { DynamicRadioInputComponent } from './dynamic-radio-input/dynamic-radio-
 
 
 type ModuleConfigs = {
-  serverResourcesPath: {
-    formControlOptionsPath: string;
-    controlsPath: string;
-    formsPath: string;
-    controlBindingsPath: string
+  serverConfigs: {
+    host?: string;
+    controlOptionsPath?: string;
+    controlsPath?: string;
+    formsPath?: string;
+    controlBindingsPath?: string
   }
 };
 
@@ -83,24 +84,28 @@ export class DynamicFormControlModule {
       ngModule: DynamicFormControlModule,
       providers: [
         {
+          provide: 'FORM_SERVER_HOST',
+          useValue: configs?.serverConfigs?.host || null
+        },
+        {
           provide: 'FORM_RESOURCES_PATH',
-          useValue: configs && configs.serverResourcesPath ? configs.serverResourcesPath.formsPath || 'forms' : 'forms'
+          useValue: configs?.serverConfigs?.formsPath || 'forms'
         },
         {
           provide: 'FORM_CONTROL_RESOURCES_PATH',
-          useValue: configs && configs.serverResourcesPath ? configs.serverResourcesPath.controlsPath || 'form-controls' : 'form-controls'
+          useValue: configs?.serverConfigs?.controlsPath || 'form-controls'
         },
         {
           provide: 'FORM_FORM_CONTROL_RESOURCES_PATH',
-          useValue: configs && configs.serverResourcesPath ? configs.serverResourcesPath.controlsPath || 'form-form-controls' : 'form-form-controls'
+          useValue: configs?.serverConfigs?.controlsPath || 'form-form-controls'
         },
         {
           provide: 'CONTROL_OPTION_RESOURCES_PATH',
-          useValue: configs && configs.serverResourcesPath ? configs.serverResourcesPath.formControlOptionsPath || 'form-control-options' : 'form-control-options'
+          useValue: configs?.serverConfigs?.controlOptionsPath || 'form-control-options'
         },
         {
           provide: 'CONTROL_BINDINGS_RESOURCES_PATH',
-          useValue: configs && configs.serverResourcesPath ? configs.serverResourcesPath.controlBindingsPath || 'control-bindings' : 'control-bindings'
+          useValue: configs?.serverConfigs?.controlBindingsPath || 'control-bindings'
         }
       ]
     };
