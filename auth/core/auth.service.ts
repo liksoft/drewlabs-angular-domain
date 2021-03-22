@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnDestroy } from '@angular/core';
-import { AuthServerPathConfig, AuthPathConfig } from './config';
+import { AuthPathConfig } from './config';
 import { AuthTokenService } from '../../auth-token/core/auth-token.service';
 import { HttpRequestService, HTTPErrorState } from '../../http/core/http-request.service';
 import { AuthRememberTokenService } from '../../auth-token/core/auth-remember-token.service';
@@ -24,6 +24,7 @@ import { authReducer } from './reducers';
 import { isEmpty } from 'lodash';
 import { Log } from '../../utils/logger';
 import { MapToHandlerResponse } from '../../rxjs/types';
+import { httpServerHost } from '../../utils/url/url';
 
 const initalState: AuthState = {
   isLoggedIn: false,
@@ -57,7 +58,7 @@ export class AuthService implements OnDestroy {
   /**
    * @deprecated
    */
-  get user(): IAppUser|Authorizable|NotifiableUserDetails {
+  get user(): IAppUser | Authorizable | NotifiableUserDetails {
     return this.userStorage.user;
   }
 
@@ -68,7 +69,10 @@ export class AuthService implements OnDestroy {
     private httpClient: HttpRequestService,
     private sessionStorage: SessionStorage,
     private router: Router,
-    @Inject('LOGIN_RESPONSE_HANDLER_FUNC') private loginResponseHandlerFunc: MapToHandlerResponse<any>
+    @Inject('LOGIN_RESPONSE_HANDLER_FUNC') private loginResponseHandlerFunc: MapToHandlerResponse<any>,
+    @Inject('AUTH_SERVER_HOST') private host: string,
+    @Inject('AUTH_LOGIN_PATH') private loginPath: string,
+    @Inject('AUTH_LOGOUT_PATH') private logoutPath: string
   ) {
     merge(this.httpClient.errorState$, observableOf({} as HTTPErrorState).
       pipe(
@@ -114,9 +118,11 @@ export class AuthService implements OnDestroy {
    */
   public authenticate = (body: ILoginRequest) => {
     authenticatingAction(this._authStore$)();
+
+    Log('Logging in...', `${httpServerHost(this.host)}/${this.loginPath}`);
     return this.httpClient
       .post(
-        AuthServerPathConfig.LOGIN_PATH,
+        `${httpServerHost(this.host)}/${this.loginPath}`,
         Object.assign(body, { remember_me: body.remember || false })
       ).pipe(
         mapToHttpResponse<ILoginResponse>(this.loginResponseHandlerFunc || DrewlabsV2LoginResultHandlerFunc),
@@ -152,7 +158,7 @@ export class AuthService implements OnDestroy {
   public authenticateViaRememberToken = (body: { id: string | number, token: string }) => {
     authenticatingAction(this._authStore$)();
     return this.httpClient.post(
-      `${AuthServerPathConfig.LOGIN_PATH}/${body.id}`,
+      `${httpServerHost(this.host)}/${this.loginPath}/${body.id}`,
       { remember_token: body.token }
     ).pipe(
       mapToHttpResponse<ILoginResponse>(this.loginResponseHandlerFunc || DrewlabsV2LoginResultHandlerFunc),
@@ -187,9 +193,7 @@ export class AuthService implements OnDestroy {
    */
   public logout = () => {
     return this.httpClient
-      .get(
-        AuthServerPathConfig.LOGOUT_PATH
-      ).pipe(
+      .get(`${httpServerHost(this.host)}/${this.logoutPath}`).pipe(
         tap(() => {
           this._logoutSubject$.next(true);
         })
