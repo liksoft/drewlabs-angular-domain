@@ -1,7 +1,6 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthGuardService, AuthorizationsGuard, PermissionsGuardGuard, RootComponentGuard } from '../core/auth-guard.service';
-import { AuthUserService } from '../core/user.service';
+import { AuthGuardService, AuthorizationsGuard, RootComponentGuard } from '../core/auth-guard.service';
 import { UserStorageProvider } from '../core/services/user-storage';
 import { GenericUndecoratedSerializaleSerializer } from '../../built-value/core/js/serializer';
 import { AppUser, IAppUser } from '../contracts/v2/user/user';
@@ -31,13 +30,10 @@ export class AuthModule {
             : (new GenericUndecoratedSerializaleSerializer<AppUser>())
         },
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
-        PermissionsGuardGuard,
         RootComponentGuard,
         AuthGuardService,
-        AuthUserService,
         UserStorageProvider,
         AuthorizationsGuard,
-        // AuthService
         {
           provide: 'LOGIN_RESPONSE_HANDLER_FUNC',
           useValue: config.loginResponseHandler || DrewlabsV2LoginResultHandlerFunc

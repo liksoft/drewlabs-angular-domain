@@ -88,61 +88,6 @@ export class AuthGuardService
   }
 }
 
-/**
- * @deprecated Use [[AuthorizationGuard instead]]
- */
-@Injectable()
-export class PermissionsGuardGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    private auth: AuthService
-  ) { }
-
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean> | Promise<boolean> | boolean {
-    const url: string = state.url;
-    return this.checkPermission(next.data.permissions, url);
-  }
-
-  canActivateChild(
-    childRoute: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): boolean | Observable<boolean> | Promise<boolean> {
-    return this.canActivate(childRoute, state);
-  }
-
-  canLoad(route: Route): boolean | Observable<boolean> | Promise<boolean> {
-    const url = `/${route.path}`;
-    return this.checkPermission(route.data.permissions, url);
-  }
-
-  private checkPermission(permissions: string[] | string, url: string): Observable<boolean>|boolean|Promise<boolean> {
-    return this.auth.state$
-      .pipe(
-        mergeMap(source => {
-          if (!isDefined(source.user)) {
-            this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-            return of(false);
-          }
-          let isAuthorized = false;
-          if (permissions && permissions instanceof Array) {
-            isAuthorized = (userCanAny(source.user as Authorizable, permissions));
-          } else {
-            isAuthorized = (userCan(source.user as Authorizable, permissions as string));
-          }
-          if (!isAuthorized) {
-            // Navigate to the login page with extras
-            this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-            return of(false);
-          }
-          return of(true);
-        })
-      );
-  }
-}
-
 @Injectable()
 export class AuthorizationsGuard implements CanActivate {
   constructor(

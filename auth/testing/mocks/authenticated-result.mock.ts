@@ -20,7 +20,7 @@ export const authenticatedResponse = of({
         roles: [
           'DEFAULT AUTHORIZATION GROUP'
         ],
-        permissions: [
+        authorizations: [
           'list-permissions',
           'list-roles',
           'list-departments',

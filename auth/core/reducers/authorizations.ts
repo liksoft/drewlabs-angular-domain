@@ -1,5 +1,5 @@
 import { DefaultStoreAction, StoreAction } from '../../../rxjs/state/rx-state';
-import { AuthorizationsState, AuthorizationsStoreActions } from '../actions/permissions';
+import { AuthorizationsState, AuthorizationsStoreActions } from '../actions/authorizations';
 import * as lodash from 'lodash';
 
 export const authorizationsReducer = (state: AuthorizationsState, action: Partial<StoreAction>) => {

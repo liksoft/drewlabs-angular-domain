@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { authorizationsReducer } from '../reducers';
 import { createStore } from '../../../rxjs/state/rx-state';
-import { initialAuthorizationsState, resetAuthorizationsStore, AuthorizationsState } from '../actions/permissions';
+import { initialAuthorizationsState, resetAuthorizationsStore, AuthorizationsState } from '../actions/authorizations';
 
 @Injectable({
   providedIn: 'root'

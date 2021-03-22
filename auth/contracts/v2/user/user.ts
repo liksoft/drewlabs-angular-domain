@@ -98,7 +98,7 @@ export class AppUser implements IAppUser, NotifiableUserDetails, Authorizable {
       remember_token: 'rememberToken',
       roles: 'roles',
       role_ids: 'roleIDs',
-      permissions: 'authorizations',
+      authorizations: 'authorizations',
       channels: 'channels',
       user_info: { name: 'userDetails', type: AppUserDetails }
     } as { [index: string]: keyof AppUser } | { [index: string]: any };

@@ -5,7 +5,7 @@ export class RoleV2 {
   label: string;
   displayLabel: string;
   description: string;
-  permissions: string[] | Authorization[];
+  authorizations: string[] | Authorization[];
 
   // tslint:disable-next-line: variable-name
   private _isAdminRole: number;
@@ -23,7 +23,7 @@ export class RoleV2 {
       display_label: 'displayLabel',
       description: 'description',
       is_admin_user_role: 'isAdminRole',
-      permissions: { name: 'permissions', type: Authorization },
+      authorizations: { name: 'authorizations', type: Authorization },
     };
   }
 }
@@ -33,5 +33,5 @@ export const roleFormViewBindings = () => ({
   display_label: 'displayLabel',
   description: 'description',
   is_admin_user_role: 'isAdminRole',
-  permissions: 'permissions'
+  authorizations: 'authorizations'
 });
