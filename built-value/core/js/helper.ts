@@ -1,5 +1,4 @@
 import * as lodash from 'lodash';
-import { Log } from '../../../utils/logger';
 import { isPrimitive, isDefined, isArray } from '../../../utils/types/type-utils';
 
 /**
