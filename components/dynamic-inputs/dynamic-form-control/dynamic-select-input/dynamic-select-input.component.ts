@@ -10,6 +10,7 @@ import { getResponseDataFromHttpResponse } from '../../../../http/helpers';
 import { isArray, isEmpty } from 'lodash';
 import { controlBindingsSetter } from '../../core/helpers';
 import { doLog } from '../../../../rxjs/operators';
+import { httpServerHost } from '../../../../utils/url/url';
 @Component({
   selector: 'app-dynamic-select-input',
   templateUrl: './dynamic-select-input.component.html',
@@ -79,20 +80,25 @@ export class DynamicSelectInputComponent implements OnDestroy {
   // tslint:disable-next-line: variable-name
   _controlFocusEvent$ = createSubject<{ state: any[] }>();
 
+  private _actionSubject$ = createStateful(false);
+  performingAction$ = this._actionSubject$.asObservable();
+
   // tslint:disable-next-line: variable-name
   private _destroy$ = createSubject();
 
   constructor(
     public readonly inputTypeHelper: DynamicInputTypeHelper,
     private client: DrewlabsRessourceServerClient,
-    @Inject('CONTROL_BINDINGS_RESOURCES_PATH') private serverPath: string
+    @Inject('FORM_SERVER_HOST') host: string,
+    @Inject('CONTROL_BINDINGS_RESOURCES_PATH') path: string
   ) {
     this._controlFocusEvent$.pipe(
       tap((state) => {
         this._inputItems$.next({ ...state, performingAction: true });
+        this._actionSubject$.next(true);
       }),
       doLog('Control focused: '),
-      switchMap(() => this.client.get(this.serverPath, {
+      switchMap(() => this.client.get(`${httpServerHost(host)}/${path}`, {
         params: {
           table_config: this._inputConfig.serverBindings
         }
@@ -107,6 +113,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
         takeUntil(this._destroy$),
         tap(state => {
           this._inputItems$.next({ performingAction: false, state });
+          this._actionSubject$.next(false);
         })
       ))
     ).subscribe();
