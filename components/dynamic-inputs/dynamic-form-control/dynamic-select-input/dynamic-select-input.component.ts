@@ -10,6 +10,7 @@ import { getResponseDataFromHttpResponse } from '../../../../http/helpers';
 import { isArray, isEmpty } from 'lodash';
 import { controlBindingsSetter } from '../../core/helpers';
 import { doLog } from '../../../../rxjs/operators';
+import { httpServerHost } from '../../../../utils/url/url';
 @Component({
   selector: 'app-dynamic-select-input',
   templateUrl: './dynamic-select-input.component.html',
@@ -88,7 +89,8 @@ export class DynamicSelectInputComponent implements OnDestroy {
   constructor(
     public readonly inputTypeHelper: DynamicInputTypeHelper,
     private client: DrewlabsRessourceServerClient,
-    @Inject('CONTROL_BINDINGS_RESOURCES_PATH') private serverPath: string
+    @Inject('FORM_SERVER_HOST') host: string,
+    @Inject('CONTROL_BINDINGS_RESOURCES_PATH') path: string
   ) {
     this._controlFocusEvent$.pipe(
       tap((state) => {
@@ -96,7 +98,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
         this._actionSubject$.next(true);
       }),
       doLog('Control focused: '),
-      switchMap(() => this.client.get(this.serverPath, {
+      switchMap(() => this.client.get(`${httpServerHost(host)}/${path}`, {
         params: {
           table_config: this._inputConfig.serverBindings
         }
