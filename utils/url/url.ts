@@ -1,3 +1,5 @@
+import { isDefined } from "../types/type-utils";
+
 export class URLUtils {
 
   /**
@@ -25,4 +27,18 @@ export class URLUtils {
     const pattern = /^((http|https|ftp):\/\/)/;
     return pattern.test(url);
   }
+}
+
+
+/**
+ * 
+ * @param url Url from which to generate the base path from
+ */
+ export const httpServerHost = (url: string) => {
+  if (!isDefined(url)) {
+      return '';
+  }
+  const jsUrl = new URL(url);
+  url = `${jsUrl.protocol}//${jsUrl.host}`;
+  return `${(`${url.endsWith('/') ? url.slice(0, -1) : url}`)}`;
 }
