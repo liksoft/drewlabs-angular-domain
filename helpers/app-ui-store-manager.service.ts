@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { startWith } from 'rxjs/operators';
 import { IResponseBody } from '../http/contracts/http-response-data';
 import { HTTPErrorState } from '../http/core/http-request.service';
 import { DrewlabsHttpResponseStatusCode } from '../http/core/http-response';
-import { createSubject, createStateful } from '../rxjs/helpers';
+import { createStateful } from '../rxjs/helpers';
 import { isDefined } from '../utils';
 import { Log } from '../utils/logger';
+import { UIState as BaseUIState, UIStateProvider, UIStateStatusCode }  from '../contracts/ui-state';
+import { AppUIStateProvider } from '../ui-state'
 
 
 // tslint:disable-next-line: deprecation
@@ -21,6 +22,9 @@ export interface AlertConfig {
 
 const initialAlertState: Partial<AlertConfig> = {};
 
+/**
+ * @deprecated
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -44,15 +48,6 @@ export class AlertStateStore {
 
 // #region Application UIStore provider
 
-export enum UIStateStatusCode {
-  STATUS_OK = 200,
-  STATUS_CREATED = 201,
-  BAD_REQUEST = 422,
-  ERROR = 500,
-  UNAUTHORIZED = 401,
-  AUTHENTICATED = 202,
-  UNAUTHENTICATED = 403
-}
 
 /**
  * @description UIstate status code helper for getting state from http response error status
@@ -62,64 +57,14 @@ export const uiStatusUsingHttpErrorResponse = (httpErrorState: HTTPErrorState) =
     (httpErrorState.status === DrewlabsHttpResponseStatusCode.UNKNOWN) ?
     UIStateStatusCode.ERROR : UIStateStatusCode.BAD_REQUEST;
 
-export interface UIState {
-  performingAction: boolean;
-  uiMessage?: string;
-  hasError?: boolean;
-  status?: number;
-}
-
-const initialUIState: UIState = {
-  performingAction: false,
-  uiMessage: null,
-  hasError: false,
-  status: null
-};
-
-
-@Injectable({
-  providedIn: 'root'
-})
-export class AppUIStateProvider {
-  private store$ = createSubject<UIState>();
-
-  // tslint:disable-next-line: typedef
-  intialize() {
-    this.store$.next(initialUIState);
-  }
-
-  get uiState(): Observable<UIState> {
-    return this.store$.pipe(
-      startWith(initialUIState)
-    );
-  }
-
-  startAction(message?: string): void {
-    this.store$.next({
-      performingAction: true,
-      uiMessage: message,
-      hasError: false,
-      status: null
-    });
-  }
-
-  endAction(message?: string, status?: UIStateStatusCode): void {
-    this.store$.next({
-      performingAction: false,
-      uiMessage: message,
-      hasError: status === UIStateStatusCode.ERROR ? true : false,
-      status
-    });
-  }
-
-  resetState(): void {
-    this.store$.next(initialUIState);
-  }
-}
+export interface UIState extends BaseUIState {}
 
 //#endregion Application UI store provider
 
 //#region application UI store wrapper
+/**
+ * @deprecated
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -131,7 +76,7 @@ export class AppUIStoreManager {
    */
   constructor(private uiStore: AppUIStateProvider, private alertStore: AlertStateStore) { }
 
-  get appUIStore(): AppUIStateProvider {
+  get appUIStore(): UIStateProvider {
     return this.uiStore;
   }
 
@@ -186,3 +131,7 @@ export class AppUIStoreManager {
   }
 }
 //#endregion Application UI store wrapper
+
+
+export { UIStateStatusCode } from  '../contracts/ui-state';
+export { AppUIStateProvider } from '../ui-state'

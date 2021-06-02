@@ -24,12 +24,16 @@ import { isArray } from 'lodash';
 
 /**
  * @description Definition of form request configuration object
+ * @deprecated
  */
 export interface IFormRequestConfig {
   id: number;
   label?: string;
 }
 
+/**
+ * @deprecated
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -151,6 +155,7 @@ export class FormHelperService implements OnDestroy {
 }
 
 /**
+ * @deprecated
  * @classdesc Implementation provider for form component views. The current class provides with basic functionnalities of
  * functionnalities a simple form view component will handle through the use of dynamic form implementions,
  */
@@ -273,6 +278,7 @@ export abstract class FormsViewComponent<T extends IEntity> extends AbstractAler
 }
 
 /**
+ * @deprecated
  * @description Provides basic implementation for form view component containers, handling create,
  * update, and delete operation at the lower level
  */

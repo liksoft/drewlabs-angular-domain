@@ -130,4 +130,8 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
     return error;
   }
 
+  handleError(error: HttpErrorResponse) {
+    return this.handleErrorResponse(error);
+  }
+
 }

@@ -11,3 +11,15 @@ export {
   deleteFormAction,
   selectFormAction
 } from './form';
+
+export {
+  ControlOptionsState,
+  deleteControlOptionAction,
+  selectControlOptionAction,
+  createControlOptionAction,
+  createControlResultAction,
+  deleteControlOptionResultAction,
+  updateControlOptionAction,
+  updateControlOptionResultAction,
+  deserializeControlOption
+} from './control-options';

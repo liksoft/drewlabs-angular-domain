@@ -1,13 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UIStateStatusCode } from '../../../helpers';
+import { ErrorHandler } from '../error-handler';
 import { IHttpResponse } from '../types';
 import { RequestBody } from './types';
 
 /**
  * Provides an unified interface definition for working with a storage entity of a given type
  */
-export interface IResourcesServerClient<T extends IHttpResponse<any>> {
+export interface IResourcesServerClient<T extends IHttpResponse<any>> extends ErrorHandler {
   /**
    * @description Add a new entity with the provided attributes to the entity collection/store
    * @param path path to the server resource

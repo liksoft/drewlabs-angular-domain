@@ -288,3 +288,9 @@ export function buildRadioInputItems(model: Partial<DynamicFormControlInterface>
     return [];
   }
 }
+
+/**
+ * @description Checks if a dynamic form contains other form
+ * @param f [[IDynamicForm]]
+ */
+ export const isGroupOfIDynamicForm = (value: IDynamicForm) => isDefined(value) && isArray(value.forms) ? true : false;

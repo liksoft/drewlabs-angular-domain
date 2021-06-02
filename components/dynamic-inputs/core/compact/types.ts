@@ -31,7 +31,7 @@ export interface DynamicFormControlInterface {
   maxDate: string;
   selectableValues: string;
   selectableModel: string;
-  multiple: number;
+  multiple: number|boolean;
   controlGroupKey: string;
   controlName: string;
   controlIndex: number;
@@ -40,7 +40,7 @@ export interface DynamicFormControlInterface {
   columns: number;
   value: string;
   uploadURL: string;
-  isRepeatable?: number;
+  isRepeatable?: number|boolean;
   children: Partial<DynamicFormControlInterface>[];
   uniqueOn: string;
   dynamicControlContainerClass: string;

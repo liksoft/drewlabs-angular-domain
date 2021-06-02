@@ -6,17 +6,16 @@ import { TypeUtilHelper } from './type-utils-helper';
 import { IDynamicForm } from '../components/dynamic-inputs/core/contracts/dynamic-form';
 import { ICollection } from '../contracts/collection-interface';
 import { UniqueValueService } from '../validators';
+import { createAngularAbstractControl } from '../components/dynamic-inputs/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DynamicControlParser {
 
-  public constructor(private uniqueFieldValidator: UniqueValueService, private fb: FormBuilder, private typeHelper: TypeUtilHelper) { }
+  public constructor(private uniqueValidator: UniqueValueService, private fb: FormBuilder, private typeHelper: TypeUtilHelper) { }
 
-  get formBuilder(): FormBuilder {
-    return this.fb;
-  }
+  public readonly formBuilder = this.fb;
 
   /**
    * @description Provides a wrapper arround static method for parsing dynamic controls into an angular formgoup
@@ -31,7 +30,7 @@ export class DynamicControlParser {
     return ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
       this.fb,
       inputs,
-      applyUniqueValidations ? this.uniqueFieldValidator : null
+      applyUniqueValidations ? this.uniqueValidator : null
     );
   }
 
@@ -68,9 +67,7 @@ export class DynamicControlParser {
   ) {
     const group = this.fb.group({});
     collection.keys().forEach((k) => {
-      group.addControl(k,
-        angularAbstractControlFormDynamicForm(this.fb, collection.get(k), applyUniqueValidations ? this.uniqueFieldValidator : null)
-      );
+      group.addControl(k, createAngularAbstractControl(this.fb, collection.get(k), applyUniqueValidations ? this.uniqueValidator : null));
     });
     return group;
   }

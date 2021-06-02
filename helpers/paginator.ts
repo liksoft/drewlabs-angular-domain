@@ -11,6 +11,9 @@ import { ClrDatagrid, ClrDatagridStateInterface } from '@clr/angular';
 import { from } from 'rxjs';
 import { Dialog, isArray, isDefined } from '../utils';
 
+/**
+ * @deprecated
+ */
 @Injectable()
 export class GenericPaginatorDatasource<T> implements IDataSourceService<ISource<T>>, OnDestroy {
 

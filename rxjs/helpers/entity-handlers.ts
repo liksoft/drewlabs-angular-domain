@@ -87,6 +87,13 @@ export const removeItemFromCache = <T extends { id: string | number }>(cache: { 
   return _cache;
 };
 
+export const removeFromCacheUsingID = <T extends { id: string | number }>(cache: { [index: string]: T }, id: string|number) => {
+  // tslint:disable-next-line: variable-name
+  const _cache = { ...cache };
+  delete _cache[id.toString()];
+  return _cache;
+};
+
 export const updateListUsingID = <T extends { id: string | number }>(list: T[], value: T) => {
   const listCopy = [...list];
   listCopy.splice(listCopy.findIndex(c => c.id === value.id), 1, value);

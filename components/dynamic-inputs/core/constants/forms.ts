@@ -1,3 +1,5 @@
+import { CONTROL_OPTIONS_STATIC_FORM } from "./control-options-form";
+
 export const STATIC_FORMS = {
   createForm: {
     id: null,
@@ -1113,5 +1115,6 @@ export const STATIC_FORMS = {
       }
     ],
     formControls: []
-  }
+  },
+  createControlOptions: CONTROL_OPTIONS_STATIC_FORM
 };

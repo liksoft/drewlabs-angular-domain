@@ -24,7 +24,8 @@ export {
 export {
   sortFormByIndex,
   rebuildFormControlConfigs,
-  sortFormFormControlsByIndex
+  sortFormFormControlsByIndex,
+  isGroupOfIDynamicForm
 } from './helpers';
 export {
   DynamicForm

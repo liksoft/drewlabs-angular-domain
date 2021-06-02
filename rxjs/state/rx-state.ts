@@ -56,7 +56,6 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
       doLog('Before merge mapping: '),
       mergeMap((action) => isObservable(action) ? action as Observable<AType> : observableOf<AType>(action as AType)),
       filter(state => isDefined(state)),
-      doLog('Action : '),
       startWith(initialState),
       scan(reducer),
       doLog('State : '),
@@ -77,10 +76,6 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
         .subscribe(state => {
           this._actions$.next(state[0]);
         });
-      // setTimeout(() => {
-      //   this._actions$.next(action.payload);
-      // }, 10);
-      // this._actions$.next(action.payload);
     }
     return action;
   }

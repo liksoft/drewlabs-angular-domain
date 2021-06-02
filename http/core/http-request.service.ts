@@ -12,6 +12,7 @@ import { Browser } from '../../utils/browser/browser';
 import { isDefined } from '../../utils/types/type-utils';
 import { createSubject } from '../../rxjs/helpers/index';
 import { Err } from '../../utils/logger';
+import { ErrorHandler } from '../contracts/error-handler';
 
 
 /**
@@ -35,7 +36,7 @@ export interface HTTPErrorState {
 }
 
 @Injectable()
-export class HttpRequestService implements IHttpService {
+export class HttpRequestService implements IHttpService, ErrorHandler {
 
   // tslint:disable-next-line: variable-name
   private _errorState$ = createSubject<HTTPErrorState>();
@@ -109,7 +110,7 @@ export class HttpRequestService implements IHttpService {
   /**
    * {@inheritdoc}
    */
-  handleError(error: HttpErrorResponse): Observable<never> {
+  handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       Err('An error occurred:', error.error.message);

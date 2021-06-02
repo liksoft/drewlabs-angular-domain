@@ -10,7 +10,7 @@ export const mapPaginatorStateWith = (params: { [index: string]: any }[] | { [in
         filters[property] = [value];
       }
     }
-    let currenState = Object.assign(filters, { page: state.page.current, per_page: state.page.size });
+    let currenState = Object.assign(filters, { page: state?.page?.current || 1, per_page: state?.page?.size || 20 });
     if (isArray(params)) {
       params.map((p: object) => {
         currenState = { ...currenState, ...p };

@@ -1,9 +1,12 @@
 import { AppUIStoreManager, UIState } from './app-ui-store-manager.service';
 import { Subscription } from 'rxjs';
 import { Directive, HostBinding } from '@angular/core';
-import { AbstractControl, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { isDefined } from '../utils';
 
+
+/**
+ * @deprecated
+ */
 export interface IFormViewComponent {
   /**
    * @description After form submission request submit successfully
@@ -12,6 +15,7 @@ export interface IFormViewComponent {
 }
 
 /**
+ * @deprecated
  * @description A component that is wrapped arround a child component containing an HTML form
  */
 export interface IFormParentComponent {
@@ -24,6 +28,7 @@ export interface IFormParentComponent {
 }
 
 /**
+ * @deprecated
  * @description Helper class for applying [[@HostBinding('class.content-container')]] property
  * to the subclass in order to transform it into a clarity main-container view
  */
@@ -35,6 +40,9 @@ export class PageComponent {
   @HostBinding('class.content-container') class = true;
 }
 
+/**
+ * @deprecated
+ */
 export abstract class AbstractAlertableComponent {
 
   public performingAction = false;
@@ -103,7 +111,8 @@ export abstract class AbstractAlertableComponent {
 }
 
 /**
- * Helper class that apply [[@HostBinding('class.content-container')]] to it subclass and provide methods and properties
+ * @deprecated
+ * @description Helper class that apply [[@HostBinding('class.content-container')]] to it subclass and provide methods and properties
  * to component for responding to ui events and actions
  */
 
@@ -120,36 +129,4 @@ export class AlertablePageComponent extends AbstractAlertableComponent {
   }
 }
 
-/**
- * Deep clones the given AbstractControl, preserving values, validators, async validators, and disabled status.
- * @param control AbstractControl
- * @returns AbstractControl
- */
-export function cloneAbstractControl<T extends AbstractControl>(control: T): T {
-  let newControl: T;
-
-  if (control instanceof FormGroup) {
-    const formGroup = new FormGroup({}, control.validator, control.asyncValidator);
-    const controls = control.controls;
-
-    Object.keys(controls).forEach(key => {
-      formGroup.addControl(key, cloneAbstractControl(controls[key]));
-    });
-
-    newControl = formGroup as any;
-  } else if (control instanceof FormArray) {
-    const formArray = new FormArray([], control.validator, control.asyncValidator);
-
-    control.controls.forEach(formControl => formArray.push(cloneAbstractControl(formControl)));
-
-    newControl = formArray as any;
-  } else if (control instanceof FormControl) {
-    newControl = new FormControl(control.value, control.validator, control.asyncValidator) as any;
-  } else {
-    throw new Error('Error: unexpected control value');
-  }
-
-  if (control.disabled) { newControl.disable({emitEvent: false}); }
-
-  return newControl;
-}
+export { cloneAbstractControl } from  '../components/dynamic-inputs/angular';
