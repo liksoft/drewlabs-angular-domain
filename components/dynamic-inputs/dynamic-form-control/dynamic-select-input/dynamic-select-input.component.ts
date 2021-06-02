@@ -47,11 +47,13 @@ import { doLog } from '../../../../rxjs/operators';
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicSelectInputComponent implements OnDestroy {
+
+  @Input() controlDivContainerClass: string = 'clr-form-control';
   private _control: AbstractControl;
   @Input() set control(value: AbstractControl) {
     this._control = value;
   }
-  get control() : AbstractControl {
+  get control(): AbstractControl {
     return this._control;
   }
   @Input() showLabelAndDescription = true;

@@ -19,7 +19,7 @@ export class ControlOptionsProvider {
     /**
      * control options state property
      */
-    public readonly state$ = this.store$.connect();
+    public readonly state$: Observable<ControlOptionsState> = this.store$.connect();
 
     public resetState = (state: Partial<ControlOptionsState>) => onInitStoreStateAction(this.store$)(state || initialState);
 

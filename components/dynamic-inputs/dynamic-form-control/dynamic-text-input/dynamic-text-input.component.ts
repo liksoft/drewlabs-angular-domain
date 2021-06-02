@@ -25,6 +25,7 @@ import { InputTypes } from '../../core/contracts/input-types';
 })
 export class DynamicTextInputComponent {
 
+  @Input() controlDivContainerClass: string = 'clr-form-control';
   @Input() control: AbstractControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input

@@ -1,6 +1,7 @@
 import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { of } from "rxjs";
 import { MomentUtils } from "../../../utils/datetime/moment-utils";
+import { Log } from "../../../utils/logger";
 import { isArray, isDefined } from "../../../utils/types/type-utils";
 import { CustomValidators, UniqueValueService } from "../../../validators/validators";
 import { DynamicFormInterface } from "../core/compact/types";
@@ -88,7 +89,7 @@ export class DynamicFormHelpers {
             return { ...config };
           });
         }
-        let forms = f.children && f.children.length ? [] : f.children.map(value => generatorFn(value));
+        let forms = f?.children && f?.children?.length > 0 ? f.children.map(value => generatorFn(value)) : [];
         return new DynamicForm({
           id: f.id,
           title: f.title,

@@ -45,6 +45,19 @@ export class DynamicFormControlComponent implements OnDestroy {
     return this._control;
   }
 
+  private _controlDivContainerClass: string = 'clr-form-control';
+  get controlDivContainerClass() {
+    return this._controlDivContainerClass;
+  }
+
+  private _inline: boolean = false;
+  @Input() set inline(value: boolean) {
+    this._controlDivContainerClass = value === true ? 'clr-form-control inline' : 'clr-form-control';
+  }
+  get inline() {
+    return this._inline;
+  }
+
   @Input() showLabelAndDescription = true;
   // private controlSubscription: Subscription;
   @Output() multiSelectItemRemove = new EventEmitter<any>();
@@ -67,7 +80,6 @@ export class DynamicFormControlComponent implements OnDestroy {
 
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();
-
   @Output() inputKeyUp = new EventEmitter<{ formcontrolname: string, value: any }>();
   @Output() inputKeyDown = new EventEmitter<{ formcontrolname: string, value: any }>();
   @Output() inputKeypress = new EventEmitter<{ formcontrolname: string, value: any }>();

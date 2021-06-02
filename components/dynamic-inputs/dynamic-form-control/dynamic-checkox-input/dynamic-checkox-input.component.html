@@ -1,5 +1,5 @@
 <div *ngIf=" inputConfig && inputTypeHelper.asCheckBoxInput(inputConfig).items.length > 0 && control">
-  <div class="clr-form-control">
+  <div [class]="controlDivContainerClass">
     <label class="clr-control-label" *ngIf="showLabelAndDescription"
       [for]="inputTypeHelper.asCheckBoxInput(inputConfig).formControlName">
       {{ inputTypeHelper.asCheckBoxInput(inputConfig).label }}<span class="required-text"

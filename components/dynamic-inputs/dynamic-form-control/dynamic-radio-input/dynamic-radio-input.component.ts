@@ -22,6 +22,8 @@ import { InputTypes } from '../../core/contracts/input-types';
 })
 export class DynamicRadioInputComponent {
 
+  @Input() inline: boolean = true;
+
   // tslint:disable-next-line: variable-name
   private _control: AbstractControl;
   @Input() set control(value: AbstractControl) {

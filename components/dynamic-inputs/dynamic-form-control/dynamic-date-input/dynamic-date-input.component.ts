@@ -29,6 +29,7 @@ import { isDefined } from '../../../../utils/types/type-utils';
 })
 export class DynamicDateInputComponent {
 
+  @Input() controlDivContainerClass: string = 'clr-form-control';
   @Input() control: AbstractControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input

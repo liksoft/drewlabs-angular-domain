@@ -23,6 +23,7 @@ export class TranslatorHelperService {
       'prompt',
       'validationPrompt',
       'rejectionPrompt',
+      'deletionPrompt',
       'successfulValidation',
       'successfulRejection',
     ].concat(...params), translateParams).toPromise();

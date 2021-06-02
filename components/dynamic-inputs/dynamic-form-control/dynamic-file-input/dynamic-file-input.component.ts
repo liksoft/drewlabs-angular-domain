@@ -31,6 +31,7 @@ import { doLog } from '../../../../rxjs/operators/index';
 })
 export class DynamicFileInputComponent implements OnInit, OnDestroy {
 
+  @Input() controlDivContainerClass: string = 'clr-form-control';
   @Input() control: AbstractControl;
   @Input() showLabelAndDescription = true;
 

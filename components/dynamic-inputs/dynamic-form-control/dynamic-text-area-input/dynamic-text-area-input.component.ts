@@ -23,10 +23,11 @@ import { DynamicInputTypeHelper } from '../input-type.service';
         margin-top: 1rem !important;
     } */
     `
-    ]
+  ]
 })
 export class DynamicTextAreaInputComponent {
 
+  @Input() controlDivContainerClass: string = 'clr-form-control';
   @Input() control: AbstractControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input

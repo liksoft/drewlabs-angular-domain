@@ -1,61 +1,113 @@
 <ng-container *ngIf="control">
   <ng-container [ngSwitch]="inputConfig.type">
     <div *ngSwitchCase="inputTypes.FILE_INPUT">
-      <app-dynamic-file-input (addedEvent)="fileAdded.emit($event)" (removedEvent)="fileRemoved.emit($event)"
-        [control]="control" [inputConfig]="inputConfig" [showLabelAndDescription]="showLabelAndDescription">
-      </app-dynamic-file-input>
+      <app-dynamic-file-input
+        (addedEvent)="fileAdded.emit($event)"
+        (removedEvent)="fileRemoved.emit($event)"
+        [control]="control"
+        [inputConfig]="inputConfig"
+        [showLabelAndDescription]="showLabelAndDescription"
+      ></app-dynamic-file-input>
     </div>
     <ng-container *ngSwitchCase="inputTypes.HTML_INPUT">
       <div [innerHTML]="inputConfig.value | safeWebContent"></div>
     </ng-container>
     <div *ngSwitchCase="inputTypes.HIDDEN_INPUT">
-      <input [tabIndex]="-1" type="hidden" [class]="inputConfig.classes" [formControl]="control" />
+      <input
+        [tabIndex]="-1"
+        type="hidden"
+        [class]="inputConfig.classes"
+        [formControl]="control"
+      />
     </div>
     <div *ngSwitchCase="inputTypes.SELECT_INPUT">
-      <app-dynamic-select-input [control]="control" [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription" (multiSelectItemRemove)="multiSelectItemRemove.emit($event)"
+      <app-dynamic-select-input
+        [controlDivContainerClass]="controlDivContainerClass"
+        [control]="control"
+        [inputConfig]="inputConfig"
+        [showLabelAndDescription]="showLabelAndDescription"
+        (multiSelectItemRemove)="multiSelectItemRemove.emit($event)"
         (inputSelect)="inputSelect.emit($event)"
-        [inputItems]="inputConfig?.items"></app-dynamic-select-input>
+        [inputItems]="inputConfig?.items"
+      ></app-dynamic-select-input>
     </div>
     <div *ngSwitchCase="inputTypes.PHONE_INPUT">
-      <app-dynamic-phone-input [control]="control" [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"></app-dynamic-phone-input>
+      <app-dynamic-phone-input
+        [controlDivContainerClass]="controlDivContainerClass"
+        [control]="control"
+        [inputConfig]="inputConfig"
+        [showLabelAndDescription]="showLabelAndDescription"
+      ></app-dynamic-phone-input>
     </div>
     <div *ngSwitchCase="inputTypes.DATE_INPUT">
-      <app-dynamic-date-input [control]="control" [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"></app-dynamic-date-input>
+      <app-dynamic-date-input
+        [control]="control"
+        [inputConfig]="inputConfig"
+        [showLabelAndDescription]="showLabelAndDescription"
+      ></app-dynamic-date-input>
     </div>
     <div *ngSwitchCase="inputTypes.TEXTAREA_INPUT">
-      <app-dynamic-text-area-input [control]="control" [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription" (inputKeyUp)="inputKeyUp.emit($event)"
-        (inputKeyDown)="inputKeyDown.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
-        (inputBlur)="inputBlur.emit($event)"></app-dynamic-text-area-input>
+      <app-dynamic-text-area-input
+        [controlDivContainerClass]="controlDivContainerClass"
+        [control]="control"
+        [inputConfig]="inputConfig"
+        [showLabelAndDescription]="showLabelAndDescription"
+        (inputKeyUp)="inputKeyUp.emit($event)"
+        (inputKeyDown)="inputKeyDown.emit($event)"
+        (inputKeypress)="inputKeypress.emit($event)"
+        (inputBlur)="inputBlur.emit($event)"
+      ></app-dynamic-text-area-input>
     </div>
     <div *ngSwitchCase="inputTypes.NUMBER_INPUT">
-      <app-dynamic-number-input [control]="control" [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription" (inputKeyUp)="inputKeyUp.emit($event)"
-        (inputKeyDown)="inputKeyDown.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
-        (inputBlur)="inputBlur.emit($event)"></app-dynamic-number-input>
+      <app-dynamic-number-input
+        [controlDivContainerClass]="controlDivContainerClass"
+        [control]="control"
+        [inputConfig]="inputConfig"
+        [showLabelAndDescription]="showLabelAndDescription"
+        (inputKeyUp)="inputKeyUp.emit($event)"
+        (inputKeyDown)="inputKeyDown.emit($event)"
+        (inputKeypress)="inputKeypress.emit($event)"
+        (inputBlur)="inputBlur.emit($event)"
+      ></app-dynamic-number-input>
     </div>
     <div *ngSwitchCase="inputTypes.RADIO_INPUT">
-      <app-dynamic-radio-input [control]="control" [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"></app-dynamic-radio-input>
+      <app-dynamic-radio-input
+        [inline]="inline"
+        [control]="control"
+        [inputConfig]="inputConfig"
+        [showLabelAndDescription]="showLabelAndDescription"
+      ></app-dynamic-radio-input>
     </div>
     <div *ngSwitchCase="inputTypes.CHECKBOX_INPUT">
-      <app-dynamic-checkox-input [control]="control" [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"></app-dynamic-checkox-input>
+      <app-dynamic-checkox-input
+        [control]="control"
+        [inputConfig]="inputConfig"
+        [showLabelAndDescription]="showLabelAndDescription"
+      ></app-dynamic-checkox-input>
     </div>
     <div *ngSwitchCase="inputTypes.PASSWORD_INPUT">
-      <app-dynamic-password-input [control]="control" [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription" (inputKeyUp)="inputKeyUp.emit($event)"
-        (inputKeyDown)="inputKeyDown.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
-        (inputBlur)="inputBlur.emit($event)"></app-dynamic-password-input>
+      <app-dynamic-password-input
+        [controlDivContainerClass]="controlDivContainerClass"
+        [control]="control"
+        [inputConfig]="inputConfig"
+        [showLabelAndDescription]="showLabelAndDescription"
+        (inputKeyUp)="inputKeyUp.emit($event)"
+        (inputKeyDown)="inputKeyDown.emit($event)"
+        (inputKeypress)="inputKeypress.emit($event)"
+        (inputBlur)="inputBlur.emit($event)"
+      ></app-dynamic-password-input>
     </div>
     <ng-container *ngSwitchDefault>
-      <app-dynamic-text-input [control]="control" [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription" (inputKeyUp)="inputKeyUp.emit($event)"
-        (inputKeyDown)="inputKeyDown.emit($event)" (inputKeypress)="inputKeypress.emit($event)"
-        (inputBlur)="inputBlur.emit($event)"></app-dynamic-text-input>
+      <app-dynamic-text-input
+        [controlDivContainerClass]="controlDivContainerClass"
+        [control]="control"
+        [inputConfig]="inputConfig"
+        [showLabelAndDescription]="showLabelAndDescription"
+        (inputKeyUp)="inputKeyUp.emit($event)"
+        (inputKeyDown)="inputKeyDown.emit($event)"
+        (inputKeypress)="inputKeypress.emit($event)"
+        (inputBlur)="inputBlur.emit($event)"
+      ></app-dynamic-text-input>
     </ng-container>
     <!-- Add controls for check boxes and radio -->
   </ng-container>

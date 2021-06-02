@@ -1,21 +1,53 @@
 <clr-date-container>
-  <label class="clr-control-label" *ngIf="showLabelAndDescription"
-    [for]="inputTypeHelper.asDateInput(inputConfig).formControlName">{{ inputTypeHelper.asDateInput(inputConfig).label
-    }}
-    <span class="required-text" *ngIf="inputTypeHelper.asDateInput(inputConfig).rules?.isRequired">(*)</span></label>
-  <input [tabIndex]="inputConfig?.formControlIndex" type="date" (blur)="onDateInputBlur()" [formControl]="control"
-    [min]="inputTypeHelper.asDateInput(inputConfig).minDate" [max]="inputTypeHelper.asDateInput(inputConfig).maxDate"
-    clrDate />
+  <label
+    class="clr-control-label"
+    *ngIf="showLabelAndDescription"
+    [for]="inputTypeHelper.asDateInput(inputConfig).formControlName"
+  >
+    {{ inputTypeHelper.asDateInput(inputConfig).label }}
+    <span
+      class="required-text"
+      *ngIf="inputTypeHelper.asDateInput(inputConfig).rules?.isRequired"
+    >
+      (*)
+    </span>
+  </label>
+  <input
+    [tabIndex]="inputConfig?.formControlIndex"
+    type="date"
+    (blur)="onDateInputBlur()"
+    [formControl]="control"
+    [min]="inputTypeHelper.asDateInput(inputConfig).minDate"
+    [max]="inputTypeHelper.asDateInput(inputConfig).maxDate"
+    clrDate
+  />
 </clr-date-container>
-<clr-control-error class="field-has-error" *ngIf="control.hasError('required') && control.touched">
+<clr-control-error
+  class="field-has-error"
+  *ngIf="control.hasError('required') && control.touched"
+>
   <span [translate]="'validation.required'"></span>
 </clr-control-error>
-<clr-control-error class="field-has-error" *ngIf="control.hasError('minDate') && control.touched">
-  <span [translate]="'validation.minDate'" [translateParams]="{date: control.errors.minDate }"></span>
+<clr-control-error
+  class="field-has-error"
+  *ngIf="control.hasError('minDate') && control.touched"
+>
+  <span
+    [translate]="'validation.minDate'"
+    [translateParams]="{ date: control.errors.minDate }"
+  ></span>
 </clr-control-error>
-<clr-control-error class="field-has-error" *ngIf="control.hasError('maxDate') && control.touched">
-  <span [translate]="'validation.maxDate'" [translateParams]="{date: control.errors.maxDate }"></span>
+<clr-control-error
+  class="field-has-error"
+  *ngIf="control.hasError('maxDate') && control.touched"
+>
+  <span
+    [translate]="'validation.maxDate'"
+    [translateParams]="{ date: control.errors.maxDate }"
+  ></span>
 </clr-control-error>
-<clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span
-    [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
+<clr-control-helper
+  *ngIf="inputConfig.descriptionText && showLabelAndDescription"
+>
+  <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
 </clr-control-helper>

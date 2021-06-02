@@ -23,6 +23,8 @@ import { DynamicInputTypeHelper } from '../input-type.service';
   ]
 })
 export class DynamicPhoneInputComponent {
+
+  @Input() controlDivContainerClass: string = 'clr-form-control';
   @Input() control: AbstractControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input

@@ -25,3 +25,7 @@
 :host ::ng-deep .clr-input-group .clr-input-group-icon-action {
   padding: 0 !important;
 }
+
+:host ::ng-deep .clr-form-control.inline {
+  margin-top: 0rem;
+}

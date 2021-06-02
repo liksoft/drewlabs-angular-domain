@@ -46,7 +46,7 @@ export class ControlOption implements ControlOptionInterface {
    * @description Calls to get the builder provider of the current class|type
    */
   static builder() {
-    return new GenericSerializaleSerializer(ControlOption, new UndecoratedSerializer);
+    return new GenericSerializaleSerializer<ControlOptionInterface>(ControlOption, new UndecoratedSerializer);
   }
 
   static getJsonableProperties(): { [index: string]: keyof ControlOption } | { [index: string]: { name: string, type: any } } {

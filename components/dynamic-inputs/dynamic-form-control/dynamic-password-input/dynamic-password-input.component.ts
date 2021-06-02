@@ -32,7 +32,7 @@ import { createStateful } from '../../../../rxjs/helpers';
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicPasswordInputComponent {
-
+  @Input() controlDivContainerClass: string = 'clr-form-control';
   @Input() control: AbstractControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input

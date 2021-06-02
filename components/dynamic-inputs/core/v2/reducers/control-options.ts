@@ -2,6 +2,7 @@ import { DefaultStoreAction, StoreAction } from '../../../../../rxjs/state/rx-st
 import { insertOrUpdateValuesUsingID, removeItemFromCache } from '../../../../../rxjs/helpers';
 import { ControlOptionInterface } from '../../compact/types';
 import { ControlOptionsState, Actions } from '../actions/control-options';
+import { ControlOption } from '../models/form';
 
 export const controlOptionsReducer = (state: ControlOptionsState, action: Partial<StoreAction>) => {
     const {
@@ -65,7 +66,7 @@ export const controlOptionsReducer = (state: ControlOptionsState, action: Partia
                 createResult,
                 updateResult,
                 deleteResult,
-                selected: { ...(state?.selected ? state?.selected : {}), ...value },
+                selected: ControlOption.builder().build(ControlOption, { ...(state?.selected ? state?.selected : {}), ...value }),
                 performingAction: false,
                 error: null
             } as ControlOptionsState;

@@ -23,6 +23,7 @@ import { CheckBoxInput } from '../../core';
 })
 export class DynamicCheckoxInputComponent {
 
+  @Input() controlDivContainerClass: string = 'clr-form-control';
   // tslint:disable-next-line: variable-name
   private _control: AbstractControl;
   @Input() set control(value: AbstractControl) {
