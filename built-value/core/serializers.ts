@@ -1,7 +1,6 @@
-import 'reflect-metadata';
+// import 'reflect-metadata';
 import { isArray, isPrimitive, isDefined } from '../../utils/types/type-utils';
 import { IJsonMetaData, ISerializer } from '../contracts/serializers';
-import { Log } from '../../utils/logger';
 
 /**
  * @description A key use to retrieve json metadata from Reflect package
@@ -14,7 +13,8 @@ const jsonMetadataKey = 'jsonProperty';
  * @param propertyKey [[string]]
  */
 export function getValueDesignType(target: any, propertyKey: string): any {
-  return Reflect.getMetadata('design:type', target, propertyKey);
+  throw new Error('Not support is provided for decorated JsonProperty, Use Undecorated implementation instead');
+  // return Reflect.getMetadata('design:type', target, propertyKey);
 }
 
 /**
@@ -23,7 +23,8 @@ export function getValueDesignType(target: any, propertyKey: string): any {
  * @param propertyKey [[string]]
  */
 export function getJsonProperty<T>(target: any, propertyKey: string): IJsonMetaData<T> {
-  return Reflect.getMetadata(jsonMetadataKey, target, propertyKey);
+  throw new Error('Not support is provided for decorated JsonProperty, Use Undecorated implementation instead');
+  // return Reflect.getMetadata(jsonMetadataKey, target, propertyKey);
 }
 
 /**
@@ -31,20 +32,24 @@ export function getJsonProperty<T>(target: any, propertyKey: string): IJsonMetaD
  * @param metadata [[IJsonMetaData<T> | string]]
  */
 export function JsonProperty<T>(metadata?: IJsonMetaData<T> | string): any {
-  if (metadata instanceof String || typeof metadata === 'string') {
-    return Reflect.metadata(jsonMetadataKey, {
-      name: metadata,
-      valueType: undefined
-    });
-  } else {
-    const metadataObj = metadata as IJsonMetaData<T>;
-    return Reflect.metadata(jsonMetadataKey, {
-      name: metadataObj ? metadataObj.name : undefined,
-      valueType: metadataObj ? metadataObj.valueType : undefined
-    });
-  }
+  throw new Error('Not support is provided for decorated JsonProperty, Use Undecorated implementation instead');
+  // if (metadata instanceof String || typeof metadata === 'string') {
+  //   return Reflect.metadata(jsonMetadataKey, {
+  //     name: metadata,
+  //     valueType: undefined
+  //   });
+  // } else {
+  //   const metadataObj = metadata as IJsonMetaData<T>;
+  //   return Reflect.metadata(jsonMetadataKey, {
+  //     name: metadataObj ? metadataObj.name : undefined,
+  //     valueType: metadataObj ? metadataObj.valueType : undefined
+  //   });
+  // }
 }
 
+/**
+ * @deprecated Will be removed in next major release
+ */
 export class ObjectSerializer implements ISerializer {
 
   /**

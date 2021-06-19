@@ -1,8 +1,8 @@
-import * as  CryptoJS from 'crypto-js';
+import CryptoES from 'crypto-es';
 
-type HashFn = (key: string) => string | CryptoJS.WordArray;
-type DecrypterFn = (data: string | CryptoJS.WordArray) => any;
-type EncrypterFn = (data: any) => string | CryptoJS.WordArray;
+type HashFn = (key: string) => string | CryptoES.lib.WordArray;
+type DecrypterFn = (data: string | CryptoES.lib.WordArray) => any;
+type EncrypterFn = (data: any) => string | CryptoES.lib.WordArray;
 
 export interface IAppStorage {
   /**
@@ -95,17 +95,17 @@ export class SecureWebStorage extends SecureStorage {
 
   constructor(storage: Storage, secret: string) {
     super(storage, {
-      hash: function hash(key: string): string | CryptoJS.WordArray {
-        const $hash = CryptoJS.MD5(key, secret);
+      hash: function hash(key: string): string | CryptoES.lib.WordArray {
+        const $hash = CryptoES.MD5(key);
         return $hash.toString();
       },
-      encrypt: function encrypt(data: any): string | CryptoJS.WordArray {
-        data = CryptoJS.AES.encrypt(data, secret);
+      encrypt: function encrypt(data: any): string | CryptoES.lib.WordArray {
+        data = CryptoES.AES.encrypt(data, secret);
         return data.toString();
       },
-      decrypt: function decrypt(data: string | CryptoJS.WordArray): any {
-        const plain = CryptoJS.AES.decrypt(data, secret);
-        return plain.toString(CryptoJS.enc.Utf8);
+      decrypt: function decrypt(data: string): any {
+        const plain = CryptoES.AES.decrypt(data, secret);
+        return plain.toString(CryptoES.enc.Utf8);
       }
     });
 

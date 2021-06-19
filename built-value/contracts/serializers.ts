@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 
 /**
  * @description Contract|Interface that holds informations about the object property that is decorate
