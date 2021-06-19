@@ -9,8 +9,6 @@ import { DynamicFormControlModule } from './dynamic-inputs/dynamic-form-control'
 import { OnlineStateMonitoringComponent } from './online-state-monitoring/online-state-monitoring.component';
 import { ActionAlertModule } from './action-alert';
 import { CustomPipesModule } from './pipes/custom-pipes.module';
-import { DynamicFormPageComponent } from '../helpers/component-reactive-form-helpers';
-import { PageComponent, AlertablePageComponent } from '../helpers/component-interfaces';
 
 @NgModule({
   imports: [
@@ -32,12 +30,7 @@ import { PageComponent, AlertablePageComponent } from '../helpers/component-inte
     CustomPipesModule
   ],
   declarations: [
-    OnlineStateMonitoringComponent,
-
-    // These component must be removed in future version
-    DynamicFormPageComponent,
-    PageComponent,
-    AlertablePageComponent
+    OnlineStateMonitoringComponent
   ],
   providers: []
 })

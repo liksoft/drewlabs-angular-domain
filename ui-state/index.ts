@@ -1,1 +1,1 @@
-export { AppUIStateProvider } from './ui-state.service';
+export { AppUIStateProvider, uiStatusUsingHttpErrorResponse } from './ui-state.service';

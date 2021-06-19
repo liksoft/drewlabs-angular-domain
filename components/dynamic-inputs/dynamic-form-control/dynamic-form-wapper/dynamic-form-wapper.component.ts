@@ -2,11 +2,10 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
 import { FormGroup, AbstractControl, FormArray } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils';
-import { createDynamicForm } from '../../core/helpers';
+import { createDynamicForm, isGroupOfIDynamicForm } from '../../core/helpers';
 import { IConditionalControlBinding, MultiSelectItemRemoveEvent } from './types';
 import { applyHiddenAttributeToControlFn, applyHiddenAttributeChangeToControl, bindingsFromDynamicForm } from './helpers';
 import { createStateful } from '../../../../rxjs/helpers/creator-functions';
-import { isGroupOfIDynamicForm } from '../../../../helpers/component-reactive-form-helpers';
 
 
 @Component({

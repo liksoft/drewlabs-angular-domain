@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { startWith } from "rxjs/operators";
 import { UIState, UIStateProvider, UIStateStatusCode } from "../contracts/ui-state";
+import { HTTPErrorState } from "../http/core/http-request.service";
+import { DrewlabsHttpResponseStatusCode } from "../http/core/http-response";
 import { createSubject } from "../rxjs/helpers";
 
 const initialUIState: UIState = {
@@ -10,6 +12,14 @@ const initialUIState: UIState = {
     hasError: false,
     status: null
 };
+
+/**
+ * @description UIstate status code helper for getting state from http response error status
+ */
+ export const uiStatusUsingHttpErrorResponse = (httpErrorState: HTTPErrorState) =>
+ (httpErrorState.status === DrewlabsHttpResponseStatusCode.SERVER_ERROR) ||
+   (httpErrorState.status === DrewlabsHttpResponseStatusCode.UNKNOWN) ?
+   UIStateStatusCode.ERROR : UIStateStatusCode.BAD_REQUEST;
 
 @Injectable({
     providedIn: 'root'

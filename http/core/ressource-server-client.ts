@@ -7,8 +7,8 @@ import { Injectable, Inject } from '@angular/core';
 import { RequestBody, TransformResponseHandlerFn } from '../contracts/resource';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DrewlabsHttpResponseStatusCode } from './http-response';
-import { UIStateStatusCode } from '../../helpers/app-ui-store-manager.service';
 import { doLog } from '../../rxjs/operators';
+import { UIStateStatusCode } from '../../contracts/ui-state';
 
 @Injectable()
 export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHttpResponse<any>> {

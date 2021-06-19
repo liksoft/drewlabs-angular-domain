@@ -3,8 +3,9 @@ import { isDefined } from '../../../../utils/types/type-utils';
 import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { includes, toNumber, isNumber } from 'lodash';
-import { ComponentReactiveFormHelpers, isGroupOfIDynamicForm } from '../../../../helpers/component-reactive-form-helpers';
 import { AbstractControl } from '@angular/forms';
+import { ComponentReactiveFormHelpers } from '../../angular/helpers';
+import { isGroupOfIDynamicForm } from '../../core/helpers';
 
 export const applyHiddenAttributeToControlFn = (
   form: IDynamicForm,

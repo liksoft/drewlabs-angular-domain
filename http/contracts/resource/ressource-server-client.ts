@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UIStateStatusCode } from '../../../helpers';
+import { UIStateStatusCode } from '../../../contracts/ui-state';
 import { ErrorHandler } from '../error-handler';
 import { IHttpResponse } from '../types';
 import { RequestBody } from './types';
