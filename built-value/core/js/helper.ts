@@ -72,7 +72,7 @@ export const serializeJsObject = <T extends { [index: string]: any }>(param: T) 
   }
   const mappings = (param as any).constructor.getJsonableProperties() || {};
   const objPropertyNames = Object.getOwnPropertyNames(param);
-  const parsedProperties = [];
+  const parsedProperties: any[] = [];
   Object.keys(mappings).forEach((k) => {
     let value = null;
     let key = null;

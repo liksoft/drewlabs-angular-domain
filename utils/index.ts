@@ -45,7 +45,8 @@ export {
   getJSObjectPropertyValue,
   check,
   ArrayUtils,
-  Filtrable
+  Filtrable,
+  getObjectProperty
 } from './types';
 
 // Enumeration values that can globally be used

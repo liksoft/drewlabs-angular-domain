@@ -25,7 +25,7 @@ export class GeolocationService implements OnDestroy {
         startWith({} as GeolocationPosition)
     );
     public readonly store$ = createStore(geolocationReducer, {
-        position: null
+        position: undefined
     });
     public readonly state$ = this.store$.connect().pipe(
         takeUntil(this._destroy$.pipe(

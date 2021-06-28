@@ -29,5 +29,5 @@ export interface UIStateProvider {
 
   endAction(message?: string, status?: UIStateStatusCode|any): void;
 
-  resetState();
+  resetState(): void;
 }

@@ -109,6 +109,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
           if (data && isArray(data)) {
             return controlBindingsSetter(data)(this._inputConfig).items;
           }
+          return [];
         }),
         takeUntil(this._destroy$),
         tap(state => {

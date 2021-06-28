@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { SessionStorage } from '../../storage/core/session-storage.service';
 import { IAuthTokenHandler } from '../contracts/auth-token';
 import { createStateful } from '../../rxjs/helpers';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthTokenService implements IAuthTokenHandler {
@@ -11,7 +12,7 @@ export class AuthTokenService implements IAuthTokenHandler {
     @Inject('DREWLABS_USER_TOKEN_KEY') private tokenStorageKey: string) { }
 
   // tslint:disable-next-line: variable-name
-  public _authToken$ = createStateful<string>(null);
+  public _authToken$ = createStateful<string|null>(null);
   get authToken$() {
     return this._authToken$.asObservable();
   }

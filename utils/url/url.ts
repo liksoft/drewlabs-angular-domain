@@ -7,7 +7,7 @@ export class URLUtils {
    * @param url [[string]] url value
    * @param needle [[string]] search
    */
-  public static findInQueryString(url: string, needle: string): string {
+  public static findInQueryString = (url: string, needle: string) => {
     const a = new URL(url);
     const arr = a.search.split('&');
     const match = arr.filter(item => {
@@ -16,7 +16,7 @@ export class URLUtils {
     if (match.length > 0) {
       return match[0].replace(needle, '').replace('#', '');
     }
-    return null;
+    return undefined;
   }
 
   /**

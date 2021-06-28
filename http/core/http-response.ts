@@ -1,11 +1,11 @@
 import { IHttpResponse } from '../contracts';
 
 export class HttpResult implements IHttpResponse<any> {
-  statusCode: number = undefined;
-  statusMessage?: string = undefined;
-  errors?: object | string[] = undefined;
-  errorMessage?: string = undefined;
-  data: any = undefined;
+  statusCode!: number;
+  statusMessage!: string;
+  errors!: object | string[];
+  errorMessage!: string;
+  data!: any;
 
 }
 

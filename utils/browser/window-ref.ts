@@ -30,7 +30,7 @@ export class Dialog {
    * @description Prompt application user for an action
    * @param message [[string]] prompt text
    */
-  public prompt(message: string): string {
+  public prompt(message: string): string|null {
     return this.windowRef.nativeWindow.prompt(message);
   }
 

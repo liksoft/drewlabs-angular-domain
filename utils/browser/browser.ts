@@ -10,15 +10,15 @@ type WindowEvent = (self: Window, ev?: Event) => any;
  * @param file [[File|any]]
  */
 export function readFileAsDataURI(file: File | Blob) {
-  return new Promise<string>((_, __) => {
+  return new Promise<string|undefined>((_, __) => {
     if (isDefined(file)) {
       const reader = new FileReader();
       reader.onload = async (e: ProgressEvent) => {
-        _((e.target as FileReader).result.toString());
+        _((e.target as any)?.result.toString());
       };
       reader.readAsDataURL(file);
     } else {
-      _(null);
+      _(undefined);
     }
   });
 }
@@ -108,10 +108,8 @@ export class Browser {
     saveAs(blobContent, fileName);
   }
 
-  static setCookie(document: Document, name: string, value: any, ttl: number) {
+  static setCookie(document: Document, name: string, value: any, ttl: number): void {
     if (!isDefined(document)) {
-      return false;
-    }
     // Encode value in order to escape semicolons, commas, and whitespace
     var cookie = name + "=" + encodeURIComponent(value);
     if (typeof ttl === "number") {
@@ -119,6 +117,7 @@ export class Browser {
       after the specified number of days */
       cookie += "; max-age=" + (ttl * 24 * 60 * 60);
       document.cookie = cookie;
+    }
     }
   }
 

@@ -5,7 +5,7 @@ const enum Actions {
 }
 
 interface GeolocationState {
-    position: GeolocationPosition;
+    position?: GeolocationPosition;
     error?: GeolocationPositionError;
 }
 

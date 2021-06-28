@@ -122,7 +122,7 @@ export class MomentUtils {
    * is passed or a formatted date string based on the parameter
    * @param format [[string]]
    */
-  public static now(format: string = null): moment.Moment {
+  public static now(format?: string): moment.Moment {
     return moment(null, format);
   }
 

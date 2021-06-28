@@ -13,11 +13,10 @@ export const initialUsersState: AppUsersState = {
   items: {},
   manageableUsers: [],
   pagination: {} as PaginationData<User>,
-  createdUser: null,
   performingAction: false,
   error: null,
-  updateResult: null,
-  deleteResult: null
+  updateResult: false,
+  deleteResult: false
 };
 
 export interface AppUsersState {
@@ -25,7 +24,7 @@ export interface AppUsersState {
   error: any;
   items: { [index: string]: User };
   pagination: PaginationData<User>;
-  createdUser: User;
+  createdUser?: User;
   manageableUsers: User[];
   updateResult: boolean;
   deleteResult: boolean;
@@ -122,11 +121,12 @@ export const createUserAction = (store: DrewlabsFluxStore<Partial<AppUsersState>
         ).pipe(
           map(state => {
             // tslint:disable-next-line: one-variable-per-declaration
-            const data = getResponseDataFromHttpResponse(state);
+            const data = getResponseDataFromHttpResponse(state) || {};
             // Parse and return the loaded data
             if (data) {
               return userCreatedAction(store)(deserializeSerializedUser(data));
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -161,16 +161,15 @@ export const updateUserAction = (store: DrewlabsFluxStore<Partial<AppUsersState>
           map(state => {
             // tslint:disable-next-line: one-variable-per-declaration
             const data = getResponseDataFromHttpResponse(state);
-            if (isDefined(data)) {
-              if (isObject(data)) {
+            if (isDefined(data) && isObject(data)) {
                 return userUpdatedAction(store)({
                   item: deserializeSerializedUser(data),
                   updateResult: true
                 });
-              } else {
+            } else if (data) {
                 return userUpdatedAction(store)({ updateResult: true });
-              }
             }
+            return emptyObservable();
             // Review the returned data in order to know how to parse it
           }),
           catchError(err => {
@@ -249,6 +248,7 @@ export const deleteUserAction = (
                 return userDeletedAction(store)({ deleteResult: true });
               }
             }
+            return emptyObservable();
           })
         )
     };
@@ -280,6 +280,7 @@ export const getUserUsingID = (
           if (isDefined(data)) {
             return addUserToList(store)(deserializeSerializedUser(data));
           }
+          return emptyObservable();
         }),
         catchError(err => {
           if (err instanceof HttpErrorResponse) {

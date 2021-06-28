@@ -28,15 +28,15 @@ import { DynamicInputTypeHelper } from '../input-type.service';
 export class DynamicTextAreaInputComponent {
 
   @Input() controlDivContainerClass: string = 'clr-form-control';
-  @Input() control: AbstractControl;
+  @Input() control?: AbstractControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
-  @Input() inputConfig: IHTMLFormControl;
+  @Input() inputConfig?: IHTMLFormControl;
 
-  @Output() inputKeyUp = new EventEmitter<{ formcontrolname: string, value: any }>();
-  @Output() inputKeyDown = new EventEmitter<{ formcontrolname: string, value: any }>();
-  @Output() inputKeypress = new EventEmitter<{ formcontrolname: string, value: any }>();
-  @Output() inputBlur = new EventEmitter<{ formcontrolname: string, value: any }>();
+  @Output() inputKeyUp = new EventEmitter<{ formcontrolname?: string, value: any }>();
+  @Output() inputKeyDown = new EventEmitter<{ formcontrolname?: string, value: any }>();
+  @Output() inputKeypress = new EventEmitter<{ formcontrolname?: string, value: any }>();
+  @Output() inputBlur = new EventEmitter<{ formcontrolname?: string, value: any }>();
 
   constructor(public readonly inputTypeHelper: DynamicInputTypeHelper) { }
 

@@ -117,6 +117,7 @@ export const createAuthorizationAction = (
             if (isDefined(data)) {
               return authorizationCreated(store)(deserializeSerializedAuthorization(data));
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -155,6 +156,7 @@ export const updateAuthorizationAction = (
                 return authorizationUpdatedAction(store)({ updateResult: true });
               }
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -195,6 +197,7 @@ export const deleteAuthorizationAction = (
                 return authorizationDeletedAction(store)({ deleteResult: true });
               }
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {

@@ -25,9 +25,9 @@ export interface ILoginState {
 }
 
 export class LoginResponse implements ILoginResponse {
-  success: boolean = undefined;
-  body: LoginResponseBody = undefined;
-  statusCode: number = undefined;
+  success!: boolean;
+  body!: LoginResponseBody;
+  statusCode!: number;
 
   getContent() {
     return this.body?.responseData;
@@ -46,11 +46,11 @@ export class LoginResponse implements ILoginResponse {
 // Added to Add support for new structure of the http response
 export class LoginV2_1Response implements ILoginResponse, ILoginResponseBody {
 
-  success: boolean = undefined;
-  statusCode: number = undefined;
-  errorMessage: string = undefined;
-  responseData: LoginResponseData = undefined;
-  errors: any[] = undefined;
+  success!: boolean;
+  statusCode!: number;
+  errorMessage!: string;
+  responseData!: LoginResponseData;
+  errors!: any[];
 
   getContent() {
     return this.responseData;
@@ -69,9 +69,9 @@ export class LoginV2_1Response implements ILoginResponse, ILoginResponseBody {
 }
 
 export class LoginResponseBody implements ILoginResponseBody {
-  errorMessage: string = undefined;
-  responseData: LoginResponseData = undefined;
-  errors: any[] = undefined;
+  errorMessage!: string;
+  responseData!: LoginResponseData;
+  errors!: any[];
 
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {
@@ -84,8 +84,8 @@ export class LoginResponseBody implements ILoginResponseBody {
 }
 
 export class LoginResponseData implements ILoginResponseData {
-  loginState: ILoginState = undefined;
-  user: IAppUser = undefined;
+  loginState!: ILoginState;
+  user!: IAppUser;
 
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {
@@ -97,9 +97,9 @@ export class LoginResponseData implements ILoginResponseData {
 }
 
 export class LoginState implements ILoginState {
-  authenticated: boolean;
-  is2FactorAuthenticationEnabled: boolean;
-  token: string;
+  authenticated!: boolean;
+  is2FactorAuthenticationEnabled!: boolean;
+  token!: string;
 
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {

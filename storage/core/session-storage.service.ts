@@ -27,7 +27,7 @@ export class SessionStorage implements IAppStorage {
    * @return [[any]]
    */
   get(key: string): any {
-    return JSON.parse(this._store.getItem(storageEntry(key, this.secret)));
+    return JSON.parse(this._store.getItem(storageEntry(key, this.secret)) as string);
   }
   /**
    * @description Set a value in the key -> value store
@@ -53,7 +53,7 @@ export class SessionStorage implements IAppStorage {
   /**
    * @description Initialize le LocalStorage
    */
-  static initStorage(storage: Storage, secret: string = null): Storage {
+  static initStorage(storage: Storage, secret: string): Storage {
     if (storage) {
       return new SecureWebStorage(storage, secret);
     }

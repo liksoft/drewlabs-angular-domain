@@ -89,6 +89,7 @@ export const createDepartmentV2Action = (
             if (isDefined(data)) {
               return departmentCreated(store)(deserializeSerializedDepartmentV2(data));
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -127,6 +128,7 @@ export const updateDepartmentV2Action = (
                 return departmentUpdatedAction(store)({ updateResult: true });
               }
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -167,6 +169,7 @@ export const deleteDepartmentV2Action = (
                 return departmentDeletedAction(store)({ deleteResult: true });
               }
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -199,6 +202,7 @@ export const getDepartmentUsingID = (
             if (isDefined(data)) {
               return addDepartmentToList(store)(deserializeSerializedDepartmentV2(data));
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {

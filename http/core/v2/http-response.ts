@@ -2,9 +2,9 @@ import { IHttpResourceResponse, IHttpResourceResponseBody, IHttpResponseData } f
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
 
 export class HttpResourceResponse implements IHttpResourceResponse {
-  success: boolean = undefined;
-  body: IHttpResourceResponseBody = undefined;
-  statusCode: number = undefined;
+  success!: boolean;
+  body!: IHttpResourceResponseBody;
+  statusCode!: number;
 
   // Static method definition for attribute parsing
   // tslint:disable-next-line: typedef
@@ -18,9 +18,9 @@ export class HttpResourceResponse implements IHttpResourceResponse {
 }
 
 class HttpResourceResponseBody implements IHttpResourceResponseBody, IHttpResponseData {
-  errorMessage: string = undefined;
-  responseData: IHttpResponseData = undefined;
-  errors: any[] = undefined;
+  errorMessage!: string;
+  responseData!: IHttpResponseData;
+  errors!: any[];
 
   // Static method definition for attribute parsing
   // tslint:disable-next-line: typedef

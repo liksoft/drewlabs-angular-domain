@@ -25,24 +25,24 @@ export interface IWorkspaceUserDetails {
 
 export class AppUserDetails implements IAppUserDetails {
 
-  id: string | number;
-  firstname: string;
-  lastname: string;
-  birthdate: string;
-  address: string;
-  phoneNumber: string;
-  postalCode: string;
-  emails: string[];
-  sex: string;
-  profileURL: string;
-  company: string;
-  division: string;
-  department: string;
-  isManager?: boolean;
-  workspaces: IAppWorkspace[];
-  departmentID: number;
-  agenceID: number;
-  organisationID: number;
+  id!: string | number;
+  firstname!: string;
+  lastname!: string;
+  birthdate!: string;
+  address!: string;
+  phoneNumber!: string;
+  postalCode!: string;
+  emails!: string[];
+  sex!: string;
+  profileURL!: string;
+  company!: string;
+  division!: string;
+  department!: string;
+  isManager!: boolean;
+  workspaces!: IAppWorkspace[];
+  departmentID!: number;
+  agenceID!: number;
+  organisationID!: number;
 
   get email(): string { return this.emails[0]; }
 

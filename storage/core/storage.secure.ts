@@ -49,7 +49,7 @@ export abstract class SecureStorage implements Storage {
     }
 
     key(id: number): string {
-        return this._storage.key(id);
+        return this._storage.key(id) as string;
     }
 
     /**
@@ -71,7 +71,7 @@ export class SecureWebStorage extends SecureStorage {
                 data = CryptoES.AES.encrypt(data, secret);
                 return data.toString();
             },
-            decrypt: function decrypt(data: string): any {
+            decrypt: function (data: string | CryptoES.lib.CipherParams): any {
                 const plain = CryptoES.AES.decrypt(data, secret);
                 return plain.toString(CryptoES.enc.Utf8);
             },

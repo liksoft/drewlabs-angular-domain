@@ -2,11 +2,11 @@ import { RoleV2 } from '../authorizations/role';
 import { isDefined, isArray } from '../../../../utils/types/type-utils';
 
 export class DepartmentV2 {
-  id: number;
-  name: string;
-  description: string;
-  organisationID: number | string;
-  roles: RoleV2[];
+  id!: number;
+  name!: string;
+  description!: string;
+  organisationID!: number | string;
+  roles!: RoleV2[];
 
   get rolesAsString() {
     return isDefined(this.roles) ? isArray(this.roles) ? this.roles.map(role => role.label).join(', ') : this.roles : '';

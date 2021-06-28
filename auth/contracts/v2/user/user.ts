@@ -55,19 +55,19 @@ export interface NotifiableUserDetails {
 }
 
 export class AppUser implements IAppUser, NotifiableUserDetails, Authorizable {
-  username: string = undefined;
-  id: number = undefined;
-  password: string = undefined;
-  rememberToken: string = undefined;
-  twoFactorActive: number = undefined;
-  authorizations: string[];
-  roles: string[] = undefined;
-  roleIDs: number[] = undefined;
-  userDetails: IAppUserDetails = undefined;
-  verified: number | boolean = undefined;
-  active: number | boolean = undefined;
-  doubleAuthActive: number | boolean = undefined;
-  channels: object[] = undefined;
+  username!: string;
+  id!: number;
+  password!: string;
+  rememberToken!: string;
+  twoFactorActive!: number;
+  authorizations!: string[];
+  roles!: string[];
+  roleIDs!: number[];
+  userDetails!: IAppUserDetails;
+  verified!: number | boolean;
+  active!: number | boolean;
+  doubleAuthActive!: number | boolean;
+  channels!: object[];
 
 
   get isVerified(): boolean {

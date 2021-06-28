@@ -30,7 +30,7 @@ export class ExcelUtils {
    * @param headers Data mapping of excel sheet headers and object properties
    * @param datefield List of field needed to be parsed as date
    */
-  public static jsonToSheet(data: object[], headers: { [index: string]: string }, datefield: string[] = [], dateFormat: string = 'DD/MM/YYYY', inputDateFormat: string = 'YYYY-MM-DD') {
+  public static jsonToSheet(data: object[], headers: { [index: string]: string }, datefield: string[] = [], dateFormat: string = 'DD/MM/YYYY', inputDateFormat: string = 'YYYY-MM-DD'): any {
     const entries = ExcelUtils.entityToXlsEntries(data, headers, datefield, dateFormat, inputDateFormat);
     if (entries.length > 0) {
       return Excel.utils.json_to_sheet(entries, { header: Object.keys(headers), skipHeader: false });
@@ -39,7 +39,7 @@ export class ExcelUtils {
 
   public static entityToXlsEntries(data: object[], headers: { [index: string]: string }, datefields: string[] = [], dateFormat: string = 'DD/MM/YYYY', inputDateFormat: string = 'YYYY-MM-DD') {
     if (data && isArray(data)) {
-      return data.map((value: object) => {
+      return data.map((value: { [index: string]: any }) => {
         const headersPropertyMapping: { [index: string]: string } = Object.assign(headers);
         const mappingObj: any = {};
         const valueKeys = Object.keys(value);
@@ -77,7 +77,7 @@ export class ExcelUtils {
     dateFields: string[] = []
   ) {
     if (records && isArray(records)) {
-      return records.map((value: object) => {
+      return records.map((value: { [index: string]: any }) => {
         // Checks if the headers of the books meet the requirement
         // Headers Mappings
         const headersPropertyMapping = headers;
@@ -94,10 +94,11 @@ export class ExcelUtils {
           }
           mappingValidObject[k] = value[v];
         }
-        if (isValidBook) {
-          return builder
-            .fromSerialized(mappingValidObject);
+        if (!isValidBook) {
+          return null;
         }
+        return builder
+          .fromSerialized(mappingValidObject);
       }).filter((i) => isDefined(i));
     }
     return [];

@@ -14,7 +14,7 @@ interface IDeserializer {
    * @param bluePrint [[T]] Type definition of the object to return from the deserialization operation
    * @param jsonObject [[any]] JSON formatted Object to be deserialize
    */
-  deserialize<T>(bluePrint: new () => T, jsonObject: any): T;
+  deserialize<T>(bluePrint?: new () => T, jsonObject?: any): T|null|undefined;
 }
 
 export interface ISerializer extends IDeserializer{
@@ -24,7 +24,7 @@ export interface ISerializer extends IDeserializer{
    * @param bluePrint [[T]] Type definition of the serializable object
    * @param value [[any]] Instance to be serialize
    */
-  serialize<T>(bluePrint: new () => T, value: T): object|any;
+  serialize<T>(bluePrint: new () => T, value: T): object|any|undefined;
 }
 
 export interface UnDecoratedObjectSerializer extends IDeserializer {

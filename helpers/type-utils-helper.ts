@@ -57,11 +57,11 @@ export class TypeUtilHelper {
   /**
    * @deprecated
    */
-  transformIFileFormControl(value: FileFormControl): { content: string, extension: string } {
+  transformIFileFormControl(value: FileFormControl): { content: string, extension?: string } {
     return { ...{ content: value.dataURL, extension: value.extension } };
   }
 
-  asServerFileRequesBody(value: FileFormControl): { content: string, extension: string } {
+  asServerFileRequesBody(value: FileFormControl): { content: string, extension?: string } {
     return { ...{ content: value.dataURL, extension: value.extension } };
   }
 

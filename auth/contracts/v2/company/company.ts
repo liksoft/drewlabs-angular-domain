@@ -1,10 +1,10 @@
 
 export class Company {
-  id: number = undefined;
-  name: string = undefined;
-  phoneNumber: string = undefined;
-  address: string = undefined;
-  postalCode: string = undefined;
+  id!: number;
+  name!: string;
+  phoneNumber!: string;
+  address!: string;
+  postalCode!: string;
 
   static getJsonableProperties(): { [index: string]: keyof Company } | { [index: string]: any } {
     return {

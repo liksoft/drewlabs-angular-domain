@@ -8,7 +8,7 @@ import {
 } from '../../contracts/http-response';
 
 export class V1HttpResourceResponse implements IV1HttpResourceResponse {
-  data: IHttpResourceResponse;
+  data!: IHttpResourceResponse;
 
   // Static method definition for attribute parsing
   // tslint:disable-next-line: typedef
@@ -20,9 +20,9 @@ export class V1HttpResourceResponse implements IV1HttpResourceResponse {
 }
 
 export class V1HttpResourceResponseContent implements IHttpResourceResponse {
-  success: boolean = undefined;
-  body: IHttpResourceResponseBody = undefined;
-  statusCode: number = undefined;
+  success!: boolean;
+  body!: IHttpResourceResponseBody;
+  statusCode!: number;
 
   // Static method definition for attribute parsing
   // tslint:disable-next-line: typedef
@@ -36,9 +36,9 @@ export class V1HttpResourceResponseContent implements IHttpResourceResponse {
 }
 
 export class V1HttpResourceResponseBody implements IHttpResourceResponseBody, IHttpResponseData {
-  errorMessage: string = undefined;
-  responseData: any = undefined;
-  errors: any[] = undefined;
+  errorMessage!: string;
+  responseData!: any;
+  errors!: any[];
 
   // Static method definition for attribute parsing
   // tslint:disable-next-line: typedef

@@ -29,7 +29,7 @@ export class DynamicControlParser {
     return ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
       this.fb,
       inputs,
-      applyUniqueValidations ? this.uniqueValidator : null
+      applyUniqueValidations ? this.uniqueValidator : undefined
     );
   }
 
@@ -62,11 +62,11 @@ export class DynamicControlParser {
    */
   formGroupFromCollectionOfDynamicControls(
     collection: ICollection<IDynamicForm>,
-    applyUniqueValidations: boolean = null
+    applyUniqueValidations?: boolean
   ) {
     const group = this.fb.group({});
     collection.keys().forEach((k) => {
-      group.addControl(k, createAngularAbstractControl(this.fb, collection.get(k), applyUniqueValidations ? this.uniqueValidator : null));
+      group.addControl(k, createAngularAbstractControl(this.fb, collection.get(k), applyUniqueValidations ? this.uniqueValidator : undefined));
     });
     return group;
   }

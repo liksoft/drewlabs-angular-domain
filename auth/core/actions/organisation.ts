@@ -117,6 +117,7 @@ export const createCompanyAction = (
             if (isDefined(data)) {
               return companyCreated(store)(deserializeSerializedCompany(data));
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -155,6 +156,7 @@ export const updateCompanyAction = (
                 return companyUpdatedAction(store)({ updateResult: true });
               }
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -195,6 +197,7 @@ export const deleteCompanyAction = (
                 return companyDeletedAction(store)({ deleteResult: true });
               }
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {

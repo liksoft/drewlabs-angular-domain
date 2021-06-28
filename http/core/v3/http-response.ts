@@ -3,11 +3,11 @@ import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/co
 
 export class HttpResourceResponse implements IHttpResourceResponse, IHttpResponseData {
 
-  success: boolean = undefined;
-  statusCode: number = undefined;
-  errorMessage: string = undefined;
-  responseData: IHttpResponseData = undefined;
-  errors: any[] = undefined;
+  success!: boolean;
+  statusCode!: number;
+  errorMessage!: string;
+  responseData!: IHttpResponseData;
+  errors!: any[];
 
   getContent = () => this.responseData;
 

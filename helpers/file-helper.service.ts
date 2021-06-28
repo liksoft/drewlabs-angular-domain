@@ -34,7 +34,7 @@ export interface UploadedFileHelperInterface {
    * @param filename [[string]]
    */
   // tslint:disable-next-line: typedef
-  urlToFileFileRessource(url: string, filename: string, shouldDownload?: boolean, extension?: string): Promise<IFileRessource>;
+  urlToFileFileRessource(url: string, filename: string, shouldDownload?: boolean, extension?: string): Promise<IFileRessource|undefined|null>;
 
   /**
    * @description Use Browser API for saving a base64 string as a blob file
@@ -76,7 +76,8 @@ export class FileHelperService implements UploadedFileHelperInterface {
    */
   // tslint:disable-next-line: typedef
   async urlToFileFileRessource(
-    url: string, filename: string,
+    url: string,
+    filename: string,
     shouldDownload: boolean = false,
     extension?: string
   ) {
@@ -93,7 +94,7 @@ export class FileHelperService implements UploadedFileHelperInterface {
         extension
       } as IFileRessource;
     }
-    return null;
+    return undefined;
   }
   /**
    * @inheritdoc
@@ -128,7 +129,7 @@ export class FileHelperService implements UploadedFileHelperInterface {
    * @inheritdoc
    */
   // tslint:disable-next-line: typedef
-  async saveDataURLAsBlob(ressource: string, filename: string, extension: string = null) {
+  async saveDataURLAsBlob(ressource: string, filename: string, extension?: string) {
     const blocks = ressource.split(';');
     // Get the content type of the image
     const contentType = blocks[0].split(':')[1];
@@ -141,7 +142,7 @@ export class FileHelperService implements UploadedFileHelperInterface {
    * @inheritdoc
    */
   // tslint:disable-next-line: typedef
-  downloadFile(url: string, filename: string, extension: string = null, params?: { [prop: string]: any }) {
+  downloadFile(url: string, filename: string, extension?: string, params?: { [prop: string]: any }) {
     return this.client.downloadFile(url, filename, extension, params);
   }
 }

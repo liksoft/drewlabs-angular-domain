@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { IAppStorage, } from '../contracts/store-interface';
 import { storageEntry } from '../../utils';
 import { LOCAL_STORAGE } from '../../utils/ng/common/tokens/storage';
-import { SecureStorage, SecureWebStorage } from './storage.secure';
+import { SecureWebStorage } from './storage.secure';
 
 /**
  * @description Browser local storage class for saving data
@@ -27,7 +27,7 @@ export class LocalStorage implements IAppStorage {
    * @return [[any]]
    */
   get(key: string): any {
-    return JSON.parse(this.store.getItem(storageEntry(key, this.secret)));
+    return JSON.parse(this.store.getItem(storageEntry(key, this.secret)) as string);
   }
   /**
    * @description Set a value in the key -> value store

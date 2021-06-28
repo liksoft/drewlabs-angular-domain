@@ -1,4 +1,3 @@
-import { isDefined } from '../../utils/types';
 import { statusOk } from '../contracts/types';
 
 /**

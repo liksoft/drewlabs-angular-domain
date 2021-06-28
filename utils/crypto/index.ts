@@ -1,1 +1,0 @@
-export { md5 as MD5 } from './md5';

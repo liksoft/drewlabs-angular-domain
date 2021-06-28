@@ -8,9 +8,9 @@ import { createSubject } from "../rxjs/helpers";
 
 const initialUIState: UIState = {
     performingAction: false,
-    uiMessage: null,
+    uiMessage: undefined,
     hasError: false,
-    status: null
+    status: undefined
 };
 
 /**
@@ -43,7 +43,7 @@ export class AppUIStateProvider implements UIStateProvider {
             performingAction: true,
             uiMessage: message,
             hasError: false,
-            status: null
+            status: undefined
         });
     }
 

@@ -22,22 +22,23 @@ export class UniqueValueService {
    * @param entity [[entity]]
    */
   async verify(entity: string, property: string, value: string | number) {
-    const query = isDefined(entity) ? `?property=${property}&value=${value}&entity=${entity}` : `?property=${property}&value=${value}`;
-    try {
-      // TODO Implements unique value validation method
-      // const result = await loadThroughHttpRequest(this.client, `${this.path}${query}`);
-      // return isDefined(result) ? true : false;
-    } catch (error) {
-      return true;
-    }
+    return true;
+    // const query = isDefined(entity) ? `?property=${property}&value=${value}&entity=${entity}` : `?property=${property}&value=${value}`;
+    // try {
+    //   // TODO Implements unique value validation method
+    //   // const result = await loadThroughHttpRequest(this.client, `${this.path}${query}`);
+    //   // return isDefined(result) ? true : false;
+    // } catch (error) {
+    //   return true;
+    // }
   }
 }
 
 export class CustomValidators {
   static Match(control: string, otherControl: string) {
     return (controlGroup: AbstractControl) => {
-      const firstControlValue = controlGroup.get(control).value === '' ? undefined : controlGroup.get(control).value;
-      const otherControlValue = controlGroup.get(otherControl).value === '' ? undefined : controlGroup.get(otherControl).value;
+      const firstControlValue = controlGroup.get(control)?.value === '' ? undefined : controlGroup.get(control)?.value;
+      const otherControlValue = controlGroup.get(otherControl)?.value === '' ? undefined : controlGroup.get(otherControl)?.value;
       if ((!isDefined(firstControlValue) && !isDefined(otherControlValue))) {
         return null;
       }

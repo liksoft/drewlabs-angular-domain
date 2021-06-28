@@ -1,7 +1,7 @@
 import CryptoES from 'crypto-es';
 
 type HashFn = (key: string) => string | CryptoES.lib.WordArray;
-type DecrypterFn = (data: string | CryptoES.lib.WordArray) => any;
+type DecrypterFn = (data: string | CryptoES.lib.CipherParams) => any;
 type EncrypterFn = (data: any) => string | CryptoES.lib.WordArray;
 
 export interface IAppStorage {

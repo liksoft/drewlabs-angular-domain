@@ -1,14 +1,14 @@
 import { Authorization } from './authorization';
 
 export class RoleV2 {
-  id: number;
-  label: string;
-  displayLabel: string;
-  description: string;
-  authorizations: string[] | Authorization[];
+  id!: number;
+  label!: string;
+  displayLabel!: string;
+  description!: string;
+  authorizations!: string[] | Authorization[];
 
   // tslint:disable-next-line: variable-name
-  private _isAdminRole: number;
+  private _isAdminRole!: number;
   get isAdminRole(): number {
     return Number(this._isAdminRole);
   }

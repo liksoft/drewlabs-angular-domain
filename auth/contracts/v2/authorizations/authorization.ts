@@ -1,10 +1,10 @@
 export class Authorization {
-  id: number;
-  label: string;
-  displayLabel: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
+  id!: number;
+  label!: string;
+  displayLabel!: string;
+  description!: string;
+  createdAt!: string;
+  updatedAt!: string;
 
   static getJsonableProperties(): {[index: string]: keyof Authorization}|{[index: string]: any} {
     return {

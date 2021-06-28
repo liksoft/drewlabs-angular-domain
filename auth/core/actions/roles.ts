@@ -87,6 +87,7 @@ export const createRoleAction = (
             if (isDefined(data)) {
               return roleCreatedAction(store)(deserializeSerializedRole(data));
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -125,6 +126,7 @@ export const updateRoleAction = (
                 return roleUpdatedAction(store)({ updateResult: true });
               }
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -165,6 +167,7 @@ export const deleteRoleAction = (
                 return roleDeletedAction(store)({ deleteResult: true });
               }
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -214,6 +217,7 @@ export const getRoleUsingID = (
             if (isDefined(data)) {
               return addToList(store)(deserializeSerializedRole(data));
             }
+            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {

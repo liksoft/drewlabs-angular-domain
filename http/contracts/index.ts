@@ -4,7 +4,9 @@ export {
   TransformManyResponseHandlerFn,
   IResourcesServerClient
 } from './resource';
+
 export { IHttpService } from './http-service';
+
 export {
   IHttpResponse,
   getResultData,

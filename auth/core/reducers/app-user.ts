@@ -12,8 +12,8 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
         performingAction: true,
         error: null,
         createdUser: null,
-        updateResult: null,
-        deleteResult: null,
+        updateResult: false,
+        deleteResult: false,
       } as AppUsersState;
     case DefaultStoreAction.ERROR_ACTION:
       return {

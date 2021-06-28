@@ -50,7 +50,7 @@ export function equals(o1: any, o2: any): boolean {
       keySet = Object.create(null);
       Object.keys(o1).forEach(k => {
         if (!equals(o1[k], o2[k])) {
-          return false;
+          return;
         }
         keySet[k] = true;
       });
@@ -150,11 +150,11 @@ export function getJSObjectPropertyValue(item: any, field: string) {
  * @description Helper function for flattening an object properties
  * @param ob [[object]]
  */
-export function flattenObject(ob: object, prefixInnerKeys: boolean = true) {
+export function flattenObject(ob: { [index: string]: any }, prefixInnerKeys: boolean = true) {
   if (isPrimitive(ob)) {
     return ob;
   }
-  const returnedObj = {};
+  const returnedObj: { [index: string]: any } = {};
   for (const i in ob) {
     if (!ob.hasOwnProperty(i)) { continue; }
     if (isPrimitive(ob[i]) || isArray(ob[i])) {
@@ -184,9 +184,9 @@ export function objectHashCode(s: string) {
   return h;
 }
 
-export const check = fn => (params: string[] = []) => {
+export const check = (fn: { (arg0: string[]): any; name?: any; required?: any; }) => (params: string[] = []) => {
   const { required } = fn;
-  const missing = required.filter(param => !(param in params));
+  const missing = required.filter((param: string) => !(param in params));
 
   if (missing.length) {
     throw new Error(`${fn.name}() Missing required parameter(s):

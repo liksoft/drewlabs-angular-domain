@@ -108,10 +108,10 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
    * {@inheritdoc}
    */
   // tslint:disable-next-line: typedef
-  handleErrorResponse(error: HttpErrorResponse) {
-    const errorResponse = this.responseTransformHandler(error.error);
+  handleErrorResponse(error: HttpErrorResponse): HttpErrorResponse | { status: UIStateStatusCode, validationErrors: { [prop: string]: any } } {
+    const errorResponse = this.responseTransformHandler(error.error) as any;
     if (error.status === DrewlabsHttpResponseStatusCode.BAD_REQUEST) {
-      const validationErrors = {};
+      const validationErrors: { [index: string]: any } = {};
       Object.keys(errorResponse.errors).forEach(
         (key) => {
           validationErrors[key] = errorResponse.errors[key][0];
@@ -124,7 +124,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
     if (error.status === DrewlabsHttpResponseStatusCode.SERVER_ERROR) {
       return {
         status: UIStateStatusCode.ERROR,
-        validationErrors: null
+        validationErrors: {}
       };
     }
     return error;

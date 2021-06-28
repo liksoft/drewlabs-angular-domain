@@ -3,8 +3,6 @@ import { IHttpResponse } from '../contracts/types';
 import * as lodash from 'lodash';
 import { ErrorHandler } from '../contracts/error-handler';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DrewlabsFluxStore, onErrorAction } from '../../rxjs/state/rx-state';
-import { emptyObservable } from '../../rxjs/helpers/creator-functions';
 
 /**
  * @description Utilities function for getting exact response data from an IHttpReponse data property
