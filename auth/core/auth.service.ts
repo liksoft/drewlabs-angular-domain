@@ -74,28 +74,30 @@ export class AuthService implements OnDestroy {
     @Inject('AUTH_LOGIN_PATH') private loginPath: string,
     @Inject('AUTH_LOGOUT_PATH') private logoutPath: string
   ) {
-    merge(this.httpClient.errorState$, observableOf({} as HTTPErrorState).
-      pipe(
-        takeUntil(this._destroy$),
-        delay(0)
-      )).pipe(
-        takeUntil(this._destroy$),
-        tap(state => {
-          this.initState();
-          if (isDefined(state.status)) {
-            if (state && state.status === 401) {
-              this.userStorage.removeUserFromCache();
-              this.oAuthTokenProvider.removeToken();
-              this.sessionStorage.clear();
-              intitAuthStateAction(this._authStore$)();
-              this.sessionStorage.set(HttpRequestConfigs.sessionExpiredStorageKey, true);
-              // To be review
-              this.router.navigate([AuthPathConfig.LOGIN_PATH], { replaceUrl: true });
+    merge(
+      this.httpClient.errorState$, observableOf({} as HTTPErrorState
+      ).
+        pipe(
+          takeUntil(this._destroy$),
+          delay(0),
+          takeUntil(this._destroy$),
+          tap(state => {
+            this.initState();
+            if (isDefined(state.status)) {
+              if (state && state.status === 401) {
+                this.userStorage.removeUserFromCache();
+                this.oAuthTokenProvider.removeToken();
+                this.sessionStorage.clear();
+                intitAuthStateAction(this._authStore$)();
+                this.sessionStorage.set(HttpRequestConfigs.sessionExpiredStorageKey, true);
+                // To be review
+                this.router.navigate([AuthPathConfig.LOGIN_PATH], { replaceUrl: true });
+              }
             }
-          }
 
-        })
-      ).subscribe();
+          })
+        ),
+    ).subscribe();
 
     this.logoutState$
       .pipe(

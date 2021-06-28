@@ -1,6 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { isDefined } from '../types/type-utils';
 import { saveAs } from 'file-saver';
+import * as _ from 'lodash';
 
 type WindowEvent = (self: Window, ev?: Event) => any;
 
@@ -105,5 +106,37 @@ export class Browser {
    */
   static saveFileAsRaw(blobContent: Blob | string, fileName: string) {
     saveAs(blobContent, fileName);
+  }
+
+  static setCookie(document: Document, name: string, value: any, ttl: number) {
+    if (!isDefined(document)) {
+      return false;
+    }
+    // Encode value in order to escape semicolons, commas, and whitespace
+    var cookie = name + "=" + encodeURIComponent(value);
+    if (typeof ttl === "number") {
+      /* Sets the max-age attribute so that the cookie expires
+      after the specified number of days */
+      cookie += "; max-age=" + (ttl * 24 * 60 * 60);
+      document.cookie = cookie;
+    }
+  }
+
+  static getCookie(document: Document, name: string) {
+    // Split cookie string and get all individual name=value pairs in an array
+    const list = document.cookie.split(";");
+    // Loop through the array elements
+    for (const value of list) {
+      const pair = value.split("=");
+      if (!isDefined(pair[0])) {
+        continue;
+      }
+      if (name == pair[0].trim()) {
+        // Decode the cookie value and return
+        return decodeURIComponent(pair[1]);
+      }
+    }
+    // Return null if not found
+    return null;
   }
 }

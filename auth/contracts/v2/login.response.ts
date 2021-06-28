@@ -2,7 +2,7 @@ import { AppUser, IAppUser } from './user/user';
 
 export interface ILoginResponse {
   success: boolean;
-  body: ILoginResponseBody;
+  body?: ILoginResponseBody;
   statusCode: number;
 }
 
@@ -35,6 +35,26 @@ export class LoginResponse implements ILoginResponse {
       body: { name: 'body', type: LoginResponseBody },
       code: 'statusCode'
     } as { [index: string]: keyof LoginResponse } | { [index: string]: any };
+  }
+}
+
+// Added to Add support for new structure of the http response
+export class LoginV2_1Response implements ILoginResponse, ILoginResponseBody {
+  success: boolean = undefined;
+  statusCode: number = undefined;
+  errorMessage: string = undefined;
+  responseData: LoginResponseData = undefined;
+  errors: any[] = undefined;
+
+  // Static method definition for attribute parsing
+  static getJsonableProperties = () => {
+    return {
+      success: 'success',
+      code: 'statusCode',
+      error_message: 'errorMessage',
+      response_data: { name: 'responseData', type: LoginResponseData },
+      errors: 'errors'
+    } as { [index: string]: keyof ILoginResponse & ILoginResponseBody } | { [index: string]: any };
   }
 }
 

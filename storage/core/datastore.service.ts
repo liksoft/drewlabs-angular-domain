@@ -7,6 +7,7 @@ import { storageEntry } from '../../utils';
  */
 @Injectable()
 export class InMemoryStoreService implements IAppStorage {
+
   private appStore: object;
 
 

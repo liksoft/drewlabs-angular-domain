@@ -1,6 +1,6 @@
 export interface IHttpResourceResponse {
   success: boolean;
-  body: IHttpResourceResponseBody;
+  body?: IHttpResourceResponseBody;
   statusCode: number;
 }
 
