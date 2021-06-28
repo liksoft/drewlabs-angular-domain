@@ -9,7 +9,7 @@ export class HttpResourceResponse implements IHttpResourceResponse, IHttpRespons
   responseData: IHttpResponseData = undefined;
   errors: any[] = undefined;
 
-  getData = () => this.responseData;
+  getContent = () => this.responseData;
 
   // Static method definition for attribute parsing
   // tslint:disable-next-line: typedef
@@ -30,7 +30,7 @@ export function parseV3HttpResponse(response: any) {
   return {
     errorMessage: httpResponse.errorMessage,
     statusCode: httpResponse.statusCode || null,
-    data: httpResponse.getData(),
+    data: httpResponse.getContent(),
     errors: httpResponse.errors || null
   };
 }

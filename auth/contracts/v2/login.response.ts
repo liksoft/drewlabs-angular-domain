@@ -1,6 +1,7 @@
+import { IHttpResponseData } from '../../../http/contracts/http-response';
 import { AppUser, IAppUser } from './user/user';
 
-export interface ILoginResponse {
+export interface ILoginResponse extends IHttpResponseData {
   success: boolean;
   body?: ILoginResponseBody;
   statusCode: number;
@@ -28,6 +29,10 @@ export class LoginResponse implements ILoginResponse {
   body: LoginResponseBody = undefined;
   statusCode: number = undefined;
 
+  getContent() {
+    return this.body?.responseData;
+  }
+
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {
     return {
@@ -40,11 +45,16 @@ export class LoginResponse implements ILoginResponse {
 
 // Added to Add support for new structure of the http response
 export class LoginV2_1Response implements ILoginResponse, ILoginResponseBody {
+
   success: boolean = undefined;
   statusCode: number = undefined;
   errorMessage: string = undefined;
   responseData: LoginResponseData = undefined;
   errors: any[] = undefined;
+
+  getContent() {
+    return this.responseData;
+  }
 
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {

@@ -18,5 +18,5 @@ export interface IHttpResponseData {
   /**
    * @description Returns the actual response data returned by the backend server
    */
-  getData(): any;
+  getContent(): any;
 }

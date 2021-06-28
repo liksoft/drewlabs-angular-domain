@@ -8,7 +8,6 @@ import { mapToHttpResponse, doLog } from '../../rxjs/operators';
 import { mergeMap, catchError, takeUntil, tap, filter, delay } from 'rxjs/operators';
 import { throwError, merge, Observable } from 'rxjs';
 import { ILoginRequest, ILoginResponse } from '../contracts/v2';
-import { DrewlabsV2LoginResultHandlerFunc, onAuthenticationResultEffect } from '../../rxjs/operators';
 import { UserStorageProvider } from './services/user-storage';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ILoginResponseBody } from '../contracts/v2/login.response';
@@ -25,6 +24,8 @@ import { isEmpty } from 'lodash';
 import { Log } from '../../utils/logger';
 import { MapToHandlerResponse } from '../../rxjs/types';
 import { httpServerHost } from '../../utils/url/url';
+import { DrewlabsV2LoginResultHandlerFunc } from '../rxjs/operators/v2/login-response';
+import { onAuthenticationResultEffect } from '../rxjs/operators/login-response';
 
 const initalState: AuthState = {
   isLoggedIn: false,

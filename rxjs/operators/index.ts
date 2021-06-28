@@ -24,6 +24,6 @@ export const doLog = <T>(prefix?: string) => {
 };
 
 export { mapToHttpResponse } from './map-to-response-type';
-export { onAuthenticationResultEffect } from './login-response';
-export { DrewlabsV2LoginResultHandlerFunc, DrewlabsV2_1LoginResultHandlerFunc } from './auth/v2/login-response';
-export { DrewlabsV1LoginResultHandlerFunc } from './auth/v1/login-response';
+// export { onAuthenticationResultEffect } from './auth/login-response';
+// export { DrewlabsV2LoginResultHandlerFunc, DrewlabsV2_1LoginResultHandlerFunc } from './auth/v2/login-response';
+// export { DrewlabsV1LoginResultHandlerFunc } from '../../auth/rxjs/operators/v1/login-response';

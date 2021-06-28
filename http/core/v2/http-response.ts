@@ -31,7 +31,8 @@ class HttpResourceResponseBody implements IHttpResourceResponseBody, IHttpRespon
       errors: 'errors'
     } as { [index: string]: keyof HttpResourceResponseBody } | { [index: string]: any };
   }
-  getData = () => this.responseData;
+
+  getContent = () => this.responseData;
 }
 
 // tslint:disable-next-line: typedef
@@ -40,7 +41,7 @@ export function parseV2HttpResponse(response: any) {
   return {
     errorMessage: httpResponse.body ? (httpResponse.body.errorMessage || null) : null,
     statusCode: httpResponse.statusCode || null,
-    data: (httpResponse.body as HttpResourceResponseBody).getData(),
+    data: (httpResponse.body as HttpResourceResponseBody).getContent(),
     errors: httpResponse.body.errors || null
   };
 }

@@ -1,7 +1,6 @@
 import { IHttpResponse, TransformResponseHandlerFn } from '../../contracts';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
 import { isDefined } from '../../../utils';
-import { Log } from '../../../utils/logger';
 import {
   IHttpResourceResponse,
   IHttpResourceResponseBody,
@@ -51,7 +50,7 @@ export class V1HttpResourceResponseBody implements IHttpResourceResponseBody, IH
     } as { [index: string]: keyof V1HttpResourceResponseBody } | { [index: string]: any };
   }
 
-  getData = () => this.responseData;
+  getContent = () => this.responseData;
 }
 
 export const parseV1HttpResponse: TransformResponseHandlerFn = (response: any) => {
@@ -63,7 +62,7 @@ export const parseV1HttpResponse: TransformResponseHandlerFn = (response: any) =
   return {
     errorMessage: httpResponse.body ? (httpResponse.body.errorMessage || null) : null,
     statusCode: httpResponse.statusCode || null,
-    data: (httpResponse.body as V1HttpResourceResponseBody).getData(),
+    data: (httpResponse.body as V1HttpResourceResponseBody).getContent(),
     errors: httpResponse.body.errors || null
   } as IHttpResponse<any>;
 };

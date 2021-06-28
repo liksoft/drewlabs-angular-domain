@@ -12,7 +12,6 @@ export class DrewlabsDisableControlDirective {
     this.ngControl.control[action]();
   }
 
-  constructor(private ngControl: NgControl) {
-  }
+  constructor(private ngControl: NgControl) { }
 
 }

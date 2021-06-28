@@ -1,6 +1,6 @@
-import { HandlerResult, MapToHandlerResponse } from '../../../types';
+import { HandlerResult, MapToHandlerResponse } from '../../../../rxjs/types';
 import { GenericUndecoratedSerializaleSerializer } from '../../../../built-value/core/js/serializer';
-import { LoginResponse } from '../../../../auth/contracts/v2/login.response';
+import { LoginResponse } from '../../../contracts/v2/login.response';
 import { isDefined } from '../../../../utils/types/type-utils';
 
 /**
