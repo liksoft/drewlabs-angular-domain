@@ -1,6 +1,6 @@
 import { catchError, map } from "rxjs/operators";
 import { getResponseDataFromHttpResponse } from "../../../../../http/helpers";
-import { UIStateStatusCode } from "../../../../../helpers/app-ui-store-manager.service";
+import { UIStateStatusCode } from '../../../../../contracts/ui-state';
 import { DrewlabsRessourceServerClient } from "../../../../../http/core";
 import { createAction, DefaultStoreAction, DrewlabsFluxStore, onErrorAction, StoreAction } from "../../../../../rxjs/state/rx-state";
 import { PaginationDataState } from "../../../../../rxjs/types";

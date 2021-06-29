@@ -7,10 +7,10 @@ import { emptyObservable } from '../../../../../rxjs/helpers';
 import { GenericUndecoratedSerializaleSerializer } from '../../../../../built-value/core/js/serializer';
 import { isArray, isDefined, isObject } from '../../../../../utils/types';
 import { HttpErrorResponse } from '@angular/common/http';
-import { UIStateStatusCode } from '../../../../../helpers';
 import { DynamicFormInterface } from '../../compact/types';
 import { FormControlV2 } from '../models';
 import { PaginationDataState } from '../../../../../rxjs/types';
+import { UIStateStatusCode } from '../../../../../contracts/ui-state';
 
 export interface FormState {
   performingAction: boolean;
