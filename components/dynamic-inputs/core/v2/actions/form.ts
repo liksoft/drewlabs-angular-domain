@@ -10,7 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DynamicFormInterface } from '../../compact/types';
 import { FormControlV2 } from '../models';
 import { PaginationDataState } from '../../../../../rxjs/types';
-import { UIStateStatusCode } from 'src/app/lib/core/contracts/ui-state';
+import { UIStateStatusCode } from '../../../../../contracts/ui-state';
 
 export interface FormState {
   performingAction: boolean;
