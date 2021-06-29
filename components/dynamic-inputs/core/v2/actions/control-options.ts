@@ -1,6 +1,5 @@
 import { catchError, map } from "rxjs/operators";
 import { getResponseDataFromHttpResponse } from "../../../../../http/helpers";
-import { UIStateStatusCode } from "../../../../../helpers/app-ui-store-manager.service";
 import { DrewlabsRessourceServerClient } from "../../../../../http/core";
 import { createAction, DefaultStoreAction, DrewlabsFluxStore, onErrorAction, StoreAction } from "../../../../../rxjs/state/rx-state";
 import { PaginationDataState } from "../../../../../rxjs/types";
@@ -9,6 +8,7 @@ import { isDefined, isObject } from "../../../../../utils";
 import { emptyObservable } from "../../../../../rxjs/helpers";
 import { ControlOption } from "../models";
 import { defaultHttpErrorHandler } from "../../../../../http/helpers/http-response";
+import { UIStateStatusCode } from "src/app/lib/core/contracts/ui-state";
 
 export const deserializeControlOption = (serialized: { [index: string]: any }) => ControlOption.builder().fromSerialized(serialized);
 
@@ -18,16 +18,16 @@ export const initialState: ControlOptionsState = {
     total: 0,
     items: {},
     data: [],
-    lastPage: null,
-    nextPageURL: null,
-    lastPageURL: null
+    lastPage: undefined,
+    nextPageURL: undefined,
+    lastPageURL: undefined
   },
-  selected: null,
+  selected: undefined,
   performingAction: false,
   error: null,
-  createResult: null,
-  updateResult: null,
-  deleteResult: null,
+  createResult: undefined,
+  updateResult: undefined,
+  deleteResult: undefined,
 };
 
 
@@ -37,10 +37,10 @@ export const initialState: ControlOptionsState = {
 export interface ControlOptionsState {
   performingAction: boolean;
   collections: PaginationDataState<ControlOptionInterface>;
-  selected: ControlOptionInterface;
-  createResult: UIStateStatusCode;
-  updateResult: UIStateStatusCode;
-  deleteResult: UIStateStatusCode;
+  selected?: ControlOptionInterface;
+  createResult?: UIStateStatusCode;
+  updateResult?: UIStateStatusCode;
+  deleteResult?: UIStateStatusCode;
   error: any;
 }
 
@@ -70,6 +70,7 @@ export const createControlOptionAction = (store: DrewlabsFluxStore<ControlOption
               value: deserializeControlOption(data)
             })
           }
+          return emptyObservable();
         }),
         catchError(err => {
           onErrorAction(store)(defaultHttpErrorHandler(client, err))
@@ -104,6 +105,7 @@ export const updateControlOptionAction = (store: DrewlabsFluxStore<ControlOption
             value: isObject(data) ? deserializeControlOption(data) : { id }
           })
         }
+        return emptyObservable();
       }),
       catchError(err => {
         onErrorAction(store)(defaultHttpErrorHandler(client, err))
@@ -143,6 +145,7 @@ export const deleteControlOptionAction = (store: DrewlabsFluxStore<ControlOption
             value: id
           })
         }
+        return emptyObservable();
 
       }),
       catchError(err => {
@@ -153,7 +156,7 @@ export const deleteControlOptionAction = (store: DrewlabsFluxStore<ControlOption
 }));
 
 export const deleteControlOptionResultAction = (store: DrewlabsFluxStore<ControlOptionsState, Partial<StoreAction>>) =>
-  createAction(store, ( payload: { deleteResult: UIStateStatusCode, value: string|number }) => ({
+  createAction(store, (payload: { deleteResult: UIStateStatusCode, value: string | number }) => ({
     type: Actions.DELETE_RESULT,
     payload
   }));

@@ -7,10 +7,10 @@ import { emptyObservable } from '../../../../../rxjs/helpers';
 import { GenericUndecoratedSerializaleSerializer } from '../../../../../built-value/core/js/serializer';
 import { isArray, isDefined, isObject } from '../../../../../utils/types';
 import { HttpErrorResponse } from '@angular/common/http';
-import { UIStateStatusCode } from '../../../../../helpers';
 import { DynamicFormInterface } from '../../compact/types';
 import { FormControlV2 } from '../models';
 import { PaginationDataState } from '../../../../../rxjs/types';
+import { UIStateStatusCode } from 'src/app/lib/core/contracts/ui-state';
 
 export interface FormState {
   performingAction: boolean;
@@ -96,6 +96,7 @@ export const createFormAction = (
               createResult: UIStateStatusCode.STATUS_CREATED
             });
           }
+          return emptyObservable();
         }),
         catchError(err => {
           if (err instanceof HttpErrorResponse) {
@@ -133,6 +134,7 @@ export const loadFormUsingIDAction = (
             return onNewFormAction(store)((new GenericUndecoratedSerializaleSerializer()
               .fromSerialized(FormV2, data)) as FormV2);
           }
+          return emptyObservable();
         }),
         catchError(err => {
           if (err instanceof HttpErrorResponse) {
@@ -173,6 +175,7 @@ export const updateFormAction = (
               return formUpdatedAction(store)({ updateResult: UIStateStatusCode.BAD_REQUEST });
             }
           }
+          return emptyObservable();
         }),
         catchError(err => {
           if (err instanceof HttpErrorResponse) {
@@ -213,6 +216,7 @@ export const deleteFormAction = (
               return formDeletedAction(store)({ deleteResult: UIStateStatusCode.BAD_REQUEST, item: { id } });
             }
           }
+          return emptyObservable();
         }),
         catchError(err => {
           if (err instanceof HttpErrorResponse) {
@@ -253,6 +257,7 @@ export const createFormControlAction = (
               createControlResult: UIStateStatusCode.STATUS_CREATED
             });
           }
+          return emptyObservable();
         }),
         catchError(err => {
           if (err instanceof HttpErrorResponse) {
@@ -292,6 +297,7 @@ export const updateFormControlAction = (
               return formControlUpdatedAction(store)({ updateControlResult: UIStateStatusCode.STATUS_OK });
             }
           }
+          return emptyObservable();
         }),
         catchError(err => {
           if (err instanceof HttpErrorResponse) {
