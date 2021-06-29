@@ -3,6 +3,7 @@ import { AbstractControl } from '@angular/forms';
 import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { DynamicInputTypeHelper } from '../input-type.service';
 import { InputTypes } from '../../core/contracts/input-types';
+import { getObjectProperty, maxNumberSize as utilsMaxNumberSize} from 'src/app/lib/core/utils';
 
 @Component({
   selector: 'app-dynamic-text-input',
@@ -26,10 +27,10 @@ import { InputTypes } from '../../core/contracts/input-types';
 export class DynamicTextInputComponent {
 
   @Input() controlDivContainerClass: string = 'clr-form-control';
-  @Input() control: AbstractControl;
+  @Input() control!: AbstractControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
-  @Input() inputConfig: IHTMLFormControl;
+  @Input() inputConfig!: IHTMLFormControl;
 
   @Output() inputKeyUp = new EventEmitter<{ formcontrolname: string, value: any }>();
   @Output() inputKeyDown = new EventEmitter<{ formcontrolname: string, value: any }>();
@@ -40,12 +41,10 @@ export class DynamicTextInputComponent {
 
   constructor(public readonly inputTypeHelper: DynamicInputTypeHelper) { }
 
-  maxNumberSize() {
-    return Math.pow(2, 31) - 1;
-  }
+  maxNumberSize = () => utilsMaxNumberSize()
 
-  getErrorAsNumber(value: object | number, key: string = null) {
-    return typeof value === 'number' ? value : value[key];
+  getErrorAsNumber(value: {[index: string]: any} | number, key?: string) {
+    return typeof value === 'number' ? value : getObjectProperty(value, key || '');
   }
 
 }

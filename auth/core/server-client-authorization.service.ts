@@ -3,8 +3,8 @@ import { Injectable } from "@angular/core";
 import { SessionStorage } from "../../storage/core";
 
 export type XAuthClient = {
-    clientID: string,
-    clientSecret: string
+    clientID?: string,
+    clientSecret?: string
 };
 
 @Injectable({

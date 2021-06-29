@@ -4,15 +4,15 @@ import { GenericSerializaleSerializer, UndecoratedSerializer } from '../../../..
 import { ISerializableBuilder } from '../../../../../built-value/contracts';
 
 export class FormV2 implements DynamicFormInterface {
-  id: number = undefined;
-  title: string = undefined;
-  parentId: string = undefined;
-  description: string = undefined;
-  children: FormV2[] = undefined;
+  id!: number;
+  title!: string;
+  parentId!: string;
+  description!: string;
+  children!: FormV2[];
   formControls: DynamicFormControlInterface[] = [];
-  url: string = undefined;
-  status: number = undefined;
-  appcontext: string = undefined;
+  url!: string;
+  status!: number;
+  appcontext!: string;
 
   static builder(): ISerializableBuilder<FormV2> {
     return new GenericSerializaleSerializer(FormV2, new UndecoratedSerializer());
@@ -35,12 +35,12 @@ export class FormV2 implements DynamicFormInterface {
 
 
 export class ControlOption implements ControlOptionInterface {
-  id: number = undefined;
-  table: string = undefined;
-  keyfield: string = undefined;
-  groupfield: string = undefined;
-  description: string = undefined;
-  displayLabel: string = undefined;
+  id!: number;
+  table!: string;
+  keyfield!: string;
+  groupfield!: string;
+  description!: string;
+  displayLabel!: string;
 
   /**
    * @description Calls to get the builder provider of the current class|type

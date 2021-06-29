@@ -44,7 +44,11 @@ export const getLoggedInUser: (response: IHttpResponseData) => IAppUser =
   (response: IHttpResponseData) => response.getContent().user;
 
 export const onAuthenticationResultEffect: LoginReponseHandlerFunc<LoginResponseWithAuthenticationResult> = (
-  userStorageHandler: IUserStorageHandler, tokenProvider: IAuthTokenHandler, rememberProvider: IRememberTokenHandler, remember = false) => {
+  userStorageHandler: IUserStorageHandler,
+  tokenProvider: IAuthTokenHandler,
+  rememberProvider: IRememberTokenHandler,
+  remember = false
+) => {
   return (source$: Observable<any>) => {
     return source$.pipe(
       map(state => {

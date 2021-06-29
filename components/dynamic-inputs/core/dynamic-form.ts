@@ -2,12 +2,12 @@ import { IDynamicForm } from './contracts/dynamic-form';
 import { IHTMLFormControl } from './contracts/dynamic-input';
 
 export class DynamicForm implements IDynamicForm {
-  id: number | string;
-  forms: IDynamicForm[];
-  title: string;
-  description: string;
-  controlConfigs: IHTMLFormControl[] | any;
-  endpointURL: string;
+  id!: number | string;
+  forms?: IDynamicForm[];
+  title!: string;
+  description?: string;
+  controlConfigs!: IHTMLFormControl[] | any;
+  endpointURL?: string;
   appcontext?: string;
 
   /**

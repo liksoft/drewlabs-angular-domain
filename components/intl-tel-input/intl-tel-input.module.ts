@@ -51,7 +51,7 @@ export class IntlTelInputModule {
               country.iso2 = c[1].toString();
               country.dialCode = c[2].toString();
               country.priority = +c[3] || 0;
-              country.areaCode = +c[4] || null;
+              country.areaCode = +c[4] || undefined;
               country.flagClass = country.iso2.toLocaleLowerCase();
               country.placeHolder = `${getPhoneNumberPlaceHolder(
                 country.iso2.toUpperCase(), PhoneNumberFormat.NATIONAL

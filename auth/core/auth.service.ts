@@ -32,8 +32,8 @@ const initalState: AuthState = {
   is2FactorAuthActive: false,
   isInitialState: true,
   authenticating: false,
-  user: null,
-  token: null
+  user: undefined,
+  token: undefined
 };
 
 @Injectable({
@@ -49,7 +49,7 @@ export class AuthService implements OnDestroy {
   public readonly logoutState$ = this._logoutSubject$.asObservable();
 
   // tslint:disable-next-line: variable-name
-  private _authStore$ = createStore(authReducer, { authenticating: false, isInitialState: null } as AuthState);
+  private _authStore$ = createStore(authReducer, { authenticating: false, isInitialState: undefined } as AuthState);
   get state$(): Observable<Partial<AuthState>> {
     return this._authStore$.connect().pipe(
       filter(state => !isEmpty(state))
@@ -146,7 +146,7 @@ export class AuthService implements OnDestroy {
           if (err instanceof HttpErrorResponse) {
             return observableOf({
               success: false,
-              body: { errorMessage: err.statusText, responseData: null, errors: [] } as ILoginResponseBody,
+              body: { errorMessage: err.statusText, responseData: undefined, errors: [] } as ILoginResponseBody,
               statusCode: err.status
             } as ILoginResponse);
           }
@@ -182,7 +182,7 @@ export class AuthService implements OnDestroy {
         if (err instanceof HttpErrorResponse) {
           return observableOf({
             success: false,
-            body: { errorMessage: err.statusText, responseData: null, errors: [] } as ILoginResponseBody,
+            body: { errorMessage: err.statusText, responseData: undefined, errors: [] } as ILoginResponseBody,
             statusCode: err.status
           } as ILoginResponse);
         }

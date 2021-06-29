@@ -15,12 +15,12 @@ export interface FormViewModel {
  * @description Definitions for entities used as dynamic forms groups
  */
 export interface IDynamicForm {
-  id: number|string;
+  id: number | string;
   title: string;
-  description: string;
-  forms: IDynamicForm[];
+  description?: string;
+  forms?: IDynamicForm[];
   controlConfigs?: IHTMLFormControl[] | ICollection<IHTMLFormControl>;
-  endpointURL: string;
+  endpointURL?: string;
   appcontext?: string;
 }
 
@@ -39,7 +39,7 @@ export function clone(value: IDynamicForm): IDynamicForm {
   return {
     ...value,
     // tslint:disable-next-line: max-line-length
-    controlConfigs: isDefined(value.controlConfigs) ? [...(value.controlConfigs as IHTMLFormControl[]).map(i => Object.assign({}, i))] : null,
-    forms: isDefined(value.forms) ? (value.forms as IDynamicForm[]).map(i => clone(i)) : null
+    controlConfigs: isDefined(value.controlConfigs) ? [...(value.controlConfigs as IHTMLFormControl[]).map(i => Object.assign({}, i))] : [],
+    forms: isDefined(value.forms) ? (value.forms as IDynamicForm[]).map(i => clone(i)) : undefined
   };
 }

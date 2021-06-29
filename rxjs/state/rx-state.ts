@@ -57,7 +57,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
       mergeMap((action) => isObservable(action) ? action as Observable<AType> : observableOf<AType>(action) as Observable<AType>),
       filter(state => isDefined(state)),
       startWith(initialState as any),
-      scan(reducer, initialState),
+      scan(reducer),
       shareReplay(1)
     );
   }

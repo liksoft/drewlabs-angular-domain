@@ -9,8 +9,8 @@ export interface AuthState {
   isLoggedIn: boolean;
   is2FactorAuthActive?: boolean;
   isInitialState?: boolean;
-  user: IAppUser | Authorizable | NotifiableUserDetails;
-  token: string;
+  user?: IAppUser | Authorizable | NotifiableUserDetails;
+  token?: string;
   authenticating?: boolean;
   rememberToken?: IUserRememberTokenParam;
 }

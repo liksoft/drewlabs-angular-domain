@@ -21,7 +21,7 @@ export class UniqueValueService {
    * @param value [[string|any]]
    * @param entity [[entity]]
    */
-  async verify(entity: string, property: string, value: string | number) {
+  async verify(entity?: string, property?: string, value?: string | number) {
     return true;
     // const query = isDefined(entity) ? `?property=${property}&value=${value}&entity=${entity}` : `?property=${property}&value=${value}`;
     // try {
@@ -166,12 +166,12 @@ export class CustomValidators {
    * @param entity [[string]]
    * @param column [[string]]
    */
-  static createAsycUniqueValidator(service: UniqueValueService, entity: string, column: string) {
+  static createAsycUniqueValidator(service?: UniqueValueService, entity?: string, column?: string) {
     return async (control: AbstractControl) => {
       if (!isDefined(control.value) || control.value === '') {
         return null;
       }
-      const res = await service.verify(entity, column, control.value);
+      const res = await service?.verify(entity, column, control.value);
       const errors = res ? null : { notUnique: {value: control.value} };
       return errors;
     };

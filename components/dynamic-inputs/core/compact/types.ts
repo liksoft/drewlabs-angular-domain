@@ -4,8 +4,8 @@ export interface DynamicFormInterface {
   title: string;
   parentId?: string;
   description?: string;
-  children?: Partial<DynamicFormInterface>[];
-  formControls: Partial<DynamicFormControlInterface>[];
+  children?: DynamicFormInterface[];
+  formControls: DynamicFormControlInterface[];
   url?: string;
   status?: number;
   appcontext?: string;

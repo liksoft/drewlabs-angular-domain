@@ -9,6 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DrewlabsHttpResponseStatusCode } from './http-response';
 import { doLog } from '../../rxjs/operators';
 import { UIStateStatusCode } from '../../contracts/ui-state';
+import { isBadRequest, isServerError } from './helpers';
 
 @Injectable()
 export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHttpResponse<any>> {
@@ -110,7 +111,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   // tslint:disable-next-line: typedef
   handleErrorResponse(error: HttpErrorResponse): HttpErrorResponse | { status: UIStateStatusCode, validationErrors: { [prop: string]: any } } {
     const errorResponse = this.responseTransformHandler(error.error) as any;
-    if (error.status === DrewlabsHttpResponseStatusCode.BAD_REQUEST) {
+    if (isBadRequest(error.status)) {
       const validationErrors: { [index: string]: any } = {};
       Object.keys(errorResponse.errors).forEach(
         (key) => {
@@ -121,7 +122,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
         validationErrors
       };
     }
-    if (error.status === DrewlabsHttpResponseStatusCode.SERVER_ERROR) {
+    if (isServerError(error.status)) {
       return {
         status: UIStateStatusCode.ERROR,
         validationErrors: {}
@@ -131,6 +132,7 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   }
 
   handleError(error: HttpErrorResponse) {
+    this.httpClient.handleError(error);
     return this.handleErrorResponse(error);
   }
 

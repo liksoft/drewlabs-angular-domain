@@ -1,4 +1,4 @@
-import { IHTMLFormControl, HTMLFormControlRequireIfConfig, BindingControlInterface } from './contracts/dynamic-input';
+import { IHTMLFormControl, BindingControlInterface } from './contracts/dynamic-input';
 import { IDynamicForm } from './contracts/dynamic-form';
 import { isArray, isDefined } from '../../../utils/types/type-utils';
 import { ArrayUtils } from '../../../utils/types/array-utils';
@@ -7,6 +7,7 @@ import { DynamicForm } from './dynamic-form';
 import { DynamicFormControlInterface, DynamicFormInterface } from './compact/types';
 import { Order } from '../../../utils/enums';
 import { cloneDeep } from 'lodash';
+import { getObjectProperty } from '../../../utils';
 
 /**
  * @description Sort form loaded from backend server by control index
@@ -26,8 +27,8 @@ export function sortFormFormControlsByIndex(value: DynamicFormInterface): Dynami
  */
 export function sortFormByIndex(form: IDynamicForm): IDynamicForm {
   const loopThroughFormsFn = (f: IDynamicForm) => {
-    if (isArray(f.forms) && f.forms.length > 0) {
-      f.forms.forEach((i) => {
+    if (isArray(f.forms) && !(f?.forms?.length === 0)) {
+      f.forms?.forEach((i) => {
         loopThroughFormsFn(i);
       });
     }
@@ -47,8 +48,8 @@ export function sortFormByIndex(form: IDynamicForm): IDynamicForm {
  */
 export function sortDynamicFormByIndex(form: IDynamicForm): IDynamicForm {
   const loopThroughFormsFn = (f: IDynamicForm, sortingOrder: Order = Order.ASC) => {
-    if (isArray(f.forms) && f.forms.length > 0) {
-      f.forms.forEach((i) => {
+    if (isArray(f.forms) && !(f?.forms?.length === 0)) {
+      f.forms?.forEach((i) => {
         loopThroughFormsFn(i);
       });
     }
@@ -89,13 +90,12 @@ export function createDynamicForm(form: IDynamicForm): IDynamicForm {
  */
 export const cloneDynamicForm = (form: IDynamicForm) => cloneDeep(form) as IDynamicForm;
 
-export function parseControlItemsConfigs(
-  model: Partial<DynamicFormControlInterface>
-): { keyfield: string, valuefield: string, groupfield: string } {
-  const items = model.selectableModel.split('|');
-  let keyfield: string;
-  let groupfield: string;
-  let valuefield: string;
+export const parseControlItemsConfigs = (model: Partial<DynamicFormControlInterface>) => {
+  const items = model.selectableModel?.split('|') || [];
+  let keyfield: string | undefined;
+  let groupfield: string | undefined;
+  let valuefield: string | undefined;
+
   items.forEach(key => {
     if (key.match(/keyfield:/)) {
       keyfield = key.replace('keyfield:', '');
@@ -112,11 +112,11 @@ export function parseControlItemsConfigs(
 
 
 
-export function buildRequiredIfConfig(stringifiedConfig: string): HTMLFormControlRequireIfConfig {
+export const buildRequiredIfConfig = (stringifiedConfig: string) => {
   if (!isDefined(stringifiedConfig) || (stringifiedConfig.indexOf(':') === -1)) { return null; }
   // split the string into the two parts
   const parts = stringifiedConfig.split(':');
-  let values = [];
+  let values: any[] = [];
   // Split by '|' Character
   const result = parts[1].indexOf('|') !== -1 ? parts[1].split('|') : [parts[1]];
   // Split by ',' character
@@ -133,8 +133,8 @@ export function buildRequiredIfConfig(stringifiedConfig: string): HTMLFormContro
 
 export function buildCheckboxItems(model: Partial<DynamicFormControlInterface>): CheckboxItem[] {
   if (isDefined(model.selectableValues)) {
-    const items = model.selectableValues.split('|');
-    return items.map((v, i) => {
+    const items = model.selectableValues?.split('|') || [];
+    return items?.map((v, i) => {
       if (v.indexOf(':') !== -1) {
         const idValueFields = v.split(':');
         return {
@@ -157,9 +157,9 @@ export function buildCheckboxItems(model: Partial<DynamicFormControlInterface>):
     groupfield = model.groupfield;
     return model.options ? model.options.map((v, index) => {
       return {
-        value: v[keyfield],
+        value: getObjectProperty(v, keyfield || ''),
         checked: index === 0,
-        description: v[valuefield]
+        description: getObjectProperty(v, valuefield || '')
       } as CheckboxItem;
     }) : [];
   } else {
@@ -172,7 +172,7 @@ export function buildCheckboxItems(model: Partial<DynamicFormControlInterface>):
  */
 export function buildSelectItems(model: Partial<DynamicFormControlInterface>): ISelectItem[] {
   if (isDefined(model.selectableValues)) {
-    const items = model.selectableValues.split('|');
+    const items = model.selectableValues?.split('|') || [];
     return items.map((v, i) => {
       if (v.indexOf(':') !== -1) {
         const idValueFields = v.split(':');
@@ -197,10 +197,10 @@ export function buildSelectItems(model: Partial<DynamicFormControlInterface>): I
     groupfield = model.groupfield;
     return model.options ? model.options.map((v) => {
       return {
-        value: v[keyfield],
-        description: v[valuefield],
-        name: v[valuefield],
-        type: groupfield && (keyfield !== groupfield) && (valuefield !== groupfield) ? v[groupfield] : null
+        value: getObjectProperty(v, keyfield || ''),
+        description: getObjectProperty(v, valuefield || ''),
+        name: getObjectProperty(v, valuefield || ''),
+        type: groupfield && (keyfield !== groupfield) && (valuefield !== groupfield) ? getObjectProperty(v, groupfield || '') : undefined
       } as ISelectItem;
     }) : [];
   } else {
@@ -210,9 +210,9 @@ export function buildSelectItems(model: Partial<DynamicFormControlInterface>): I
 
 export const controlBindingsSetter = <T extends BindingControlInterface>(values: { [prop: string]: any }[]) => {
   return (control: Partial<T>) => {
-    let result = [];
+    let result: any[] = [];
     if (isDefined(control.clientBindings)) {
-      const items = control.clientBindings.split('|');
+      const items = control.clientBindings?.split('|') || [];
       result = [
         ...(items.map((v, i) => {
           if (v.indexOf(':') !== -1) {
@@ -236,9 +236,9 @@ export const controlBindingsSetter = <T extends BindingControlInterface>(values:
         ...(
           values ? values.map((v) => {
             return {
-              value: v[control.keyfield],
-              description: v[control.valuefield],
-              name: v[control.valuefield],
+              value: getObjectProperty(v, control.keyfield || ''),
+              description: getObjectProperty(v, control.valuefield || ''),
+              name: getObjectProperty(v, control.valuefield || ''),
               type: control.groupfield &&
                 (control.keyfield !== control.groupfield) && (control.valuefield !== control.groupfield) ?
                 v[control.groupfield] : null
@@ -254,7 +254,7 @@ export const controlBindingsSetter = <T extends BindingControlInterface>(values:
 
 export function buildRadioInputItems(model: Partial<DynamicFormControlInterface>): RadioItem[] {
   if (isDefined(model.selectableValues)) {
-    const items = model.selectableValues.split('|');
+    const items = model.selectableValues?.split('|') || [];
     return items.map((v, i) => {
       if (v.indexOf(':') !== -1) {
         const idValueFields = v.split(':');
@@ -279,9 +279,9 @@ export function buildRadioInputItems(model: Partial<DynamicFormControlInterface>
     groupfield = model.groupfield;
     return model.options ? model.options.map((v, index) => {
       return {
-        value: v[keyfield],
+        value: getObjectProperty(v, keyfield || ''),
+        description: getObjectProperty(v, valuefield || ''),
         checked: index === 0,
-        description: v[valuefield]
       } as RadioItem;
     }) : [];
   } else {
@@ -293,4 +293,4 @@ export function buildRadioInputItems(model: Partial<DynamicFormControlInterface>
  * @description Checks if a dynamic form contains other form
  * @param f [[IDynamicForm]]
  */
- export const isGroupOfIDynamicForm = (value: IDynamicForm) => isDefined(value) && isArray(value.forms) ? true : false;
+export const isGroupOfIDynamicForm = (value?: IDynamicForm) => isDefined(value) && isArray(value?.forms || undefined) ? true : false;

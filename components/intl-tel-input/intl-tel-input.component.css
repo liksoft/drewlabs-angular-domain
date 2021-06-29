@@ -1,46 +1,130 @@
 .required-text,
 .field-has-error {
-    color: rgb(241, 50, 50);
-    line-height: 1rem;
+  color: rgb(241, 50, 50);
+  line-height: 1rem;
 }
 
 small.field-has-error {
-    display: block;
+  display: block;
 }
 
 li.country:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .dropdown-toggle::after {
-    display: none;
+  display: none;
 }
 
 .intl-tel-input {
-    width: 100%;
+  width: 100%;
 }
 
 .clr-input {
-    width: 80% !important;
-    /* max-width: 100%; */
+  width: 80% !important;
+  /* max-width: 100%; */
 }
 
 #phone {
-    width: 75%;
+  width: 75%;
 }
 
 .clr-dropdown-menu {
-    max-height: 280px;
-    width: 100%;
+  max-height: 280px;
+  width: 100%;
 }
 
 .countries-viewport {
-    height: 200px;
-    width: auto;
-    overflow-x: hidden;
+  height: 200px;
+  width: auto;
+  overflow-x: hidden;
 }
 
 
 /* .dropdown-menu .btn, .dropdown-menu .dropdown-item {
   padding: .1rem 1rem 1rem 1rem !important;
 } */
+
+
+:focus {
+  outline: none;
+}
+
+/* necessary to give position: relative to parent. */
+input[type="text"] {
+  font: 15px/24px 'Muli', sans-serif;
+  color: #333;
+  width: 80%;
+  box-sizing: border-box;
+  letter-spacing: 1px;
+}
+
+:focus {
+  outline: none;
+}
+
+.effect-24 {
+    border: 0;
+    padding: 7px 15px;
+    border: 1px solid #ccc !important;
+    position: relative;
+    background: transparent;
+  }
+
+.effect-24~.focus-bg:before,
+.effect-24~.focus-bg:after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  background-color: #ededed;
+  transition: 0.3s;
+  z-index: -1;
+}
+
+.effect-24:focus~.focus-bg:before,
+.has-content.effect-24~.focus-bg:before {
+  transition: 0.3s;
+  width: 50%;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+.effect-24~.focus-bg:after {
+  left: auto;
+  right: 50%;
+  top: auto;
+  bottom: 50%;
+}
+
+.effect-24:focus~.focus-bg:after,
+.has-content.effect-24~.focus-bg:after {
+  transition: 0.3s;
+  width: 50%;
+  height: 100%;
+  bottom: 0;
+  right: 0;
+}
+
+.effect-24~label {
+  position: absolute;
+  left: 14px;
+  width: 80%;
+  top: 10px;
+  color: #aaa;
+  transition: 0.3s;
+  z-index: -1;
+  letter-spacing: 0.5px;
+}
+
+.effect-24:focus~label,
+.has-content.effect-24~label {
+  top: -18px;
+  left: 0;
+  font-size: 12px;
+  color: #333;
+  transition: 0.3s;
+}

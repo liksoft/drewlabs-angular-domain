@@ -59,19 +59,20 @@ export class PhoneNumberValidator {
   providers: []
 })
 export class IntlTelInputComponent implements OnInit, OnDestroy {
-  public phoneControl: FormControl;
-  @Input() control: FormControl;
+  public phoneControl!: FormControl;
+  @Input() control!: FormControl;
   @Output() controlChange: EventEmitter<string> = new EventEmitter<string>();
   @Input() required = false;
   @Input() allowDropdown = true;
-  @Input() initialCountry: string;
-  @Input() controlClass: string;
+  @Input() initialCountry!: string;
+  @Input() controlClass!: string;
   @Input() preferredCountries: Array<string> = [];
   @ViewChild('phoneControlElement', { static: true })
-  phoneControlElement: ElementRef;
-  @ViewChild('clrDropdown', { static: true }) clrDropdown: ElementRef;
+  phoneControlElement!: ElementRef;
+  @ViewChild('clrDropdown', { static: true }) clrDropdown!: ElementRef;
 
-  @Input() tabIndex: number;
+  @Input() tabIndex!: number;
+  @Input() label!: string;
 
   allCountries: Array<Country> = [];
   preferredCountriesInDropDown: Array<Country> = [];
@@ -209,7 +210,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
 
   setPhoneControlValue(value: string): void {
     const controlState = value;
-    const tmpCountryCode: number = this.intelInputService.getCountryCode(controlState);
+    const tmpCountryCode = this.intelInputService.getCountryCode(controlState);
     if (tmpCountryCode) {
       this.selectedCountry = this.allCountries.filter((c: Country) => {
         return (

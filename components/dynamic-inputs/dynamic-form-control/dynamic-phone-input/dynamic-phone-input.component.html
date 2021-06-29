@@ -15,6 +15,12 @@
   <div class="clr-control-container">
     <div class="clr-input-wrapper">
       <app-intl-tel-input
+        [label]="
+          showLabelAndDescription
+            ? inputTypeHelper.asPhoneInput(inputConfig)?.label
+            : undefined
+        "
+        [required]="inputTypeHelper.asPhoneInput(inputConfig).rules?.isRequired"
         [tabIndex]="inputConfig?.formControlIndex"
         [controlClass]="inputTypeHelper.asDateInput(inputConfig).classes"
         [control]="control"
@@ -30,9 +36,11 @@
       type="hidden"
     />
   </div>
-  <clr-control-helper
+  <div>
+    <clr-control-helper
     *ngIf="inputConfig.descriptionText && showLabelAndDescription"
   >
     <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
   </clr-control-helper>
+  </div>
 </div>

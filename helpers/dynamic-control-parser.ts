@@ -48,7 +48,7 @@ export class DynamicControlParser {
     }
     const c = [...form.controlConfigs as Array<IHTMLFormControl>];
     if (this.typeHelper.isFormGroup(form)) {
-      (form as IDynamicForm).forms.forEach((v) => {
+      (form as IDynamicForm).forms?.forEach((v) => {
         c.push(...(v.controlConfigs ? v.controlConfigs as Array<IHTMLFormControl> : []));
       });
     }
@@ -66,7 +66,10 @@ export class DynamicControlParser {
   ) {
     const group = this.fb.group({});
     collection.keys().forEach((k) => {
-      group.addControl(k, createAngularAbstractControl(this.fb, collection.get(k), applyUniqueValidations ? this.uniqueValidator : undefined));
+      const control = createAngularAbstractControl(this.fb, collection.get(k), applyUniqueValidations ? this.uniqueValidator : undefined);
+      if (control) {
+        group.addControl(k, control);
+      }
     });
     return group;
   }

@@ -9,7 +9,7 @@ export interface ILoginResponse extends IHttpResponseData {
 
 export interface ILoginResponseBody {
   errorMessage: string;
-  responseData: ILoginResponseData;
+  responseData?: ILoginResponseData;
   errors: any[];
 }
 

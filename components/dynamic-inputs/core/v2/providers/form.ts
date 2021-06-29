@@ -10,20 +10,20 @@ export const initialState: FormState = {
     total: 0,
     items: {},
     data: [],
-    lastPage: null,
-    nextPageURL: null,
-    lastPageURL: null
+    lastPage: undefined,
+    nextPageURL: undefined,
+    lastPageURL: undefined
   },
-  selectedFormId: null,
-  currentForm: null,
+  selectedFormId: undefined,
+  currentForm: undefined,
   performingAction: false,
-  error: null,
-  createResult: null,
-  updateResult: null,
-  deleteResult: null,
-  createControlResult: null,
-  updateControlResult: null,
-  deleteControlResult: null,
+  error: undefined,
+  createResult: undefined,
+  updateResult: undefined,
+  deleteResult: undefined,
+  createControlResult: undefined,
+  updateControlResult: undefined,
+  deleteControlResult: undefined,
 };
 
 @Injectable({

@@ -46,7 +46,8 @@ export {
   check,
   ArrayUtils,
   Filtrable,
-  getObjectProperty
+  getObjectProperty,
+  maxNumberSize
 } from './types';
 
 // Enumeration values that can globally be used

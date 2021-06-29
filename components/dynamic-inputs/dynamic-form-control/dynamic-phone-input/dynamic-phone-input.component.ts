@@ -19,16 +19,20 @@ import { DynamicInputTypeHelper } from '../input-type.service';
     /* .clr-subtext {
         margin-top: 1rem !important;
     } */
+
+    .clr-control-label {
+      margin-bottom: 12px;
+    }
     `
   ]
 })
 export class DynamicPhoneInputComponent {
 
   @Input() controlDivContainerClass: string = 'clr-form-control';
-  @Input() control: AbstractControl;
+  @Input() control!: AbstractControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
-  @Input() inputConfig: IHTMLFormControl;
+  @Input() inputConfig!: IHTMLFormControl;
 
   constructor(public readonly inputTypeHelper: DynamicInputTypeHelper) { }
 

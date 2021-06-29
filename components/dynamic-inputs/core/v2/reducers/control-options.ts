@@ -18,7 +18,7 @@ export const controlOptionsReducer = (state: ControlOptionsState, action: Partia
             return {
                 ...state,
                 performingAction: true,
-                error: null,
+                error: undefined,
                 updateResult,
                 deleteResult,
                 createResult,
@@ -37,7 +37,7 @@ export const controlOptionsReducer = (state: ControlOptionsState, action: Partia
                 ...state,
                 selected: action.payload,
                 performingAction: false,
-                error: null,
+                error: undefined,
                 updateResult,
                 deleteResult,
                 createResult,
@@ -52,9 +52,9 @@ export const controlOptionsReducer = (state: ControlOptionsState, action: Partia
                 createResult,
                 updateResult,
                 deleteResult,
-                selected: null,
+                selected: undefined,
                 performingAction: false,
-                error: null
+                error: undefined
             } as ControlOptionsState;
         case Actions.UPDATE_RESULT:
             return {
@@ -82,7 +82,7 @@ export const controlOptionsReducer = (state: ControlOptionsState, action: Partia
                 createResult,
                 updateResult,
                 deleteResult,
-                selected: null,
+                selected: undefined,
                 performingAction: false,
                 error: null
             } as ControlOptionsState;

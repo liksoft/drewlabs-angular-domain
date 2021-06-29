@@ -1,5 +1,6 @@
 import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { of } from "rxjs";
+import { maxNumberSize } from "../../../utils";
 import { MomentUtils } from "../../../utils/datetime/moment-utils";
 import { Log } from "../../../utils/logger";
 import { isArray, isDefined } from "../../../utils/types/type-utils";
@@ -53,13 +54,13 @@ export function cloneAbstractControl<T extends AbstractControl>(control: T): T {
  * @param form [[IDynamicForm]]
  * @param applyRequiredRules [[boolean]]
  */
- export function createAngularAbstractControl( builder: FormBuilder, form: IDynamicForm, uniqueValidator: UniqueValueService = null ): AbstractControl {
+export function createAngularAbstractControl(builder: FormBuilder, form?: IDynamicForm, uniqueValidator?: UniqueValueService): AbstractControl | undefined {
   if (!isDefined(form)) {
-    return null;
+    return undefined;
   }
-  const c = [...form.controlConfigs as Array<IHTMLFormControl>];
+  const c = [...form?.controlConfigs as Array<IHTMLFormControl>];
   if (isGroupOfIDynamicForm(form)) {
-    (form as IDynamicForm).forms.forEach((v) => {
+    (form as IDynamicForm).forms?.forEach((v) => {
       c.push(...(v.controlConfigs ? (v.controlConfigs as Array<IHTMLFormControl>) : []));
     });
   }
@@ -78,27 +79,29 @@ export class DynamicFormHelpers {
    * The method tries to translate prossible translatable label
    * @param form [[Form]]
    */
-  public static buildDynamicForm(form: Partial<DynamicFormInterface>): Promise<IDynamicForm> {
+  public static buildDynamicForm(form: DynamicFormInterface): Promise<IDynamicForm | undefined> {
     return new Promise((resolve, _) => {
-      const generatorFn = (f: Partial<DynamicFormInterface>) => {
-        let configs: IHTMLFormControl[] = [];
-        if (isArray(f.formControls) && (f.formControls.length > 0)) {
-          configs = f.formControls.map((control) => {
+      const generatorFn: (f: DynamicFormInterface) => IDynamicForm | undefined = (f: DynamicFormInterface) => {
+        let configs: IHTMLFormControl[] | undefined = [];
+        if (isArray(f?.formControls) && (f?.formControls?.length > 0)) {
+          configs = f.formControls?.map((control) => {
             const config = toDynamicControl(control);
             // tslint:disable-next-line: max-line-length
-            return { ...config };
+            return { ...config } as IHTMLFormControl;
+          }).filter(value => isDefined(value));
+        }
+        let forms: any[] | undefined = f?.children && f?.children?.length > 0 ? f.children.map(value => generatorFn(value)) : undefined;
+        if (form) {
+          return new DynamicForm({
+            id: f.id,
+            title: f.title,
+            description: f.description,
+            endpointURL: f.url,
+            controlConfigs: configs,
+            forms
           });
         }
-        let forms = f?.children && f?.children?.length > 0 ? f.children.map(value => generatorFn(value)) : [];
-        return new DynamicForm({
-          id: f.id,
-          title: f.title,
-          description: f.description,
-          endpointURL: f.url,
-          controlConfigs: configs,
-          forms
-        });
-
+        return undefined;
       };
       resolve(generatorFn(form))
     });
@@ -117,7 +120,7 @@ export class ComponentReactiveFormHelpers {
   public static buildFormGroupFromInputConfig(
     fb: FormBuilder,
     input: IHTMLFormControl[],
-    uniqueValidator: UniqueValueService = null
+    uniqueValidator?: UniqueValueService
   ): AbstractControl {
     const group = fb.group({});
     input.map((config: IHTMLFormControl) => {
@@ -134,10 +137,10 @@ export class ComponentReactiveFormHelpers {
           // Checks if maxlength rule is set to true and apply the rule to the input
           if (isDefined(uniqueValidator) &&
             isDefined(config.rules) &&
-            isDefined(config.rules.notUnique) &&
+            isDefined(config.rules?.notUnique) &&
             isDefined(config.uniqueCondition)) {
-            const parts = config.uniqueCondition.split(':');
-            if (parts.length === 2) {
+            const parts = config.uniqueCondition?.split(':');
+            if (parts?.length === 2) {
               config.rules && config.rules.notUnique
                 ? asyncValidators.push(
                   CustomValidators.createAsycUniqueValidator(
@@ -157,7 +160,7 @@ export class ComponentReactiveFormHelpers {
             ? validators.push(
               Validators.maxLength(
                 isDefined((config as TextInput).maxLength)
-                  ? (config as TextInput).maxLength
+                  ? (config as TextInput).maxLength || maxNumberSize()
                   : 255
               )
             )
@@ -168,7 +171,7 @@ export class ComponentReactiveFormHelpers {
               ? validators.push(
                 Validators.minLength(
                   isDefined((config as TextInput).minLength)
-                    ? (config as TextInput).minLength
+                    ? (config as TextInput).minLength || 1
                     : 255
                 )
               )
@@ -179,7 +182,7 @@ export class ComponentReactiveFormHelpers {
             : // tslint:disable-next-line:no-unused-expression
             null;
           config.rules && config.rules.pattern
-            ? validators.push(Validators.pattern((config as TextInput).pattern))
+            ? validators.push(Validators.pattern((config as TextInput).pattern || ''))
             : // tslint:disable-next-line:no-unused-expression
             null;
         }
@@ -200,8 +203,8 @@ export class ComponentReactiveFormHelpers {
               ? validators.push(
                 Validators.max(
                   isDefined((config as NumberInput).max)
-                    ? (config as NumberInput).max
-                    : (Math.pow(2, 31) - 1)
+                    ? (config as NumberInput).max || maxNumberSize()
+                    : maxNumberSize()
                 )
               )
               : // tslint:disable-next-line:no-unused-expression
@@ -213,7 +216,7 @@ export class ComponentReactiveFormHelpers {
             ? validators.push(
               CustomValidators.minDate(
                 isDefined((config as DateInput).minDate)
-                  ? MomentUtils.parseDate((config as DateInput).minDate as string, null, 'YYYY-MM-DD')
+                  ? MomentUtils.parseDate((config as DateInput).minDate as string, undefined, 'YYYY-MM-DD')
                   : MomentUtils.parseDate()
               )
             )
@@ -224,7 +227,7 @@ export class ComponentReactiveFormHelpers {
               ? validators.push(
                 CustomValidators.maxDate(
                   isDefined((config as DateInput).maxDate)
-                    ? MomentUtils.parseDate((config as DateInput).maxDate, null, 'YYYY-MM-DD')
+                    ? MomentUtils.parseDate((config as DateInput).maxDate, undefined, 'YYYY-MM-DD')
                     : MomentUtils.parseDate()
                 )
               )
@@ -245,8 +248,8 @@ export class ComponentReactiveFormHelpers {
               updateOn: 'blur',
               asyncValidators
             } : {
-                validators: Validators.compose(validators)
-              }
+              validators: Validators.compose(validators)
+            }
           )
           // Add other necessary validators
         );
@@ -278,7 +281,7 @@ export class ComponentReactiveFormHelpers {
       if (control.get(field) instanceof FormGroup) {
         ComponentReactiveFormHelpers.validateFormGroupFields(control.get(field) as FormGroup);
       } else {
-        ComponentReactiveFormHelpers.markControlAsTouched(control.get(field), field);
+        ComponentReactiveFormHelpers.markControlAsTouched(control.get(field) || undefined, field);
       }
     });
   }
@@ -286,11 +289,11 @@ export class ComponentReactiveFormHelpers {
    * Mark control as touched them as touched
    * @param formGroup [[AbstractControl]] reference to form control
    */
-  public static markControlAsTouched(control: AbstractControl, field: string = null): void {
+  public static markControlAsTouched(control?: AbstractControl, field?: string): void {
     if (isDefined(control)) {
-      control.markAsTouched({ onlySelf: true });
-      control.markAsDirty({ onlySelf: true });
-      control.markAsPristine({ onlySelf: true });
+      control?.markAsTouched({ onlySelf: true });
+      control?.markAsDirty({ onlySelf: true });
+      control?.markAsPristine({ onlySelf: true });
     }
 
   }

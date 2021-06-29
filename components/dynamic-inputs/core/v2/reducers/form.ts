@@ -4,6 +4,7 @@ import { DefaultStoreAction, StoreAction } from '../../../../../rxjs/state/rx-st
 import { insertOrUpdateValuesUsingID, removeItemFromCache, updatePaginationData } from '../../../../../rxjs/helpers';
 import { DynamicFormInterface } from '../../compact/types';
 import { deleteFromListUsingID, updateListUsingID } from '../../../../../rxjs/helpers/entity-handlers';
+import { isArray } from '../../../../../utils';
 
 export const formsReducer = (state: FormState, action: Partial<StoreAction>) => {
   const {
@@ -38,7 +39,7 @@ export const formsReducer = (state: FormState, action: Partial<StoreAction>) => 
             state.collections ? (state.collections.items || {}) : {}, action.payload
           )
         } : { ...state.collections },
-        currentForm: action.payload,
+        currentForm: isArray(action.payload) ? action.payload[0] : action.payload,
         performingAction: false,
         error: null
       } as FormState;
@@ -83,7 +84,7 @@ export const formsReducer = (state: FormState, action: Partial<StoreAction>) => 
           ...state.currentForm,
           formControls: state.currentForm ?
             lodash.uniqBy([...(state.currentForm.formControls || []), control], 'id') :
-            [...(state.currentForm.formControls || [])]
+            []
         } : state.currentForm,
         updateControlResult,
         createControlResult,
@@ -99,7 +100,7 @@ export const formsReducer = (state: FormState, action: Partial<StoreAction>) => 
           ...state.currentForm,
           formControls: state.currentForm ?
             updateListUsingID(state.currentForm.formControls || [], control) :
-            [...(state.currentForm.formControls || [])]
+            [control]
         } : state.currentForm,
         updateControlResult,
         createControlResult,
@@ -115,7 +116,7 @@ export const formsReducer = (state: FormState, action: Partial<StoreAction>) => 
           ...state.currentForm,
           formControls: state.currentForm ?
             deleteFromListUsingID(state.currentForm.formControls || [], control) :
-            [...(state.currentForm.formControls || [])]
+            []
         } : state.currentForm,
         updateControlResult,
         createControlResult,
