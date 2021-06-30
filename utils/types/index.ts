@@ -4,6 +4,6 @@ export {
 
 export { ArrayUtils, Filtrable } from './array-utils';
 
-export { getObjectProperty } from './object';
+export { getObjectProperty, setObjectProperty } from './object';
 
 export { maxNumberSize } from './numbers';

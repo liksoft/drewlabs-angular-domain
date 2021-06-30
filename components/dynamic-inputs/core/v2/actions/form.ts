@@ -11,7 +11,6 @@ import { DynamicFormInterface } from '../../compact/types';
 import { FormControlV2 } from '../models';
 import { PaginationDataState } from '../../../../../rxjs/types';
 import { UIStateStatusCode } from '../../../../../contracts/ui-state';
-import { Log } from 'src/app/lib/core/utils/logger';
 
 export interface FormState {
   performingAction: boolean;
@@ -151,7 +150,6 @@ export const loadFormUsingIDAction = (
 
 export const onNewFormAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) => {
-  Log('On New form action: ');
   return createAction(store, (payload: FormV2[] | FormV2) =>
     ({ type: FormStoreActions.NEW_VALUE_ACTION, payload }));
 };

@@ -1,7 +1,7 @@
 // This file contains methods for working with entity object with
 // a unique field / property named [[id]]
 
-import { isArray, isDefined } from '../../utils/types';
+import {  isArray, isDefined } from '../../utils/types';
 import { PaginationDataState } from '../types';
 import * as _ from 'lodash';
 
@@ -45,7 +45,7 @@ export const insertOrUpdateValuesUsingID = <T extends { id: string | number }>(
       if (!isDefined(current.id)) {
         return { ...acc };
       }
-      const newItem = {};
+      let newItem: { [index: string]: any } = {};
       if (acc) {
         const key = current.id.toString();
         newItem[key] = current;
@@ -58,7 +58,7 @@ export const insertOrUpdateValuesUsingID = <T extends { id: string | number }>(
 
 export const listItemToIdMaps = <T extends { id: string | number }>(list: T[]) => {
   // tslint:disable-next-line: variable-name
-  const _cache = {};
+  const _cache: { [index: string]: any } = {};
   list.forEach(item => {
     if (isDefined(item.id)) {
       _cache[item.id.toString()] = item;
@@ -87,7 +87,7 @@ export const removeItemFromCache = <T extends { id: string | number }>(cache: { 
   return _cache;
 };
 
-export const removeFromCacheUsingID = <T extends { id: string | number }>(cache: { [index: string]: T }, id: string|number) => {
+export const removeFromCacheUsingID = <T extends { id: string | number }>(cache: { [index: string]: T }, id: string | number) => {
   // tslint:disable-next-line: variable-name
   const _cache = { ...cache };
   delete _cache[id.toString()];

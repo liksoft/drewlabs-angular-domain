@@ -112,7 +112,7 @@ export class AuthorizationsGuard implements CanActivate {
 
   canLoad(route: Route): boolean | Observable<boolean> | Promise<boolean> {
     const url = `/${route.path}`;
-    return this.isAuthorized(route.data.authorizations, url);
+    return this.isAuthorized(route.data?.authorizations, url);
   }
 
   private isAuthorized(authorizations: string[] | string, url: string): Observable<boolean>|boolean|Promise<boolean> {

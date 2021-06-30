@@ -6,7 +6,6 @@ import { IResourcesServerClient } from '../contracts/resource/ressource-server-c
 import { Injectable, Inject } from '@angular/core';
 import { RequestBody, TransformResponseHandlerFn } from '../contracts/resource';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DrewlabsHttpResponseStatusCode } from './http-response';
 import { doLog } from '../../rxjs/operators';
 import { UIStateStatusCode } from '../../contracts/ui-state';
 import { isBadRequest, isServerError } from './helpers';
@@ -132,7 +131,6 @@ export class DrewlabsRessourceServerClient implements IResourcesServerClient<IHt
   }
 
   handleError(error: HttpErrorResponse) {
-    this.httpClient.handleError(error);
     return this.handleErrorResponse(error);
   }
 

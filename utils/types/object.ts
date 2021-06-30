@@ -9,3 +9,17 @@ export const getObjectProperty = (value: object|any, key: string) => {
     }
     return value[key];
 };
+
+export const setObjectProperty = (source: object|any, key: string, value?: any) => {
+    if (key === '') {
+        return source;
+    }
+    if (!isDefined(key)) {
+        return source;
+    }
+
+    if (!isDefined(source)) {
+        return source;
+    }
+    return value[key] = value || undefined;
+};

@@ -58,6 +58,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
       filter(state => isDefined(state)),
       startWith(initialState as any),
       scan(reducer),
+      doLog('State after applying reducers: '),
       shareReplay(1)
     );
   }
