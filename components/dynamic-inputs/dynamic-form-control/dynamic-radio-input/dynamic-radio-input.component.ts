@@ -25,7 +25,7 @@ export class DynamicRadioInputComponent {
   @Input() inline: boolean = true;
 
   // tslint:disable-next-line: variable-name
-  private _control: AbstractControl;
+  private _control!: AbstractControl;
   @Input() set control(value: AbstractControl) {
     this._control = value;
   }
@@ -33,7 +33,7 @@ export class DynamicRadioInputComponent {
     return this._control;
   }
   // tslint:disable-next-line: variable-name
-  private _inputConfig: IHTMLFormControl;
+  private _inputConfig!: IHTMLFormControl;
   @Input() set inputConfig(value: IHTMLFormControl) {
     this._inputConfig = value;
   }

@@ -26,7 +26,7 @@ export interface UploadedFileHelperInterface {
    * @description Load file from the server and convert it to a dataURI
    * @param url [[string]]
    */
-  loadFileAsDataURI(url: string): Promise<string>;
+  loadFileAsDataURI(url: string): Promise<string|undefined>;
 
   /**
    * @description Download contents from a url and return a fileStats
@@ -67,7 +67,7 @@ export class FileHelperService implements UploadedFileHelperInterface {
   /**
    * @inheritdoc
    */
-  async loadFileAsDataURI(url: string): Promise<string> {
+  loadFileAsDataURI = async (url: string) => {
     return readFileAsDataURI(await this.client.loadServerFile(url) as Blob);
   }
 

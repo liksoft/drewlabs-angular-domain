@@ -62,7 +62,7 @@ export class TypeUtilHelper {
   }
 
   asServerFileRequesBody(value: FileFormControl): { content: string, extension?: string } {
-    return { ...{ content: value.dataURL, extension: value.extension } };
+    return { ...{ content: value?.dataURL, extension: value?.extension } };
   }
 
   /**

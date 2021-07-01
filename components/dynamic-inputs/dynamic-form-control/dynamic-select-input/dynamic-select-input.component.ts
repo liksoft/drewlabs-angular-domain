@@ -107,6 +107,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
         map(state => {
           const data = getResponseDataFromHttpResponse(state);
           if (data && isArray(data)) {
+            console.log(data);
             return controlBindingsSetter(data)(this._inputConfig).items as any[];
           }
           return [];

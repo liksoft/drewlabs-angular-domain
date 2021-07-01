@@ -63,20 +63,20 @@ export class DynamicFormControlComponent implements OnDestroy {
   @Output() multiSelectItemRemove = new EventEmitter<any>();
   // Configuration parameters of the input
   // tslint:disable-next-line: variable-name
-  private _inputConfig: IHTMLFormControl;
+  private _inputConfig!: IHTMLFormControl;
   @Input() set inputConfig(value: IHTMLFormControl) {
     this._inputConfig = value;
   }
   get inputConfig(): IHTMLFormControl {
     return this._inputConfig;
   }
-  @Input() listItems:
+  @Input() listItems!:
     | Observable<Array<ISelectItem | CheckboxItem | RadioItem>>
     | Array<ISelectItem | CheckboxItem | RadioItem>;
 
   public inputTypes = InputTypes;
   // String representation of today
-  public formArrayGroup: FormGroup;
+  public formArrayGroup!: FormGroup;
 
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();
@@ -91,7 +91,7 @@ export class DynamicFormControlComponent implements OnDestroy {
 
   @Output() valueChange: EventEmitter<any> = new EventEmitter<any>();
   private destroy$ = createSubject<boolean>();
-  @Input() listenForChanges: boolean;
+  @Input() listenForChanges!: boolean;
 
   ngOnDestroy = () => {
     this.destroy$.next(true);

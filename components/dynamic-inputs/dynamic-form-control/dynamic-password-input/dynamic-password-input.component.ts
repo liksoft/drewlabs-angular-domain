@@ -5,6 +5,7 @@ import { DynamicInputTypeHelper } from '../input-type.service';
 import { InputTypes } from '../../core/contracts/input-types';
 import { map } from 'rxjs/operators';
 import { createStateful } from '../../../../rxjs/helpers';
+import { getObjectProperty } from 'src/app/lib/core/utils';
 
 @Component({
   selector: 'app-dynamic-password-input',
@@ -33,10 +34,10 @@ import { createStateful } from '../../../../rxjs/helpers';
 })
 export class DynamicPasswordInputComponent {
   @Input() controlDivContainerClass: string = 'clr-form-control';
-  @Input() control: AbstractControl;
+  @Input() control!: AbstractControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
-  @Input() inputConfig: IHTMLFormControl;
+  @Input() inputConfig!: IHTMLFormControl;
 
   @Output() inputKeyUp = new EventEmitter<{ formcontrolname: string, value: any }>();
   @Output() inputKeyDown = new EventEmitter<{ formcontrolname: string, value: any }>();
@@ -63,7 +64,7 @@ export class DynamicPasswordInputComponent {
     return Math.pow(2, 31) - 1;
   }
 
-  getErrorAsNumber(value: object | number, key: string = null) {
-    return typeof value === 'number' ? value : value[key];
+  getErrorAsNumber(value: object | number, key?: string) {
+    return typeof value === 'number' ? value : getObjectProperty(value, key || '');
   }
 }

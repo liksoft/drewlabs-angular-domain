@@ -21,15 +21,15 @@ import { createDynamicForm } from '../../core/helpers';
 export class DynamicRepetableGroupComponent implements OnDestroy {
 
   // Injectable inputs
-  @Input() control: FormArray;
+  @Input() control!: FormArray;
   @Input() formBindings: { [prop: string]: IDynamicForm } = {};
   /**
    * @deprecated
    */
-  @Input() form: IDynamicForm;
+  @Input() form!: IDynamicForm;
   @Input() addButtonText = 'Plus';
   @Input() hideAddNewFormgroupButton = false;
-  @Input() prefixLabel: string;
+  @Input() prefixLabel!: string;
   @Input() offsetAddNewGroupButton = true;
 
   @Output() childCreate = new EventEmitter<AbstractControl>();
@@ -43,7 +43,7 @@ export class DynamicRepetableGroupComponent implements OnDestroy {
   @Output() addNewControlGroup: EventEmitter<object> = new EventEmitter();
 
   private controlsContainerRefs: Array<ComponentRef<RepeatableGroupChildComponent>> = [];
-  @ViewChild('controlsContainer', { read: ViewContainerRef, static: true }) controlsContainer: ViewContainerRef;
+  @ViewChild('controlsContainer', { read: ViewContainerRef, static: true }) controlsContainer!: ViewContainerRef;
   private totalAddedComponent = 0;
   public initComponent = new EventEmitter<object>();
   public addNewGroupButtonContainerClass = this.offsetAddNewGroupButton ? 'clr-col-3 clr-offset-2 clr-offset-margin-right' : '';
@@ -62,7 +62,7 @@ export class DynamicRepetableGroupComponent implements OnDestroy {
   }
 
   // tslint:disable-next-line: typedef
-  addChildComponent(controlIndex: number, formGroupState: AbstractControl, showEditButton = false, form: IDynamicForm = null) {
+  addChildComponent(controlIndex: number, formGroupState: AbstractControl, showEditButton = false, form?: IDynamicForm) {
     this.totalAddedComponent += 1;
     const controlComponentRef: ComponentRef<RepeatableGroupChildComponent> = this.dynamicComponentLoader.createComponent(
       this.controlsContainer,
@@ -70,7 +70,9 @@ export class DynamicRepetableGroupComponent implements OnDestroy {
     );
     (formGroupState as FormGroup).addControl('formarray_control_index', new FormControl(controlIndex));
     // Initialize child component input properties
-    controlComponentRef.instance.form = createDynamicForm(form);
+    if (form) {
+      controlComponentRef.instance.form = createDynamicForm(form);
+    }
     controlComponentRef.instance.formGroup = formGroupState as FormGroup;
     controlComponentRef.instance.index = ({ index: this.totalAddedComponent }).index;
     controlComponentRef.instance.label = `${this.prefixLabel} ${({ index: this.totalAddedComponent }).index}`;

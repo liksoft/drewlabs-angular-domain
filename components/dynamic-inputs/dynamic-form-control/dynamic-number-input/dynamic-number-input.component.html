@@ -1,4 +1,4 @@
-<div [class]="controlDivContainerClass">
+<!-- <div [class]="controlDivContainerClass"> -->
   <label class="clr-control-label" *ngIf="showLabelAndDescription"
     [for]="inputTypeHelper.asNumberInput(inputConfig).formControlName">{{ inputTypeHelper.asNumberInput(inputConfig).label }}
     <span class="required-text" *ngIf="inputTypeHelper.asNumberInput(inputConfig).rules?.isRequired">(*)</span></label>
@@ -25,4 +25,4 @@
     </clr-control-error>
     <clr-control-helper *ngIf="inputConfig.descriptionText && showLabelAndDescription"><span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span></clr-control-helper>
   </div>
-</div>
+<!-- </div> -->

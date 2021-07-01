@@ -2,20 +2,25 @@ import { ArrayUtils } from '../types/array-utils';
 import { ISerializableBuilder } from '../../built-value/contracts/serializers';
 import { MomentUtils } from '../datetime/moment-utils';
 import { isArray, isDefined } from '../types/type-utils';
-import * as Excel from 'xlsx';
+
+declare const XLSX: any;
 
 export class ExcelUtils {
+
   // tslint:disable-next-line: max-line-length
   public static readAsBufferedArray(buffer: ArrayBuffer, defaultDateFormat = 'dd/MM/YYYY', readFirstSheet?: boolean): Promise<object[]> {
+    if (undefined === XLSX) {
+      throw new Error('xlsx js library is required to be loaded in application compiled script in order to use this util');
+    }
     return new Promise((resolve, reject) => {
       try {
-        const wb = Excel.read(buffer, { type: 'array', cellDates: true, dateNF: defaultDateFormat });
+        const wb = XLSX?.read(buffer, { type: 'array', cellDates: true, dateNF: defaultDateFormat });
         if (readFirstSheet) {
-          resolve(Excel.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: null }));
+          resolve(XLSX?.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: null }));
           return;
         }
         const data = wb.SheetNames.map((sh: string) => {
-          return Excel.utils.sheet_to_json(wb.Sheets[sh], { defval: null });
+          return XLSX?.utils.sheet_to_json(wb.Sheets[sh], { defval: null });
         });
         resolve(ArrayUtils.flatten(data));
       } catch (err) {
@@ -33,7 +38,7 @@ export class ExcelUtils {
   public static jsonToSheet(data: object[], headers: { [index: string]: string }, datefield: string[] = [], dateFormat: string = 'DD/MM/YYYY', inputDateFormat: string = 'YYYY-MM-DD'): any {
     const entries = ExcelUtils.entityToXlsEntries(data, headers, datefield, dateFormat, inputDateFormat);
     if (entries.length > 0) {
-      return Excel.utils.json_to_sheet(entries, { header: Object.keys(headers), skipHeader: false });
+      return XLSX.utils.json_to_sheet(entries, { header: Object.keys(headers), skipHeader: false });
     }
   }
 
@@ -56,11 +61,11 @@ export class ExcelUtils {
     return [];
   }
 
-  static writeWorkSheet(ws: Excel.WorkSheet, wsName: string, filename: string) {
-    const wb = Excel.utils.book_new();
+  static writeWorkSheet(ws: any, wsName: string, filename: string) {
+    const wb = XLSX.utils.book_new();
     /* Add worksheet to workbook */
-    Excel.utils.book_append_sheet(wb, ws, wsName);
-    Excel.writeFile(wb, filename);
+    XLSX.utils.book_append_sheet(wb, ws, wsName);
+    XLSX.writeFile(wb, filename);
   }
 
   /**

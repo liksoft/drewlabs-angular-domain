@@ -23,9 +23,9 @@ import { CheckBoxInput } from '../../core';
 })
 export class DynamicCheckoxInputComponent {
 
-  @Input() controlDivContainerClass: string = 'clr-form-control';
+  // @Input() controlDivContainerClass: string = 'clr-form-control';
   // tslint:disable-next-line: variable-name
-  private _control: AbstractControl;
+  private _control!: AbstractControl;
   @Input() set control(value: AbstractControl) {
     this._control = value;
   }
@@ -35,7 +35,7 @@ export class DynamicCheckoxInputComponent {
   }
 
   // tslint:disable-next-line: variable-name
-  private _inputConfig: IHTMLFormControl;
+  private _inputConfig!: IHTMLFormControl;
   @Input() set inputConfig(value: IHTMLFormControl) {
     this._inputConfig = value;
     if (
@@ -56,7 +56,7 @@ export class DynamicCheckoxInputComponent {
   @Input() showLabelAndDescription = true;
 
   public inputTypes = InputTypes;
-  public formArrayGroup: FormGroup;
+  public formArrayGroup!: FormGroup;
 
   constructor(
     private builder: FormBuilder,
