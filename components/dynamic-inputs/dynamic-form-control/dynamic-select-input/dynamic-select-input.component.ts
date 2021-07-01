@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, Inject, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, Inject, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { DynamicInputTypeHelper } from '../input-type.service';
 import { SelectInput } from '../../core/input-types';
@@ -47,25 +47,27 @@ import { doLog } from '../../../../rxjs/operators';
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicSelectInputComponent implements OnDestroy {
-  private _control: AbstractControl;
+
+  @Input() controlDivContainerClass: string = 'clr-form-control';
+  private _control!: AbstractControl;
   @Input() set control(value: AbstractControl) {
     this._control = value;
   }
-  get control() : AbstractControl {
+  get control(): AbstractControl {
     return this._control;
   }
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name
   _performingAction$ = createStateful(false);
   // tslint:disable-next-line: variable-name
-  _inputItems$ = createStateful({ performingAction: false, state: [] });
+  _inputItems$ = createStateful<{ performingAction: boolean, state: any[] }>({ performingAction: false, state: [] });
   @Input() set inputItems(value: { [index: string]: any }[]) {
     this._inputItems$.next({ performingAction: false, state: value });
   }
   inputItems$ = this._inputItems$.asObservable();
 
   // tslint:disable-next-line: variable-name
-  private _inputConfig: SelectInput;
+  private _inputConfig!: SelectInput;
   @Input() set inputConfig(value: SelectInput) {
     this._inputConfig = value as SelectInput;
   }
@@ -79,6 +81,9 @@ export class DynamicSelectInputComponent implements OnDestroy {
   // tslint:disable-next-line: variable-name
   _controlFocusEvent$ = createSubject<{ state: any[] }>();
 
+  private _actionSubject$ = createStateful(false);
+  performingAction$ = this._actionSubject$.asObservable();
+
   // tslint:disable-next-line: variable-name
   private _destroy$ = createSubject();
 
@@ -90,6 +95,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
     this._controlFocusEvent$.pipe(
       tap((state) => {
         this._inputItems$.next({ ...state, performingAction: true });
+        this._actionSubject$.next(true);
       }),
       doLog('Control focused: '),
       switchMap(() => this.client.get(this.serverPath, {
@@ -101,12 +107,14 @@ export class DynamicSelectInputComponent implements OnDestroy {
         map(state => {
           const data = getResponseDataFromHttpResponse(state);
           if (data && isArray(data)) {
-            return controlBindingsSetter(data)(this._inputConfig).items;
+            return controlBindingsSetter(data)(this._inputConfig).items as any[];
           }
+          return [];
         }),
         takeUntil(this._destroy$),
         tap(state => {
           this._inputItems$.next({ performingAction: false, state });
+          this._actionSubject$.next(false);
         })
       ))
     ).subscribe();
