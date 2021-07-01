@@ -34,7 +34,6 @@ import { PageComponent, AlertablePageComponent } from '../helpers/component-inte
   ],
   declarations: [
     OnlineStateMonitoringComponent,
-
     // These component must be removed in future version
     DynamicFormPageComponent,
     PageComponent,

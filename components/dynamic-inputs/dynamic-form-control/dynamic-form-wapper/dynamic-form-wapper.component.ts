@@ -1,37 +1,33 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, AbstractControl, FormArray } from '@angular/forms';
 import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { isDefined, isArray } from '../../../../utils';
-import { createDynamicForm } from '../../core/helpers';
+import { sortDynamicFormByIndex } from '../../core/helpers';
 import { IConditionalControlBinding, MultiSelectItemRemoveEvent } from './types';
 import { applyHiddenAttributeToControlFn, applyHiddenAttributeChangeToControl, bindingsFromDynamicForm } from './helpers';
 import { createStateful } from '../../../../rxjs/helpers/creator-functions';
 import { isGroupOfIDynamicForm } from '../../../../helpers/component-reactive-form-helpers';
+import { DynamicForm } from '../../core/dynamic-form';
 
 
 @Component({
   selector: 'app-dynamic-form-wapper',
   templateUrl: './dynamic-form-wapper.component.html',
   styles: [],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicFormWapperComponent {
 
+  @Input() _componentForm!: IDynamicForm;
+  get componentForm() {
+    return this._componentForm;
+  }
+
   // tslint:disable-next-line: variable-name
-  private _form: IDynamicForm;
-  @Input() set form(value: IDynamicForm) {
-    this.setComponentForm(value);
+  @Input() set form(value: any) {
+    this._componentForm = this.setComponentForm(value);
   }
-  get form(): IDynamicForm {
-    return this._form;
-  }
-  private _componentFormGroup: FormGroup;
-  @Input() set componentFormGroup(value: FormGroup) {
-    this._componentFormGroup = value;
-  }
-  get componentFormGroup(): FormGroup {
-    return this._componentFormGroup;
-  }
+  @Input() componentFormGroup!: FormGroup;
   @Output() controlItemRemoved = new EventEmitter<MultiSelectItemRemoveEvent>();
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();
@@ -52,22 +48,24 @@ export class DynamicFormWapperComponent {
 
   // tslint:disable-next-line: typedef
   setComponentForm(value: IDynamicForm) {
-    this._form = createDynamicForm(value);
+    let _form = sortDynamicFormByIndex(new DynamicForm(value));
+    // let _form = value;
     let cache = this._bindings$.getValue();
-    if (isGroupOfIDynamicForm(this._form)) {
-      this._form.forms = this._form.forms.map((v) => {
-        const { bindings, form, formgroup } = bindingsFromDynamicForm(v)(this._componentFormGroup);
-        this._componentFormGroup = formgroup as FormGroup;
+    if (isGroupOfIDynamicForm(_form)) {
+      _form.forms = _form.forms?.map((v) => {
+        const { bindings, form, formgroup } = bindingsFromDynamicForm(v)(this.componentFormGroup);
+        this.componentFormGroup = formgroup as FormGroup;
         cache = { ...(cache || {}), ...bindings }
         return form;
       });
     } else {
-      const { bindings, form, formgroup } = bindingsFromDynamicForm(this._form)(this._componentFormGroup);
-      this._componentFormGroup = formgroup as FormGroup;
-      this._form = form;
+      const { bindings, form, formgroup } = bindingsFromDynamicForm(_form)(this.componentFormGroup);
+      this.componentFormGroup = formgroup as FormGroup;
+      _form = form;
       cache = { ...(cache || {}), ...bindings }
     }
     this._bindings$.next(cache);
+    return _form;
   }
 
   // tslint:disable-next-line: typedef
@@ -87,13 +85,13 @@ export class DynamicFormWapperComponent {
     if (isArray(filteredConfigs)) {
       filteredConfigs.forEach((item) => {
         const { control, dynamicForm } = applyHiddenAttributeChangeToControl(
-          this._form,
+          this._componentForm,
           item,
           event.event,
           applyHiddenAttributeToControlFn
-        )(this._componentFormGroup);
-        this._componentFormGroup = control as FormGroup;
-        this._form = dynamicForm;
+        )(this.componentFormGroup);
+        this.componentFormGroup = control as FormGroup;
+        this._componentForm = dynamicForm;
       }); //
     }
   }

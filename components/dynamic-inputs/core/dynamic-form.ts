@@ -1,5 +1,6 @@
 import { IDynamicForm } from './contracts/dynamic-form';
 import { IHTMLFormControl } from './contracts/dynamic-input';
+import { isArray } from '../../../utils/types/type-utils';
 
 export class DynamicForm implements IDynamicForm {
   id: number | string;
@@ -16,7 +17,7 @@ export class DynamicForm implements IDynamicForm {
   constructor({ id, title, description, controlConfigs, endpointURL, forms, appcontext }: IDynamicForm) {
     this.id = id;
     this.title = title;
-    this.controlConfigs = controlConfigs ? [...controlConfigs] : [];
+    this.controlConfigs = controlConfigs ? (isArray(controlConfigs) ? [...controlConfigs] : controlConfigs) : [];
     this.description = description;
     this.endpointURL = endpointURL;
     this.forms = forms;
