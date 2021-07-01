@@ -49,7 +49,7 @@ import { doLog } from '../../../../rxjs/operators';
 export class DynamicSelectInputComponent implements OnDestroy {
 
   @Input() controlDivContainerClass: string = 'clr-form-control';
-  private _control: AbstractControl;
+  private _control!: AbstractControl;
   @Input() set control(value: AbstractControl) {
     this._control = value;
   }
@@ -60,14 +60,14 @@ export class DynamicSelectInputComponent implements OnDestroy {
   // tslint:disable-next-line: variable-name
   _performingAction$ = createStateful(false);
   // tslint:disable-next-line: variable-name
-  _inputItems$ = createStateful({ performingAction: false, state: [] });
+  _inputItems$ = createStateful<{ performingAction: boolean, state: any[] }>({ performingAction: false, state: [] });
   @Input() set inputItems(value: { [index: string]: any }[]) {
     this._inputItems$.next({ performingAction: false, state: value });
   }
   inputItems$ = this._inputItems$.asObservable();
 
   // tslint:disable-next-line: variable-name
-  private _inputConfig: SelectInput;
+  private _inputConfig!: SelectInput;
   @Input() set inputConfig(value: SelectInput) {
     this._inputConfig = value as SelectInput;
   }
@@ -107,7 +107,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
         map(state => {
           const data = getResponseDataFromHttpResponse(state);
           if (data && isArray(data)) {
-            return controlBindingsSetter(data)(this._inputConfig).items;
+            return controlBindingsSetter(data)(this._inputConfig).items as any[];
           }
           return [];
         }),
