@@ -65,24 +65,23 @@ export class FaceDetectionComponent implements AfterViewInit, OnDestroy {
 
     this.faceDetector.detectedFace$
       .pipe(
-        // takeUntil(this._destroy$),
-        first(),
+        // first(),
         tap(async (state) => {
-          if (state) {
-            // this._frontalFaceDetected = true;
-            // const _canvas = this.document.createElement('canvas');
-            // const context = _canvas.getContext('2d');
-            // const image = new Image();
-            // image.crossOrigin = 'anonymous';
-
-            // image.onload = () => {
-            //   const { width, height } = image;
-            //   canvas.width = width,
-            //     canvas.height = height;
-            //   context?.drawImage(image, 0, 0, width, height);
-            // };
-            this.base64String = await readFileAsDataURI(state?.image);
-            console.log(this.base64String);
+          if (state?.p1 && state?.p2) {
+            const canvas = this.document.createElement("canvas");
+            const {videoWidth, videoHeight} = video;
+            canvas.width = videoWidth;
+            canvas.height = videoHeight;
+            const sx = state?.p1?.x || 0;
+            const sy = state?.p1?.y || 0;
+            const dx = (state?.p2?.x || 0);
+            const dy = (state?.p2?.y || 0);
+            const sWidth = dx - sx;
+            const sHeight = dy - sy;
+            canvas.getContext('2d')?.drawImage(video, sx,  sy,  sWidth,  sHeight, dx, dy, sWidth,  sHeight);
+            // convert it to a usable data URL
+            const dataURL = canvas.toDataURL();
+            this.outputImage.nativeElement.src = dataURL;
           }
         })
       )

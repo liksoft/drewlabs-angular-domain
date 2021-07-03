@@ -166,7 +166,7 @@ export class OpenCVSvervice implements OpenCVProviderInterface {
 })
 export class OpenCVFaceDetectorService implements OnDestroy {
 
-    private _detectedFace$ = createSubject<{ point?: Point, image?: Blob }>();
+    private _detectedFace$ = createSubject<any>();
     get detectedFace$() {
         return this._detectedFace$.asObservable();
     }
@@ -215,22 +215,23 @@ export class OpenCVFaceDetectorService implements OnDestroy {
             logError(cv, err);
         }
         // draw faces.
-        if (faces?.size() > 1) {
-            // TODO : Notify too many faces
+        const facesMatSize = faces?.size();
+        if (facesMatSize > 1 ) {
+            this._detectedFace$.next({totalFaces: facesMatSize});
         } else {
             for (let i = 0; i < faces.size(); ++i) {
                 let face = faces.get(i);
-                let point1 = new cv.Point(face.x, face.y);
-                let point2 = new cv.Point(face.x + face.width + 4, face.y + face.height + 6);
+                let point1 = new cv.Point(face.x - 8, face.y - 8);
+                let point2 = new cv.Point(face.x + face.width + 6, face.y + face.height + 6);
                 cv.rectangle(dst, point1, point2, [255, 0, 0, 255]);
-                const rect = new cv.Rect(face.x, face.y, face.width, face.height);
-                const point: Point = { x: face?.y, y: face?.y, dx: face?.width + 8, dy: face?.height + 10 };
-                this._detectedFace$.next({ point, image: new Blob([dst.clone().roi(rect).data.buffer]) });
+                this._detectedFace$.next({ p1: point1, p2: point2, totalFaces: facesMatSize});
             }
         }
         cv.imshow(canvas, dst);
         // schedule the next one.
-        let delay = 1000 / FPS - (Date.now() - start);
+        const fps = 20000 / FPS;
+        const time = (Date.now() - start);
+        let delay = fps - time;
         setTimeout(() => {
             this.detectFace(
                 classifier,
@@ -243,7 +244,7 @@ export class OpenCVFaceDetectorService implements OnDestroy {
                 FPS
             );
         }, delay);
-        return { src, dst, gray, cap, classifier, delay };
+        return;
     }
 
     detectFaceOnVideoStream = (
