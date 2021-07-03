@@ -1,9 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, Inject, Input, OnDestroy, ViewChild } from '@angular/core';
-import { first, takeUntil, tap } from 'rxjs/operators';
+import { first, tap } from 'rxjs/operators';
 import { createSubject } from 'src/app/lib/core/rxjs/helpers';
-import { readFileAsDataURI } from '../../../browser';
-import { Log } from '../../../logger';
 import { logError } from '../../helpers';
 import { OpenCVFaceDetectorService } from '../opencv.service';
 import { UserCameraService } from '../user-camera.service';
@@ -30,6 +28,7 @@ export class FaceDetectionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('videoElement') videoElement!: ElementRef;
   @ViewChild('canvasElement') canvasElement!: ElementRef;
   @ViewChild('outputImage') outputImage!: ElementRef;
+  @ViewChild('sceneImage') sceneImage!: ElementRef;
 
 
   private _destroy$ = createSubject();
@@ -65,23 +64,27 @@ export class FaceDetectionComponent implements AfterViewInit, OnDestroy {
 
     this.faceDetector.detectedFace$
       .pipe(
-        // first(),
+        first(),
         tap(async (state) => {
-          if (state?.p1 && state?.p2) {
+          if (state?.x && state?.y && state?.width && state?.height) {
             const canvas = this.document.createElement("canvas");
             const {videoWidth, videoHeight} = video;
-            canvas.width = videoWidth;
-            canvas.height = videoHeight;
-            const sx = state?.p1?.x || 0;
-            const sy = state?.p1?.y || 0;
-            const dx = (state?.p2?.x || 0);
-            const dy = (state?.p2?.y || 0);
-            const sWidth = dx - sx;
-            const sHeight = dy - sy;
-            canvas.getContext('2d')?.drawImage(video, sx,  sy,  sWidth,  sHeight, dx, dy, sWidth,  sHeight);
-            // convert it to a usable data URL
-            const dataURL = canvas.toDataURL();
-            this.outputImage.nativeElement.src = dataURL;
+            const context = canvas.getContext('2d');
+            if (context) {
+              canvas.width = videoWidth;
+              canvas.height = videoHeight;
+              const x = state?.x;
+              const y = state?.y;
+              const width = state?.width;
+              const height = state?.height + 12;
+              context?.drawImage(video, 0, 0);
+              // this.sceneImage.nativeElement.src = canvas.toDataURL();
+              context.lineWidth = 1;
+              context.strokeStyle = "green";
+              context.strokeRect(x, y, width, height);
+              // Send Image with rect to facial recognation system for comparison
+              this.outputImage.nativeElement.src = canvas.toDataURL();
+            }
           }
         })
       )

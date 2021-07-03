@@ -216,20 +216,24 @@ export class OpenCVFaceDetectorService implements OnDestroy {
         }
         // draw faces.
         const facesMatSize = faces?.size();
-        if (facesMatSize > 1 ) {
+        if (facesMatSize !== 1 ) {
             this._detectedFace$.next({totalFaces: facesMatSize});
         } else {
             for (let i = 0; i < faces.size(); ++i) {
                 let face = faces.get(i);
-                let point1 = new cv.Point(face.x - 8, face.y - 8);
-                let point2 = new cv.Point(face.x + face.width + 6, face.y + face.height + 6);
+                const x = face.x - 8;
+                const y = face.y - 8;
+                const width = face.width + 6;
+                const height = face.height + 12;
+                let point1 = new cv.Point(x, y);
+                let point2 = new cv.Point(face.x + width, face.y + height);
                 cv.rectangle(dst, point1, point2, [255, 0, 0, 255]);
-                this._detectedFace$.next({ p1: point1, p2: point2, totalFaces: facesMatSize});
+                this._detectedFace$.next({ x, y, width, height, totalFaces: facesMatSize});
             }
         }
         cv.imshow(canvas, dst);
         // schedule the next one.
-        const fps = 20000 / FPS;
+        const fps = 5000 / FPS;
         const time = (Date.now() - start);
         let delay = fps - time;
         setTimeout(() => {

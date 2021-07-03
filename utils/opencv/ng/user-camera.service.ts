@@ -1,5 +1,7 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
+import { Log } from "../../logger";
+import { NAVIGATOR } from "../../ng/common/tokens/navigator";
 import { OnStartUserCameraHandlerFn, VideoConstraints } from "../types/user-camera";
 
 @Injectable({
@@ -11,7 +13,10 @@ export class UserCameraService {
     private _stream!: MediaStream;
     private _onCameraStartedCallback!: OnStartUserCameraHandlerFn;
 
-    constructor(@Inject(DOCUMENT) private document: Document) { }
+    constructor(
+        @Inject(DOCUMENT) private document: Document,
+        @Inject(NAVIGATOR) private navigator: Navigator
+    ) { }
 
 
     onVideoCanPlay() {
@@ -35,11 +40,29 @@ export class UserCameraService {
 
     }
 
+    startCameraAndListenForDeviceChangesEvent = (
+        video: HTMLVideoElement,
+        resolution: string,
+        callback: OnStartUserCameraHandlerFn
+    ) => {
+        // Review the method implementations
+        // by using observables if possible
+        const promise = this.startCamera(video, resolution, callback);
+        // Listen for media changes event
+        this.navigator.mediaDevices.addEventListener('devicechange', (event) => {
+            this.dispose();
+            Log('Event: ', event);
+            this.startCamera(video, resolution, callback);
+        });
+        return promise;
+    }
+
     startCamera = (
         video: HTMLVideoElement,
         resolution: string,
         callback: OnStartUserCameraHandlerFn
     ) => {
+
         const constraints: VideoConstraints = {
             qvga: { width: { exact: 320 }, height: { exact: 240 } },
             vga: { width: { exact: 640 }, height: { exact: 480 } }
@@ -51,7 +74,7 @@ export class UserCameraService {
             videoConstraint = true;
         }
         return new Promise((resolve, reject) => {
-            navigator.mediaDevices
+            this.navigator.mediaDevices
                 .getUserMedia({ video: videoConstraint, audio: false })
                 .then(stream => {
                     video.srcObject = stream;
@@ -67,6 +90,8 @@ export class UserCameraService {
                 });
         }); //
     }
+
+
 
     stopCamera() {
         this.dispose();
