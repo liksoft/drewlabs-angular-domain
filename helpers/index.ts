@@ -24,7 +24,7 @@ export {
 } from './component-reactive-form-helpers';
 
 export { DateTimeHelper } from './date-time-helper';
-export { DynamicControlParser } from './dynamic-control-parser';
+export { DynamicControlParser, createFormGroupFromDynamicControls } from './dynamic-control-parser';
 export { IFileRessource, FileHelperService } from './file-helper.service';
 export { IFormRequestConfig, FormHelperService, FormsViewComponent, FormViewContainerComponent } from './form-helper';
 export { GenericPaginatorDatasource, ClrDatagridBaseComponent, ToExcelHeaderEventArgs } from './paginator';

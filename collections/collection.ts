@@ -1,5 +1,5 @@
 import { ICollection } from '../contracts/collection-interface';
-import { isDefined } from '../utils/types/type-utils';
+import { isDefined, isArray } from '../utils/types/type-utils';
 
 export class Collection<T> implements ICollection<T> {
   protected items: { [index: string]: T } = {};
@@ -9,7 +9,7 @@ export class Collection<T> implements ICollection<T> {
    * @description Build a new collection from a predefined collection. Provide a shalow copy of the collection passed as parameter
    * @param c [[ICollection<T>]]
    */
-  static from<T>(c: ICollection<T>): ICollection<T>  {
+  static from<T>(c: ICollection<T>): ICollection<T> {
     const col = new Collection<T>();
     c.keys().forEach((k) => {
       col.add(k, c.get(k));
@@ -114,12 +114,15 @@ export class Collection<T> implements ICollection<T> {
 
 /**
  * @description Convert a list of [T] items into a collection of [T] items
- * @param controls [[T]]
+ * @param values [[T]]
  */
-export function collect<T>(controls: T[], using: string = null): ICollection<T>  {
-  const collection = new Collection<T>();
-  controls.forEach((v: T, index: number) => {
-    collection.add(isDefined(using) ? v[using] : index.toString(), v);
-  });
-  return collection;
+export function collect<T>(values: T[] | ICollection<T>, using: string = null): ICollection<T> {
+  if (isArray(values)) {
+    const collection = new Collection<T>();
+    (values as T[]).forEach((v: T, index: number) => {
+      collection.add(isDefined(using) ? v[using] : index.toString(), v);
+    });
+    return collection;
+  }
+  return values as ICollection<T>;
 }
