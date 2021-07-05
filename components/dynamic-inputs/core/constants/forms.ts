@@ -119,35 +119,7 @@ export const STATIC_FORMS = {
         columns: null,
         rows: null,
         value: null,
-      },
-      // {
-      //   label: 'Associer ce formulaire',
-      //   placeholder: 'Sélectionner...',
-      //   type: 'select',
-      //   classes: 'clr-input',
-      //   required: 0,
-      //   disabled: 0,
-      //   readonly: 0,
-      //   unique: 0,
-      //   pattern: null,
-      //   description: 'Veuillez sélectionner dans cette liste déroulante un formulaire devant contenir ce dernier.',
-      //   maxLength: null,
-      //   minLength: null,
-      //   min: null,
-      //   max: null,
-      //   minDate: null,
-      //   maxDate: null,
-      //   selectableValues: null,
-      //   selectableModel: 'table:forms|model:Drewlabs\\Packages\\Form\\Models\\Form|keyfield:id|groupfield:id|valuefield:title',
-      //   multiple: 0,
-      //   options: null,
-      //   controlGroupKey: null,
-      //   controlName: 'parent_id',
-      //   controlIndex: 5,
-      //   columns: null,
-      //   rows: null,
-      //   value: null,
-      // },
+      }
     ],
     url: null
   },
@@ -213,7 +185,8 @@ export const STATIC_FORMS = {
             controlIndex: 3,
             columns: null,
             rows: null,
-            value: null
+            value: null,
+            requiredIf: 'type:date,select,textarea,number,text,phone,password,checkbox,radio,email'
           },
           {
             label: 'Type du champ',
@@ -270,6 +243,7 @@ export const STATIC_FORMS = {
             columns: null,
             rows: null,
             value: null,
+            requiredIf: 'type:date,select,textarea,number,text,phone,password,checkbox,radio,email'
           },
           {
             label: 'Longueur texte (Max)',
@@ -704,8 +678,8 @@ export const STATIC_FORMS = {
             controlIndex: 18,
             columns: null,
             rows: null,
-            value: null,
-            // requiredIf: 'type:file,select,checkbox'
+            value: false,
+            requiredIf: 'type:file,select,checkbox'
           }
         ]
       },
@@ -739,7 +713,8 @@ export const STATIC_FORMS = {
             controlIndex: 1,
             columns: null,
             rows: null,
-            value: null
+            value: null,
+            requiredIf: 'type:date,select,textarea,number,text,phone,password,checkbox,radio,email,hidden,file,control_group'
           },
           {
             label: 'Index',
@@ -823,7 +798,7 @@ export const STATIC_FORMS = {
             controlIndex: 4,
             columns: null,
             rows: null,
-            value: null
+            value: "0"
           },
           {
             label: 'Désactivé ?',
@@ -851,7 +826,7 @@ export const STATIC_FORMS = {
             controlIndex: 5,
             columns: null,
             rows: null,
-            value: 0
+            value: "0"
           },
           {
             label: 'Lecture ?',
@@ -879,7 +854,7 @@ export const STATIC_FORMS = {
             controlIndex: 6,
             columns: null,
             rows: null,
-            value: 0
+            value: "0"
           },
           {
             label: 'Unique ?',
@@ -907,7 +882,7 @@ export const STATIC_FORMS = {
             controlIndex: 7,
             columns: null,
             rows: null,
-            value: 0
+            value: "0"
           },
           {
             label: 'Définir la condition d\'unicité',
@@ -964,7 +939,8 @@ export const STATIC_FORMS = {
             controlIndex: 8,
             columns: null,
             rows: null,
-            value: 0
+            value: "0",
+            requiredIf: 'type:date,select,textarea,number,text,phone,password,checkbox,radio,email,hidden,file,control_group'
           },
           {
             label: 'Définir la condition du champ',
@@ -995,7 +971,6 @@ export const STATIC_FORMS = {
             value: null,
             requiredIf: 'control_is_conditionned:1'
           },
-          // is_repeatable
           {
             label: 'Le champ est-il répétable ?',
             placeholder: '',
@@ -1022,7 +997,8 @@ export const STATIC_FORMS = {
             controlIndex: 8,
             columns: null,
             rows: null,
-            value: 0
+            value: "0",
+            requiredIf: 'type:date,select,textarea,number,text,phone,password,checkbox,radio,email,hidden,file,control_group'
           },
           {
             label: 'Expression régulière de validation ?',
@@ -1052,7 +1028,7 @@ export const STATIC_FORMS = {
             rows: null,
             value: null,
             requiredIf: 'type:text,email,password,file'
-          }, // container_class
+          },
           {
             label: 'Classe CSS du conteneur',
             placeholder: 'Saisir la class du conteneur du champ',
