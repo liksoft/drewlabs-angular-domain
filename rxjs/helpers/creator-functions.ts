@@ -28,7 +28,7 @@ export const createObservable = <T>(handlerFunc: GenericObserverHandlerFunc<T>) 
 };
 
 
-export const observableOf = <T>(stream: T) => of(stream);
+export const observableOf = <T>(stream?: T) => of(stream);
 
 export const observableFrom = <T>(stream: ObservableInput<T>) => from(stream);
 
@@ -41,5 +41,5 @@ export const isObservable = (value: any) => value instanceof Observable;
 /**
  * @description Returns an empty observable
  */
-export const emptyObservable = () => observableOf(EMPTY);
+export const emptyObservable = () => EMPTY;
 
