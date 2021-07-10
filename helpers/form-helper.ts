@@ -59,7 +59,7 @@ export class FormHelperService implements OnDestroy {
 
   getFormById = (id: number | string) => {
     return new Promise<IDynamicForm>((resolve, _) => {
-      this.form.getForm(id).then(async (f) => {
+      this.form.getForm(id, { load_bindings: true }).then(async (f) => {
         if (isDefined(f)) {
           resolve(await DynamicFormHelpers.buildDynamicForm(f, this.translate));
         }
