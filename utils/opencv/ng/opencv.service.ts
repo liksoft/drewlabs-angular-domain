@@ -1,11 +1,10 @@
 import { DOCUMENT } from "@angular/common";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, OnDestroy } from "@angular/core";
-import { Observable, throwError } from "rxjs";
+import { Observable, Subject, throwError } from "rxjs";
 import { catchError, map, takeUntil, tap, } from "rxjs/operators";
 import { createStateful, createSubject, observableFrom } from "../../../rxjs/helpers";
 import { doLog } from "../../../rxjs/operators";
-import { readFileAsDataURI } from "../../browser";
 import { Log } from "../../logger";
 import { WINDOW } from "../../ng/common/tokens/window";
 import { isDefined, setObjectProperty } from "../../types";
@@ -16,6 +15,18 @@ import { OpenCVLoadResult, OpenCVOptions, Point } from "../types/open-cv";
 import { OPENCV_CONFIG_OPTIONS } from "./tokens";
 
 declare var cv: any;
+
+
+export type FaceDetectorHandlerFn = (
+    classifier: any,
+    canvas: any,
+    src: any,
+    dst: any,
+    gray: any,
+    cap: any,
+    faces: any,
+    publisher$: Subject<any>,
+    FPS?: number) => Promise<void>;
 
 export interface OpenCVProviderInterface {
     loadOpenCV(name: string, path: string): Observable<any>;
@@ -166,32 +177,31 @@ export class OpenCVSvervice implements OpenCVProviderInterface {
 })
 export class OpenCVFaceDetectorService implements OnDestroy {
 
-    private _detectedFace$ = createSubject<any>();
-    get detectedFace$() {
-        return this._detectedFace$.asObservable();
-    }
-    public readonly cleanResources$ = createSubject<void>();
-
+    public readonly _cleanResources$ = createSubject<{}>();
     private _destroy$ = createSubject();
-
     private ressources: any[] = [];
+    private faceDetectorTimeOut: any = 0;
 
     constructor(private service: OpenCVSvervice) {
-        this.cleanResources$.pipe(
+        this._cleanResources$.pipe(
             takeUntil(this._destroy$),
             doLog('Taking until...'),
             tap(_ => {
-                this.ressources.forEach(resource => {
-                    try {
-                        resource.delete();
-                    } catch (error) {
-                        Log('Error calling delete: ', error);
-                    }
-                })
+                this.cleanup();
             })
-        );
+        ).subscribe();
     }
 
+    cleanup = () => {
+        this.ressources.forEach(resource => {
+            try {
+                resource.delete();
+            } catch (error) {
+                Log('Error calling delete: ', error);
+            }
+        });
+        clearTimeout(this.faceDetectorTimeOut);
+    }
 
     private detectFace = async (
         classifier: any,
@@ -201,6 +211,7 @@ export class OpenCVFaceDetectorService implements OnDestroy {
         gray: any,
         cap: any,
         faces: any,
+        publisher$: Subject<any>,
         FPS: number = 30) => {
 
         const start = Date.now();
@@ -216,58 +227,58 @@ export class OpenCVFaceDetectorService implements OnDestroy {
         }
         // draw faces.
         const facesMatSize = faces?.size();
-        if (facesMatSize !== 1 ) {
-            this._detectedFace$.next({totalFaces: facesMatSize});
+        if (facesMatSize !== 1) {
+            publisher$.next({ totalFaces: facesMatSize });
         } else {
-            for (let i = 0; i < faces.size(); ++i) {
-                let face = faces.get(i);
-                const x = face.x - 8;
-                const y = face.y - 8;
-                const width = face.width + 6;
-                const height = face.height + 12;
-                let point1 = new cv.Point(x, y);
-                let point2 = new cv.Point(face.x + width, face.y + height);
-                cv.rectangle(dst, point1, point2, [255, 0, 0, 255]);
-                this._detectedFace$.next({ x, y, width, height, totalFaces: facesMatSize});
-            }
+            for (let i = 0; i < faces.size(); ++i)
+                this.handleDetectedFace(faces.get(i), dst, facesMatSize, publisher$);
         }
         cv.imshow(canvas, dst);
         // schedule the next one.
         const fps = 5000 / FPS;
         const time = (Date.now() - start);
-        let delay = fps - time;
-        setTimeout(() => {
-            this.detectFace(
-                classifier,
-                canvas,
-                src,
-                dst,
-                gray,
-                cap,
-                faces,
-                FPS
-            );
-        }, delay);
-        return;
+        this.faceDetectorTimeOut = setTimeout(() => { this.detectFace(classifier, canvas, src, dst, gray, cap, faces, publisher$, FPS); }, fps - time);
+    }
+
+    private handleDetectedFace = (
+        face: any,
+        img: any,
+        totalFaces: number,
+        publisher: Subject<any>
+    ) => {
+        const x = face.x - 8;
+        const y = face.y - 8;
+        const width = face.width + 6;
+        const height = face.height + 12;
+        let point1 = new cv.Point(x, y);
+        let point2 = new cv.Point(face.x + width, face.y + height);
+        cv.rectangle(img, point1, point2, [255, 0, 0, 255]);
+        publisher.next({ x, y, width, height, totalFaces });
     }
 
     detectFaceOnVideoStream = (
         video: HTMLVideoElement,
         canvas: HTMLCanvasElement,
         haarclassifier: string,
-        url: string
-    ) => {
+        url: string,
+        publisher: Subject<any>
+    ) => (initializationHandlerFn: () => void) => {
+        // CLeanup old resources
+        initializationHandlerFn();
         const { width, height } = video;
         let src = new cv.Mat(height, width, cv.CV_8UC4);
         const dst = new cv.Mat(height, width, cv.CV_8UC4);
         const gray = new cv.Mat();
         let cap = new cv.VideoCapture(video);
         let faces = new cv.RectVector();
+
+        Log('Detecting using: ', { haarclassifier, url, publisher });
+    
         return this.service.loadOpenCV(haarclassifier, url)
             .pipe(
                 map(classifier => {
-                    this.ressources = [...[classifier, src, dst, cap, faces]];
-                    return this.detectFace(classifier, canvas, src, dst, gray, cap, faces);
+                    this.ressources = [classifier, src, dst, cap, faces];
+                    return this.detectFace(classifier, canvas, src, dst, gray, cap, faces, publisher);
                 }),
                 catchError(err => {
                     return throwError(err);
