@@ -1,6 +1,5 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
-import { Log } from "../../logger";
 import { NAVIGATOR } from "../../ng/common/tokens/navigator";
 import { OnStartUserCameraHandlerFn, VideoConstraints } from "../types/user-camera";
 
@@ -51,7 +50,6 @@ export class UserCameraService {
         // Listen for media changes event
         this.navigator.mediaDevices.addEventListener('devicechange', (event) => {
             this.dispose();
-            Log('Event: ', event);
             this.startCamera(video, resolution, callback);
         });
         return promise;
@@ -60,16 +58,21 @@ export class UserCameraService {
     startCamera = (
         video: HTMLVideoElement,
         resolution: string,
-        callback: OnStartUserCameraHandlerFn
+        callback: OnStartUserCameraHandlerFn,
+        customResolution?: { width: { exact: number }, height: { exact: number } }
     ) => {
 
         const constraints: VideoConstraints = {
             qvga: { width: { exact: 320 }, height: { exact: 240 } },
             vga: { width: { exact: 640 }, height: { exact: 480 } }
         };
-
         // Get video constraints
-        let videoConstraint: MediaTrackConstraints | boolean = constraints[resolution];
+        let videoConstraint: any = undefined;
+        if (resolution === 'custom') {
+            videoConstraint = customResolution;
+        } else {
+            videoConstraint = constraints[resolution] || customResolution;
+        }
         if (!videoConstraint) {
             videoConstraint = true;
         }

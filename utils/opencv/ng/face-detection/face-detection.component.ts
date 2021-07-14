@@ -39,6 +39,7 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @Input() frontFaceHaarCascadeURL: string = '/assets/resources/vendor/haarcascade_frontalface_default.xml';
   @Input() profilFaceHaarCascadeURL: string = '/assets/resources/vendor/haarcascade_profileface.xml';
+  @Input() eyesClassifierHaarCascadeURL: string = '/assets/resources/vendor/haarcascade_eye.xml';
 
   private _detectedFrontFace$ = createSubject<any>();
   private _detectedLeftFrontFace$ = createSubject<any>();
@@ -85,7 +86,9 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
               canvas,
               'haarcascade_frontalface_default.xml',
               this.frontFaceHaarCascadeURL,
-              this._detectedFrontFace$
+              this._detectedFrontFace$,
+              // 'haarcascade_eye.xml',
+              // this.eyesClassifierHaarCascadeURL
             )(
               this.faceDetector.cleanup
             ).pipe()
@@ -99,36 +102,32 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   async ngOnInit() {
-
     // Detected Front face
     const detectedFrontFace$ = this._detectedFrontFace$
-      .asObservable()
       .pipe(
         filter(state => state?.totalFaces === 1),
         takeUntil(this._destroy$),
         first(),
-        doLog('Face detector state: '),
         tap(async (state) => {
           if (state?.x && state?.y && state?.width && state?.height) {
             const result = this.onFacePointDetected(this.videoHTMLElement, state);
             // Send Image with rect to facial recognation system for comparison
-            this.outputImage.nativeElement.src = result;
+            // this.outputImage.nativeElement.src = result;
             this.frontFaceDataURI.emit(result);
           }
         })
       );
     const detectedLeftFace$ = this._detectedLeftFrontFace$
-      .asObservable()
       .pipe(
+        doLog('Left Face detector state: '),
         filter(state => state?.totalFaces === 1),
         takeUntil(this._destroy$),
         first(),
-        doLog('Left Face detector state: '),
         tap(async (state) => {
           if (state?.x && state?.y && state?.width && state?.height) {
             const result = this.onFacePointDetected(this.videoHTMLElement, state);
             // Send Image with rect to facial recognation system for comparison
-            this.outputImage.nativeElement.src = result;
+            // this.outputImage.nativeElement.src = result;
             this.profilFaceDataURI.emit(result);
           }
         })
@@ -140,13 +139,16 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
   async ngAfterViewInit() {
     this.videoHTMLElement = this.videoElement.nativeElement as HTMLVideoElement;
     this.canvasHTMLElement = this.canvasElement.nativeElement as HTMLCanvasElement;
-    await this.cameraService.startCamera(
-      this.videoHTMLElement,
-      'qvga',
-      (_, dst) => {
-        this._detectFrontFace$.next({ image: dst, canvas: this.canvasHTMLElement });
-      }
-    );
+    setTimeout(async () => {
+      await this.cameraService.startCamera(
+        this.videoHTMLElement,
+        'custom',
+        (_, dst) => {
+          this._detectFrontFace$.next({ image: dst, canvas: this.canvasHTMLElement });
+        },
+        { width: { exact: this.width }, height: { exact: this.height } }
+      );
+    }, 1000);
   }
 
   detectProfilFace() {
@@ -176,6 +178,7 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnDestroy(): void {
     this._destroy$.next();
+    this.faceDetector.cleanup();
   }
 
 }

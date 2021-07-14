@@ -1,11 +1,9 @@
 import { DOCUMENT } from "@angular/common";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, OnDestroy } from "@angular/core";
-import { Observable, Subject, throwError } from "rxjs";
+import { forkJoin, Observable, Subject, throwError } from "rxjs";
 import { catchError, map, takeUntil, tap, } from "rxjs/operators";
 import { createStateful, createSubject, observableFrom } from "../../../rxjs/helpers";
-import { doLog } from "../../../rxjs/operators";
-import { Log } from "../../logger";
 import { WINDOW } from "../../ng/common/tokens/window";
 import { isDefined, setObjectProperty } from "../../types";
 import { OPENCV_DEFAULT_LOAD_RESULT } from "../constants/load-result";
@@ -185,7 +183,6 @@ export class OpenCVFaceDetectorService implements OnDestroy {
     constructor(private service: OpenCVSvervice) {
         this._cleanResources$.pipe(
             takeUntil(this._destroy$),
-            doLog('Taking until...'),
             tap(_ => {
                 this.cleanup();
             })
@@ -193,12 +190,12 @@ export class OpenCVFaceDetectorService implements OnDestroy {
     }
 
     cleanup = () => {
-        this.ressources.forEach(resource => {
+        this.ressources.filter(item => {
+            return isDefined(item);
+        }).forEach(resource => {
             try {
                 resource.delete();
-            } catch (error) {
-                Log('Error calling delete: ', error);
-            }
+            } catch (error) {}
         });
         clearTimeout(this.faceDetectorTimeOut);
     }
@@ -211,7 +208,9 @@ export class OpenCVFaceDetectorService implements OnDestroy {
         gray: any,
         cap: any,
         faces: any,
-        publisher$: Subject<any>,
+        publisher$?: Subject<any>,
+        eyeClassifier?: any,
+        eyes?: any,
         FPS: number = 30) => {
 
         const start = Date.now();
@@ -221,39 +220,56 @@ export class OpenCVFaceDetectorService implements OnDestroy {
         // detect faces.
 
         try {
-            classifier.detectMultiScale(gray, faces, 1.1, 3, 0);
+            classifier.detectMultiScale(gray, faces, 1.1, 3, 0, new cv.Size(75, 75));
         } catch (err) {
             logError(cv, err);
         }
         // draw faces.
-        const facesMatSize = faces?.size();
-        if (facesMatSize !== 1) {
-            publisher$.next({ totalFaces: facesMatSize });
+        const totalFaces = faces?.size();
+        if ((totalFaces !== 1) && publisher$) {
+            publisher$.next({ totalFaces: totalFaces });
         } else {
-            for (let i = 0; i < faces.size(); ++i)
-                this.handleDetectedFace(faces.get(i), dst, facesMatSize, publisher$);
+            for (let i = 0; i < faces.size(); ++i) {
+                const face = faces.get(i);
+                const x = face.x;
+                const y = face.y;
+                const width = face.width;
+                const height = face.height;
+                let point1 = new cv.Point(x, y);
+                let point2 = new cv.Point(face.x + width, face.y + height);
+                cv.rectangle(dst, point1, point2, [255, 0, 0, 255]);
+                if (publisher$) {
+                    publisher$.next({ x, y, width, height, totalFaces });
+                }
+                // if (eyeClassifier && eyes) {
+                //     let roiGray = gray.roi(face);
+                //     let roiSrc = src.roi(face);
+                //     eyeClassifier.detectMultiScale(roiGray, eyes);
+                //     const totalEyes = eyes.size();
+                //     for (let j = 0; j < totalEyes; ++j) {
+                //         let p1 = new cv.Point(eyes.get(j).x, eyes.get(j).y);
+                //         let p2 = new cv.Point(eyes.get(j).x + eyes.get(j).width,
+                //             eyes.get(j).y + eyes.get(j).height);
+                //         cv.rectangle(roiSrc, p1, p2, [0, 0, 255, 255]);
+                //     }
+                //     // Notify the component only if 2 eyes were detected
+                //     if ((totalEyes === 2) && publisher$) {
+                //         publisher$.next({ x, y, width, height, totalFaces });
+                //     }
+                //     roiSrc.delete();
+                //     roiGray.delete();
+                // } else if (publisher$) {
+                //     // If no eye classifier is passed notify the component
+                //     publisher$.next({ x, y, width, height, totalFaces });
+                // }
+                // If no eye classifier is passed notify the component
+            }
         }
         cv.imshow(canvas, dst);
         // schedule the next one.
         const fps = 5000 / FPS;
         const time = (Date.now() - start);
-        this.faceDetectorTimeOut = setTimeout(() => { this.detectFace(classifier, canvas, src, dst, gray, cap, faces, publisher$, FPS); }, fps - time);
-    }
-
-    private handleDetectedFace = (
-        face: any,
-        img: any,
-        totalFaces: number,
-        publisher: Subject<any>
-    ) => {
-        const x = face.x - 8;
-        const y = face.y - 8;
-        const width = face.width + 6;
-        const height = face.height + 12;
-        let point1 = new cv.Point(x, y);
-        let point2 = new cv.Point(face.x + width, face.y + height);
-        cv.rectangle(img, point1, point2, [255, 0, 0, 255]);
-        publisher.next({ x, y, width, height, totalFaces });
+        this.faceDetectorTimeOut = setTimeout(() => { this.detectFace(classifier, canvas, src, dst, gray, cap, faces, publisher$, eyeClassifier, eyes, FPS); }, fps - time);
     }
 
     detectFaceOnVideoStream = (
@@ -261,7 +277,9 @@ export class OpenCVFaceDetectorService implements OnDestroy {
         canvas: HTMLCanvasElement,
         haarclassifier: string,
         url: string,
-        publisher: Subject<any>
+        publisher?: Subject<any>,
+        eyesHaarClassifier?: string,
+        eyesHaarClassifierURL?: string,
     ) => (initializationHandlerFn: () => void) => {
         // CLeanup old resources
         initializationHandlerFn();
@@ -271,14 +289,19 @@ export class OpenCVFaceDetectorService implements OnDestroy {
         const gray = new cv.Mat();
         let cap = new cv.VideoCapture(video);
         let faces = new cv.RectVector();
-
-        Log('Detecting using: ', { haarclassifier, url, publisher });
-    
-        return this.service.loadOpenCV(haarclassifier, url)
-            .pipe(
-                map(classifier => {
-                    this.ressources = [classifier, src, dst, cap, faces];
-                    return this.detectFace(classifier, canvas, src, dst, gray, cap, faces, publisher);
+        let eyes = new cv.RectVector();
+        return forkJoin(
+            eyesHaarClassifier && eyesHaarClassifierURL ? [
+                this.service.loadOpenCV(haarclassifier, url),
+                this.service.loadOpenCV(eyesHaarClassifier, eyesHaarClassifierURL)
+            ] : [
+                this.service.loadOpenCV(haarclassifier, url)
+            ]).pipe(
+                map((classifiers) => {
+                    const classifier = classifiers[0];
+                    const eyeClassifier = classifiers[1] || null;
+                    this.ressources = [classifier, eyeClassifier, src, dst, cap, faces, eyes];
+                    return this.detectFace(classifier, canvas, src, dst, gray, cap, faces, publisher, eyeClassifier, eyes);
                 }),
                 catchError(err => {
                     return throwError(err);
