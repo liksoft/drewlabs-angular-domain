@@ -16,10 +16,12 @@ import { DynamicInputTypeHelper } from '../input-type.service';
     .clr-input-wrapper .clr-input:disabled {
       background: rgba(244, 244, 244, .3);
     }
-    /* .clr-subtext {
-        margin-top: 1rem !important;
-    } */
 
+
+    :host ::ng-deep .clr-subtext {
+      margin-top: 1rem !important;
+      margin-left: 3.5rem;
+    }
     .clr-control-label {
       margin-bottom: 12px;
     }
