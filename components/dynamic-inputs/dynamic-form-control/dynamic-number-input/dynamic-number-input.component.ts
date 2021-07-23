@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
+import { getObjectProperty } from 'src/app/lib/core/utils';
 import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { DynamicInputTypeHelper } from '../input-type.service';
 
@@ -16,19 +17,16 @@ import { DynamicInputTypeHelper } from '../input-type.service';
     .clr-input-wrapper .clr-input:disabled {
       background: rgba(244, 244, 244, .3);
     }
-    /* .clr-subtext {
-        margin-top: 1rem !important;
-    } */
     `
   ]
 })
 export class DynamicNumberInputComponent {
 
   @Input() controlDivContainerClass: string = 'clr-form-control';
-  @Input() control: AbstractControl;
+  @Input() control!: AbstractControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
-  @Input() inputConfig: IHTMLFormControl;
+  @Input() inputConfig!: IHTMLFormControl;
 
   @Output() inputKeyUp = new EventEmitter<{ formcontrolname: string, value: any }>();
   @Output() inputKeyDown = new EventEmitter<{ formcontrolname: string, value: any }>();
@@ -41,7 +39,7 @@ export class DynamicNumberInputComponent {
     return Math.pow(2, 31) - 1;
   }
 
-  getErrorAsNumber(value: object | number, key: string = null): number|string {
-    return typeof value === 'number' ? value : value[key];
+  getErrorAsNumber(value: object | number, key?: string): number|string {
+    return typeof value === 'number' ? value : getObjectProperty(value, key || '');
   }
 }

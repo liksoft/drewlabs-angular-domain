@@ -15,6 +15,7 @@
   <input
     [tabIndex]="inputConfig?.formControlIndex"
     type="date"
+    [disabled]="inputConfig?.disabled"
     (blur)="onDateInputBlur()"
     [formControl]="control"
     [min]="inputTypeHelper.asDateInput(inputConfig).minDate"

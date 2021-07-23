@@ -20,7 +20,7 @@ import { DynamicInputTypeHelper } from '../input-type.service';
 
     :host ::ng-deep .clr-subtext {
       margin-top: 1rem !important;
-      margin-left: 3.5rem;
+      /* margin-left: 3.5rem; */
     }
     .clr-control-label {
       margin-bottom: 12px;
