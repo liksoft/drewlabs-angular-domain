@@ -208,6 +208,7 @@ export class OpenCVFaceDetectorService implements OnDestroy {
   deleteModel = () => {
     if (this._model) {
       this._model.delete();
+      this._model = undefined;
     }
     return this;
   }

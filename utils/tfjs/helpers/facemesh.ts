@@ -1,6 +1,5 @@
 import * as model from '@tensorflow-models/face-landmarks-detection';
 import { FaceLandmarksPrediction, SupportedPackages } from '@tensorflow-models/face-landmarks-detection';
-import '@tensorflow/tfjs-backend-webgl';
 
 /**
  * Load the facelandmarks detector model
