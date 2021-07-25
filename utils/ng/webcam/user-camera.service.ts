@@ -1,7 +1,7 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
-import { NAVIGATOR } from "../../ng/common/tokens/navigator";
-import { OnStartUserCameraHandlerFn, VideoConstraints } from "../types/user-camera";
+import { NAVIGATOR } from "../common/tokens/navigator";
+import { OnStartUserCameraHandlerFn, VideoConstraints } from "./types/user-camera";
 
 @Injectable({
     providedIn: 'root'
@@ -89,7 +89,7 @@ export class UserCameraService {
                     resolve({});
                 })
                 .catch(err => {
-                    reject(`User camera Error: ${err.name} - {err.message}`);
+                    reject(`User camera Error: ${err.name} - ${err.message}`);
                 });
         }); //
     }

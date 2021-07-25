@@ -10,8 +10,6 @@ export type OpenCVOptions = {
 
 export type OpenCVRuntimeInitializedFn = () => void;
 
-
-
 export type Point = {
     x: number,
     y: number,
