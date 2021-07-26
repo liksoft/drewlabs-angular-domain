@@ -1,12 +1,9 @@
 import { DOCUMENT } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { FaceLandmarksPrediction } from '@tensorflow-models/face-landmarks-detection';
 import { forkJoin } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
-import { createStateful, createSubject } from 'src/app/lib/core/rxjs/helpers';
-import { doLog } from '../../../rxjs/operators';
+import { createSubject } from 'src/app/lib/core/rxjs/helpers';
 import { Canvas } from '../../browser';
-import { Log } from '../../logger';
 import { FaceMeshDetectorService, FaceMeshPointsDrawerService } from '../../tfjs';
 import { BlazeFaceDetectorService } from '../../tfjs/ng/blazeface.service';
 import { isDefined } from '../../types';
@@ -111,7 +108,6 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
           }, this.noFacesDetectedTimeOut);
 
           // Wait for certain time before detecting client faces
-          Log(this.detectorTimeOut);
           setTimeout(() => {
             if (this._detectFacesResult) {
               this.detectFacesResultEvent.emit(this._detectFacesResult);
@@ -179,6 +175,7 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
     this._destroy$.next();
     this.faceDetector.deleteModel();
     this.faceMeshDetector.deleteModel();
+    this.cameraService.stopCamera();
   }
 
 }
