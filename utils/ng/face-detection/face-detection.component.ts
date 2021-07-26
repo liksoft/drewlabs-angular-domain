@@ -2,11 +2,13 @@ import { DOCUMENT } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FaceLandmarksPrediction } from '@tensorflow-models/face-landmarks-detection';
 import { forkJoin } from 'rxjs';
-import { startWith, takeUntil, tap } from 'rxjs/operators';
-import { createStateful, createSubject, emptyObservable } from 'src/app/lib/core/rxjs/helpers';
+import { takeUntil, tap } from 'rxjs/operators';
+import { createStateful, createSubject } from 'src/app/lib/core/rxjs/helpers';
 import { doLog } from '../../../rxjs/operators';
-import { OpenCVFaceDetectorService, OpenCvPointsDrawerService } from '../../opencv/ng/opencv.service';
+import { Canvas } from '../../browser';
+import { Log } from '../../logger';
 import { FaceMeshDetectorService, FaceMeshPointsDrawerService } from '../../tfjs';
+import { BlazeFaceDetectorService } from '../../tfjs/ng/blazeface.service';
 import { isDefined } from '../../types';
 import { Video } from '../webcam/helpers';
 import { UserCameraService } from '../webcam/user-camera.service';
@@ -57,78 +59,38 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private videoHTMLElement!: HTMLVideoElement;
   private canvasHTMLElement!: HTMLCanvasElement;
-
-  private _meshPredictions = createStateful<FaceLandmarksPrediction[] | undefined>(undefined);
   showCanvas = false;
+
+  @Input() totalFaces: number = 1;
+  @Input() confidenceScore: number = .9;
+  @Input() detectorTimeOut: number = 10000;
+  @Input() noFacesDetectedTimeOut = 30000;
+
+  private _detectFacesResult!: { size?: number, encodedURI?: string };
+  @Output() detectFacesResultEvent = new EventEmitter<{ size?: number, encodedURI?: string }>();
+  @Output() noFaceDetectedEvent = new EventEmitter<boolean>();
 
   constructor(
     private cameraService: UserCameraService,
-    private faceDetector: OpenCVFaceDetectorService,
-    private cvDetectedPointsDrawer: OpenCvPointsDrawerService,
+    private faceDetector: BlazeFaceDetectorService,
     @Inject(DOCUMENT) private document: Document,
     private faceMeshDetector: FaceMeshDetectorService,
     private faceMeshDrawer: FaceMeshPointsDrawerService
-  ) {
-    const detectLeftProfilFace$ = this._detectLeftFace$
-      .pipe(
-        startWith({ image: undefined, canvas: undefined }),
-        takeUntil(this._destroy$),
-        tap(({ image, canvas }) => {
-          const interval = getReadInterval();
-          if (image && canvas) {
-            return this.faceDetector.detectFaceOnVideoStream(
-              image,
-              interval
-            )(
-              this.faceDetector.cleanup
-            ).pipe(
-              tap((state) => {
-                Video.writeToCanvas(image as HTMLVideoElement, this.canvasElement.nativeElement as HTMLCanvasElement);
-                const context = (this.canvasElement.nativeElement as HTMLCanvasElement).getContext('2d') || undefined;
-                if (state?.points) {
-                  // Draw opencv rectangle
-                  this.cvDetectedPointsDrawer.drawFacePoints(
-                    context
-                  )(state?.points || []);
-                }
-                const predictions = this._meshPredictions.getValue();
-                if (predictions) {
-                  // Draw mesh
-                  this.faceMeshDrawer.drawFacePoints(
-                    context
-                  )(predictions || []);
-                }
-                // if (state?.x && state?.y && state?.width && state?.height) {
-                //   const result = this.onFacePointDetected(this.videoHTMLElement, state);
-                //   // Send Image with rect to facial recognation system for comparison
-                //   // this.outputImage.nativeElement.src = result;
-                //   this.profilFaceDataURI.emit(result);
-                // }
-              })
-            );
-          }
-          return emptyObservable();
-        })
-      );
-    const detectFrontFace$ = this._detectFrontFace$
-      .pipe(
-        startWith({ image: undefined, canvas: undefined }),
-        takeUntil(this._destroy$),
-        tap(({ image, canvas }) => {
-        })
-      );
-    detectLeftProfilFace$.subscribe();
-    detectFrontFace$.subscribe();
-  }
+  ) { }
 
   async ngOnInit() {
+    if (this.detectorTimeOut > this.noFacesDetectedTimeOut) {
+      throw new Error('Detector wait time out must be less than the noFacesDetectedTimeOut input value');
+    }
     // Load the face detector models
-    if (!isDefined(this.faceDetector.model) && !isDefined(this.faceMeshDetector.model)) {
-      await forkJoin([this.faceDetector
-        .loadModel(
-          'haarcascade_frontalface_default.xml',
-          this.frontFaceHaarCascadeURL
-        ), this.faceMeshDetector.loadModel()]).toPromise();
+    if (!isDefined(this.faceMeshDetector.model)) {
+      await forkJoin(
+        [
+          this.faceMeshDetector.loadModel(
+            undefined, { shouldLoadIrisModel: true, scoreThreshold: this.confidenceScore || .9, maxFaces: this.totalFaces || 3 }
+          )
+        ]
+      ).toPromise();
     }
     this.videoHTMLElement = this.videoElement.nativeElement as HTMLVideoElement;
     this.canvasHTMLElement = this.canvasElement.nativeElement as HTMLCanvasElement;
@@ -137,52 +99,47 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
       this.videoHTMLElement,
       'custom',
       (_, dst) => {
-        const interval = getReadInterval();
         const image = dst;
         const canvas = this.canvasHTMLElement;
         if (image && canvas) {
+          // Set a timeout to wait for before checking the detected faces
+          // Notify the container component of no face detected event
+          const timeout = setTimeout(() => {
+            if (!isDefined(this._detectFacesResult)) {
+              this.noFaceDetectedEvent.emit(true);
+            }
+          }, this.noFacesDetectedTimeOut);
+
+          // Wait for certain time before detecting client faces
+          Log(this.detectorTimeOut);
+          setTimeout(() => {
+            if (this._detectFacesResult) {
+              this.detectFacesResultEvent.emit(this._detectFacesResult);
+              clearTimeout(timeout);
+            }
+          }, this.detectorTimeOut);
+
+          const interval = getReadInterval();
           // Run opencv face detector
-          this.faceDetector.detectFaceOnVideoStream(
-            image,
-            interval
-          )(this.faceDetector.cleanup)
-            .pipe(
-              doLog('Detected faces: '),
-              takeUntil(this._destroy$),
-              tap((state) => {
-                Video.writeToCanvas(image as HTMLVideoElement, this.canvasElement.nativeElement as HTMLCanvasElement);
-                const context = (this.canvasElement.nativeElement as HTMLCanvasElement).getContext('2d') || undefined;
-                if (state?.points) {
-                  // Draw opencv rectangle
-                  this.cvDetectedPointsDrawer.drawFacePoints(
-                    context
-                  )(state?.points || []);
-                }
-                const predictions = this._meshPredictions.getValue();
-                if (predictions) {
-                  if (!this.showCanvas) {
-                    this.showCanvas = true;
-                  }
-                  // Draw mesh
-                  this.faceMeshDrawer.drawFacePoints(
-                    context
-                  )(predictions || []);
-                }
-                // if (state?.x && state?.y && state?.width && state?.height) {
-                //   const result = this.onFacePointDetected(this.videoHTMLElement, state);
-                //   // Send Image with rect to facial recognation system for comparison
-                //   // this.outputImage.nativeElement.src = result;
-                //   this.frontFaceDataURI.emit(result);
-                // }
-              })
-            ).subscribe();
           // Run the face mesh detector as well
           this.faceMeshDetector
             .detectFaces(image as HTMLVideoElement, interval)
             .pipe(
               takeUntil(this._destroy$),
+              // doLog('Preditions: '),
               tap(predictions => {
-                this._meshPredictions.next(predictions);
+                const canvas = Video.writeToCanvas(image as HTMLVideoElement, this.canvasElement.nativeElement as HTMLCanvasElement);
+                if ((predictions?.length === this.totalFaces) && predictions[0].faceInViewConfidence >= this.confidenceScore) {
+                  this._detectFacesResult = { size: predictions?.length, encodedURI: Canvas.readAsDataURL(canvas) };
+                }
+                const context = (this.canvasElement.nativeElement as HTMLCanvasElement).getContext('2d') || undefined;
+                if (!this.showCanvas) {
+                  this.showCanvas = true;
+                }
+                // Draw mesh
+                this.faceMeshDrawer.drawFacePoints(
+                  context
+                )(predictions || []);
               })
             ).subscribe();
         }
@@ -191,11 +148,10 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
     );
   }
 
-  async ngAfterViewInit() {
-  }
+  async ngAfterViewInit() { }
 
   detectProfilFace() {
-    this._detectLeftFace$.next({ image: this.videoHTMLElement, canvas: this.canvasHTMLElement });
+    // this._detectLeftFace$.next({ image: this.videoHTMLElement, canvas: this.canvasHTMLElement });
   }
 
   onFacePointDetected = (image: HTMLVideoElement, state: any) => (() => {
@@ -221,9 +177,8 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnDestroy(): void {
     this._destroy$.next();
-    this.faceDetector
-      .deleteModel()
-      .cleanup();
+    this.faceDetector.deleteModel();
+    this.faceMeshDetector.deleteModel();
   }
 
 }

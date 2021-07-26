@@ -19,5 +19,6 @@ export class Video {
       canvas.height = video?.videoHeight;
       context.drawImage(video, 0, 0, video?.videoWidth, video?.videoHeight);
     }
+    return canvas;
   }
 }
