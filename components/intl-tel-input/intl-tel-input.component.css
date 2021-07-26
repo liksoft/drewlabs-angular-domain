@@ -20,18 +20,23 @@ li.country:hover {
   width: 100%;
 }
 
-.clr-input {
-  width: 80% !important;
-  /* max-width: 100%; */
+.intl-tel-input button.btn {
+    background: var(--light-clouds);
+    border: none;
 }
 
-#phone {
+/* #phone {
   width: 75%;
-}
+} */
 
 .clr-dropdown-menu {
-  max-height: 280px;
-  width: 100%;
+  max-height: 300px;
+  width: 250px;
+  border: none;
+}
+
+span.dial-code {
+  color: #bfbfbf;
 }
 
 .countries-viewport {
