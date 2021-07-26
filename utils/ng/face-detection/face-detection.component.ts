@@ -34,7 +34,7 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @Input() width: number = 320;
   @Input() height: number = 240;
-  base64String!: string | undefined;
+  public showCanvas = false;
 
   @ViewChild('videoElement') videoElement!: ElementRef;
   @ViewChild('canvasElement') canvasElement!: ElementRef;
@@ -43,20 +43,19 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
 
 
   private _destroy$ = createSubject();
-
   @Output() public frontFaceDataURI = new EventEmitter<string>();
   @Output() public profilFaceDataURI = new EventEmitter<string>();
 
   @Input() frontFaceHaarCascadeURL: string = '/assets/resources/vendor/haarcascade_frontalface_default.xml';
   @Input() profilFaceHaarCascadeURL: string = '/assets/resources/vendor/haarcascade_profileface.xml';
-  @Input() eyesClassifierHaarCascadeURL: string = '/assets/resources/vendor/haarcascade_eye.xml';
 
-  private _detectLeftFace$ = createSubject<{ image: HTMLVideoElement | undefined, canvas: HTMLCanvasElement | undefined }>();
-  private _detectFrontFace$ = createSubject<{ image: HTMLVideoElement | undefined, canvas: HTMLCanvasElement | undefined }>();
+  // @Input() eyesClassifierHaarCascadeURL: string = '/assets/resources/vendor/haarcascade_eye.xml';
+  // private _detectLeftFace$ = createSubject<{ image: HTMLVideoElement | undefined, canvas: HTMLCanvasElement | undefined }>();
+  // private _detectFrontFace$ = createSubject<{ image: HTMLVideoElement | undefined, canvas: HTMLCanvasElement | undefined }>();
+  // base64String!: string | undefined;
 
   private videoHTMLElement!: HTMLVideoElement;
   private canvasHTMLElement!: HTMLCanvasElement;
-  showCanvas = false;
 
   @Input() totalFaces: number = 1;
   @Input() confidenceScore: number = .9;
@@ -76,6 +75,13 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
   ) { }
 
   async ngOnInit() {
+    await this.initializeComponent();
+  }
+
+  async ngAfterViewInit() { }
+
+  initializeComponent = () => (async () => {
+
     if (this.detectorTimeOut > this.noFacesDetectedTimeOut) {
       throw new Error('Detector wait time out must be less than the noFacesDetectedTimeOut input value');
     }
@@ -142,9 +148,7 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
       },
       { width: { exact: this.width }, height: { exact: this.height } }
     );
-  }
-
-  async ngAfterViewInit() { }
+  })();
 
   detectProfilFace() {
     // this._detectLeftFace$.next({ image: this.videoHTMLElement, canvas: this.canvasHTMLElement });

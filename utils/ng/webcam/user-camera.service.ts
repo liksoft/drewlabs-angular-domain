@@ -1,5 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
+import { Log } from "../../logger";
 import { NAVIGATOR } from "../common/tokens/navigator";
 import { OnStartUserCameraHandlerFn, VideoConstraints } from "./types/user-camera";
 
@@ -9,8 +10,9 @@ import { OnStartUserCameraHandlerFn, VideoConstraints } from "./types/user-camer
 export class UserCameraService {
 
     private _video!: HTMLVideoElement;
-    private _stream!: MediaStream;
+    private _mediaStream!: MediaStream|undefined;
     private _onCameraStartedCallback!: OnStartUserCameraHandlerFn;
+
 
     constructor(
         @Inject(DOCUMENT) private document: Document,
@@ -20,7 +22,7 @@ export class UserCameraService {
 
     onVideoCanPlay() {
         if (this._onCameraStartedCallback) {
-            this._onCameraStartedCallback(this._stream, this._video);
+            this._onCameraStartedCallback(this._mediaStream, this._video);
         }
     }
 
@@ -76,6 +78,7 @@ export class UserCameraService {
         if (!videoConstraint) {
             videoConstraint = true;
         }
+        Log('Starting camera...');
         return new Promise((resolve, reject) => {
             this.navigator.mediaDevices
                 .getUserMedia({ video: videoConstraint, audio: false })
@@ -83,7 +86,7 @@ export class UserCameraService {
                     video.srcObject = stream;
                     video.play();
                     this._video = video;
-                    this._stream = stream;
+                    this._mediaStream = stream;
                     this._onCameraStartedCallback = callback;
                     video.addEventListener('canplay', this.onVideoCanPlay.bind(this), false);
                     resolve({});
@@ -106,8 +109,10 @@ export class UserCameraService {
             this._video.srcObject = null;
             this._video.removeEventListener('canplay', this.onVideoCanPlay.bind(this));
         }
-        if (this._stream) {
-            this._stream.getVideoTracks()[0].stop();
+        if (this._mediaStream) {
+            this._mediaStream.getVideoTracks().forEach(track => track.stop());
+            this._mediaStream.getAudioTracks().forEach(track => track.stop());
+            this._mediaStream = undefined;
         }
     }
 }
