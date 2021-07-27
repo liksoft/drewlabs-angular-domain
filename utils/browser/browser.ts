@@ -50,6 +50,7 @@ export function b64toBlob(b64Data: string, contentType: string, sliceSize?: numb
   return new Blob(byteArrays, { type: contentType });
 }
 export class Browser {
+
   public static print() {
     window.print();
   }
