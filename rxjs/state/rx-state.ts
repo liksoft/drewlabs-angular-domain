@@ -1,6 +1,6 @@
 import { createSubject, observableOf } from '../helpers';
 import { isObservable, Observable } from 'rxjs';
-import { scan, mergeMap, shareReplay, filter, delay, first, startWith } from 'rxjs/operators';
+import { scan, mergeMap, shareReplay, filter, delay, first, startWith, concatMap } from 'rxjs/operators';
 import { doLog } from '../operators/index';
 import { isDefined } from '../../utils/types/type-utils';
 
@@ -54,7 +54,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
   constructor(reducer: StateReducerFn<T, AType>, initialState: T) {
     this.state$ = this._actions$.pipe(
       doLog('Before merge mapping: '),
-      mergeMap((action) => isObservable(action) ? action as Observable<AType> : observableOf<AType>(action) as Observable<AType>),
+      concatMap((action) => isObservable(action) ? action as Observable<AType> : observableOf<AType>(action) as Observable<AType>),
       filter(state => isDefined(state)),
       startWith(initialState as any),
       scan(reducer),
