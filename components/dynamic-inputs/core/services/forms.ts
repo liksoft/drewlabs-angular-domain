@@ -41,11 +41,11 @@ export class FormService {
   /**
    * @description Get the form with the provided using the loaded form id
    */
-  public async getForm(id: string | number, params?: { [prop: string]: any }): Promise<DynamicFormInterface> {
+  public async getForm(id: string | number, params?: { [prop: string]: any }): Promise<DynamicFormInterface|undefined> {
     return this.client.get(`${this.ressourcesPath}/${id}`, { params }).pipe(
       map(state => {
         const data = getResponseDataFromHttpResponse(state);
-        return (isDefined(data)) ? (FormV2.builder()).fromSerialized(data) : null;
+        return (isDefined(data)) ? (FormV2.builder()).fromSerialized(data) : undefined;
       })
     ).toPromise();
   }
@@ -53,18 +53,18 @@ export class FormService {
   /**
    * @description Get the form with the provided using the loaded form id
    */
-  public rxGetForm(id: string | number, params?: { [prop: string]: any }): Observable<DynamicFormInterface> {
+  public rxGetForm(id: string | number, params?: { [prop: string]: any }): Observable<DynamicFormInterface|undefined> {
     return this.client.get(`${this.ressourcesPath}/${id}`, params).pipe(
       map(state => {
         const data = getResponseDataFromHttpResponse(state);
-        return (isDefined(data)) ? (FormV2.builder()).fromSerialized(data) : null;
+        return (isDefined(data)) ? (FormV2.builder()).fromSerialized(data) : undefined;
       })
     );
   }
 
   /**
    * @description Get all forms from the data source
-   * 
+   *
    * @deprecated <Use rxGetForm Implementation for better control on the form object>
    */
   public async getForms(params: { [prop: string]: any } = {}): Promise<DynamicFormInterface[]> {
@@ -101,9 +101,9 @@ export class FormService {
    * @param endPointURL [[string]]
    */
   // tslint:disable-next-line: deprecation
-  createForm(requestBody: object, endPointURL: string = null): Promise<DynamicFormInterface | IHttpResponse<any>> {
+  createForm(requestBody: object, endPointURL?: string): Promise<DynamicFormInterface | IHttpResponse<any>> {
     // tslint:disable-next-line: deprecation
-    return this.client.create(isDefined(endPointURL) ? endPointURL : this.ressourcesPath, requestBody)
+    return this.client.create(endPointURL ? endPointURL : this.ressourcesPath, requestBody)
       .pipe(
         map(state => {
           const data = getResponseDataFromHttpResponse(state);
@@ -115,14 +115,14 @@ export class FormService {
 
   /**
    * @deprecated <Use form action in combination with [FormsProvider] which offer reactive implementation using rx-js library>
-   * 
+   *
    * @description Handle form update action done by users
    * @param id [[number|string]]
    * @param requestBody [[object]]
    * @param endPointURL [[string]]
    */
   // tslint:disable-next-line: deprecation
-  updateForm(id: number | string, requestBody: object, endPointURL: string = null): Promise<IHttpResponse<any>> {
+  updateForm(id: number | string, requestBody: object, endPointURL?: string): Promise<IHttpResponse<any>> {
     // tslint:disable-next-line: deprecation
     return this.client.update(`${isDefined(endPointURL) ? endPointURL : this.ressourcesPath}`, id, requestBody)
       .pipe(
@@ -133,14 +133,14 @@ export class FormService {
   // Handlers for form controls
   /**
    * @deprecated <Use form action in combination with [FormsProvider] which offer reactive implementation using rx-js library>
-   * 
+   *
    * @description Add a new form-control to the form-controls database
    * @param requestBody [[object]]
    * @param endPointURL [[string]]
    */
   // tslint:disable-next-line: deprecation
-  createFormControl(requestBody: object, endPointURL: string = null): Promise<IHttpResponse<any> | DynamicFormControlInterface> {
-    return this.client.create(isDefined(endPointURL) ? endPointURL : this.formControlRessourcesPath, requestBody)
+  createFormControl(requestBody: object, endPointURL?: string): Promise<IHttpResponse<any> | DynamicFormControlInterface> {
+    return this.client.create(endPointURL ? endPointURL : this.formControlRessourcesPath, requestBody)
       .pipe(
         map(state => {
           const data = getResponseDataFromHttpResponse(state);
@@ -151,7 +151,7 @@ export class FormService {
 
   /**
    * @deprecated <Use form action in combination with [FormsProvider] which offer reactive implementation using rx-js library>
-   * 
+   *
    * @param endPointURL [[string]]
    * @param elementId [[number|string]]
    * @param requestBody [[object]]
@@ -167,7 +167,7 @@ export class FormService {
 
   /**
    * @deprecated <Use form action in combination with [FormsProvider] which offer reactive implementation using rx-js library>
-   * 
+   *
    * @description Remove the form element with the specific id from the data source
    * @param endPointURL [[string]]
    * @param elementId [[number|string]]
