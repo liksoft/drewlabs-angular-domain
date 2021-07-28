@@ -12,7 +12,6 @@ import { ILoginResponse } from '../contracts/v2/login.response';
 import { Router } from '@angular/router';
 import { HttpClientStub } from '../../testing/http-client';
 import { InMemoryStoreService } from '../../storage/core';
-import { Log } from '../../utils/logger';
 import { filter } from 'rxjs/operators';
 import { isDefined } from '../../utils/types';
 
@@ -110,14 +109,6 @@ describe('Authentication Service provider tests', () => {
     // Act
     const authProvider = TestBed.inject<AuthService>(AuthService);
     const result$ = authProvider.authenticate({ username: 'Drewlabs', password: 'HomeStead' });
-    // Assert
-    // result$.subscribe({
-    //   next: (source) => {
-    //     expect(source.statusCode).toBe(500);
-    //     done();
-    //   },
-    //   error: (err) => Log('Error happened: ', err)
-    // });
     done();
   });
 });

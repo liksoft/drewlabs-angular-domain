@@ -128,7 +128,6 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
             .detectFaces(image as HTMLVideoElement, interval)
             .pipe(
               takeUntil(this._destroy$),
-              // doLog('Preditions: '),
               tap(predictions => {
                 const canvas = Video.writeToCanvas(image as HTMLVideoElement, this.canvasElement.nativeElement as HTMLCanvasElement);
                 if ((predictions?.length === this.totalFaces) && predictions[0].faceInViewConfidence >= this.confidenceScore) {

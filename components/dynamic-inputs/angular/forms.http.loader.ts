@@ -4,7 +4,6 @@ import { isArray } from "lodash";
 import { throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { GenericUndecoratedSerializaleSerializer } from "../../../built-value/core/js/serializer";
-import { Log } from "../../../utils/logger";
 import { FormV2 } from "../core/v2/models";
 
 @Injectable({
@@ -26,7 +25,6 @@ export class FormHttpLoader {
                 return [];
             }),
             catchError(error => {
-                Log('Error loading assets: ', error);
                 return throwError(error);
             })
         )

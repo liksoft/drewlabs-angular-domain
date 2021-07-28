@@ -78,7 +78,6 @@ export class UserCameraService {
         if (!videoConstraint) {
             videoConstraint = true;
         }
-        Log('Starting camera...');
         return new Promise((resolve, reject) => {
             this.navigator.mediaDevices
                 .getUserMedia({ video: videoConstraint, audio: false })

@@ -121,8 +121,6 @@ export class AuthService implements OnDestroy {
    */
   public authenticate = (body: ILoginRequest) => {
     authenticatingAction(this._authStore$)();
-
-    Log('Logging in...', `${httpServerHost(this.host)}/${this.loginPath}`);
     return this.httpClient
       .post(
         `${httpServerHost(this.host)}/${this.loginPath}`,
