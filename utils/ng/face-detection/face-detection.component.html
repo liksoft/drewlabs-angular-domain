@@ -5,8 +5,7 @@
   [attr.height]="height"
 ></video>
 <!-- Add Searching face animation Here -->
-<ng-container *ngIf="!showCanvas">
-
-</ng-container>
-<!-- Add Searching face animation Here -->
 <canvas [ngClass]="showCanvas ? 'not-hidden-canvas': 'hidden-canvas'" #canvasElement></canvas>
+<div *ngIf="!showCanvas">
+  <ng-content></ng-content>
+</div>
