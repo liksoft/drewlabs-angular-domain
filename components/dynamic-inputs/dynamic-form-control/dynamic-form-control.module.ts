@@ -59,7 +59,7 @@ type ModuleConfigs = {
     DynamicTextInputComponent,
     DynamicPasswordInputComponent,
     DynamicCheckoxInputComponent,
-    DynamicRadioInputComponent
+    DynamicRadioInputComponent,
   ],
   exports: [
     DynamicFormControlComponent,
@@ -74,7 +74,7 @@ type ModuleConfigs = {
     DynamicTextInputComponent,
     DynamicPasswordInputComponent,
     DynamicCheckoxInputComponent,
-    DynamicRadioInputComponent
+    DynamicRadioInputComponent,
   ],
   providers: []
 })

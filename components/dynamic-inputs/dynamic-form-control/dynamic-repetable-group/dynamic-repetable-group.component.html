@@ -1,7 +1,7 @@
 <div #controlsContainer>
 </div>
-<div class="button-container">
-  <button [disabled]="hideAddNewFormgroupButton" class="btn btn-sm btn-outline-primary"
+<div class="button-container" *ngIf="hideAddNewFormgroupButton == false">
+  <button [disabled]="disableAddNewFormgroupButton" class="btn btn-sm btn-outline-primary"
     (click)="addNewControlGroup.emit()">
     <clr-icon shape="plus"></clr-icon> {{ addButtonText }}
   </button>

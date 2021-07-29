@@ -2,7 +2,7 @@
   <clr-accordion-panel [clrAccordionPanelOpen]="true" [clrAccordionPanelDisabled]="true">
     <clr-accordion-title>
       {{ label }}
-      <button class="icon-variant" *ngIf="!showEditButton">
+      <button class="icon-variant" *ngIf="showRemoveButton">
         <clr-icon (click)="componentDestroyer.emit({})" shape="trash"></clr-icon>
       </button>
     </clr-accordion-title>

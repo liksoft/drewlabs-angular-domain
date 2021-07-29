@@ -3,7 +3,8 @@ import {
   FormBuilder,
   Validators,
   FormArray,
-  FormGroup
+  FormGroup,
+  FormControl
 } from '@angular/forms';
 import {
   InputTypes,
@@ -252,8 +253,8 @@ export class ComponentReactiveFormHelpers {
               updateOn: 'blur',
               asyncValidators
             } : {
-                validators: Validators.compose(validators)
-              }
+              validators: Validators.compose(validators)
+            }
           )
           // Add other necessary validators
         );

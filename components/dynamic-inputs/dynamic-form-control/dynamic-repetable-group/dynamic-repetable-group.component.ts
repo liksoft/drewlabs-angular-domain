@@ -29,6 +29,7 @@ export class DynamicRepetableGroupComponent implements OnDestroy {
   @Input() form: IDynamicForm;
   @Input() addButtonText = 'Plus';
   @Input() hideAddNewFormgroupButton = false;
+  @Input() disableAddNewFormgroupButton = false;
   @Input() prefixLabel: string;
   @Input() offsetAddNewGroupButton = true;
 
@@ -62,7 +63,7 @@ export class DynamicRepetableGroupComponent implements OnDestroy {
   }
 
   // tslint:disable-next-line: typedef
-  addChildComponent(controlIndex: number, formGroupState: AbstractControl, showEditButton = false, form: IDynamicForm = null) {
+  addChildComponent(controlIndex: number, formGroupState: AbstractControl, showEditButton = false, form: IDynamicForm = null, showRemoveButton = false) {
     this.totalAddedComponent += 1;
     const controlComponentRef: ComponentRef<RepeatableGroupChildComponent> = this.dynamicComponentLoader.createComponent(
       this.controlsContainer,
@@ -76,7 +77,9 @@ export class DynamicRepetableGroupComponent implements OnDestroy {
     controlComponentRef.instance.label = `${this.prefixLabel} ${({ index: this.totalAddedComponent }).index}`;
     controlComponentRef.instance.formGroup.addControl('index', new FormControl(controlComponentRef.instance.index));
     controlComponentRef.instance.showEditButton = showEditButton;
+    controlComponentRef.instance.showRemoveButton = showRemoveButton;
     controlComponentRef.instance.singleColumnView = this.singleColumnView;
+
 
     // Ends child component properties initialization
     controlComponentRef.instance.create
@@ -107,15 +110,17 @@ export class DynamicRepetableGroupComponent implements OnDestroy {
             );
             this.control.removeAt(controlComponentRef.instance.formGroup.getRawValue().formarray_control_index);
             this.removedControlGroup.emit({});
-          } else {
-            controlComponentRef.instance.formGroup.reset();
-            this.control.updateValueAndValidity();
-          }
+          } 
+          // else {
+          //   controlComponentRef.instance.formGroup.reset();
+          //   this.control.updateValueAndValidity();
+          // }
         }
       )
     this.controlsContainerRefs.push(controlComponentRef);
   }
 
+ 
   // tslint:disable-next-line: typedef
   ngOnDestroy() {
     this._destroy$.next();

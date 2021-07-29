@@ -32,6 +32,7 @@ export class RepeatableGroupChildComponent {
   @Input() index: number;
   @Output() isAccordionOpenedChange: EventEmitter<boolean> = new EventEmitter();
   @Input() showEditButton = false;
+  @Input() showRemoveButton = false;
   @Input() label: string;
   // tslint:disable-next-line: no-inferrable-types
   @Input() singleColumnView: boolean = false;
