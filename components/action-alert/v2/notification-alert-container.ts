@@ -9,17 +9,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
       <ng-content></ng-content>
     </div>
   `,
-  styles: [
-    `
-      .alert-container {
-        position: fixed;
-        right: 8px;
-        max-width: 400px;
-        opacity: 1;
-        z-index: 99999;
-      }
-    `
-  ],
+  styles: [],
   animations: [
     trigger(
       'slideInRight', [
