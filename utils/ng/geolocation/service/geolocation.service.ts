@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnDestroy } from "@angular/core";
-import { tap, startWith, takeUntil, distinctUntilChanged } from "rxjs/operators";
+import { tap, startWith, takeUntil, withLatestFrom, map } from "rxjs/operators";
 import { createSubject } from "src/app/lib/core/rxjs/helpers";
 import { createStore } from "src/app/lib/core/rxjs/state/rx-state";
 import { SessionStorage } from "src/app/lib/core/storage/core";
@@ -8,10 +8,10 @@ import { GeolocationState, onGeolocationPositionAction } from "./actions";
 import { geolocationReducer } from "./reducers";
 import { HttpInterceptor, HttpRequest, HttpHandler } from '@angular/common/http';
 import { doLog } from "src/app/lib/core/rxjs/operators";
+import { isDefined } from "../../../types";
+import { isEmpty } from "lodash";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class GeolocationService implements OnDestroy {
 
   private _destroy$ = createSubject();
@@ -31,25 +31,36 @@ export class GeolocationService implements OnDestroy {
     position: undefined
   });
 
+  public tempPosition!: GeolocationPosition;
+
   public readonly state$ = this.store$.connect().pipe(
+    map((state) => state?.position),
     takeUntil(
       this._destroy$.pipe(
+        doLog('Clearing data...'),
         tap(_ => {
           this.geolocationRef.clearWatch(this._watchPositionId);
-          this.storage.delete('BROWSER_LOCATION');
+          this.storage.delete('CLIENT_GEOLOCATION_LOCATION');
         })
       )),
-    distinctUntilChanged((x, y) => (x?.position?.coords?.altitude === y?.position?.coords?.altitude) && (x?.position?.coords?.longitude === y?.position?.coords?.longitude)),
+    // distinctUntilChanged((x, y) => (x?.position?.coords?.altitude === y?.position?.coords?.altitude) && (x?.position?.coords?.longitude === y?.position?.coords?.longitude)),
     doLog('Setting Browser location: '),
     tap(state => {
-      if (state?.position) {
-        this.storage.set('BROWSER_LOCATION', state?.position);
+      if (state) {
+        this.setPosition(state);
       }
     })
   );
 
-  get position(): GeolocationPosition {
-    return this.storage.get('BROWSER_LOCATION')
+  getPosition(): GeolocationPosition {
+    let value = this.storage.get('CLIENT_GEOLOCATION_LOCATION');
+    value = !isDefined(value) || isEmpty(value) ? this.tempPosition : value;
+    return this.tempPosition;
+  }
+
+  public setPosition(state: GeolocationPosition) {
+    this.tempPosition = state;
+    this.storage.set('CLIENT_GEOLOCATION_LOCATION', state);
   }
 
   constructor(
@@ -75,6 +86,11 @@ export class GeolocationService implements OnDestroy {
   }
 
   public publishCurrentPosition(): void {
+    this._currentPosition$.asObservable().pipe(
+      takeUntil(this._destroy$),
+      tap(state => this.setPosition(state))
+    ).subscribe();
+    // Get the current position
     this.geolocationRef.getCurrentPosition(
       position => {
         this._currentPosition$.next(position);
@@ -100,12 +116,12 @@ export class GeolocationInterceptorService implements HttpInterceptor {
   constructor(private service: GeolocationService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    const position = this.service.position;
+    const position = this.service.getPosition();
     if (position) {
       // Clone the request and replace the original headers with
       // cloned headers, updated with the authorization.
       req = req.clone({
-        headers: req.headers.set('X-CLIENT-LAT', `${position?.coords?.altitude}`)
+        headers: req.headers.set('X-CLIENT-LAT', `${position?.coords?.latitude}`)
           .set('X-CLIENT-LONG', `${position?.coords?.longitude}`)
       });
     }
