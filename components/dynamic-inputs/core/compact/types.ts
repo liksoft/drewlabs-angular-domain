@@ -11,12 +11,12 @@ export interface DynamicFormInterface {
   appcontext?: string;
 }
 export interface DynamicFormControlInterface {
-  id: number;
+  id?: number;
   label: string;
   placeholder?: string;
   type: string;
   classes?: string;
-  requiredIf: string;
+  requiredIf?: string;
   required: number|boolean;
   disabled: number|boolean;
   readonly: number|boolean;
@@ -25,10 +25,10 @@ export interface DynamicFormControlInterface {
   description: string;
   maxLength?: number;
   minLength?: number;
-  min: number;
-  max: number;
-  minDate: string;
-  maxDate: string;
+  min?: number;
+  max?: number;
+  minDate?: string;
+  maxDate?: string;
   selectableValues: string;
   selectableModel: string;
   multiple: number|boolean;
@@ -39,16 +39,16 @@ export interface DynamicFormControlInterface {
   rows: number;
   columns: number;
   value: string;
-  uploadURL: string;
+  uploadURL?: string;
   isRepeatable?: number|boolean;
-  children: Partial<DynamicFormControlInterface>[];
-  uniqueOn: string;
-  dynamicControlContainerClass: string;
+  children?: Partial<DynamicFormControlInterface>[];
+  uniqueOn?: string;
+  dynamicControlContainerClass?: string;
   // Added properties
-  valuefield: string;
-  groupfield: string;
-  keyfield: string;
-  formId: number;
+  valuefield?: string;
+  groupfield?: string;
+  keyfield?: string;
+  formId?: number;
 }
 
 

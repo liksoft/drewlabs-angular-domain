@@ -1,4 +1,6 @@
-export const CONTROL_OPTIONS_STATIC_FORM = {
+import { DynamicFormInterface } from "../compact/types";
+
+export const CONTROL_OPTIONS_STATIC_FORM: DynamicFormInterface = {
     id: null,
     title: 'AJOUT DE D\'UNE CONFIGURATION DE D\'OPTION DE CHAMPS DE SÉLECTION',
     description: 'Remplir les champs ci-dessous pour ajouter une nouvelle configuration d\'options de champe de selection.',
