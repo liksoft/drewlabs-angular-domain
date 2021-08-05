@@ -3,3 +3,4 @@ export {
 } from './type-utils';
 
 export { ArrayUtils, Filtrable } from './array-utils';
+export { getObjectProperty, setObjectProperty } from './object';

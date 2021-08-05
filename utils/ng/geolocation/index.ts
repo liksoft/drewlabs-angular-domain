@@ -1,0 +1,2 @@
+export { GeolocationService, GeolocationInterceptorService } from './service/geolocation.service';
+export { GEOLOCATION, IS_GEOLOCATION_SUPPORTED, DEFAULT_POSITION_OPTIONS } from './tokens/geolocation';
