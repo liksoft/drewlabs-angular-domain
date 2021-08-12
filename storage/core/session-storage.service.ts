@@ -1,8 +1,9 @@
-import { Injectable, Inject } from '@angular/core';
-import { IAppStorage } from '../contracts/store-interface';
-import { storageEntry } from '../../utils';
-import { SESSION_STORAGE } from '../../utils/ng/common/tokens/storage';
-import { SecureWebStorage } from './storage.secure';
+import { Injectable, Inject } from "@angular/core";
+import { IAppStorage } from "../contracts/store-interface";
+import { isObject, storageEntry } from "../../utils";
+import { SESSION_STORAGE } from "../../utils/ng/common/tokens/storage";
+import { SecureWebStorage } from "./storage.secure";
+import { Log } from "../../utils/logger";
 
 /**
  * @description Browser session storage class for saving data
@@ -16,7 +17,7 @@ export class SessionStorage implements IAppStorage {
   private _store: Storage;
 
   constructor(
-    @Inject('APP_SECRET') private secret: string,
+    @Inject("APP_SECRET") private secret: string,
     @Inject(SESSION_STORAGE) storage: Storage
   ) {
     this._store = SessionStorage.initStorage(storage, secret);
@@ -27,14 +28,17 @@ export class SessionStorage implements IAppStorage {
    * @return [[any]]
    */
   get(key: string): any {
-    return JSON.parse(this._store.getItem(storageEntry(key, this.secret)) as string);
+    return JSON.parse(
+      this._store.getItem(storageEntry(key, this.secret)) as string
+    );
   }
   /**
    * @description Set a value in the key -> value store
    * @return [[void]]
    */
   set(key: string, item: any): void {
-    this._store.setItem(storageEntry(key, this.secret), JSON.stringify(item));
+    const value = JSON.stringify(isObject(item) ? { ...item } : item);
+    this._store.setItem(storageEntry(key, this.secret), value);
   }
   /**
    * @description Delete item from the key -> value store with a provided key
@@ -57,6 +61,6 @@ export class SessionStorage implements IAppStorage {
     if (storage) {
       return new SecureWebStorage(storage, secret);
     }
-    throw new Error('Session Storage is only available in the Browser');
+    throw new Error("Session Storage is only available in the Browser");
   }
 }
