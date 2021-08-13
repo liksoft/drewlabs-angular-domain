@@ -6,7 +6,7 @@ import { IDynamicForm } from "../../../core/contracts";
 import { DynamicFormBuilder } from "../../services/form-builder.service";
 
 @Component({
-  selector: "app-simple-form",
+  selector: "app-simple-dynamic-form",
   templateUrl: "./simple-form.component.html",
   styles: [],
 })
