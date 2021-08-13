@@ -5,7 +5,17 @@
   [attr.height]="height"
 ></video>
 <!-- Add Searching face animation Here -->
-<canvas [ngClass]="showCanvas ? 'not-hidden-canvas': 'hidden-canvas'" #canvasElement></canvas>
-<div *ngIf="!showCanvas">
-  <ng-content></ng-content>
-</div>
+<canvas
+  [ngClass]="(showCanvas && !showCameraError) ? 'not-hidden-canvas' : 'hidden-canvas'"
+  #canvasElement
+></canvas>
+<ng-container *ngIf="!showCameraError">
+  <div *ngIf="!showCanvas">
+    <ng-content select="[cameraloading]"></ng-content>
+  </div>
+</ng-container>
+<!-- Camera error placeholder -->
+<ng-container *ngIf="showCameraError">
+  <ng-content select="[cameraerror]"></ng-content>
+</ng-container>
+<!--\ End Camera error placeholder -->

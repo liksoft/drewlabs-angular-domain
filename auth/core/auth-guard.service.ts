@@ -10,10 +10,10 @@ import {
 } from '@angular/router';
 import { AuthService } from './auth.service';
 import { AuthPathConfig } from './config';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { isDefined } from '../../utils/types/type-utils';
 import { AuthTokenService } from '../../auth-token/core/auth-token.service';
-import { mergeMap, takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { userCanAny, Authorizable, userCan } from '../contracts/v2/user/user';
 import { createSubject } from '../../rxjs/helpers/index';
 
@@ -74,12 +74,12 @@ export class AuthGuardService
     return this.authState$
       .pipe(
         takeUntil(this._destroy$),
-        mergeMap(source => {
+        map(source => {
           if (!isDefined(source.user) || !isDefined(source.isLoggedIn)) {
             this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-            return of(false);
+            return false;
           }
-          return of(true);
+          return true;
         }),
       );
   }
@@ -118,10 +118,10 @@ export class AuthorizationsGuard implements CanActivate {
   private isAuthorized(authorizations: string[] | string, url: string): Observable<boolean>|boolean|Promise<boolean> {
     return this.auth.state$
       .pipe(
-        mergeMap(source => {
+        map(source => {
           if (!isDefined(source.user)) {
             this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-            return of(false);
+            return false;
           }
           let isAuthorized = false;
           if (authorizations && authorizations instanceof Array) {
@@ -132,9 +132,9 @@ export class AuthorizationsGuard implements CanActivate {
           if (!isAuthorized) {
             // Navigate to the login page with extras
             this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-            return of(false);
+            return false;
           }
-          return of(true);
+          return true;
         })
       );
   }
@@ -158,20 +158,20 @@ export class RootComponentGuard implements CanActivate {
   private canLoadURL(route: ActivatedRouteSnapshot, url: string): Observable<boolean> {
     return this.auth.state$
       .pipe(
-        mergeMap(source => {
+        map(source => {
           if (!isDefined(source.user)) {
             this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-            return of(false);
+            return false;
           }
           if (isDefined(route.data.modulePermissions)
             && !(userCanAny(source.user as Authorizable, route.data.modulePermissions))) {
             this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-            return of(false);
+            return false;
           }
           if (isDefined(this.authToken.token)) {
             this.router.navigate([url]);
           }
-          return of(true);
+          return true;
         })
       );
   }

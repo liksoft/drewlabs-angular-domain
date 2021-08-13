@@ -66,6 +66,8 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
   @Output() detectFacesResultEvent = new EventEmitter<{ size?: number, encodedURI?: string }>();
   @Output() noFaceDetectedEvent = new EventEmitter<boolean>();
 
+  showCameraError: boolean = false;
+
   constructor(
     private cameraService: UserCameraService,
     private faceDetector: BlazeFaceDetectorService,
@@ -81,7 +83,8 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
   async ngAfterViewInit() { }
 
   initializeComponent = () => (async () => {
-
+    this.showCameraError = false;
+    this.showCanvas = false;
     if (this.detectorTimeOut > this.noFacesDetectedTimeOut) {
       throw new Error('Detector wait time out must be less than the noFacesDetectedTimeOut input value');
     }
@@ -98,55 +101,59 @@ export class FaceDetectionComponent implements OnInit, AfterViewInit, OnDestroy 
     this.videoHTMLElement = this.videoElement.nativeElement as HTMLVideoElement;
     this.canvasHTMLElement = this.canvasElement.nativeElement as HTMLCanvasElement;
 
-    await this.cameraService.startCamera(
-      this.videoHTMLElement,
-      'custom',
-      (_, dst) => {
-        const image = dst;
-        const canvas = this.canvasHTMLElement;
-        if (image && canvas) {
-          // Set a timeout to wait for before checking the detected faces
-          // Notify the container component of no face detected event
-          const timeout = setTimeout(() => {
-            if (!isDefined(this._detectFacesResult)) {
-              this.noFaceDetectedEvent.emit(true);
-            }
-          }, this.noFacesDetectedTimeOut);
+    try {
+      await this.cameraService.startCamera(
+        this.videoHTMLElement,
+        'custom',
+        (_, dst) => {
+          const image = dst;
+          const canvas = this.canvasHTMLElement;
+          if (image && canvas) {
+            // Set a timeout to wait for before checking the detected faces
+            // Notify the container component of no face detected event
+            const timeout = setTimeout(() => {
+              if (!isDefined(this._detectFacesResult)) {
+                this.noFaceDetectedEvent.emit(true);
+              }
+            }, this.noFacesDetectedTimeOut);
 
-          // Wait for certain time before detecting client faces
-          setTimeout(() => {
-            if (this._detectFacesResult) {
-              this.detectFacesResultEvent.emit(this._detectFacesResult);
-              clearTimeout(timeout);
-            }
-          }, this.detectorTimeOut);
+            // Wait for certain time before detecting client faces
+            setTimeout(() => {
+              if (this._detectFacesResult) {
+                this.detectFacesResultEvent.emit(this._detectFacesResult);
+                clearTimeout(timeout);
+              }
+            }, this.detectorTimeOut);
 
-          const interval = getReadInterval();
-          // Run opencv face detector
-          // Run the face mesh detector as well
-          this.faceMeshDetector
-            .detectFaces(image as HTMLVideoElement, interval)
-            .pipe(
-              takeUntil(this._destroy$),
-              tap(predictions => {
-                const canvas = Video.writeToCanvas(image as HTMLVideoElement, this.canvasElement.nativeElement as HTMLCanvasElement);
-                if ((predictions?.length === this.totalFaces) && predictions[0].faceInViewConfidence >= this.confidenceScore) {
-                  this._detectFacesResult = { size: predictions?.length, encodedURI: Canvas.readAsDataURL(canvas) };
-                }
-                const context = (this.canvasElement.nativeElement as HTMLCanvasElement).getContext('2d') || undefined;
-                if (!this.showCanvas) {
-                  this.showCanvas = true;
-                }
-                // Draw mesh
-                this.faceMeshDrawer.drawFacePoints(
-                  context
-                )(predictions || []);
-              })
-            ).subscribe();
-        }
-      },
-      { width: { exact: this.width }, height: { exact: this.height } }
-    );
+            const interval = getReadInterval();
+            // Run opencv face detector
+            // Run the face mesh detector as well
+            this.faceMeshDetector
+              .detectFaces(image as HTMLVideoElement, interval)
+              .pipe(
+                takeUntil(this._destroy$),
+                tap(predictions => {
+                  const canvas = Video.writeToCanvas(image as HTMLVideoElement, this.canvasElement.nativeElement as HTMLCanvasElement);
+                  if ((predictions?.length === this.totalFaces) && predictions[0].faceInViewConfidence >= this.confidenceScore) {
+                    this._detectFacesResult = { size: predictions?.length, encodedURI: Canvas.readAsDataURL(canvas) };
+                  }
+                  const context = (this.canvasElement.nativeElement as HTMLCanvasElement).getContext('2d') || undefined;
+                  if (!this.showCanvas) {
+                    this.showCanvas = true;
+                  }
+                  // Draw mesh
+                  this.faceMeshDrawer.drawFacePoints(
+                    context
+                  )(predictions || []);
+                })
+              ).subscribe();
+          }
+        },
+        { width: { exact: this.width }, height: { exact: this.height } }
+      );
+    } catch (error) {
+      this.showCameraError = true;
+    }
   })();
 
   detectProfilFace() {
