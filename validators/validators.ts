@@ -7,7 +7,7 @@ import { MomentUtils } from '../utils/datetime/moment-utils';
 @Injectable({
   providedIn: 'root'
 })
-export class UniqueValueService {
+export class UniqueColumnValueValidator {
 
   public readonly path: string;
 
@@ -166,7 +166,7 @@ export class CustomValidators {
    * @param entity [[string]]
    * @param column [[string]]
    */
-  static createAsycUniqueValidator(service?: UniqueValueService, entity?: string, column?: string) {
+  static createAsycUniqueValidator(service?: UniqueColumnValueValidator, entity?: string, column?: string) {
     return async (control: AbstractControl) => {
       if (!isDefined(control.value) || control.value === '') {
         return null;

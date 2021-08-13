@@ -1,0 +1,27 @@
+<label
+  class="clr-control-label"
+  *ngIf="showLabelAndDescription"
+  [for]="inputType.asSelectInput(inputConfig).formControlName"
+>
+  {{ inputConfig.label }}
+  <small
+    class="required-text"
+    *ngIf="inputType.asSelectInput(inputConfig).rules?.isRequired"
+  >
+    (*)
+  </small>
+</label>
+<app-dropzone
+  *ngIf="dropzoneConfigs"
+  #dropzoneContainer
+  [dropzoneConfig]="dropzoneConfigs"
+  [wrapperClass]="inputConfig?.classes"
+  (removedFile)="onDropzoneFileRemoved($event)"
+  (addedFile)="onDropzoneFileAdded()"
+></app-dropzone>
+<clr-control-error
+  class="field-has-error"
+  *ngIf="control.hasError('required') && control.touched"
+>
+  <span [translate]="'validation.required'"></span>
+</clr-control-error>

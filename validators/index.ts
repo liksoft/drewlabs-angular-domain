@@ -1,5 +1,5 @@
 export { EmailValidator } from './email';
 export {
-  UniqueValueService,
+  UniqueColumnValueValidator as UniqueValueService,
   CustomValidators
 } from './validators';

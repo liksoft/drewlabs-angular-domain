@@ -3,48 +3,48 @@ import { isDefined } from '../utils/types/type-utils';
 /**
  * @description Type definition for application links
  */
-export interface RoutesMapV2 {
+export interface RoutesMap {
     key: string;
     route?: string;
     routeIcon?: string;
     authorizations?: string[];
-    children?: RoutesMapV2[];
+    children?: RoutesMap[];
 }
 
 /**
  * @description Type definition for an application navigation link.This type is use to easily generate topbar and navigation bar links.
  */
-export interface RouteLinkV2 {
+export interface RouteLink {
     routePath?: string;
     routeDescription: string;
     routeIcon?: string;
     authorizations?: string[];
-    children?: RouteLinkV2[];
+    children?: RouteLink[];
 }
 
 /**
  * @description  Type definition for a route collection item
  */
-export interface RouteLinkCollectionItemV2Interface {
+export interface RouteLinkCollectionItemInterface {
     key: string;
-    value: RouteLinkV2;
+    value: RouteLink;
 }
 
 /**
  * @description Global function for building navigation links based on routes map collections
- * @param map [[RoutesMapV2[]]]
+ * @param map [[RoutesMap[]]]
  * @param translations [[any]]
  */
-export const routeMapToLink = (map: RoutesMapV2[], translations: any) =>
-    (!isDefined(map) || map.length === 0) ? [] : map.map((m: RoutesMapV2) => {
-        let children: RouteLinkV2[] = [];
+export const routeMapToLink = (map: RoutesMap[], translations: any) =>
+    (!isDefined(map) || map.length === 0) ? [] : map.map((m: RoutesMap) => {
+        let children: RouteLink[] = [];
         if (m.children) {
-            children = m.children.map((v: RoutesMapV2) => ({
+            children = m.children.map((v: RoutesMap) => ({
                 routePath: v.route,
                 routeDescription: translations[v.key],
                 routeIcon: v.routeIcon,
                 authorizations: v.authorizations ? v.authorizations : []
-            } as RouteLinkV2));
+            } as RouteLink));
             return {
                 key: m.key,
                 value: {
@@ -52,8 +52,8 @@ export const routeMapToLink = (map: RoutesMapV2[], translations: any) =>
                     authorizations: m.authorizations ? m.authorizations : [],
                     children,
                     routeIcon: m.routeIcon
-                } as RouteLinkV2
-            } as RouteLinkCollectionItemV2Interface;
+                } as RouteLink
+            } as RouteLinkCollectionItemInterface;
         } else {
             return {
                 key: m.key,
@@ -62,8 +62,8 @@ export const routeMapToLink = (map: RoutesMapV2[], translations: any) =>
                     routeDescription: translations[m.key],
                     routeIcon: m.routeIcon,
                     authorizations: m.authorizations ? m.authorizations : []
-                }
-            } as RouteLinkCollectionItemV2Interface;
+                } as RouteLink
+            } as RouteLinkCollectionItemInterface;
         }
     });
 

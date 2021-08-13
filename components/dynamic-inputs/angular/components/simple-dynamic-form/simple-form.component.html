@@ -1,0 +1,19 @@
+<!-- Page Content -->
+<div class="card-block">
+  <div class="user-form" *ngIf="formgroup">
+    <app-dynamic-form-wapper
+      [form]="form"
+      [componentFormGroup]="formgroup"
+    ></app-dynamic-form-wapper>
+  </div>
+</div>
+<div class="card-footer">
+  <button
+    [disabled]="performingAction || buttonDisabled"
+    class="btn btn-primary special"
+    (click)="onFormSubmitted($event)"
+  >
+    <clr-icon shape="circle-arrow" dir="up"></clr-icon>
+    Continuer
+  </button>
+</div>

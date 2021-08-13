@@ -1,1 +1,6 @@
-export { RoutesMap, RouteLink, IRouteLinkCollectionItem, builLinkFromRoutesMap} from './routes-definitions';
+export {
+  RoutesMap,
+  RouteLink,
+  RouteLinkCollectionItemInterface,
+  routeMapToLink,
+} from "./routes-definitions.v2";

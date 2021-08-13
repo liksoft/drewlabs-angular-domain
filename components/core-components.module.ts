@@ -5,10 +5,10 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { NgDataTableModule } from './ng-data-table/ng-data-table.module';
 import { ProgressBarModule } from './progress-bar/progress-bar.module';
 import { ClarityModule } from '@clr/angular';
-import { DynamicFormControlModule } from './dynamic-inputs/dynamic-form-control';
 import { OnlineStateMonitoringComponent } from './online-state-monitoring/online-state-monitoring.component';
 import { ActionAlertModule } from './action-alert';
 import { CustomPipesModule } from './pipes/custom-pipes.module';
+import { DynamicFormControlModule } from './dynamic-inputs/angular';
 
 @NgModule({
   imports: [
