@@ -60,15 +60,10 @@ export class FaceDetectionComponent
   @Output() public frontFaceDataURI = new EventEmitter<string>();
   @Output() public profilFaceDataURI = new EventEmitter<string>();
 
-  @Input() frontFaceHaarCascadeURL: string =
-    "/assets/resources/vendor/haarcascade_frontalface_default.xml";
   @Input() profilFaceHaarCascadeURL: string =
     "/assets/resources/vendor/haarcascade_profileface.xml";
 
-  // @Input() eyesClassifierHaarCascadeURL: string = '/assets/resources/vendor/haarcascade_eye.xml';
   // private _detectLeftFace$ = createSubject<{ image: HTMLVideoElement | undefined, canvas: HTMLCanvasElement | undefined }>();
-  // private _detectFrontFace$ = createSubject<{ image: HTMLVideoElement | undefined, canvas: HTMLCanvasElement | undefined }>();
-  // base64String!: string | undefined;
 
   private videoHTMLElement!: HTMLVideoElement;
   private canvasHTMLElement!: HTMLCanvasElement;
@@ -76,7 +71,7 @@ export class FaceDetectionComponent
   @Input() totalFaces: number = 1;
   @Input() confidenceScore: number = 0.9;
   @Input() detectorTimeOut: number = 10000;
-  @Input() noFacesDetectedTimeOut = 30000;
+  @Input() noFacesDetectedTimeOut = 20000;
 
   private _detectFacesResult!: { size?: number; encodedURI?: string };
   @Output() detectFacesResultEvent = new EventEmitter<{

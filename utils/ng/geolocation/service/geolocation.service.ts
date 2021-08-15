@@ -16,7 +16,7 @@ import {
   HttpHandler,
 } from "@angular/common/http";
 import { doLog } from "src/app/lib/core/rxjs/operators";
-import { isDefined, isObject } from "../../../types";
+import { isDefined } from "../../../types";
 import { isEmpty } from "lodash";
 
 const BROWSER_POSITION_SESSION_KEY = "CLIENT_GEOLOCATION_LOCATION";
