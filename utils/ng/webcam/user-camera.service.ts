@@ -48,7 +48,7 @@ export class UserCameraService {
     const promise = this.startCamera(video, resolution, callback);
     // Listen for media changes event
     this.navigator.mediaDevices.addEventListener("devicechange", (event) => {
-      this.dispose();
+      // this.dispose();
       this.startCamera(video, resolution, callback);
     });
     return promise;
@@ -88,6 +88,9 @@ export class UserCameraService {
             this.onVideoCanPlay.bind(this),
             false
           );
+          video.addEventListener('pause', () => {
+            video.play();
+          });
           resolve({});
         })
         .catch((err) => {

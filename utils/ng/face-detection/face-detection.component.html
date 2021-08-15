@@ -1,14 +1,21 @@
 <video
-  class="hidden-video"
   #videoElement
   [attr.width]="width"
   [attr.height]="height"
+  class="hidden-video"
+  autoplay
+  loop
+  muted
+  playsinline
 ></video>
 <!-- Add Searching face animation Here -->
-<canvas
-  [ngClass]="(showCanvas && !showCameraError) ? 'not-hidden-canvas' : 'hidden-canvas'"
-  #canvasElement
-></canvas>
+<div
+  [ngClass]="
+    showCanvas && !showCameraError ? 'not-hidden-canvas text-center' : 'hidden-canvas text-center'
+  "
+>
+  <canvas #canvasElement></canvas>
+</div>
 <ng-container *ngIf="!showCameraError">
   <div *ngIf="!showCanvas">
     <ng-content select="[cameraloading]"></ng-content>
