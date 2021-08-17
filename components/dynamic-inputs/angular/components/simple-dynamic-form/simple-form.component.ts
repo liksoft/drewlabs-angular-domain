@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { AbstractControl, FormGroup } from "@angular/forms";
-import { ComponentReactiveFormHelpers } from "src/app/lib/core/components/dynamic-inputs/angular";
 import { createSubject } from "src/app/lib/core/rxjs/helpers";
 import { IDynamicForm } from "../../../core/contracts";
+import { ComponentReactiveFormHelpers } from "../../helpers";
 import { DynamicFormBuilder } from "../../services/form-builder.service";
 
 @Component({
