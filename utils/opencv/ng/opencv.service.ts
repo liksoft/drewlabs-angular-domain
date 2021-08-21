@@ -4,7 +4,6 @@ import { Inject, Injectable, OnDestroy } from "@angular/core";
 import { interval, Observable, Subject, throwError } from "rxjs";
 import { catchError, map, mergeMap, takeUntil, tap, } from "rxjs/operators";
 import { createStateful, createSubject, observableFrom } from "../../../rxjs/helpers";
-import { doLog } from "../../../rxjs/operators";
 import { WINDOW } from "../../ng/common/tokens/window";
 import { isDefined, setObjectProperty } from "../../types";
 import { OPENCV_DEFAULT_LOAD_RESULT } from "../constants/load-result";
