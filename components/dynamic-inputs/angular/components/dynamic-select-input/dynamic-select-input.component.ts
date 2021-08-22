@@ -89,7 +89,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
   private _destroy$ = createSubject();
 
   constructor(
-    public readonly inputTypeHelper: DynamicInputTypeHelper,
+    public readonly inputType: DynamicInputTypeHelper,
     private client: DrewlabsRessourceServerClient,
     @Inject('CONTROL_BINDINGS_RESOURCES_PATH') path: string,
     @Inject('FORM_SERVER_HOST') host: string

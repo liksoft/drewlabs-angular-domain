@@ -7,7 +7,8 @@ export enum UIStateStatusCode {
     ERROR = 500,
     UNAUTHORIZED = 401,
     AUTHENTICATED = 202,
-    UNAUTHENTICATED = 403
+    UNAUTHENTICATED = 403,
+    WARNING = 422
 }
 
 export interface UIState {
@@ -18,7 +19,7 @@ export interface UIState {
 }
 
 export interface UIStateProvider {
-    
+
 
   // tslint:disable-next-line: typedef
   intialize(): void;
