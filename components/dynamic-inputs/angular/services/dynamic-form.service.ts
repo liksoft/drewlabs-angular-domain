@@ -34,7 +34,7 @@ export abstract class AbstractDynamicFormService {
    */
   abstract loadConfiguredForms(
     endpoint: string,
-    options: { [index: string]: any }
+    options?: { [index: string]: any }
   ): Observable<never> | Observable<DynamicFormInterface[]>;
 }
 
@@ -54,7 +54,7 @@ export class DynamicFormService extends AbstractDynamicFormService {
    */
   loadConfiguredForms = (
     endpoint: string,
-    options: { [index: string]: any }
+    options: { [index: string]: any } = {}
   ) => {
     return this.loader
       .load(endpoint, options)

@@ -105,7 +105,9 @@ export class DynamicFormHelpers {
    *
    * @param form
    */
-  static buildDynamicForm = (form: DynamicFormInterface) => {
+  static buildDynamicForm: (
+    form: DynamicFormInterface
+  ) => Promise<IDynamicForm | undefined> = (form: DynamicFormInterface) => {
     return new Promise((resolve, _) => {
       const generatorFn: (f: DynamicFormInterface) => IDynamicForm | undefined =
         (f: DynamicFormInterface) => {
