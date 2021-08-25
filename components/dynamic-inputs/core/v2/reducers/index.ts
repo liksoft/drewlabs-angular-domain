@@ -1,2 +1,2 @@
 export { formsReducer } from './form';
-export { controlOptionsReducer } from './control-options';
+export { optionsReducer as controlOptionsReducer } from './control-options';

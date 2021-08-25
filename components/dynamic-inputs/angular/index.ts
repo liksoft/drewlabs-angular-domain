@@ -1,7 +1,5 @@
-// Helpers exports
 export {
   cloneAbstractControl,
-  DynamicFormHelpers,
   ComponentReactiveFormHelpers,
   createAngularAbstractControl,
 } from "./helpers";

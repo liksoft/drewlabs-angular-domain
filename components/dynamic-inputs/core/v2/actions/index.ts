@@ -13,7 +13,7 @@ export {
 } from './form';
 
 export {
-  ControlOptionsState,
+  OptionsState,
   deleteControlOptionAction,
   selectControlOptionAction,
   createControlOptionAction,
@@ -21,5 +21,6 @@ export {
   deleteControlOptionResultAction,
   updateControlOptionAction,
   updateControlOptionResultAction,
-  deserializeControlOption
+  deserializeOption,
+  OptionsInitialState
 } from './control-options';

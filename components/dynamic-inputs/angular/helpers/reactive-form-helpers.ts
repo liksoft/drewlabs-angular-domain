@@ -3,175 +3,45 @@ import {
   AsyncValidatorFn,
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   ValidatorFn,
   Validators,
 } from "@angular/forms";
-import { of } from "rxjs";
-import { maxNumberSize } from "../../../utils";
-import { MomentUtils } from "../../../utils/datetime/moment-utils";
-import { isArray, isDefined } from "../../../utils/types/type-utils";
+import { isDefined, maxNumberSize } from "../../../../utils/types";
 import {
   CustomValidators,
-  UniqueColumnValueValidator,
-} from "../../../validators/validators";
-import { DynamicFormInterface } from "../core/compact/types";
-import { IDynamicForm } from "../core/contracts/dynamic-form";
-import { IHTMLFormControl } from "../core/contracts/dynamic-input";
-import { InputTypes } from "../core/contracts/input-types";
-import { DynamicForm } from "../core/dynamic-form";
-import { isGroupOfIDynamicForm } from "../core/helpers";
+} from "src/app/lib/core/validators/validators";
+import {
+  CheckboxItem,
+  IDynamicForm,
+  IHTMLFormControl,
+  InputTypes,
+} from "../../core/contracts";
 import {
   CheckBoxInput,
-  CheckboxItem,
   DateInput,
   NumberInput,
   TextInput,
-  toDynamicControl,
-} from "../core/input-types";
+} from "../../core";
+import { MomentUtils } from "../../../../utils/datetime";
+import { observableOf } from "src/app/lib/core/rxjs/helpers";
+import { tap } from "rxjs/operators";
 
 /**
- * Deep clones the given AbstractControl, preserving values, validators, async validators, and disabled status.
- * @param control AbstractControl
- *
- * @returns {AbstractControl}
- */
-export function cloneAbstractControl<T extends AbstractControl>(control: T): T {
-  let newControl: T;
-
-  if (control instanceof FormGroup) {
-    const formGroup = new FormGroup(
-      {},
-      control.validator,
-      control.asyncValidator
-    );
-    const controls = control.controls;
-
-    Object.keys(controls).forEach((key) => {
-      formGroup.addControl(key, cloneAbstractControl(controls[key]));
-    });
-
-    newControl = formGroup as any;
-  } else if (control instanceof FormArray) {
-    const formArray = new FormArray(
-      [],
-      control.validator,
-      control.asyncValidator
-    );
-
-    control.controls.forEach((formControl) =>
-      formArray.push(cloneAbstractControl(formControl))
-    );
-
-    newControl = formArray as any;
-  } else if (control instanceof FormControl) {
-    newControl = new FormControl(
-      control.value,
-      control.validator,
-      control.asyncValidator
-    ) as any;
-  } else {
-    throw new Error("Error: unexpected control value");
-  }
-
-  if (control.disabled) {
-    newControl.disable({ emitEvent: false });
-  }
-
-  return newControl;
-}
-
-/**
- * @description Build an angular form group from a dynamic form instance
- * @param builder [[FormBuilder]]
- * @param form [[IDynamicForm]]
- * @param applyRequiredRules [[boolean]]
- */
-export function createAngularAbstractControl(
-  builder: FormBuilder,
-  form?: IDynamicForm,
-  uniqueValidator?: UniqueColumnValueValidator
-): AbstractControl | undefined {
-  if (!isDefined(form)) {
-    return undefined;
-  }
-  const c = [...(form?.controlConfigs as Array<IHTMLFormControl>)];
-  if (isGroupOfIDynamicForm(form)) {
-    (form as IDynamicForm).forms?.forEach((v) => {
-      c.push(
-        ...(v.controlConfigs
-          ? (v.controlConfigs as Array<IHTMLFormControl>)
-          : [])
-      );
-    });
-  }
-  const formGroup: FormGroup =
-    ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
-      builder,
-      c,
-      uniqueValidator
-    ) as FormGroup;
-  return formGroup;
-}
-
-export class DynamicFormHelpers {
-  /**
-   * @description Create an instance of [[IDynamicForm]] from a [[Form]] instance
-   * The method tries to translate prossible translatable label
-   * @param form [[Form]]
-   */
-  public static buildDynamicForm(
-    form: DynamicFormInterface
-  ): Promise<IDynamicForm | undefined> {
-    return new Promise((resolve, _) => {
-      const generatorFn: (f: DynamicFormInterface) => IDynamicForm | undefined =
-        (f: DynamicFormInterface) => {
-          let configs: IHTMLFormControl[] | undefined = [];
-          if (isArray(f?.formControls) && f?.formControls?.length > 0) {
-            configs = f.formControls
-              ?.map((control) => {
-                const config = toDynamicControl(control);
-                // tslint:disable-next-line: max-line-length
-                return { ...config } as IHTMLFormControl;
-              })
-              .filter((value) => isDefined(value));
-          }
-          let forms: any[] | undefined =
-            f?.children && f?.children?.length > 0
-              ? f.children.map((value) => generatorFn(value))
-              : undefined;
-          if (form) {
-            return new DynamicForm({
-              id: f.id,
-              title: f.title,
-              description: f.description,
-              endpointURL: f.url,
-              controlConfigs: configs,
-              forms,
-            });
-          }
-          return undefined;
-        };
-      resolve(generatorFn(form));
-    });
-  }
-}
-
-/**
- * Helper class for generating angular reactive form controls with errors validation
+ * @description Helper class for generating angular reactive form controls with errors validation
  */
 export class ComponentReactiveFormHelpers {
   /**
-   * Generate an abstract form control using input configuration
-   * @param fb [[FormBuilder]] Angular forms reactive formbuilder
-   * @param input [[DynamicInput]] dynamic input configuration
+   * @description Generate an abstract form control using input configuration
+   *
+   * @param fb Angular forms reactive formbuilder
+   * @param input dynamic input configuration
    */
-  public static buildFormGroupFromInputConfig(
+  static buildFormGroupFromInputConfig = (
     fb: FormBuilder,
     input: IHTMLFormControl[],
-    uniqueValidator?: UniqueColumnValueValidator
-  ): AbstractControl {
+    hasUniqueRules: boolean = false
+  ) => {
     const group = fb.group({});
     input.map((config: IHTMLFormControl) => {
       if (config.type !== InputTypes.CHECKBOX_INPUT) {
@@ -188,26 +58,27 @@ export class ComponentReactiveFormHelpers {
         ) {
           // Checks if maxlength rule is set to true and apply the rule to the input
           if (
-            isDefined(uniqueValidator) &&
+            hasUniqueRules &&
             isDefined(config.rules) &&
             isDefined(config.rules?.notUnique) &&
             isDefined(config.uniqueCondition)
           ) {
-            const parts = config.uniqueCondition?.split(":");
-            if (parts?.length === 2) {
-              config.rules && config.rules.notUnique
-                ? asyncValidators.push(
-                    CustomValidators.createAsycUniqueValidator(
-                      uniqueValidator,
-                      // First entry in the array is the table name
-                      parts[0],
-                      // Second is the column name in the table
-                      parts[1]
-                    )
-                  )
-                : // tslint:disable-next-line:no-unused-expression
-                  null;
-            }
+            // TODO : Review implementation
+            // const parts = config.uniqueCondition?.split(":");
+            // if (parts?.length === 2) {
+            //   config.rules && config.rules.notUnique
+            //     ? asyncValidators.push(
+            //         CustomValidators.createAsycUniqueValidator(
+            //           uniqueValidator,
+            //           // First entry in the array is the table name
+            //           parts[0],
+            //           // Second is the column name in the table
+            //           parts[1]
+            //         )
+            //       )
+            //     : // tslint:disable-next-line:no-unused-expression
+            //       null;
+            // }
           }
           // Checks if maxlength rule is set to true and apply the rule to the input
           config.rules && config.rules.maxLength
@@ -322,12 +193,16 @@ export class ComponentReactiveFormHelpers {
       } else {
         // Build list of checkboxes
         const array: FormArray = new FormArray([]);
-        of((config as CheckBoxInput).items).subscribe((items) => {
-          items.map((it: CheckboxItem, index: number) => {
-            // Added validation rule to checkbox array
-            (array as FormArray).push(fb.control(it.checked));
-          });
-        });
+        observableOf((config as CheckBoxInput).items)
+          .pipe(
+            tap((items) => {
+              items.map((it: CheckboxItem, index: number) => {
+                // Added validation rule to checkbox array
+                (array as FormArray).push(fb.control(it.checked));
+              });
+            })
+          )
+          .subscribe();
         // Add FormArray control to the formGroup
         if (config.rules && config.rules.isRequired) {
           array.setValidators(Validators.required);
@@ -336,7 +211,7 @@ export class ComponentReactiveFormHelpers {
       }
     });
     return group;
-  }
+  };
 
   /**
    * Loop through formGroup controls and mark them as touched
@@ -399,4 +274,23 @@ export class ComponentReactiveFormHelpers {
     control?.setValidators(validators || null);
     control?.updateValueAndValidity();
   }
+}
+
+/**
+ * @description Build an angular form group from a dynamic form instance
+ *
+ * @param builder
+ * @param form
+ */
+export const createAngularAbstractControl = (builder: FormBuilder, form?: IDynamicForm) => {
+  if (!isDefined(form)) {
+    return undefined;
+  }
+  const c = [...(form?.controlConfigs as Array<IHTMLFormControl>)];
+  const formGroup: FormGroup =
+    ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
+      builder,
+      c
+    ) as FormGroup;
+  return formGroup;
 }

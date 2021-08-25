@@ -1,6 +1,6 @@
 import { createSubject, observableOf } from '../helpers';
 import { isObservable, Observable } from 'rxjs';
-import { scan, mergeMap, shareReplay, filter, delay, first, startWith, concatMap } from 'rxjs/operators';
+import { scan, shareReplay, filter, delay, first, startWith, concatMap } from 'rxjs/operators';
 import { doLog } from '../operators/index';
 import { isDefined } from '../../utils/types/type-utils';
 

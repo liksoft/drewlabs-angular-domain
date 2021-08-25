@@ -1,19 +1,24 @@
-import { IHTMLFormControlValidationRule } from './contracts/input-rules';
-import { isDefined } from '../../../utils/types/type-utils';
-import { InputTypes } from './contracts/input-types';
+import { IHTMLFormControlValidationRule } from "./contracts/input-rules";
+import { isDefined } from "../../../utils/types/type-utils";
+import { InputTypes } from "./contracts/input-types";
 import {
   buildRequiredIfConfig,
   buildCheckboxItems,
   buildRadioInputItems,
   parseControlItemsConfigs,
-  controlBindingsSetter
-} from './helpers';
-import { CheckboxItem, ISelectItem, RadioItem } from './contracts/control-item';
-import { AbstractHTMLFormControl } from './dynamic-input';
-import { BindingControlInterface, IHTMLFormControl } from './contracts/dynamic-input';
-import { DynamicFormControlInterface } from './compact/types';
+  controlBindingsSetter,
+} from "./helpers";
+import { CheckboxItem, ISelectItem, RadioItem } from "./contracts/control-item";
+import { AbstractHTMLFormControl } from "./dynamic-input";
+import {
+  BindingControlInterface,
+  IHTMLFormControl,
+} from "./contracts/dynamic-input";
+import { DynamicFormControlInterface } from "./compact/types";
 
-export function toDynamicControl(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
+export function toDynamicControl(
+  model: Partial<DynamicFormControlInterface>
+): IHTMLFormControl {
   switch (model.type) {
     case InputTypes.DATE_INPUT:
       return DateInput.fromFormControlModel(model);
@@ -58,47 +63,50 @@ export class TextInput extends AbstractHTMLFormControl {
    */
   constructor(value: TextInput) {
     super(value);
-    this.minLength = value.minLength ? value.minLength : null;
-    this.maxLength = value.maxLength ? value.maxLength : null;
-    this.pattern = value.pattern ? value.pattern : null;
+    this.minLength = value.minLength || 1;
+    this.maxLength = value.maxLength || undefined;
+    this.pattern = value.pattern || undefined;
   }
-
 
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new TextInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false,
-          maxLength: model.maxLength ? true : false,
-          minLength: model.minLength ? true : false,
-          email: model.type === InputTypes.EMAIL_INPUT ? true : false,
-          notUnique: Boolean(model.unique) ? true : false,
-          pattern: isDefined(model.pattern) ? true : false,
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-        pattern: model.pattern,
-        minLength: model.minLength,
-        maxLength: model.maxLength
-      } as TextInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new TextInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? model.requiredIf
+          ? buildRequiredIfConfig(model.requiredIf)
+          : undefined
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+        maxLength: model.maxLength ? true : false,
+        minLength: model.minLength ? true : false,
+        email: model.type === InputTypes.EMAIL_INPUT ? true : false,
+        notUnique: Boolean(model.unique) ? true : false,
+        pattern: isDefined(model.pattern) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+      pattern: model.pattern,
+      minLength: model.minLength,
+      maxLength: model.maxLength,
+    } as TextInput);
   }
 }
 
@@ -117,50 +125,49 @@ export class DateInput extends AbstractHTMLFormControl {
     this.minDate = value.minDate;
     this.maxDate = value.maxDate;
     this.currentDate = value.currentDate;
-    this.dateInputFormat = value.dateInputFormat || 'dd/mm/yyyy';
+    this.dateInputFormat = value.dateInputFormat || "dd/mm/yyyy";
   }
-
 
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new DateInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false,
-          maxDate: isDefined(model.maxDate) ? true : false,
-          minDate: isDefined(model.minDate) ? true : false,
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-        // Date input parts
-        minDate: model.minDate,
-        maxDate: model.maxDate,
-        currentDate: '',
-        dateInputFormat: 'dd/mm/yyyy'
-      } as DateInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new DateInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+        maxDate: isDefined(model.maxDate) ? true : false,
+        minDate: isDefined(model.minDate) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+      // Date input parts
+      minDate: model.minDate,
+      maxDate: model.maxDate,
+      currentDate: "",
+      dateInputFormat: "dd/mm/yyyy",
+    } as DateInput);
   }
 }
 
-
 export class CheckBoxInput extends AbstractHTMLFormControl {
-
   /**
    * @description Instance initializer
    * @param value Required input configuration object
@@ -176,31 +183,33 @@ export class CheckBoxInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new CheckBoxInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false,
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-        // Date input parts
-        items: buildCheckboxItems(model)
-      } as CheckBoxInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new CheckBoxInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+      // Date input parts
+      items: buildCheckboxItems(model),
+    } as CheckBoxInput);
   }
 }
 
@@ -208,34 +217,35 @@ export class CheckBoxInput extends AbstractHTMLFormControl {
  * @description Hidden type Form Control configuration definition class
  */
 export class HiddenInput extends AbstractHTMLFormControl {
-
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new HiddenInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-      } as DateInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new HiddenInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+    } as DateInput);
   }
 }
 
@@ -255,38 +265,39 @@ export class NumberInput extends AbstractHTMLFormControl {
     this.max = value.max;
   }
 
-
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new NumberInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false,
-          max: isDefined(model.max) ? true : false,
-          min: isDefined(model.min) ? true : false,
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-        min: model.min,
-        max: model.max
-      } as NumberInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new NumberInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+        max: isDefined(model.max) ? true : false,
+        min: isDefined(model.min) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+      min: model.min,
+      max: model.max,
+    } as NumberInput);
   }
 }
 
@@ -302,40 +313,41 @@ export class PasswordInput extends TextInput {
     super(value);
   }
 
-
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new PasswordInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false,
-          maxLength: model.maxLength ? true : false,
-          minLength: model.minLength ? true : false,
-          pattern: isDefined(model.pattern) ? true : false,
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-        pattern: model.pattern,
-        minLength: model.minLength,
-        maxLength: model.maxLength
-      } as PasswordInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new PasswordInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+        maxLength: model.maxLength ? true : false,
+        minLength: model.minLength ? true : false,
+        pattern: isDefined(model.pattern) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+      pattern: model.pattern,
+      minLength: model.minLength,
+      maxLength: model.maxLength,
+    } as PasswordInput);
   }
 }
 
@@ -343,7 +355,6 @@ export class PasswordInput extends TextInput {
  * @description Phone numbers control configuration definition class
  */
 export class PhoneInput extends TextInput {
-
   /**
    * @description Instance initializer
    * @param value Required input configuration object
@@ -352,41 +363,42 @@ export class PhoneInput extends TextInput {
     super(value);
   }
 
-
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new PhoneInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false,
-          maxLength: model.maxLength ? true : false,
-          minLength: model.minLength ? true : false,
-          notUnique: Boolean(model.unique) ? true : false,
-          pattern: isDefined(model.pattern) ? true : false
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-        pattern: model.pattern,
-        minLength: model.minLength,
-        maxLength: model.maxLength
-      } as PhoneInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new PhoneInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+        maxLength: model.maxLength ? true : false,
+        minLength: model.minLength ? true : false,
+        notUnique: Boolean(model.unique) ? true : false,
+        pattern: isDefined(model.pattern) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+      pattern: model.pattern,
+      minLength: model.minLength,
+      maxLength: model.maxLength,
+    } as PhoneInput);
   }
 }
 
@@ -408,43 +420,48 @@ export class RadioInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new RadioInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false,
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-        // Date input parts
-        items: buildRadioInputItems(model)
-      } as RadioInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new RadioInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+      // Date input parts
+      items: buildRadioInputItems(model),
+    } as RadioInput);
   }
 }
 
 /**
  * @description Selectable options control configuration definition class
  */
-export class SelectInput extends AbstractHTMLFormControl implements Partial<BindingControlInterface> {
+export class SelectInput
+  extends AbstractHTMLFormControl
+  implements Partial<BindingControlInterface>
+{
   items: Array<any>;
   optionsLabel?: string;
   optionsValueIndex?: string | number;
   multiple?: boolean;
-  groupByKey: string;
+  groupByKey?: string;
 
   // Added properties for loading data remotely
   serverBindings?: string;
@@ -459,31 +476,35 @@ export class SelectInput extends AbstractHTMLFormControl implements Partial<Bind
    */
   constructor(value: Partial<SelectInput>) {
     super(value);
-    this.items = value.items;
+    this.items = value.items || [];
     this.optionsLabel = value.optionsLabel;
     this.optionsValueIndex = value.optionsValueIndex;
     this.multiple = value.multiple ? value.multiple : false;
     this.groupByKey = value.groupByKey;
     this.serverBindings = value.serverBindings;
     this.clientBindings = value.clientBindings;
-    this.groupfield = value.groupfield;
-    this.valuefield = value.valuefield;
-    this.keyfield = value.keyfield;
+    this.groupfield = value.groupfield || "id";
+    this.valuefield = value.valuefield || "label";
+    this.keyfield = value.keyfield || "id";
   }
 
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
     // Parse the model fields
-    let { keyfield, valuefield, groupfield } = model.selectableModel ? parseControlItemsConfigs(model) : model;
+    let { keyfield, valuefield, groupfield } = model.selectableModel
+      ? parseControlItemsConfigs(model)
+      : model;
     keyfield = model.keyfield || keyfield;
     valuefield = model.valuefield || valuefield;
     groupfield = model.groupfield || groupfield;
     // ! End Parse model fields
-    return new SelectInput(controlBindingsSetter<SelectInput>(model.options)(
-      {
+    return new SelectInput(
+      controlBindingsSetter<SelectInput>(model.options || [])({
         ...{ keyfield, valuefield, groupfield },
         label: model.label,
         type: model.type,
@@ -493,7 +514,9 @@ export class SelectInput extends AbstractHTMLFormControl implements Partial<Bind
         uniqueCondition: model.uniqueOn,
         isRepeatable: Boolean(model.isRepeatable) ? true : false,
         containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
+        requiredIf: model.requiredIf
+          ? buildRequiredIfConfig(model.requiredIf)
+          : undefined,
         formControlIndex: model.controlIndex,
         formControlGroupKey: model.controlGroupKey,
         rules: {
@@ -503,14 +526,14 @@ export class SelectInput extends AbstractHTMLFormControl implements Partial<Bind
         disabled: Boolean(model.disabled) ? true : false,
         readOnly: Boolean(model.readonly) ? true : false,
         descriptionText: model.description,
-        optionsLabel: 'description',
-        groupByKey: 'type',
-        optionsValueIndex: 'id',
+        optionsLabel: "description",
+        groupByKey: "type",
+        optionsValueIndex: "id",
         multiple: Boolean(model.multiple) ? true : false,
         serverBindings: model.selectableModel,
-        clientBindings: model.selectableValues
-      } as SelectInput
-    ));
+        clientBindings: model.selectableValues,
+      } as SelectInput)
+    );
   }
 }
 
@@ -531,42 +554,43 @@ export class TextAreaInput extends TextInput {
     this.rows = value.rows;
   }
 
-
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new TextAreaInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-        rows: model.rows,
-        cols: model.columns
-      } as TextAreaInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new TextAreaInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+      rows: model.rows,
+      cols: model.columns,
+    } as TextAreaInput);
   }
 }
 
 export class FileInput extends AbstractHTMLFormControl {
-  uploadUrl: string;
-  pattern: string;
+  uploadUrl?: string;
+  pattern?: string;
   multiple: boolean;
   maxFileSize: number;
 
@@ -576,49 +600,49 @@ export class FileInput extends AbstractHTMLFormControl {
    */
   constructor(value: FileInput) {
     super(value);
-    this.uploadUrl = value.uploadUrl ? value.uploadUrl : null;
-    this.pattern = value.pattern ? value.pattern : null;
-    this.multiple = value.multiple ? value.multiple : false;
-    this.maxFileSize = value.maxFileSize ? value.maxFileSize : null;
+    this.uploadUrl = value.uploadUrl || undefined;
+    this.pattern = value.pattern || undefined;
+    this.multiple = value.multiple || false;
+    this.maxFileSize = value.maxFileSize || 10;
   }
-
 
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new FileInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-        uploadUrl: model.uploadURL,
-        pattern: model.pattern,
-        multiple: Boolean(model.multiple) ? true : false,
-        maxFileSize: model.max ? model.max : null
-      } as FileInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new FileInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+      uploadUrl: model.uploadURL,
+      pattern: model.pattern,
+      multiple: Boolean(model.multiple) ? true : false,
+      maxFileSize: model.max ? model.max : null,
+    } as FileInput);
   }
 }
 
 export class HMTLInput extends AbstractHTMLFormControl {
-
   /**
    * @description Instance initializer
    * @param value Required input configuration object
@@ -627,39 +651,39 @@ export class HMTLInput extends AbstractHTMLFormControl {
     super(value);
   }
 
-
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new HMTLInput(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-      } as HMTLInput
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new HMTLInput({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+    } as HMTLInput);
   }
 }
 
 export class InputGroup extends AbstractHTMLFormControl {
-
   children: IHTMLFormControl[];
   /**
    * @description Instance initializer
@@ -667,38 +691,39 @@ export class InputGroup extends AbstractHTMLFormControl {
    */
   constructor(value: InputGroup) {
     super(value);
-    this.children = value.children ? value.children : null;
+    this.children = value.children || [];
   }
-
 
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(model: Partial<DynamicFormControlInterface>): IHTMLFormControl {
-    return new InputGroup(
-      {
-        label: model.label,
-        type: model.type,
-        formControlName: model.controlName,
-        value: model.value,
-        classes: model.classes,
-        uniqueCondition: model.uniqueOn,
-        isRepeatable: Boolean(model.isRepeatable) ? true : false,
-        containerClass: model.dynamicControlContainerClass,
-        requiredIf: buildRequiredIfConfig(model.requiredIf),
-        formControlIndex: model.controlIndex,
-        formControlGroupKey: model.controlGroupKey,
-        rules: {
-          isRequired: Boolean(model.required) ? true : false
-        } as IHTMLFormControlValidationRule,
-        placeholder: model.placeholder,
-        disabled: Boolean(model.disabled) ? true : false,
-        readOnly: Boolean(model.readonly) ? true : false,
-        descriptionText: model.description,
-        children: model.children.map((v) => toDynamicControl(v))
-      } as InputGroup
-    );
+  static fromFormControlModel(
+    model: Partial<DynamicFormControlInterface>
+  ): IHTMLFormControl {
+    return new InputGroup({
+      label: model.label,
+      type: model.type,
+      formControlName: model.controlName,
+      value: model.value,
+      classes: model.classes,
+      uniqueCondition: model.uniqueOn,
+      isRepeatable: Boolean(model.isRepeatable) ? true : false,
+      containerClass: model.dynamicControlContainerClass,
+      requiredIf: model.requiredIf
+        ? buildRequiredIfConfig(model.requiredIf)
+        : undefined,
+      formControlIndex: model.controlIndex,
+      formControlGroupKey: model.controlGroupKey,
+      rules: {
+        isRequired: Boolean(model.required) ? true : false,
+      } as IHTMLFormControlValidationRule,
+      placeholder: model.placeholder,
+      disabled: Boolean(model.disabled) ? true : false,
+      readOnly: Boolean(model.readonly) ? true : false,
+      descriptionText: model.description,
+      children: model.children?.map((v) => toDynamicControl(v)),
+    } as InputGroup);
   }
 }
 export { CheckboxItem, ISelectItem, RadioItem };

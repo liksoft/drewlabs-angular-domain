@@ -23,7 +23,7 @@ export interface FormState {
   createControlResult?: UIStateStatusCode;
   updateControlResult?: UIStateStatusCode;
   deleteControlResult?: UIStateStatusCode;
-  error: any;
+  error?: any;
 }
 
 export enum FormStoreActions {

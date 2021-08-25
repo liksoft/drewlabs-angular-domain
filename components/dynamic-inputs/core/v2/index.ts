@@ -1,18 +1,26 @@
-export { SelectableControl, ServerSideSelectableControl } from './contracts/input-types';
 export {
-    FormState,
-    FormStoreActions,
-    formCreatedAction,
-    formDeletedAction,
-    formUpdatedAction,
-    onPaginateFormsAction,
-    onFormPaginationDataLoaded,
-    onAddFormToStackAction,
-    updateFormAction,
-    deleteFormAction,
-    selectFormAction
-} from './actions';
+  SelectableControl,
+  ServerSideSelectableControl,
+} from "./contracts/input-types";
+export {
+  FormState,
+  FormStoreActions,
+  formCreatedAction,
+  formDeletedAction,
+  formUpdatedAction,
+  onPaginateFormsAction,
+  onFormPaginationDataLoaded,
+  onAddFormToStackAction,
+  updateFormAction,
+  deleteFormAction,
+  selectFormAction,
+} from "./actions";
 
-export { formsReducer } from './reducers';
+export { formsReducer } from "./reducers";
 
-export { FormsProvider, initialState } from './providers/form';
+
+// TODO : Needs to be remove in future release
+export {
+  DynamicFormService as FormsProvider,
+  initialState,
+} from "../../angular/services/dynamic-form.service";

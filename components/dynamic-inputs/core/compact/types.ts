@@ -1,4 +1,3 @@
-
 export interface DynamicFormInterface {
   id: number;
   title: string;
@@ -17,10 +16,10 @@ export interface DynamicFormControlInterface {
   type: string;
   classes?: string;
   requiredIf?: string;
-  required: number|boolean;
-  disabled: number|boolean;
-  readonly: number|boolean;
-  unique: number|boolean;
+  required: number | boolean;
+  disabled: number | boolean;
+  readonly: number | boolean;
+  unique: number | boolean;
   pattern: string;
   description: string;
   maxLength?: number;
@@ -31,16 +30,16 @@ export interface DynamicFormControlInterface {
   maxDate?: string;
   selectableValues: string;
   selectableModel: string;
-  multiple: number|boolean;
+  multiple: number | boolean;
   controlGroupKey: string;
   controlName: string;
   controlIndex: number;
-  options: object[];
+  options: { [index: string]: any }[];
   rows: number;
   columns: number;
   value: string;
   uploadURL?: string;
-  isRepeatable?: number|boolean;
+  isRepeatable?: number | boolean;
   children?: Partial<DynamicFormControlInterface>[];
   uniqueOn?: string;
   dynamicControlContainerClass?: string;
@@ -50,7 +49,6 @@ export interface DynamicFormControlInterface {
   keyfield?: string;
   formId?: number;
 }
-
 
 export interface ControlOptionInterface {
   id: number;
