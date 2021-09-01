@@ -2,11 +2,13 @@ import { createStore } from "../../../../rxjs/state/rx-state";
 import { FormState } from "../../core/v2/actions";
 import { formsReducer } from "../../core/v2/reducers";
 import { Observable } from "rxjs";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, OnDestroy } from "@angular/core";
 import { DYNAMIC_FORM_LOADER, FormsLoaderInterface } from ".";
 import { onNewFormAction } from "../../core/v2/actions/form";
-import { tap } from "rxjs/operators";
+import { takeUntil, tap } from "rxjs/operators";
 import { DynamicFormInterface } from "../../core/compact";
+import { doLog } from "src/app/lib/core/rxjs/operators";
+import { createSubject } from "src/app/lib/core/rxjs/helpers";
 
 export const initialState: FormState = {
   collections: {
@@ -21,10 +23,17 @@ export const initialState: FormState = {
 export abstract class AbstractDynamicFormService {
   public readonly store$ = createStore(formsReducer, initialState);
 
-  // tslint:disable-next-line: typedef
   get state$(): Observable<FormState> {
     return this.store$.connect();
   }
+
+  // /**
+  //  * @description Form state
+  //  */
+  // _state$ = createSubject<FormState>();
+
+  // // tslint:disable-next-line: typedef
+  // state$: Observable<FormState> = this._state$.asObservable();
 
   /**
    * Provides predefined dynamic forms loader implementation
@@ -39,11 +48,25 @@ export abstract class AbstractDynamicFormService {
 }
 
 @Injectable()
-export class DynamicFormService extends AbstractDynamicFormService {
+export class DynamicFormService
+  extends AbstractDynamicFormService
+  implements OnDestroy
+{
+  /**
+   * @description Service destroyer
+   */
+  private _destroy$ = createSubject();
+
   constructor(
     @Inject(DYNAMIC_FORM_LOADER) private loader: FormsLoaderInterface
   ) {
     super();
+    // Provide an internal
+    this.state$
+      .pipe(
+        takeUntil(this._destroy$)
+      )
+      .subscribe();
   }
 
   /**
@@ -56,8 +79,13 @@ export class DynamicFormService extends AbstractDynamicFormService {
     endpoint: string,
     options: { [index: string]: any } = {}
   ) => {
-    return this.loader
-      .load(endpoint, options)
-      .pipe(tap((state) => onNewFormAction(this.store$)(state)));
+    return this.loader.load(endpoint, options).pipe(
+      tap((state) => onNewFormAction(this.store$)(state)),
+      doLog("DynamicFormService service: ")
+    );
   };
+
+  ngOnDestroy(): void {
+    this._destroy$.next();
+  }
 }

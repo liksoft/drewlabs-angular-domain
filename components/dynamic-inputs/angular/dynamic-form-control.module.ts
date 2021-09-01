@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders } from "@angular/core";
+import { NgModule, ModuleWithProviders, APP_INITIALIZER } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DynamicFormControlComponent } from "./components/dynamic-form-control.component";
@@ -53,6 +53,18 @@ export type ModuleConfigs = {
     controlsPath?: string;
     formsPath?: string;
     controlBindingsPath?: string;
+  };
+  formsAssets?: string;
+};
+
+export const initializeDynamicFormContainer = (
+  service: AbstractDynamicFormService,
+  assetsURL: string
+) => {
+  return async () => {
+    return await service
+      .loadConfiguredForms(assetsURL || "/assets/resources/app-forms.json")
+      .toPromise();
   };
 };
 
@@ -114,7 +126,17 @@ export class DynamicFormControlModule {
         {
           provide: AbstractDynamicFormService,
           useClass: DynamicFormService,
-        }
+        },
+        {
+          provide: APP_INITIALIZER,
+          useFactory: (service: AbstractDynamicFormService) =>
+            initializeDynamicFormContainer(
+              service,
+              configs?.formsAssets || "/assets/resources/app-forms.json"
+            ),
+          multi: true,
+          deps: [AbstractDynamicFormService],
+        },
       ],
     };
   }

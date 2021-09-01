@@ -2,20 +2,19 @@ import { Injectable } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { ICollection } from "../../../../contracts/collection-interface";
 import { isDefined } from "../../../../utils";
-import { UniqueValueService } from "../../../../validators";
 import { IDynamicForm, IHTMLFormControl } from "../../core/contracts";
 import { isGroupOfIDynamicForm } from "../../core/helpers";
-import { ComponentReactiveFormHelpers, createAngularAbstractControl } from "../helpers";
+import {
+  ComponentReactiveFormHelpers,
+  createAngularAbstractControl,
+} from "../helpers";
 
 @Injectable({
   providedIn: "root",
 })
 export class DynamicFormBuilder {
 
-  public constructor(
-    private uniqueValidator: UniqueValueService,
-    private fb: FormBuilder
-  ) {}
+  public constructor(private fb: FormBuilder) {}
 
   public readonly formBuilder = this.fb;
 
@@ -24,15 +23,10 @@ export class DynamicFormBuilder {
    * @param inputs [[Array<IHTMLFormControl>]]
    * @param applyUniqueValidations [[boolean]]
    */
-  public buildFormGroupFromInputConfig(
-    inputs: IHTMLFormControl[],
-    applyUniqueValidations: boolean = true
-    // applyRequiredRules: boolean = true
-  ) {
+  public buildFormGroupFromInputConfig(inputs: IHTMLFormControl[]) {
     return ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
       this.fb,
-      inputs,
-      applyUniqueValidations ? this.uniqueValidator : undefined
+      inputs
     );
   }
 
@@ -42,10 +36,7 @@ export class DynamicFormBuilder {
    * @param form [[IDynamicForm]]
    * @param applyUniqueValidations [[boolean]]
    */
-  buildFormGroupFromDynamicForm(
-    form: IDynamicForm,
-    applyUniqueValidations: boolean = true
-  ) {
+  buildFormGroupFromDynamicForm(form: IDynamicForm) {
     if (!isDefined(form)) {
       return null;
     }
@@ -59,10 +50,7 @@ export class DynamicFormBuilder {
         );
       });
     }
-    return this.buildFormGroupFromInputConfig(
-      c,
-      applyUniqueValidations
-    ) as FormGroup;
+    return this.buildFormGroupFromInputConfig(c) as FormGroup;
   }
 
   /**
@@ -71,16 +59,11 @@ export class DynamicFormBuilder {
    * @param applyUniqueValidations [[boolean|null]]
    */
   formGroupFromCollectionOfDynamicControls(
-    collection: ICollection<IDynamicForm>,
-    applyUniqueValidations?: boolean
+    collection: ICollection<IDynamicForm>
   ) {
     const group = this.fb.group({});
     collection.keys().forEach((k) => {
-      const control = createAngularAbstractControl(
-        this.fb,
-        collection.get(k),
-        applyUniqueValidations ? this.uniqueValidator : undefined
-      );
+      const control = createAngularAbstractControl(this.fb, collection.get(k));
       if (control) {
         group.addControl(k, control);
       }
