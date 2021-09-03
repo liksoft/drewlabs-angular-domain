@@ -5,10 +5,9 @@ import { Observable } from "rxjs";
 import { Inject, Injectable, OnDestroy } from "@angular/core";
 import { DYNAMIC_FORM_LOADER, FormsLoaderInterface } from ".";
 import { onNewFormAction } from "../../core/v2/actions/form";
-import { takeUntil, tap } from "rxjs/operators";
+import { tap } from "rxjs/operators";
 import { DynamicFormInterface } from "../../core/compact";
 import { doLog } from "src/app/lib/core/rxjs/operators";
-import { createSubject } from "src/app/lib/core/rxjs/helpers";
 
 export const initialState: FormState = {
   collections: {
@@ -27,14 +26,6 @@ export abstract class AbstractDynamicFormService {
     return this.store$.connect();
   }
 
-  // /**
-  //  * @description Form state
-  //  */
-  // _state$ = createSubject<FormState>();
-
-  // // tslint:disable-next-line: typedef
-  // state$: Observable<FormState> = this._state$.asObservable();
-
   /**
    * Provides predefined dynamic forms loader implementation
    *
@@ -52,21 +43,10 @@ export class DynamicFormService
   extends AbstractDynamicFormService
   implements OnDestroy
 {
-  /**
-   * @description Service destroyer
-   */
-  private _destroy$ = createSubject();
-
   constructor(
     @Inject(DYNAMIC_FORM_LOADER) private loader: FormsLoaderInterface
   ) {
     super();
-    // Provide an internal
-    this.state$
-      .pipe(
-        takeUntil(this._destroy$)
-      )
-      .subscribe();
   }
 
   /**
@@ -86,6 +66,6 @@ export class DynamicFormService
   };
 
   ngOnDestroy(): void {
-    this._destroy$.next();
+    this.store$.destroy();
   }
 }

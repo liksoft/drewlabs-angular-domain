@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, OnDestroy } from "@angular/core";
 import {
   createStore,
   onInitStoreStateAction,
@@ -18,7 +18,7 @@ import { ControlOptionInterface } from "../../core/compact/types";
 @Injectable({
   providedIn: "root",
 })
-export class OptionsService {
+export class OptionsService implements OnDestroy {
   public readonly store$ = createStore(
     controlOptionsReducer,
     OptionsInitialState
@@ -50,6 +50,10 @@ export class OptionsService {
         }
       })
     );
+  }
+
+  ngOnDestroy(): void {
+    this.store$.destroy();
   }
 
   public resetState = (state: Partial<OptionsState>) =>

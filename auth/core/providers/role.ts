@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { rolesReducer } from '../reducers';
 import { createStore } from '../../../rxjs/state/rx-state';
-import { initialRolesState, resetRolesStore, RolesState } from '../actions/roles';
+import { initialRolesState, RolesState } from '../actions/roles';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +20,7 @@ export class RolesProvider implements OnDestroy {
   }
 
   destroy() {
-    resetRolesStore(this.store$)();
+    // resetRolesStore(this.store$)();
+    this.store$.destroy();
   }
 }

@@ -1,11 +1,12 @@
-import { Observable, Subject, BehaviorSubject, of, EMPTY, from, ObservableInput } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, of, EMPTY, from, ObservableInput, ReplaySubject } from 'rxjs';
 import { GenericObserverHandlerFunc } from '../types';
+
 
 /**
  * @description Generic method for creating an rxjs subject of a specified type
  */
-export const createSubject = <T>() => {
-  return new Subject<T>();
+export const createSubject: <T>(buffersize?: number) => Subject<T> = <T>(buffersize?: number) => {
+  return buffersize ? new ReplaySubject(buffersize) : new Subject<T>();
 };
 
 /**
