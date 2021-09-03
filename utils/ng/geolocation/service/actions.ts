@@ -1,11 +1,12 @@
 import { createAction, DrewlabsFluxStore, StoreAction } from "../../../../rxjs/state/rx-state";
+import { GeoPosition } from "../types/geoposition";
 
 const enum Actions {
     GEOLOCATION_CHANGE_ACTION = 'GEOLOCATION_CHANGES'
 }
 
 interface GeolocationState {
-    position?: GeolocationPosition;
+    position: GeoPosition;
     error?: GeolocationPositionError;
 }
 

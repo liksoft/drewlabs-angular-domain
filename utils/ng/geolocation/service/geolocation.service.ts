@@ -1,5 +1,5 @@
-import { Inject, Injectable, OnDestroy } from "@angular/core";
-import { tap, startWith, takeUntil, map } from "rxjs/operators";
+import { Inject, Injectable, InjectionToken, OnDestroy } from "@angular/core";
+import { tap, takeUntil, map } from "rxjs/operators";
 import { createSubject } from "src/app/lib/core/rxjs/helpers";
 import { createStore } from "src/app/lib/core/rxjs/state/rx-state";
 import { SessionStorage } from "src/app/lib/core/storage/core";
@@ -18,55 +18,53 @@ import {
 import { doLog } from "src/app/lib/core/rxjs/operators";
 import { isDefined } from "../../../types";
 import { isEmpty } from "lodash";
+import { createGeoposition, GeoPosition } from "../types/geoposition";
+import { GeolocationManager } from "../types/geolocation";
 
 const BROWSER_POSITION_SESSION_KEY = "CLIENT_GEOLOCATION_LOCATION";
 
-interface GeoPosition {
-  coords?: Partial<{
-    accuracy: number;
-    altitude?: number;
-    altitudeAccuracy?: number;
-    heading?: any;
-    latitude: number;
-    longitude: number;
-  }>;
-  timestamps?: number;
-}
+// @external
+// Provides an interface to the Geolocation services
+export const GEOLOCATION_MANAGER = new InjectionToken<GeolocationManager>(
+  "Instance of the GeolocationManager interface"
+);
 
-@Injectable()
-export class GeolocationService implements OnDestroy {
+@Injectable({
+  providedIn: 'root'
+})
+export class GeolocationService implements GeolocationManager, OnDestroy {
   private _destroy$ = createSubject();
   private _watchPositionId = 0;
-  private readonly _changes$ = createSubject<GeolocationPosition>();
-  public readonly changes$ = this._changes$.pipe(
-    startWith({} as GeolocationPosition)
-  );
 
-  private readonly _currentPosition$ = createSubject<GeolocationPosition>();
+  // @internal
+  private readonly _changes$ = createSubject<GeoPosition>(1);
 
-  public readonly currentPosition$ = this._changes$.pipe(
-    startWith({} as GeolocationPosition)
-  );
+  // Observable producing the Geoposition changes
+  public readonly changes$ = this._changes$.asObservable();
 
+  private readonly _currentPosition$ = createSubject<GeoPosition>(1);
+
+  // Observable producing the current geo position
+  public readonly currentPosition$ = this._currentPosition$.asObservable();
+
+  // A Geolocation store provider
   public readonly store$ = createStore(geolocationReducer, {
-    position: undefined,
+    position: {} as GeoPosition,
+    error: undefined,
   });
 
   public tempPosition!: GeoPosition;
 
   public readonly state$ = this.store$.connect().pipe(
-    map((state) => state?.position),
+    map((state) => state.position),
     takeUntil(
       this._destroy$.pipe(
-        doLog("Clearing data..."),
         tap((_) => {
           this.geolocationRef.clearWatch(this._watchPositionId);
           this.session.delete(BROWSER_POSITION_SESSION_KEY);
         })
       )
     ),
-    // distinctUntilChanged((x, y) => (x?.position?.coords?.altitude === y?.position?.coords?.altitude) && (x?.position?.coords?.longitude === y?.position?.coords?.longitude)),
-    doLog("Setting Browser location: "),
     tap((state) => {
       if (state) {
         this.setPosition(state);
@@ -80,20 +78,11 @@ export class GeolocationService implements OnDestroy {
     return this.tempPosition;
   }
 
-  public setPosition(state: GeolocationPosition) {
-    const position: GeoPosition = {
-      coords: {
-        accuracy: state?.coords?.accuracy,
-        altitude: state?.coords?.altitude || undefined,
-        altitudeAccuracy: state?.coords?.altitudeAccuracy || undefined,
-        heading: state?.coords?.heading,
-        latitude: state?.coords?.latitude,
-        longitude: state?.coords?.longitude,
-      },
-      timestamps: state?.timestamp,
-    };
-    this.tempPosition = position;
-    this.session.set(BROWSER_POSITION_SESSION_KEY, position);
+  private setPosition(position: GeoPosition) {
+    if (position) {
+      this.tempPosition = position;
+      this.session.set(BROWSER_POSITION_SESSION_KEY, position);
+    }
   }
 
   constructor(
@@ -107,9 +96,10 @@ export class GeolocationService implements OnDestroy {
     }
     this._watchPositionId = this.geolocationRef.watchPosition(
       (position) => {
-        this._changes$.next(position);
+        const _position = createGeoposition(position);
+        this._changes$.next(_position);
         onGeolocationPositionAction(this.store$)({
-          position,
+          position: _position,
         } as Partial<GeolocationState>);
       },
       (error) => {
@@ -122,20 +112,14 @@ export class GeolocationService implements OnDestroy {
     );
   }
 
-  public publishCurrentPosition(): void {
-    this._currentPosition$
-      .asObservable()
-      .pipe(
-        takeUntil(this._destroy$),
-        tap((state) => this.setPosition(state))
-      )
-      .subscribe();
+  public getPlatformCurrentPosition(): void {
     // Get the current position
     this.geolocationRef.getCurrentPosition(
       (position) => {
-        this._currentPosition$.next(position);
+        const _position = createGeoposition(position);
+        this._currentPosition$.next(_position);
         onGeolocationPositionAction(this.store$)({
-          position,
+          position: _position,
         } as Partial<GeolocationState>);
       },
       (error) => {
@@ -156,7 +140,10 @@ export class GeolocationService implements OnDestroy {
 
 @Injectable()
 export class GeolocationInterceptorService implements HttpInterceptor {
-  constructor(private service: GeolocationService) {}
+
+  constructor(
+    @Inject(GEOLOCATION_MANAGER) private service: GeolocationManager
+  ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const position = this.service.getPosition();

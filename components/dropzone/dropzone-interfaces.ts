@@ -8,7 +8,7 @@ export type DropzoneEvent = 'error' | 'success' | 'sending' | 'canceled' | 'comp
   'maxFilesExceeded' | 'errorMultiple' | 'successMultiple' | 'sendingMultiple' | 'canceledMultiple' |
   'completeMultiple' | 'processingMultiple' | 'reset' | 'queueComplete' | 'totalUploadProgress';
 
-export const DropzoneEvents = [
+export const DropzoneEvents: DropzoneEvent[] = [
   'error',
   'success',
   'sending',

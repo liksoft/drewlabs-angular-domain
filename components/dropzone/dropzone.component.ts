@@ -1,4 +1,4 @@
-import { isDefined, WindowRef } from '../../utils';
+import { isDefined } from "../../utils";
 import {
   Component,
   OnInit,
@@ -9,59 +9,58 @@ import {
   AfterViewInit,
   PLATFORM_ID,
   Inject,
-  OnDestroy
-} from '@angular/core';
+  OnDestroy,
+  Optional,
+} from "@angular/core";
 import {
   DropzoneConfigInterface,
-  DropzoneDirective
-} from 'ngx-dropzone-wrapper';
-import { isPlatformBrowser } from '@angular/common';
-import {
-  DropzoneEvents,
-  DropzoneEvent
-} from './dropzone-interfaces';
-import { DropzoneService } from './dropzone.service';
-import { createSubject, createStateful } from '../../rxjs/helpers/index';
-import { takeUntil } from 'rxjs/operators';
-import { isEmpty } from 'lodash';
+  DropzoneDirective,
+} from "ngx-dropzone-wrapper";
+import { isPlatformBrowser } from "@angular/common";
+import { DropzoneEvents, DropzoneEvent } from "./dropzone-interfaces";
+import { DropzoneService } from "./dropzone.service";
+import { createSubject, createStateful } from "../../rxjs/helpers/index";
+import { takeUntil } from "rxjs/operators";
+import { isEmpty } from "lodash";
+import { WINDOW } from "../../utils/ng/common";
 
 @Component({
-  selector: 'app-dropzone',
+  selector: "app-dropzone",
   template: `
     <ng-container *ngIf="localConfigs$ | async as localConfigs">
-    <div
-      [class.disabled]="disabled"
-      [class]="wrapperClass"
-      [class.dropzone]="useDropzoneClass"
-      [dropzone]="localConfigs"
-      [disabled]="disabled"
-      (init)="DZ_INIT.emit($event)"
-      (error)="onUploadError()"
-      (success)="onUploadSuccess()"
-    >
       <div
-        class="dz-message"
         [class.disabled]="disabled"
-        [class.dz-placeholder]="placeholder"
+        [class]="wrapperClass"
+        [class.dropzone]="useDropzoneClass"
+        [dropzone]="localConfigs"
+        [disabled]="disabled"
+        (init)="DZ_INIT.emit($event)"
+        (error)="onUploadError()"
+        (success)="onUploadSuccess()"
       >
-        <div class="text-center dz-upload-btn">
-          <clr-icon shape="upload-cloud"></clr-icon>
-        </div>
-        <span>{{ "dragFileLabel" | translate }}</span>
-        <span class="dz-text">
-          <a href="javascript:undefined;">{{
-            localConfigs?.dictDefaultMessage || (messageLabel | translate)
-          }}</a>
-        </span>
-        <span> {{ "uploadFileLabel" | translate }}</span>
         <div
-          *ngIf="placeholder"
-          class="dz-image"
-          [style.background-image]="getPlaceholder()"
-        ></div>
+          class="dz-message"
+          [class.disabled]="disabled"
+          [class.dz-placeholder]="placeholder"
+        >
+          <div class="text-center dz-upload-btn">
+            <clr-icon shape="upload-cloud"></clr-icon>
+          </div>
+          <span>{{ "dragFileLabel" | translate }}</span>
+          <span class="dz-text">
+            <a href="javascript:undefined;">{{
+              localConfigs?.dictDefaultMessage || (messageLabel | translate)
+            }}</a>
+          </span>
+          <span> {{ "uploadFileLabel" | translate }}</span>
+          <div
+            *ngIf="placeholder"
+            class="dz-image"
+            [style.background-image]="getPlaceholder()"
+          ></div>
+        </div>
+        <ng-content></ng-content>
       </div>
-      <ng-content></ng-content>
-    </div>
     </ng-container>
   `,
   styles: [
@@ -76,7 +75,7 @@ import { isEmpty } from 'lodash';
         border-right: 2px dashed #d4d9dc;
         color: #666 !important;
         text-align: center !important;
-        background-color: rgba(247, 247, 247, .8) !important;
+        background-color: rgba(247, 247, 247, 0.8) !important;
         margin: 0px !important;
         padding: 0px;
       }
@@ -89,7 +88,7 @@ import { isEmpty } from 'lodash';
         border-right: 2px dashed #d4d9dc;
         color: #666 !important;
         text-align: center !important;
-        background-color: rgba(247, 247, 247, .8) !important;
+        background-color: rgba(247, 247, 247, 0.8) !important;
         margin: 0px !important;
         padding: 10px;
       }
@@ -153,30 +152,32 @@ import { isEmpty } from 'lodash';
         cursor: pointer;
       }
       .disabled {
-        opacity: .5;
+        opacity: 0.5;
       }
       .dropzone.dz-wrapper-inline .drop-zone-file-container {
         margin-top: 1px;
       }
       /* End Drew Dropzone design */
-    `
-  ]
+    `,
+  ],
 })
 export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(DropzoneDirective, { static: false })
-  dropzoneDirective: DropzoneDirective;
+  dropzoneDirective!: DropzoneDirective;
 
-  @Input() dropzoneConfig: DropzoneConfigInterface;
-  @Input() messageLabel = 'browse';
-  @Input() placeholder: string;
+  @Input() dropzoneConfig!: DropzoneConfigInterface;
+  @Input() messageLabel = "browse";
+  @Input() placeholder!: string;
   @Input() useDropzoneClass = true;
   @Input() disabled = false;
-  @Input() previewFileIcon = 'fa fa-file-alt';
-  @Input() acceptedFilesTypeName = null;
-  private _wrapperClass: string;
+  @Input() previewFileIcon = "fa fa-file-alt";
+  @Input() acceptedFilesTypeName!: string;
+  private _wrapperClass!: string;
   @Input() set wrapperClass(value: string) {
-    value = value ? `${value.replace('clr-input', '')}` : '';
-    this._wrapperClass = !isEmpty(value) ? `${value.replace('clr-input', '')}` : 'dz-wrapper';
+    value = value ? `${value.replace("clr-input", "")}` : "";
+    this._wrapperClass = !isEmpty(value)
+      ? `${value.replace("clr-input", "")}`
+      : "dz-wrapper";
   } //  inline-input
 
   get wrapperClass() {
@@ -184,83 +185,86 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // tslint:disable-next-line: no-output-rename
-  @Output('init') DZ_INIT = new EventEmitter<any>();
+  @Output("init") DZ_INIT = new EventEmitter<any>();
 
   // tslint:disable-next-line: no-output-rename
   // tslint:disable-next-line: no-output-native
   // tslint:disable-next-line: no-output-rename
-  @Output('error') DZ_ERROR = new EventEmitter<any>();
+  @Output("error") DZ_ERROR = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
   // tslint:disable-next-line: no-output-native
-  @Output('success') DZ_SUCCESS = new EventEmitter<any>();
+  @Output("success") DZ_SUCCESS = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('sending') DZ_SENDING = new EventEmitter<any>();
+  @Output("sending") DZ_SENDING = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('canceled') DZ_CANCELED = new EventEmitter<any>();
+  @Output("canceled") DZ_CANCELED = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('complete') DZ_COMPLETE = new EventEmitter<any>();
-  @Output('processing') DZ_PROCESSING = new EventEmitter<any>();
+  @Output("complete") DZ_COMPLETE = new EventEmitter<any>();
+  @Output("processing") DZ_PROCESSING = new EventEmitter<any>();
 
   // tslint:disable-next-line: no-output-rename
-  @Output('drop') DZ_DROP = new EventEmitter<any>();
+  @Output("drop") DZ_DROP = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('dragStart') DZ_DRAGSTART = new EventEmitter<any>();
+  @Output("dragStart") DZ_DRAGSTART = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('dragEnd') DZ_DRAGEND = new EventEmitter<any>();
+  @Output("dragEnd") DZ_DRAGEND = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('dragEnter') DZ_DRAGENTER = new EventEmitter<any>();
+  @Output("dragEnter") DZ_DRAGENTER = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('dragOver') DZ_DRAGOVER = new EventEmitter<any>();
+  @Output("dragOver") DZ_DRAGOVER = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('dragLeave') DZ_DRAGLEAVE = new EventEmitter<any>();
+  @Output("dragLeave") DZ_DRAGLEAVE = new EventEmitter<any>();
 
   // tslint:disable-next-line: no-output-rename
-  @Output('thumbnail') DZ_THUMBNAIL = new EventEmitter<any>();
+  @Output("thumbnail") DZ_THUMBNAIL = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('addedFile') DZ_ADDEDFILE = new EventEmitter<any>();
+  @Output("addedFile") DZ_ADDEDFILE = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('addedFiles') DZ_ADDEDFILES = new EventEmitter<any>();
+  @Output("addedFiles") DZ_ADDEDFILES = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('removedFile') DZ_REMOVEDFILE = new EventEmitter<any>();
+  @Output("removedFile") DZ_REMOVEDFILE = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('uploadProgress') DZ_UPLOADPROGRESS = new EventEmitter<any>();
+  @Output("uploadProgress") DZ_UPLOADPROGRESS = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('maxFilesReached') DZ_MAXFILESREACHED = new EventEmitter<any>();
+  @Output("maxFilesReached") DZ_MAXFILESREACHED = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('maxFilesExceeded') DZ_MAXFILESEXCEEDED = new EventEmitter<any>();
+  @Output("maxFilesExceeded") DZ_MAXFILESEXCEEDED = new EventEmitter<any>();
 
   // tslint:disable-next-line: no-output-rename
-  @Output('errorMultiple') DZ_ERRORMULTIPLE = new EventEmitter<any>();
+  @Output("errorMultiple") DZ_ERRORMULTIPLE = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('successMultiple') DZ_SUCCESSMULTIPLE = new EventEmitter<any>();
+  @Output("successMultiple") DZ_SUCCESSMULTIPLE = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('sendingMultiple') DZ_SENDINGMULTIPLE = new EventEmitter<any>();
+  @Output("sendingMultiple") DZ_SENDINGMULTIPLE = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('canceledMultiple') DZ_CANCELEDMULTIPLE = new EventEmitter<any>();
+  @Output("canceledMultiple") DZ_CANCELEDMULTIPLE = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('completeMultiple') DZ_COMPLETEMULTIPLE = new EventEmitter<any>();
+  @Output("completeMultiple") DZ_COMPLETEMULTIPLE = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('processingMultiple') DZ_PROCESSINGMULTIPLE = new EventEmitter<any>();
+  @Output("processingMultiple") DZ_PROCESSINGMULTIPLE = new EventEmitter<any>();
 
   // tslint:disable-next-line: no-output-rename
   // tslint:disable-next-line: no-output-native
-  @Output('reset') DZ_RESET = new EventEmitter<any>();
+  @Output("reset") DZ_RESET = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('queueComplete') DZ_QUEUECOMPLETE = new EventEmitter<any>();
+  @Output("queueComplete") DZ_QUEUECOMPLETE = new EventEmitter<any>();
   // tslint:disable-next-line: no-output-rename
-  @Output('totalUploadProgress') DZ_TOTALUPLOADPROGRESS = new EventEmitter<any>();
+  @Output("totalUploadProgress") DZ_TOTALUPLOADPROGRESS =
+    new EventEmitter<any>();
 
   // tslint:disable-next-line: variable-name
-  private _localConfigSuject$ = createStateful<DropzoneConfigInterface>(null);
+  private _localConfigSuject$ = createStateful<
+    DropzoneConfigInterface | undefined
+  >(undefined);
   localConfigs$ = this._localConfigSuject$.asObservable();
   // tslint:disable-next-line: variable-name
   private _destroy$ = createSubject();
 
   constructor(
     @Inject(PLATFORM_ID) private platform: object,
-    private winRef: WindowRef,
-    private componentService: DropzoneService,
-  ) { }
+    @Inject(WINDOW) @Optional() private winRef: Window,
+    private componentService: DropzoneService
+  ) {}
 
   // tslint:disable-next-line: typedef
   dropzone() {
@@ -274,38 +278,44 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // tslint:disable-next-line: typedef
   ngOnInit() {
-    this.componentService.dzDefaultConfig(
-      this.dropzoneConfig,
-      this.acceptedFilesTypeName
-    ).then((value) => {
-      this.dropzoneConfig = value;
-      if (!isDefined(this.dropzoneConfig)) {
-        this._localConfigSuject$.next(Object.assign({}, {
-          previewTemplate: this.componentService.dzDefaultPreviewTemplate(
-            this.previewFileIcon
-          )
-        } as DropzoneConfigInterface));
-      } else if (
-        isDefined(this.dropzoneConfig) &&
-        !isDefined(this.dropzoneConfig.previewTemplate)
-      ) {
-        this._localConfigSuject$.next(Object.assign(this.dropzoneConfig, {
-          previewTemplate: this.componentService.dzDefaultPreviewTemplate(
-            this.dropzoneConfig.acceptedFiles &&
-              this.dropzoneConfig.acceptedFiles.indexOf('image/*') !== -1
-              ? 'fa fa-image'
-              : this.previewFileIcon
-          )
-        } as DropzoneConfigInterface));
-      }
-    });
+    this.componentService
+      .dzDefaultConfig(
+        this.dropzoneConfig,
+        this.acceptedFilesTypeName || undefined
+      )
+      .then((value) => {
+        this.dropzoneConfig = value;
+        if (!isDefined(this.dropzoneConfig)) {
+          this._localConfigSuject$.next(
+            Object.assign({}, {
+              previewTemplate: this.componentService.dzDefaultPreviewTemplate(
+                this.previewFileIcon
+              ),
+            } as DropzoneConfigInterface)
+          );
+        } else if (
+          isDefined(this.dropzoneConfig) &&
+          !isDefined(this.dropzoneConfig.previewTemplate)
+        ) {
+          this._localConfigSuject$.next(
+            Object.assign(this.dropzoneConfig, {
+              previewTemplate: this.componentService.dzDefaultPreviewTemplate(
+                this.dropzoneConfig.acceptedFiles &&
+                  this.dropzoneConfig.acceptedFiles.indexOf("image/*") !== -1
+                  ? "fa fa-image"
+                  : this.previewFileIcon
+              ),
+            } as DropzoneConfigInterface)
+          );
+        }
+      });
   }
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platform)) {
       return;
     }
-    this.winRef.nativeWindow.setTimeout(() => {
+    this.winRef?.setTimeout(() => {
       DropzoneEvents.forEach((event: DropzoneEvent) => {
         if (this.dropzoneDirective) {
           const output = `DZ_${event.toUpperCase()}`;
@@ -317,9 +327,7 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
     }, 0);
-    this.DZ_MAXFILESREACHED.pipe(
-      takeUntil(this._destroy$)
-    ).subscribe((_) => {
+    this.DZ_MAXFILESREACHED.pipe(takeUntil(this._destroy$)).subscribe((_) => {
       // TODO : FIRES MAXFILES REACHED EVENT
     });
   }
@@ -328,16 +336,16 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
    * @description Handle file upload successfully
    */
   // tslint:disable-next-line: typedef
-  onUploadError() { }
+  onUploadError() {}
 
   /**
    * @description Handle file upload with error
    */
   // tslint:disable-next-line: typedef
-  onUploadSuccess() { }
+  onUploadSuccess() {}
 
   public getPlaceholder(): string {
-    return 'url(' + encodeURI(this.placeholder) + ')';
+    return "url(" + encodeURI(this.placeholder) + ")";
   }
 
   // tslint:disable-next-line: typedef
