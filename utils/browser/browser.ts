@@ -1,7 +1,7 @@
-import { isPlatformBrowser } from '@angular/common';
-import { isDefined } from '../types/type-utils';
-import { saveAs } from 'file-saver';
-import * as _ from 'lodash';
+import { isPlatformBrowser } from "@angular/common";
+import { isDefined } from "../types/type-utils";
+import * as _ from "lodash";
+import { writeRawStream, writeStream } from "../io";
 
 type WindowEvent = (self: Window, ev?: Event) => any;
 
@@ -31,8 +31,12 @@ export function readFileAsDataURI(file?: File | Blob) {
  * @param contentType [[string]]
  * @param sliceSize [[number]] Size of each BlobPart
  */
-export function b64toBlob(b64Data: string, contentType: string, sliceSize?: number) {
-  contentType = contentType || '';
+export function b64toBlob(
+  b64Data: string,
+  contentType: string,
+  sliceSize?: number
+) {
+  contentType = contentType || "";
   sliceSize = sliceSize || 512;
 
   const byteCharacters = atob(b64Data);
@@ -49,8 +53,11 @@ export function b64toBlob(b64Data: string, contentType: string, sliceSize?: numb
   }
   return new Blob(byteArrays, { type: contentType });
 }
-export class Browser {
 
+/**
+ * @deprecated
+ */
+export class Browser {
   public static print() {
     window.print();
   }
@@ -60,9 +67,9 @@ export class Browser {
     callBackAfterPrint: WindowEvent
   ) {
     if (window.matchMedia) {
-      const mediaQueryList = window.matchMedia('print');
+      const mediaQueryList = window.matchMedia("print");
       // tslint:disable-next-line: deprecation
-      mediaQueryList.addListener(mql => {
+      mediaQueryList.addListener((mql) => {
         if (mql.matches) {
           callBackBeforePrint(window);
         } else {
@@ -94,51 +101,19 @@ export class Browser {
   /**
    * Saves a file by opening file-save-as dialog in the browser
    * using file-save library.
-   * @param blobContent file content as a Blob
-   * @param fileName name file should be saved as
+   * @param content file content as a Blob
+   * @param name name file should be saved as
    */
-  static saveFile(blobContent: Blob | string, fileName: string) {
-    const blob = new Blob([blobContent], { type: 'application/octet-stream' });
-    saveAs(blob, fileName);
+  static async saveFile(content: Blob | string, name: string) {
+    await writeStream(content, name);
   }
 
   /**
    * @description Save file as it is, without converting it to a blob content
-   * @param blobContent [[Blob|string]]
-   * @param fileName [[string]]
+   * @param content [[Blob|string]]
+   * @param name [[string]]
    */
-  static saveFileAsRaw(blobContent: Blob | string, fileName: string) {
-    saveAs(blobContent, fileName);
-  }
-
-  static setCookie(document: Document, name: string, value: any, ttl: number): void {
-    if (!isDefined(document)) {
-      // Encode value in order to escape semicolons, commas, and whitespace
-      var cookie = name + "=" + encodeURIComponent(value);
-      if (typeof ttl === "number") {
-        /* Sets the max-age attribute so that the cookie expires
-        after the specified number of days */
-        cookie += "; max-age=" + (ttl * 24 * 60 * 60);
-        document.cookie = cookie;
-      }
-    }
-  }
-
-  static getCookie(document: Document, name: string) {
-    // Split cookie string and get all individual name=value pairs in an array
-    const list = document.cookie.split(";");
-    // Loop through the array elements
-    for (const value of list) {
-      const pair = value.split("=");
-      if (!isDefined(pair[0])) {
-        continue;
-      }
-      if (name == pair[0].trim()) {
-        // Decode the cookie value and return
-        return decodeURIComponent(pair[1]);
-      }
-    }
-    // Return null if not found
-    return null;
+  static saveFileAsRaw(content: Blob | string, name: string) {
+    writeRawStream(content, name);
   }
 }
