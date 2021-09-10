@@ -3,6 +3,9 @@ import { GeoPosition } from "./geoposition";
 
 export interface GeolocationManager {
 
+  // Observable of the platform geo position errors
+  readonly error$: Observable<GeolocationPositionError|Error|undefined>;
+
   // Observable of the platform geo positions
   readonly state$: Observable<GeoPosition>;
 

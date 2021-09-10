@@ -7,7 +7,7 @@ const enum Actions {
 
 interface GeolocationState {
     position: GeoPosition;
-    error?: GeolocationPositionError;
+    error?: GeolocationPositionError|Error;
 }
 
 const onGeolocationPositionAction = (store: DrewlabsFluxStore<GeolocationState, Partial<StoreAction>>) =>

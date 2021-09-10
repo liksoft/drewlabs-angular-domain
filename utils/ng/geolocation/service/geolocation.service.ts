@@ -15,7 +15,6 @@ import {
   HttpRequest,
   HttpHandler,
 } from "@angular/common/http";
-import { doLog } from "src/app/lib/core/rxjs/operators";
 import { isDefined } from "../../../types";
 import { isEmpty } from "lodash";
 import { createGeoposition, GeoPosition } from "../types/geoposition";
@@ -30,7 +29,7 @@ export const GEOLOCATION_MANAGER = new InjectionToken<GeolocationManager>(
 );
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class GeolocationService implements GeolocationManager, OnDestroy {
   private _destroy$ = createSubject();
@@ -54,6 +53,10 @@ export class GeolocationService implements GeolocationManager, OnDestroy {
   });
 
   public tempPosition!: GeoPosition;
+
+  public readonly error$ = this.store$
+    .connect()
+    .pipe(map((state) => state.error));
 
   public readonly state$ = this.store$.connect().pipe(
     map((state) => state.position),
@@ -93,6 +96,9 @@ export class GeolocationService implements GeolocationManager, OnDestroy {
   ) {
     if (!isGeolocationSupported) {
       this._changes$.error("Geolocation is not supported in your browser");
+      onGeolocationPositionAction(this.store$)({
+        error: new Error("Geolocation is not supported in your browser"),
+      } as Partial<GeolocationState>);
     }
     this._watchPositionId = this.geolocationRef.watchPosition(
       (position) => {
@@ -102,7 +108,7 @@ export class GeolocationService implements GeolocationManager, OnDestroy {
           position: _position,
         } as Partial<GeolocationState>);
       },
-      (error) => {
+      (error: GeolocationPositionError) => {
         this._changes$.error(error);
         onGeolocationPositionAction(this.store$)({
           error,
@@ -140,7 +146,6 @@ export class GeolocationService implements GeolocationManager, OnDestroy {
 
 @Injectable()
 export class GeolocationInterceptorService implements HttpInterceptor {
-
   constructor(
     @Inject(GEOLOCATION_MANAGER) private service: GeolocationManager
   ) {}
