@@ -33,6 +33,9 @@ export class DynamicFormControlComponent implements OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe((source) => this.valueChange.emit(source));
     }
+    // if (!isDefined(value?.value) && this._inputConfig) {
+    //   this._control.setValue(this._inputConfig?.value);
+    // }
   }
   get control(): AbstractControl {
     return this._control;
@@ -60,6 +63,9 @@ export class DynamicFormControlComponent implements OnDestroy {
   private _inputConfig!: IHTMLFormControl;
   @Input() set inputConfig(value: IHTMLFormControl) {
     this._inputConfig = value;
+    // if (value && !isDefined(this._control?.value)) {
+    //   this._control.setValue(value?.value);
+    // }
   }
   get inputConfig(): IHTMLFormControl {
     return this._inputConfig;

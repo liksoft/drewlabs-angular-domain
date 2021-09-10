@@ -18,6 +18,7 @@
         type="hidden"
         [class]="inputConfig.classes"
         [formControl]="control"
+        [value]="inputConfig?.value"
       />
     </div>
     <div *ngSwitchCase="inputTypes.SELECT_INPUT">

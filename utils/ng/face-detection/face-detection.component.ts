@@ -63,15 +63,13 @@ export class FaceDetectionComponent
   @Input() profilFaceHaarCascadeURL: string =
     "/assets/resources/vendor/haarcascade_profileface.xml";
 
-  // private _detectLeftFace$ = createSubject<{ image: HTMLVideoElement | undefined, canvas: HTMLCanvasElement | undefined }>();
-
   private videoHTMLElement!: HTMLVideoElement;
   private canvasHTMLElement!: HTMLCanvasElement;
 
   @Input() totalFaces: number = 1;
   @Input() confidenceScore: number = 0.9;
-  @Input() detectorTimeOut: number = 10000;
-  @Input() noFacesDetectedTimeOut = 20000;
+  @Input() detectorTimeOut: number = 7000;
+  @Input() noFacesDetectedTimeOut = 14000;
 
   private _detectFacesResult!: { size?: number; encodedURI?: string };
   @Output() detectFacesResultEvent = new EventEmitter<{

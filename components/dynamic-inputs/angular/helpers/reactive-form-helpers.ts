@@ -8,21 +8,14 @@ import {
   Validators,
 } from "@angular/forms";
 import { isDefined, maxNumberSize } from "../../../../utils/types";
-import {
-  CustomValidators,
-} from "src/app/lib/core/validators/validators";
+import { CustomValidators } from "src/app/lib/core/validators/validators";
 import {
   CheckboxItem,
   IDynamicForm,
   IHTMLFormControl,
   InputTypes,
 } from "../../core/contracts";
-import {
-  CheckBoxInput,
-  DateInput,
-  NumberInput,
-  TextInput,
-} from "../../core";
+import { CheckBoxInput, DateInput, NumberInput, TextInput } from "../../core";
 import { MomentUtils } from "../../../../utils/datetime";
 import { observableOf } from "src/app/lib/core/rxjs/helpers";
 import { tap } from "rxjs/operators";
@@ -170,24 +163,24 @@ export class ComponentReactiveFormHelpers {
                 null;
         }
         // Add formControl to the form group with the generated validation rules
+        const control = fb.control(
+          {
+            value: config.value,
+            disabled: config.disabled,
+          },
+          asyncValidators.length > 0 || config.type === InputTypes.DATE_INPUT
+            ? {
+                validators: Validators.compose(validators),
+                updateOn: "blur",
+                asyncValidators,
+              }
+            : {
+                validators: Validators.compose(validators),
+              }
+        );
         group.addControl(
           config.formControlName,
-          // new FormControl(), //
-          fb.control(
-            {
-              value: config.value,
-              disabled: config.disabled,
-            },
-            asyncValidators.length > 0 || config.type === InputTypes.DATE_INPUT
-              ? {
-                  validators: Validators.compose(validators),
-                  updateOn: "blur",
-                  asyncValidators,
-                }
-              : {
-                  validators: Validators.compose(validators),
-                }
-          )
+          control
           // Add other necessary validators
         );
       } else {
@@ -282,7 +275,10 @@ export class ComponentReactiveFormHelpers {
  * @param builder
  * @param form
  */
-export const createAngularAbstractControl = (builder: FormBuilder, form?: IDynamicForm) => {
+export const createAngularAbstractControl = (
+  builder: FormBuilder,
+  form?: IDynamicForm
+) => {
   if (!isDefined(form)) {
     return undefined;
   }
@@ -293,4 +289,4 @@ export const createAngularAbstractControl = (builder: FormBuilder, form?: IDynam
       c
     ) as FormGroup;
   return formGroup;
-}
+};

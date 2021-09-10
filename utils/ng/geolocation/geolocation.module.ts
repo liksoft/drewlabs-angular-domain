@@ -1,5 +1,7 @@
+import { CommonModule } from "@angular/common";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { ModuleWithProviders, NgModule } from "@angular/core";
+import { GeolocationComponent } from "./directives/geolocation.component";
 import {
   GeolocationService,
   GeolocationInterceptorService,
@@ -7,7 +9,9 @@ import {
 } from "./service/geolocation.service";
 
 @NgModule({
-  providers: [],
+  declarations: [GeolocationComponent],
+  exports: [GeolocationComponent],
+  imports: [CommonModule],
 })
 export class GeolocationModule {
   static forRoot(): ModuleWithProviders<GeolocationModule> {
