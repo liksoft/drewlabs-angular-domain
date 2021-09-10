@@ -191,9 +191,7 @@ export class FaceDetectionComponent
       }
     })();
 
-  detectProfilFace() {
-    // this._detectLeftFace$.next({ image: this.videoHTMLElement, canvas: this.canvasHTMLElement });
-  }
+  detectProfilFace() {}
 
   onFacePointDetected = (image: HTMLVideoElement, state: any) =>
     (() => {

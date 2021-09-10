@@ -106,6 +106,7 @@ export class GeolocationService implements GeolocationManager, OnDestroy {
         this._changes$.next(_position);
         onGeolocationPositionAction(this.store$)({
           position: _position,
+          error: undefined
         } as Partial<GeolocationState>);
       },
       (error: GeolocationPositionError) => {
@@ -126,11 +127,13 @@ export class GeolocationService implements GeolocationManager, OnDestroy {
         this._currentPosition$.next(_position);
         onGeolocationPositionAction(this.store$)({
           position: _position,
+          error: undefined
         } as Partial<GeolocationState>);
       },
       (error) => {
         this._currentPosition$.error(error);
         onGeolocationPositionAction(this.store$)({
+          position: undefined,
           error,
         } as Partial<GeolocationState>);
       },

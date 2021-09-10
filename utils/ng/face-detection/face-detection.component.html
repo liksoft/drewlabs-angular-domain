@@ -11,7 +11,9 @@
 <!-- Add Searching face animation Here -->
 <div
   [ngClass]="
-    showCanvas && !showCameraError ? 'not-hidden-canvas text-center' : 'hidden-canvas text-center'
+    showCanvas && !showCameraError
+      ? 'not-hidden-canvas text-center'
+      : 'hidden-canvas text-center'
   "
 >
   <canvas #canvasElement></canvas>

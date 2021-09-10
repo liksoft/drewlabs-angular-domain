@@ -6,10 +6,9 @@ import {
   VideoConstraints,
 } from "./types/user-camera";
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable()
 export class UserCameraService {
+
   private _video!: HTMLVideoElement;
   private _mediaStream!: MediaStream | undefined;
   private _onCameraStartedCallback!: OnStartUserCameraHandlerFn;

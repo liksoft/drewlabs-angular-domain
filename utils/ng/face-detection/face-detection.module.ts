@@ -4,10 +4,12 @@ import { FaceDetectionComponent } from "./face-detection.component";
 import { OPENCV_DEFAULT_OPTIONS } from "../../opencv/constants/options";
 import { OPENCV_CONFIG_OPTIONS } from "../../opencv/ng";
 import { OpenCVOptions } from "../../opencv/types/open-cv";
+import { WebcamModule } from "../webcam";
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    WebcamModule
   ],
   exports: [
     FaceDetectionComponent
