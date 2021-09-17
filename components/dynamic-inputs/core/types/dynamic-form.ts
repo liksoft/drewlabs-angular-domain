@@ -1,5 +1,5 @@
-import { IDynamicForm } from './contracts/dynamic-form';
-import { IHTMLFormControl } from './contracts/dynamic-input';
+import { IDynamicForm } from "../contracts/dynamic-form";
+import { IHTMLFormControl } from "../contracts/dynamic-input";
 
 export class DynamicForm implements IDynamicForm {
   id!: number | string;
@@ -13,7 +13,15 @@ export class DynamicForm implements IDynamicForm {
   /**
    * @description DynamicForm instance initializer
    */
-  constructor({ id, title, description, controlConfigs, endpointURL, forms, appcontext }: IDynamicForm) {
+  constructor({
+    id,
+    title,
+    description,
+    controlConfigs,
+    endpointURL,
+    forms,
+    appcontext,
+  }: IDynamicForm) {
     this.id = id;
     this.title = title;
     this.controlConfigs = controlConfigs ? [...controlConfigs] : [];

@@ -19,7 +19,7 @@ import { RepeatableGroupChildComponent } from "./repeatable-group-child/repeatab
 import { DynamicComponentService } from "../../../../services/dynamic-component-resolver";
 import { createSubject } from "../../../../../rxjs/helpers/creator-functions";
 import { takeUntil } from "rxjs/operators";
-import { createDynamicForm } from "../../../core/helpers";
+import { sortformbyindex, copyform } from "../../../core/helpers";
 
 @Component({
   selector: "app-dynamic-repetable-group",
@@ -98,7 +98,9 @@ export class DynamicRepetableGroupComponent implements OnDestroy {
     );
     // Initialize child component input properties
     if (form) {
-      controlComponentRef.instance.form = createDynamicForm(form);
+      controlComponentRef.instance.form = sortformbyindex(
+        copyform(form)
+      );
     }
     controlComponentRef.instance.formGroup = formGroupState as FormGroup;
     controlComponentRef.instance.index = {

@@ -32,8 +32,7 @@ export class ComponentReactiveFormHelpers {
    */
   static buildFormGroupFromInputConfig = (
     fb: FormBuilder,
-    input: IHTMLFormControl[],
-    hasUniqueRules: boolean = false
+    input: IHTMLFormControl[]
   ) => {
     const group = fb.group({});
     input.map((config: IHTMLFormControl) => {
@@ -49,30 +48,6 @@ export class ComponentReactiveFormHelpers {
           config.type === InputTypes.EMAIL_INPUT ||
           config.type === InputTypes.PASSWORD_INPUT
         ) {
-          // Checks if maxlength rule is set to true and apply the rule to the input
-          if (
-            hasUniqueRules &&
-            isDefined(config.rules) &&
-            isDefined(config.rules?.notUnique) &&
-            isDefined(config.uniqueCondition)
-          ) {
-            // TODO : Review implementation
-            // const parts = config.uniqueCondition?.split(":");
-            // if (parts?.length === 2) {
-            //   config.rules && config.rules.notUnique
-            //     ? asyncValidators.push(
-            //         CustomValidators.createAsycUniqueValidator(
-            //           uniqueValidator,
-            //           // First entry in the array is the table name
-            //           parts[0],
-            //           // Second is the column name in the table
-            //           parts[1]
-            //         )
-            //       )
-            //     : // tslint:disable-next-line:no-unused-expression
-            //       null;
-            // }
-          }
           // Checks if maxlength rule is set to true and apply the rule to the input
           config.rules && config.rules.maxLength
             ? validators.push(

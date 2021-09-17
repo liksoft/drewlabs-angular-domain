@@ -1,27 +1,23 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { FormGroup, AbstractControl, FormArray } from "@angular/forms";
+import { FormGroup } from "@angular/forms";
 import { isDefined, isArray } from "../../../../../utils";
-import {
-  isGroupOfIDynamicForm,
-  sortDynamicFormByIndex,
-} from "../../../core/helpers";
-import {
-  IConditionalControlBinding,
-  MultiSelectItemRemoveEvent,
-} from "./types";
-import {
-  applyHiddenAttributeToControlFn,
-  applyHiddenAttributeChangeToControl,
-  bindingsFromDynamicForm,
-} from "./helpers";
+import { createform, sortformbyindex } from "../../../core/helpers";
 import { createStateful } from "../../../../../rxjs/helpers/creator-functions";
-import { DynamicForm } from "../../../core/dynamic-form";
 import { IDynamicForm } from "../../../core/contracts";
+import {
+  ControlBindings,
+  InputEventArgs,
+  MultiSelectItemRemoveEvent,
+} from "../../types";
+import {
+  applyAttribute,
+  applyHiddenAttributeCallback,
+  getControlBinding,
+} from "../../helpers";
 
 @Component({
   selector: "app-dynamic-form-wapper",
   templateUrl: "./dynamic-form-wapper.component.html",
-  styles: [],
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicFormWapperComponent {
@@ -40,64 +36,36 @@ export class DynamicFormWapperComponent {
   @Output() fileRemoved = new EventEmitter<any>();
 
   // Text/Type input event
-  @Output() inputKeyUp = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputKeyDown = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputKeypress = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputBlur = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
+  @Output() keyup = new EventEmitter<InputEventArgs>();
+  @Output() keydown = new EventEmitter<InputEventArgs>();
+  @Output() keypress = new EventEmitter<InputEventArgs>();
+  @Output() blur = new EventEmitter<InputEventArgs>();
 
   @Input() singleColumnControl = false;
   @Input() controlContainerClass = "clr-col-12";
 
-  private _bindings$ = createStateful<{
-    [index: string]: IConditionalControlBinding;
-  }>({});
+  private _bindings$ = createStateful<ControlBindings>({});
   get bindings$() {
     return this._bindings$.asObservable();
   }
 
   // tslint:disable-next-line: typedef
   setComponentForm(value: IDynamicForm) {
-    let _form = sortDynamicFormByIndex(new DynamicForm(value));
+    let _form = sortformbyindex(createform(value));
     // let _form = value;
     let cache = this._bindings$.getValue();
-    if (isGroupOfIDynamicForm(_form)) {
-      _form.forms = _form.forms?.map((v) => {
-        const { bindings, form, formgroup } = bindingsFromDynamicForm(v)(
-          this.componentFormGroup
-        );
-        this.componentFormGroup = formgroup as FormGroup;
-        cache = { ...(cache || {}), ...bindings };
-        return form;
-      });
-    } else {
-      const { bindings, form, formgroup } = bindingsFromDynamicForm(_form)(
-        this.componentFormGroup
-      );
-      this.componentFormGroup = formgroup as FormGroup;
-      _form = form;
-      cache = { ...(cache || {}), ...bindings };
-    }
+    const { bindings, form, formgroup } = getControlBinding(_form)(
+      this.componentFormGroup
+    );
+    this.componentFormGroup = formgroup as FormGroup;
+    _form = form;
+    cache = { ...(cache || {}), ...bindings };
     this._bindings$.next(cache);
     return _form;
   }
 
   // tslint:disable-next-line: typedef
-  shouldListenforChange(
-    controlName: string,
-    bindings: { [prop: string]: IConditionalControlBinding }
-  ) {
+  shouldListenforChange(controlName: string, bindings: ControlBindings) {
     return isDefined(
       Object.values(bindings).find((o, i) => {
         return o.binding?.formControlName === controlName;
@@ -108,22 +76,17 @@ export class DynamicFormWapperComponent {
   }
 
   // tslint:disable-next-line: typedef
-  handleControlChanges(
-    event: any,
-    bindings: { [prop: string]: IConditionalControlBinding }
-  ) {
+  handleControlChanges(event: any, name: string, bindings: ControlBindings) {
     const filteredConfigs = Object.values(bindings).filter((o) => {
-      return (
-        o.binding?.formControlName.toString() === event.controlName.toString()
-      );
+      return o.binding?.formControlName.toString() === name.toString();
     });
     if (isArray(filteredConfigs)) {
       filteredConfigs.forEach((item) => {
-        const { control, dynamicForm } = applyHiddenAttributeChangeToControl(
+        const { control, dynamicForm } = applyAttribute(
           this._componentForm,
           item,
-          event.event,
-          applyHiddenAttributeToControlFn
+          event,
+          applyHiddenAttributeCallback
         )(this.componentFormGroup);
         this.componentFormGroup = control as FormGroup;
         this._componentForm = dynamicForm;
@@ -138,18 +101,6 @@ export class DynamicFormWapperComponent {
     return isDefined(clazz) ? clazz : this.controlContainerClass;
   }
 
-  // tslint:disable-next-line: typedef
-  isFormGroup(f: IDynamicForm) {
-    return isGroupOfIDynamicForm(f);
-  }
-
-  asFormArray(control: AbstractControl, index: number): FormArray {
-    return control as FormArray;
-  }
-
-  asFormGroup(control: AbstractControl): FormGroup {
-    return control as FormGroup;
-  }
   // tslint:disable-next-line: typedef
   asArray(value: any) {
     return value as Array<any>;

@@ -1,21 +1,17 @@
-import {
-  ApplyAttributeChangesToControlsFn,
-  IConditionalControlBinding,
-} from "./types";
-import { isDefined } from "../../../../../utils/types/type-utils";
-import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
-import { IDynamicForm } from "../../../core/contracts/dynamic-form";
+import { isDefined } from "../../../../utils/types/type-utils";
+import { IHTMLFormControl } from "../../core/contracts/dynamic-input";
+import { IDynamicForm } from "../../core/contracts/dynamic-form";
 import { includes, toNumber, isNumber } from "lodash";
 import { AbstractControl } from "@angular/forms";
-import { ComponentReactiveFormHelpers } from "../../../angular/helpers";
-import { isGroupOfIDynamicForm } from "../../../core/helpers";
+import {
+  ApplyAttributeChangesToControlsFn,
+  BindingInterface,
+  ControlBindings,
+} from "../types";
+import { ComponentReactiveFormHelpers } from "./reactive-form-helpers";
 
-export const applyHiddenAttributeToControlFn =
-  (
-    form: IDynamicForm,
-    bidings: IConditionalControlBinding,
-    value: string | number
-  ) =>
+export const applyHiddenAttributeCallback =
+  (form: IDynamicForm, bidings: BindingInterface, value: string | number) =>
   (formgroup: AbstractControl) => {
     if (
       isDefined(form.controlConfigs) &&
@@ -23,18 +19,18 @@ export const applyHiddenAttributeToControlFn =
     ) {
       form.controlConfigs = (
         form.controlConfigs as Array<IHTMLFormControl>
-      ).map((c) => {
-        if (c.formControlName === bidings.key) {
+      ).map((_control) => {
+        if (_control.formControlName === bidings.key) {
           value = isNaN(value as any) ? value : toNumber(value);
           const requiredIfValues = isNumber(value)
-            ? c.requiredIf
-              ? c.requiredIf.values.map((item) => {
+            ? _control.requiredIf
+              ? _control.requiredIf.values.map((item) => {
                   return isNaN(item) ? item : toNumber(item);
                 })
               : []
-            : c.requiredIf?.values || [];
-          c.hidden = !includes(requiredIfValues, value) ? true : false;
-          if (c.hidden) {
+            : _control.requiredIf?.values || [];
+          _control.hidden = !includes(requiredIfValues, value) ? true : false;
+          if (_control.hidden) {
             formgroup.get(bidings.key)?.setValue(null);
             ComponentReactiveFormHelpers.clearControlValidators(
               formgroup.get(bidings.key) || undefined
@@ -51,16 +47,16 @@ export const applyHiddenAttributeToControlFn =
               ?.setAsyncValidators(bidings.asyncValidators || null);
           }
         }
-        return c;
+        return _control;
       });
     }
     return { control: formgroup, form };
   };
 
 // tslint:disable-next-line: typedef
-export const bindingsFromDynamicForm =
+export const getControlBinding =
   (form: IDynamicForm) => (formgroup: AbstractControl) => {
-    const bindings = {} as { [index: string]: IConditionalControlBinding };
+    const bindings = {} as ControlBindings;
     if (
       isDefined(form.controlConfigs) &&
       isDefined(formgroup) &&
@@ -81,13 +77,13 @@ export const bindingsFromDynamicForm =
       for (const [_, value] of Object.entries(bindings)) {
         const binding = value.binding || undefined;
         if (binding && isDefined(formgroup.get(binding?.formControlName))) {
-          const { control, dynamicForm } = applyHiddenAttributeChangeToControl(
+          const { control, dynamicForm } = applyAttribute(
             form,
             value,
             value.binding
               ? formgroup.get(value.binding?.formControlName)?.value
               : undefined,
-            applyHiddenAttributeToControlFn
+            applyHiddenAttributeCallback
           )(formgroup);
           formgroup = control;
           form = dynamicForm;
@@ -98,26 +94,17 @@ export const bindingsFromDynamicForm =
   };
 
 // tslint:disable-next-line: typedef
-export const applyHiddenAttributeChangeToControl =
+export const applyAttribute =
   (
     param: IDynamicForm,
-    bindings: IConditionalControlBinding,
+    bindings: BindingInterface,
     value: string | number,
     fn: ApplyAttributeChangesToControlsFn
   ) =>
   (formgroup: AbstractControl) => {
-    if (isGroupOfIDynamicForm(param)) {
-      param.forms = param.forms?.map((v) => {
-        // Call the update method here
-        const { control, form } = fn(v, bindings, value)(formgroup);
-        formgroup = control;
-        return form;
-      });
-    } else {
-      // Calls the update method here
-      const { control, form } = fn(param, bindings, value)(formgroup);
-      formgroup = control;
-      param = form;
-    }
+    // Calls the update method here
+    const { control, form } = fn(param, bindings, value)(formgroup);
+    formgroup = control;
+    param = form;
     return { control: formgroup, dynamicForm: param };
   };

@@ -1,21 +1,8 @@
 import { IHTMLFormControl, InputTypes } from "../../core";
 import { FormGroup } from "@angular/forms";
 import { AbstractControl } from "@angular/forms";
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnDestroy,
-} from "@angular/core";
-import { createSubject } from "../../../../rxjs/helpers";
-import { takeUntil } from "rxjs/operators";
-import { Observable } from "rxjs";
-import {
-  CheckboxItem,
-  ISelectItem,
-  RadioItem,
-} from "../../core/contracts/control-item";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { SelectableControlItems } from "../types";
 
 @Component({
   selector: "app-dynamic-inputs",
@@ -23,56 +10,17 @@ import {
   styleUrls: ["./dynamic-form-control.component.css"],
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DynamicFormControlComponent implements OnDestroy {
+export class DynamicFormControlComponent {
   // tslint:disable-next-line: variable-name
-  private _control!: AbstractControl;
-  @Input() set control(value: AbstractControl) {
-    this._control = value;
-    if (this.listenForChanges) {
-      this.control.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((source) => this.valueChange.emit(source));
-    }
-    // if (!isDefined(value?.value) && this._inputConfig) {
-    //   this._control.setValue(this._inputConfig?.value);
-    // }
-  }
-  get control(): AbstractControl {
-    return this._control;
-  }
-
-  private _controlDivContainerClass: string = "clr-form-control";
-  get controlDivContainerClass() {
-    return this._controlDivContainerClass;
-  }
-
-  private _inline: boolean = false;
-  @Input() set inline(value: boolean) {
-    this._controlDivContainerClass =
-      value === true ? "clr-form-control inline" : "clr-form-control";
-  }
-  get inline() {
-    return this._inline;
-  }
-
+  @Input() control!: AbstractControl;
+  @Input() class: string = "clr-form-control";
+  @Input() inline: boolean = false;
   @Input() showLabelAndDescription = true;
-  // private controlSubscription: Subscription;
+
   @Output() multiSelectItemRemove = new EventEmitter<any>();
-  // Configuration parameters of the input
   // tslint:disable-next-line: variable-name
-  private _inputConfig!: IHTMLFormControl;
-  @Input() set inputConfig(value: IHTMLFormControl) {
-    this._inputConfig = value;
-    // if (value && !isDefined(this._control?.value)) {
-    //   this._control.setValue(value?.value);
-    // }
-  }
-  get inputConfig(): IHTMLFormControl {
-    return this._inputConfig;
-  }
-  @Input() listItems!:
-    | Observable<Array<ISelectItem | CheckboxItem | RadioItem>>
-    | Array<ISelectItem | CheckboxItem | RadioItem>;
+  @Input() inputConfig!: IHTMLFormControl;
+  @Input() listItems!: SelectableControlItems;
 
   public inputTypes = InputTypes;
   // String representation of today
@@ -80,38 +28,7 @@ export class DynamicFormControlComponent implements OnDestroy {
 
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();
-  @Output() inputKeyUp = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputKeyDown = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputKeypress = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputBlur = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputFocus = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputSelect = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-
-  @Output() valueChange: EventEmitter<any> = new EventEmitter<any>();
-  private destroy$ = createSubject<boolean>();
   @Input() listenForChanges!: boolean;
-
-  ngOnDestroy = () => {
-    this.destroy$.next(true);
-  };
 }
 
 // For compatibility issues

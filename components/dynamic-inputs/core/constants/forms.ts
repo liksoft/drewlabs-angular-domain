@@ -714,7 +714,8 @@ export const STATIC_FORMS = {
             controlIndex: 1,
             columns: null,
             rows: null,
-            value: null
+            value: null,
+            requiredIf:  null
           },
           {
             label: 'Index',

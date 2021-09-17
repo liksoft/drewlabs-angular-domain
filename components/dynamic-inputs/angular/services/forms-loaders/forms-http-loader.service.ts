@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { isArray } from "lodash";
-import { map } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 import { GenericUndecoratedSerializaleSerializer } from "../../../../../built-value/core/js/serializer";
 import { DynamicFormInterface } from "../../../core/compact";
 import { FormV2 } from "../../../core/v2/models";
@@ -9,7 +9,6 @@ import { FormsLoaderInterface } from "./types";
 
 @Injectable()
 export class FormHttpLoader implements FormsLoaderInterface {
-
   public constructor(private _http: HttpClient) {}
 
   public load = (endpoint: string, options?: { [index: string]: any }) => {

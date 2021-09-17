@@ -5,3 +5,10 @@ export {
   ComponentReactiveFormHelpers,
   createAngularAbstractControl,
 } from "./reactive-form-helpers";
+
+// Controls wrapper helpers
+export {
+  applyHiddenAttributeCallback,
+  applyAttribute,
+  getControlBinding,
+} from "./control-wrapper";
