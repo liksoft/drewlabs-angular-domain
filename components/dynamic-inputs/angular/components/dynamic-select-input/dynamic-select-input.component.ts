@@ -21,6 +21,7 @@ import { doLog } from "../../../../../rxjs/operators";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
 import { httpServerHost } from "../../../../../utils/url/url";
 import { SelectInput } from "../../../core/types/select";
+import { InputEventArgs } from "../../types/dynamic-inputs";
 @Component({
   selector: "app-dynamic-select-input",
   templateUrl: "./dynamic-select-input.component.html",
@@ -91,10 +92,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
     return this._inputConfig;
   }
   @Output() multiSelectItemRemove = new EventEmitter<any>();
-  @Output() inputSelect = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
+  @Output() selected = new EventEmitter<InputEventArgs>();
 
   // tslint:disable-next-line: variable-name
   _controlFocusEvent$ = createSubject<{ state: any[] }>();
@@ -117,7 +115,6 @@ export class DynamicSelectInputComponent implements OnDestroy {
           this._inputItems$.next({ ...state, performingAction: true });
           this._actionSubject$.next(true);
         }),
-        doLog("Control focused: "),
         switchMap(() =>
           this.client
             .get(`${httpServerHost(host)}/${path}`, {

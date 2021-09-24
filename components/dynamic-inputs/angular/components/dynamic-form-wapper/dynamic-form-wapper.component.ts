@@ -42,7 +42,7 @@ export class DynamicFormWapperComponent {
   @Output() blur = new EventEmitter<InputEventArgs>();
 
   @Input() singleColumnControl = false;
-  @Input() controlContainerClass = "clr-col-12";
+  @Input() controlContainerClass = "clr-cols-sm-12 clr-col-md-12";
 
   private _bindings$ = createStateful<ControlBindings>({});
   get bindings$() {

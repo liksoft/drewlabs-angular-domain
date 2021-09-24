@@ -1,4 +1,4 @@
-<!-- <div [class]="controlDivContainerClass"> -->
+<div [class]="controlDivContainerClass">
   <label
     class="clr-control-label"
     *ngIf="showLabelAndDescription"
@@ -29,7 +29,7 @@
       [clearable]="true"
       (remove)="multiSelectItemRemove.emit($event)"
       (change)="
-        inputSelect.emit({
+        selected.emit({
           formcontrolname: inputConfig?.formControlName,
           value: $event
         })
@@ -60,4 +60,4 @@
   >
     <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
   </clr-control-helper>
-<!-- </div> -->
+</div>

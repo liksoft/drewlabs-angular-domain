@@ -5,7 +5,6 @@
     control
   "
 >
-  <!-- <div [class]="controlDivContainerClass"> -->
   <label
     class="clr-control-label"
     *ngIf="showLabelAndDescription"
@@ -27,26 +26,21 @@
       class="clr-checkbox-wrapper"
       formArrayName="formGroupItems"
       *ngFor="
-        let order of inputType.asFormArray(
-          formArrayGroup.get('formGroupItems')
-        ).controls;
+        let order of inputType.asFormArray(formArrayGroup.get('formGroupItems'))
+          .controls;
         let i = index
       "
     >
       <input
         [tabIndex]="inputConfig?.formControlIndex"
-        [id]="
-          inputType.asCheckBoxInput(inputConfig).formControlName + '_' + i
-        "
+        [id]="inputType.asCheckBoxInput(inputConfig).formControlName + '_' + i"
         type="checkbox"
         [formControlName]="i"
         [value]="inputType.asCheckBoxInput(inputConfig).items[i].value"
         class="clr-checkbox"
       />
       <label
-        [for]="
-          inputType.asCheckBoxInput(inputConfig).formControlName + '_' + i
-        "
+        [for]="inputType.asCheckBoxInput(inputConfig).formControlName + '_' + i"
         class="clr-control-label"
         *ngIf="showLabelAndDescription"
         [for]="'clr-checkbox-control-' + i"
@@ -66,5 +60,4 @@
   >
     <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
   </clr-control-helper>
-  <!-- </div> -->
 </div>

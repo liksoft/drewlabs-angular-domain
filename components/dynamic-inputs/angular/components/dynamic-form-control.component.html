@@ -1,111 +1,193 @@
-<ng-container *ngIf="control">
-  <ng-container [ngSwitch]="inputConfig.type">
-    <div *ngSwitchCase="inputTypes.FILE_INPUT">
-      <app-dynamic-file-input
-        (addedEvent)="fileAdded.emit($event)"
-        (removedEvent)="fileRemoved.emit($event)"
-        [control]="control"
-        [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"
-      ></app-dynamic-file-input>
-    </div>
-    <ng-container *ngSwitchCase="inputTypes.HTML_INPUT">
-      <div [innerHTML]="inputConfig.value | safeWebContent"></div>
-    </ng-container>
-    <div *ngSwitchCase="inputTypes.HIDDEN_INPUT">
-      <input
-        [tabIndex]="-1"
-        type="hidden"
-        [class]="inputConfig.classes"
-        [formControl]="control"
-        [value]="inputConfig?.value"
-      />
-    </div>
-    <div *ngSwitchCase="inputTypes.SELECT_INPUT">
-      <app-dynamic-select-input
-        [controlDivContainerClass]="
-          inline ? 'clr-form-control inline' : 'clr-form-control'
-        "
-        [control]="control"
-        [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"
-        (multiSelectItemRemove)="multiSelectItemRemove.emit($event)"
-        (inputSelect)="inputSelect.emit($event)"
-        [inputItems]="inputConfig?.items"
-      ></app-dynamic-select-input>
-    </div>
-    <div *ngSwitchCase="inputTypes.PHONE_INPUT">
-      <app-dynamic-phone-input
-        [controlDivContainerClass]="
-          inline ? 'clr-form-control inline' : 'clr-form-control'
-        "
-        [control]="control"
-        [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"
-      ></app-dynamic-phone-input>
-    </div>
-    <div *ngSwitchCase="inputTypes.DATE_INPUT">
-      <app-dynamic-date-input
-        [control]="control"
-        [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"
-      ></app-dynamic-date-input>
-    </div>
-    <div *ngSwitchCase="inputTypes.TEXTAREA_INPUT">
-      <app-dynamic-text-area-input
-        [controlDivContainerClass]="
-          inline ? 'clr-form-control inline' : 'clr-form-control'
-        "
-        [control]="control"
-        [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"
-      ></app-dynamic-text-area-input>
-    </div>
-    <div *ngSwitchCase="inputTypes.NUMBER_INPUT">
-      <app-dynamic-number-input
-        [controlDivContainerClass]="
-          inline ? 'clr-form-control inline' : 'clr-form-control'
-        "
-        [control]="control"
-        [showLabelAndDescription]="showLabelAndDescription"
-        [inputConfig]="inputConfig"
-      ></app-dynamic-number-input>
-    </div>
-    <div *ngSwitchCase="inputTypes.RADIO_INPUT">
-      <app-dynamic-radio-input
-        [inline]="inline"
-        [control]="control"
-        [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"
-      ></app-dynamic-radio-input>
-    </div>
-    <div *ngSwitchCase="inputTypes.CHECKBOX_INPUT">
-      <app-dynamic-checkox-input
-        [control]="control"
-        [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"
-      ></app-dynamic-checkox-input>
-    </div>
-    <div *ngSwitchCase="inputTypes.PASSWORD_INPUT">
-      <app-dynamic-password-input
-        [controlDivContainerClass]="
-          inline ? 'clr-form-control inline' : 'clr-form-control'
-        "
-        [control]="control"
-        [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"
-      ></app-dynamic-password-input>
-    </div>
-    <ng-container *ngSwitchDefault>
-      <app-dynamic-text-input
-        [controlDivContainerClass]="
-          inline ? 'clr-form-control inline' : 'clr-form-control'
-        "
-        [control]="control"
-        [inputConfig]="inputConfig"
-        [showLabelAndDescription]="showLabelAndDescription"
-      ></app-dynamic-text-input>
-    </ng-container>
-    <!-- Add controls for check boxes and radio -->
+<ng-container [ngSwitch]="inputConfig.type">
+  <div *ngSwitchCase="inputTypes.FILE_INPUT">
+    <app-dynamic-file-input
+      (addedEvent)="fileAdded.emit($event)"
+      (removedEvent)="fileRemoved.emit($event)"
+      [control]="control"
+      [inputConfig]="inputConfig"
+      [showLabelAndDescription]="showLabelAndDescription"
+    ></app-dynamic-file-input>
+  </div>
+  <ng-container *ngSwitchCase="inputTypes.HTML_INPUT">
+    <div [innerHTML]="inputConfig.value | safeWebContent"></div>
   </ng-container>
+  <div *ngSwitchCase="inputTypes.HIDDEN_INPUT">
+    <input
+      [tabIndex]="-1"
+      type="hidden"
+      [class]="inputConfig.classes"
+      [formControl]="control"
+      [value]="inputConfig?.value"
+    />
+  </div>
+  <div *ngSwitchCase="inputTypes.SELECT_INPUT">
+    <app-dynamic-select-input
+      [controlDivContainerClass]="getControlContainerClass()"
+      [control]="control"
+      [inputConfig]="inputConfig"
+      [showLabelAndDescription]="showLabelAndDescription"
+      (multiSelectItemRemove)="multiSelectItemRemove.emit($event)"
+      (selected)="selected?.emit($event)"
+      [inputItems]="inputConfig?.items"
+    ></app-dynamic-select-input>
+  </div>
+  <div *ngSwitchCase="inputTypes.PHONE_INPUT">
+    <app-dynamic-phone-input
+      [controlDivContainerClass]="getControlContainerClass()"
+      [control]="control"
+      [inputConfig]="inputConfig"
+      [showLabelAndDescription]="showLabelAndDescription"
+    ></app-dynamic-phone-input>
+  </div>
+  <div *ngSwitchCase="inputTypes.DATE_INPUT">
+    <app-dynamic-date-input
+      [control]="control"
+      [inputConfig]="inputConfig"
+      [showLabelAndDescription]="showLabelAndDescription"
+    ></app-dynamic-date-input>
+  </div>
+  <div *ngSwitchCase="inputTypes.TEXTAREA_INPUT">
+    <app-dynamic-text-area-input
+      [controlDivContainerClass]="getControlContainerClass()"
+      [control]="control"
+      [inputConfig]="inputConfig"
+      [showLabelAndDescription]="showLabelAndDescription"
+      (keyup)="
+        keyup.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (keydown)="
+        keydown.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (keypress)="
+        keypress.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (blur)="
+        blur.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+    ></app-dynamic-text-area-input>
+  </div>
+  <div *ngSwitchCase="inputTypes.NUMBER_INPUT">
+    <app-dynamic-number-input
+      [controlDivContainerClass]="getControlContainerClass()"
+      [control]="control"
+      [showLabelAndDescription]="showLabelAndDescription"
+      [inputConfig]="inputConfig"
+      (keyup)="
+        keyup.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (keydown)="
+        keydown.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (keypress)="
+        keypress.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (blur)="
+        blur.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+    ></app-dynamic-number-input>
+  </div>
+  <div *ngSwitchCase="inputTypes.RADIO_INPUT">
+    <app-dynamic-radio-input
+      [inline]="inline"
+      [control]="control"
+      [inputConfig]="inputConfig"
+      [showLabelAndDescription]="showLabelAndDescription"
+    ></app-dynamic-radio-input>
+  </div>
+  <div *ngSwitchCase="inputTypes.CHECKBOX_INPUT">
+    <app-dynamic-checkox-input
+      [control]="control"
+      [inputConfig]="inputConfig"
+      [showLabelAndDescription]="showLabelAndDescription"
+    ></app-dynamic-checkox-input>
+  </div>
+  <div *ngSwitchCase="inputTypes.PASSWORD_INPUT">
+    <app-dynamic-password-input
+      [controlDivContainerClass]="getControlContainerClass()"
+      [control]="control"
+      [inputConfig]="inputConfig"
+      [showLabelAndDescription]="showLabelAndDescription"
+      (keyup)="
+        keyup.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (keydown)="
+        keydown.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (keypress)="
+        keypress.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (blur)="
+        blur.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+    ></app-dynamic-password-input>
+  </div>
+  <ng-container *ngSwitchDefault>
+    <app-dynamic-text-input
+      [controlDivContainerClass]="getControlContainerClass()"
+      [control]="control"
+      [inputConfig]="inputConfig"
+      [showLabelAndDescription]="showLabelAndDescription"
+      (keyup)="
+        keyup.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (keydown)="
+        keydown.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (keypress)="
+        keypress.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+      (blur)="
+        blur.emit({
+          name: inputConfig?.formControlName,
+          value: $event
+        })
+      "
+    ></app-dynamic-text-input>
+  </ng-container>
+  <!-- Add controls for check boxes and radio -->
 </ng-container>

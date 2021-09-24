@@ -9,6 +9,7 @@ import { IHTMLFormControl } from "../contracts/dynamic-input";
 import { DynamicForm } from "../types/dynamic-form";
 import { cloneDeep } from "lodash";
 import { buildControl } from "../types/builder";
+import { Log } from "src/app/lib/core/utils/logger";
 
 export class DynamicFormHelpers {
   /**
@@ -16,40 +17,48 @@ export class DynamicFormHelpers {
    *
    * @param form
    */
-  static buildDynamicForm: (
-    form: DynamicFormInterface
-  ) => Promise<IDynamicForm | undefined> = (form: DynamicFormInterface) => {
-    return new Promise((resolve, _) => {
-      const generatorFn: (f: DynamicFormInterface) => IDynamicForm | undefined =
-        (f: DynamicFormInterface) => {
-          let configs: IHTMLFormControl[] | undefined = [];
-          if (isArray(f?.formControls) && f?.formControls?.length > 0) {
-            configs = f.formControls
-              ?.map((control) => {
-                const config = buildControl(control);
-                // tslint:disable-next-line: max-line-length
-                return { ...config } as IHTMLFormControl;
-              })
-              .filter((value) => isDefined(value));
-          }
-          let forms: any[] | undefined =
-            f?.children && f?.children?.length > 0
-              ? f.children.map((value) => generatorFn(value))
-              : undefined;
-          if (form) {
-            return new DynamicForm({
-              id: f.id,
-              title: f.title,
-              description: f.description,
-              endpointURL: f.url,
-              controlConfigs: configs,
-              forms,
-            });
-          }
-          return undefined;
-        };
-      resolve(generatorFn(form));
+  static buildDynamicForm = (form: DynamicFormInterface) => {
+    return new Promise<IDynamicForm | undefined>((resolve, _) => {
+      resolve(DynamicFormHelpers.buildFormSync(form));
     });
+  };
+
+  /**
+   * @description Create an instance of IDynamic interface
+   *
+   * @param form
+   */
+  static buildFormSync = (form: DynamicFormInterface) => {
+    const generatorFn: (f: DynamicFormInterface) => IDynamicForm | undefined = (
+      f: DynamicFormInterface
+    ) => {
+      let configs: IHTMLFormControl[] | undefined = [];
+      if (isArray(f?.formControls) && f?.formControls?.length > 0) {
+        configs = f.formControls
+          ?.map((control) => {
+            const config = buildControl(control);
+            // tslint:disable-next-line: max-line-length
+            return { ...config } as IHTMLFormControl;
+          })
+          .filter((value) => isDefined(value));
+      }
+      let forms: any[] | undefined =
+        f?.children && f?.children?.length > 0
+          ? f.children.map((value) => generatorFn(value))
+          : undefined;
+      if (form) {
+        return new DynamicForm({
+          id: f.id,
+          title: f.title,
+          description: f.description,
+          endpointURL: f.url,
+          controlConfigs: configs,
+          forms,
+        });
+      }
+      return undefined;
+    };
+    return generatorFn(form);
   };
 }
 
@@ -107,6 +116,7 @@ export const sortformbyindex = (form: IDynamicForm) => {
  * @param f
  */
 export const sortRawFormControls = (value: DynamicFormInterface) => {
+  Log('Value before sorting:', value);
   if (
     isArray(value.formControls) &&
     (value.formControls as DynamicFormControlInterface[]).length > 0
@@ -117,6 +127,7 @@ export const sortRawFormControls = (value: DynamicFormInterface) => {
       1
     ) as DynamicFormControlInterface[];
   }
+  Log('After before sorting:', value);
   return value;
 };
 

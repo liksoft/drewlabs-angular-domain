@@ -7,11 +7,11 @@
           asArray(componentForm?.controlConfigs).length > 0
         "
       >
-        <ng-container *ngFor="let value of componentForm?.controlConfigs">
+        <div
+          [class]="getControlContainerClass(value?.containerClass)"
+          *ngFor="let value of componentForm?.controlConfigs"
+        >
           <app-dynamic-inputs
-            [drewlabsInputRef]="
-              componentFormGroup.controls[value.formControlName]
-            "
             [listenForChanges]="
               shouldListenforChange(value.formControlName, bindings)
             "
@@ -33,7 +33,7 @@
             [inputConfig]="value"
             [listItems]="value.items"
           ></app-dynamic-inputs>
-        </ng-container>
+        </div>
       </ng-container>
     </div>
   </div>
