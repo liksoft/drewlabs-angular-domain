@@ -52,7 +52,7 @@ export class AuthModule {
         AuthorizationsGuard,
         {
           provide: 'LOGIN_RESPONSE_HANDLER_FUNC',
-          useValue: config.loginResponseHandler || DrewlabsV2LoginResultHandlerFunc
+          useValue: config?.loginResponseHandler || DrewlabsV2LoginResultHandlerFunc
         },
         {
           provide: 'AUTH_SERVER_HOST',
