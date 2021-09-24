@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+} from "@angular/core";
 import { AbstractControl, FormGroup } from "@angular/forms";
 import { createSubject } from "src/app/lib/core/rxjs/helpers";
 import { IDynamicForm } from "../../../core/contracts";
@@ -11,7 +17,6 @@ import { DynamicFormBuilder } from "../../services/form-builder.service";
   styles: [],
 })
 export class SimpleDynamicFormComponent implements OnDestroy {
-
   _formgroup!: FormGroup;
   _form!: IDynamicForm;
 
@@ -52,6 +57,24 @@ export class SimpleDynamicFormComponent implements OnDestroy {
   setControlValue = (control: string, value: any) =>
     (() => {
       this._formgroup.get(control)?.setValue(value);
+    })();
+
+  disableControls = (controls: {
+    [index: string]: { onlySelf: boolean; emitEvent: boolean } | undefined;
+  }) =>
+    (() => {
+      Object.entries(controls || {}).forEach(([key, entry]) =>
+        this.formgroup.get(key)?.disable(entry)
+      );
+    })();
+
+  enableControls = (controls: {
+    [index: string]: { onlySelf: boolean; emitEvent: boolean } | undefined;
+  }) =>
+    (() => {
+      Object.entries(controls || {}).forEach(([key, entry]) =>
+        this.formgroup.get(key)?.enable(entry)
+      );
     })();
 
   addControl = (name: string, control: AbstractControl) =>
