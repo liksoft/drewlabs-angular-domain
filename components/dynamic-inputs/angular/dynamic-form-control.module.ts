@@ -27,7 +27,6 @@ import {
   AbstractDynamicFormService,
   DynamicFormService,
 } from "./services/dynamic-form.service";
-import { InputRefDirective } from "./directives/input-ref.directive";
 
 export const DECLARATIONS = [
   DynamicFormControlComponent,
@@ -81,8 +80,8 @@ export const initializeDynamicFormContainer = (
     DropzoneModule,
     CustomPipesModule,
   ],
-  declarations: [...DECLARATIONS, InputRefDirective],
-  exports: [...DECLARATIONS, InputRefDirective],
+  declarations: [...DECLARATIONS],
+  exports: [...DECLARATIONS],
   providers: [],
 })
 export class DynamicFormControlModule {

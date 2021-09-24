@@ -6,6 +6,7 @@ import { map } from "rxjs/operators";
 import { createStateful } from "../../../../../rxjs/helpers";
 import { getObjectProperty } from "src/app/lib/core/utils";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
+import { InputEventArgs } from "../../types/dynamic-inputs";
 
 @Component({
   selector: "app-dynamic-password-input",
@@ -41,22 +42,11 @@ export class DynamicPasswordInputComponent {
   // Configuration parameters of the input
   @Input() inputConfig!: IHTMLFormControl;
 
-  @Output() inputKeyUp = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputKeyDown = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputKeypress = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
-  @Output() inputBlur = new EventEmitter<{
-    formcontrolname: string;
-    value: any;
-  }>();
+
+  @Output() keyup = new EventEmitter<InputEventArgs>();
+  @Output() keydown = new EventEmitter<InputEventArgs>();
+  @Output() keypress = new EventEmitter<InputEventArgs>();
+  @Output() blur = new EventEmitter<InputEventArgs>();
 
   public inputTypes = InputTypes;
 

@@ -1,4 +1,4 @@
-<!-- <div [class]="controlDivContainerClass"> -->
+<div [class]="controlDivContainerClass">
   <label
     class="clr-control-label"
     *ngIf="showLabelAndDescription"
@@ -16,26 +16,26 @@
     <div class="clr-textarea-wrapper">
       <textarea
         (keyup)="
-          inputKeyUp.emit({
-            formcontrolname: inputConfig?.formControlName,
+          keyup.emit({
+            name: inputConfig?.formControlName,
             value: $event
           })
         "
         (keydown)="
-          inputKeyDown.emit({
-            formcontrolname: inputConfig?.formControlName,
+          keydown.emit({
+            name: inputConfig?.formControlName,
             value: $event
           })
         "
         (keypress)="
-          inputBlur.emit({
-            formcontrolname: inputConfig?.formControlName,
+          keypress.emit({
+            name: inputConfig?.formControlName,
             value: $event
           })
         "
         (blur)="
-          inputKeypress.emit({
-            formcontrolname: inputConfig?.formControlName,
+          blur.emit({
+            name: inputConfig?.formControlName,
             value: $event
           })
         "
@@ -72,4 +72,4 @@
   >
     <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
   </clr-control-helper>
-<!-- </div> -->
+</div>

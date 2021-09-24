@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
 import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
+import { InputEventArgs } from "../../types/dynamic-inputs";
 
 @Component({
   selector: "app-dynamic-text-area-input",
@@ -32,22 +33,10 @@ export class DynamicTextAreaInputComponent {
   // Configuration parameters of the input
   @Input() inputConfig?: IHTMLFormControl;
 
-  @Output() inputKeyUp = new EventEmitter<{
-    formcontrolname?: string;
-    value: any;
-  }>();
-  @Output() inputKeyDown = new EventEmitter<{
-    formcontrolname?: string;
-    value: any;
-  }>();
-  @Output() inputKeypress = new EventEmitter<{
-    formcontrolname?: string;
-    value: any;
-  }>();
-  @Output() inputBlur = new EventEmitter<{
-    formcontrolname?: string;
-    value: any;
-  }>();
+  @Output() keyup = new EventEmitter<InputEventArgs>();
+  @Output() keydown = new EventEmitter<InputEventArgs>();
+  @Output() keypress = new EventEmitter<InputEventArgs>();
+  @Output() blur = new EventEmitter<InputEventArgs>();
 
   constructor(public readonly inputType: DynamicInputTypeHelper) {}
 }

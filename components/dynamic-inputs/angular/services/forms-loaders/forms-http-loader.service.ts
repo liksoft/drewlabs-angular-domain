@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { isArray } from "lodash";
-import { catchError, map } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { GenericUndecoratedSerializaleSerializer } from "../../../../../built-value/core/js/serializer";
 import { DynamicFormInterface } from "../../../core/compact";
 import { FormV2 } from "../../../core/v2/models";
