@@ -15,8 +15,8 @@ import { DynamicInputTypeHelper } from "../../services/input-type.service";
 import { FileFormControl } from "../dynamic-form-control.component";
 import { map } from "rxjs/operators";
 import { DropzoneComponent } from "../../../../dropzone/dropzone.component";
-import { FileInput } from "../../../core/input-types";
 import { createSubject } from "../../../../../rxjs/helpers";
+import { FileInput } from "../../../core/types";
 
 @Component({
   selector: "app-dynamic-file-input",

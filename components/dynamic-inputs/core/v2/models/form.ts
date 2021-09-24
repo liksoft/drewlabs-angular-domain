@@ -1,7 +1,6 @@
 import { FormControlV2 } from './form-control';
 import { ControlOptionInterface, DynamicFormControlInterface, DynamicFormInterface } from '../../compact/types';
 import { GenericSerializaleSerializer, UndecoratedSerializer } from '../../../../../built-value/core/js/serializer';
-import { ISerializableBuilder } from '../../../../../built-value/contracts';
 
 export class FormV2 implements DynamicFormInterface {
   id!: number;
@@ -14,9 +13,12 @@ export class FormV2 implements DynamicFormInterface {
   status!: number;
   appcontext!: string;
 
-  static builder(): ISerializableBuilder<FormV2> {
-    return new GenericSerializaleSerializer(FormV2, new UndecoratedSerializer());
-  }
+  static builder = () => {
+    return new GenericSerializaleSerializer(
+      FormV2,
+      new UndecoratedSerializer()
+    );
+  };
 
   public static getJsonableProperties(): { [index: string]: keyof FormV2 | { name: string, type: any } } {
     return {

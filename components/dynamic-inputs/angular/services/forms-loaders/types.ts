@@ -16,4 +16,7 @@ export interface FormsLoaderInterface {
   ): Observable<DynamicFormInterface[]>;
 }
 
+/**
+ * Abstract forms loader token
+ */
 export const DYNAMIC_FORM_LOADER = new InjectionToken<FormsLoaderInterface>("Provides a dynamic form loader");

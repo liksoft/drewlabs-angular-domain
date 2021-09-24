@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup, FormArray } from '@angular/forms';
-import { IDynamicForm, isGroupOfIDynamicForm } from '../components/dynamic-inputs/core';
+import { IDynamicForm } from '../components/dynamic-inputs/core';
 import { isArray, isDefined } from '../utils';
 import { collect } from '../collections/collection';
 import { ICollection } from '../contracts/collection-interface';
@@ -63,13 +63,5 @@ export class TypeUtilHelper {
 
   asServerFileRequesBody(value: FileFormControl): { content: string, extension?: string } {
     return { ...{ content: value?.dataURL, extension: value?.extension } };
-  }
-
-  /**
-   * @description Checks if the param is a FormGroup
-   * @param f [[IDynamicForm]]
-   */
-  isFormGroup(f: IDynamicForm): boolean {
-    return isGroupOfIDynamicForm(f);
   }
 }

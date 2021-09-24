@@ -54,11 +54,8 @@ export class GenericSerializaleSerializer<T extends Object> extends GenericTypeB
   /**
    * @inheritdoc
    */
-  fromSerialized(serialized: object|string|any) {
-    if (!isDefined(serialized)) {
-      return serialized;
-    }
-    return this.serializer.deserialize(this.type, serialized);
+  fromSerialized(serialized: object|string|any): T {
+    return serialized ? this.serializer.deserialize(this.type, serialized) : serialized;
   }
 
   /**

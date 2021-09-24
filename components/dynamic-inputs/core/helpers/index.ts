@@ -1,15 +1,12 @@
-import { isArray, isDefined } from "../../../../utils/types";
-
-import { IDynamicForm } from "../contracts/dynamic-form";
-
 export {
   DynamicFormHelpers,
-  sortFormByIndex,
-  sortDynamicFormByIndex,
-  cloneDynamicForm,
-  createDynamicForm,
-  sortFormFormControlsByIndex,
-} from "./dynamic-form-helpers";
+  sortformbyindex,
+  cloneform,
+  createform,
+  sortRawFormControls,
+  copyform,
+  rebuildFormControlConfigs,
+} from "./form";
 
 export {
   buildRequiredIfConfig,
@@ -18,14 +15,9 @@ export {
   buildRadioInputItems,
 } from "./builders";
 
+export { buildControl } from "../types/builder";
+
 export { parseControlItemsConfigs } from "./parsers";
 export { controlBindingsSetter } from "./control-bindings";
-export { rebuildFormControlConfigs } from "./form-control-configs";
 
-/**
- * @description Checks if a dynamic form contains other form
- * @deprecated
- * @param f
- */
-export const isGroupOfIDynamicForm = (value?: IDynamicForm) =>
-  isDefined(value) && isArray(value?.forms || undefined) ? true : false;
+//
