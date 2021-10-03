@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
-import { readFileAsDataURI, Browser, b64toBlob } from '../utils/browser';
-import { HttpRequestService } from '../http/core/http-request.service';
+import { Inject, Injectable } from "@angular/core";
+import { BinaryHttpClient, HTTP_BINARY_CLIENT } from "../http/contracts";
+import { readFileAsDataURI, b64toBlob } from "../utils/browser";
+import { writeRawStream } from "../utils/io";
 
 /**
  * @description Type definition for a file ressource object
@@ -26,7 +27,7 @@ export interface UploadedFileHelperInterface {
    * @description Load file from the server and convert it to a dataURI
    * @param url [[string]]
    */
-  loadFileAsDataURI(url: string): Promise<string|undefined>;
+  loadFileAsDataURI(url: string): Promise<string | undefined>;
 
   /**
    * @description Download contents from a url and return a fileStats
@@ -34,7 +35,12 @@ export interface UploadedFileHelperInterface {
    * @param filename [[string]]
    */
   // tslint:disable-next-line: typedef
-  urlToFileFileRessource(url: string, filename: string, shouldDownload?: boolean, extension?: string): Promise<IFileRessource|undefined|null>;
+  urlToFileFileRessource(
+    url: string,
+    filename: string,
+    shouldDownload?: boolean,
+    extension?: string
+  ): Promise<IFileRessource | undefined | null>;
 
   /**
    * @description Use Browser API for saving a base64 string as a blob file
@@ -55,21 +61,22 @@ export interface UploadedFileHelperInterface {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class FileHelperService implements UploadedFileHelperInterface {
-
   /**
    * @description Instance constructor
    */
-  constructor(private client: HttpRequestService) { }
+  constructor(@Inject(HTTP_BINARY_CLIENT) private client: BinaryHttpClient) {}
 
   /**
    * @inheritdoc
    */
   loadFileAsDataURI = async (url: string) => {
-    return readFileAsDataURI(await this.client.loadServerFile(url) as Blob);
-  }
+    return readFileAsDataURI(
+      (await this.client.readBinaryStream(url).toPromise()) as Blob
+    );
+  };
 
   /**
    * @inheritdoc
@@ -78,20 +85,20 @@ export class FileHelperService implements UploadedFileHelperInterface {
   async urlToFileFileRessource(
     url: string,
     filename: string,
-    shouldDownload: boolean = false,
-    extension?: string
+    download: boolean = false,
+    ext?: string
   ) {
     const v = await this.loadFileAsDataURI(url);
     if (v) {
-      const block = v.split(';');
+      const block = v.split(";");
       // Get the content type of the image
-      const contentType = block[0].split(':')[1];
+      const contentType = block[0].split(":")[1];
       return {
         name: filename,
         content: v,
         type: contentType,
-        showldownload: shouldDownload,
-        extension
+        showldownload: download,
+        ext,
       } as IFileRessource;
     }
     return undefined;
@@ -101,25 +108,31 @@ export class FileHelperService implements UploadedFileHelperInterface {
    */
   // tslint:disable-next-line: typedef
   async urlToServerFileInterface(
-    url: string, { id, name, shouldDownload, extension }: Partial<{
-      id: number | string,
-      name: string,
-      shouldDownload: boolean,
-      extension: string
+    url: string,
+    {
+      id,
+      name,
+      shouldDownload,
+      extension,
+    }: Partial<{
+      id: number | string;
+      name: string;
+      shouldDownload: boolean;
+      extension: string;
     }>
   ) {
     const v = await this.loadFileAsDataURI(url);
     if (v) {
-      const block = v.split(';');
+      const block = v.split(";");
       // Get the content type of the image
-      const contentType = block[0].split(':')[1];
+      const contentType = block[0].split(":")[1];
       return {
         id,
         name,
         content: v,
         type: contentType,
         showldownload: shouldDownload,
-        extension
+        extension,
       } as ServerFileInterface;
     }
     return null;
@@ -129,20 +142,32 @@ export class FileHelperService implements UploadedFileHelperInterface {
    * @inheritdoc
    */
   // tslint:disable-next-line: typedef
-  async saveDataURLAsBlob(ressource: string, filename: string, extension?: string) {
-    const blocks = ressource.split(';');
+  async saveDataURLAsBlob(
+    ressource: string,
+    filename: string,
+    extension?: string
+  ) {
+    const blocks = ressource.split(";");
     // Get the content type of the image
-    const contentType = blocks[0].split(':')[1];
+    const contentType = blocks[0].split(":")[1];
     // get the real base64 content of the file
-    const data = blocks[1].split(',')[1];
-    Browser.saveFile(b64toBlob(data, contentType), extension ? `${filename}.${extension}` : filename);
+    const data = blocks[1].split(",")[1];
+    return writeRawStream(
+      b64toBlob(data, contentType),
+      extension ? `${filename}.${extension}` : filename
+    );
   }
 
   /**
    * @inheritdoc
    */
   // tslint:disable-next-line: typedef
-  downloadFile(url: string, filename: string, extension?: string, params?: { [prop: string]: any }) {
-    return this.client.downloadFile(url, filename, extension, params);
+  downloadFile(
+    url: string,
+    filename: string,
+    extension?: string,
+    params?: { [prop: string]: any }
+  ) {
+    return this.client.download(url, filename, extension, params).toPromise();
   }
 }

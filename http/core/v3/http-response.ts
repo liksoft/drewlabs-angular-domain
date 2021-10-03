@@ -1,9 +1,8 @@
-import { IHttpResourceResponse, IHttpResponseData } from '../../contracts/http-response';
+import { IHttpResourceResponse, IHttpResponseData } from '../../contracts';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
 
 export class HttpResourceResponse implements IHttpResourceResponse, IHttpResponseData {
 
-  success!: boolean;
   statusCode!: number;
   errorMessage!: string;
   responseData!: IHttpResponseData;
@@ -15,7 +14,6 @@ export class HttpResourceResponse implements IHttpResourceResponse, IHttpRespons
   // tslint:disable-next-line: typedef
   static getJsonableProperties() {
     return {
-      success: 'success',
       code: 'statusCode',
       error_message: 'errorMessage',
       response_data: { name: 'responseData' },

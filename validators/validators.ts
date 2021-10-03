@@ -1,38 +1,7 @@
 import { AbstractControl, FormGroup, FormControl, ValidatorFn } from '@angular/forms';
-import { Injectable } from '@angular/core';
-import { HttpRequestService } from '../http/core/http-request.service';
 import { isDefined } from '../utils/types/type-utils';
 import { MomentUtils } from '../utils/datetime/moment-utils';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class UniqueColumnValueValidator {
-
-  public readonly path: string;
-
-  constructor(private client: HttpRequestService) {
-    this.path = 'is_unique';
-  }
-
-  /**
-   * @description Checks if a control value is unique on the ressources server
-   * @param property [[string]]
-   * @param value [[string|any]]
-   * @param entity [[entity]]
-   */
-  async verify(entity?: string, property?: string, value?: string | number) {
-    return true;
-    // const query = isDefined(entity) ? `?property=${property}&value=${value}&entity=${entity}` : `?property=${property}&value=${value}`;
-    // try {
-    //   // TODO Implements unique value validation method
-    //   // const result = await loadThroughHttpRequest(this.client, `${this.path}${query}`);
-    //   // return isDefined(result) ? true : false;
-    // } catch (error) {
-    //   return true;
-    // }
-  }
-}
 
 export class CustomValidators {
   static Match(control: string, otherControl: string) {
@@ -158,22 +127,5 @@ export class CustomValidators {
         this.validateAllFormFields(control);
       }
     });
-  }
-
-  /**
-   * @description Checks if the value of the current control already exists in the database.
-   * @param service [[UniqueValueService]]
-   * @param entity [[string]]
-   * @param column [[string]]
-   */
-  static createAsycUniqueValidator(service?: UniqueColumnValueValidator, entity?: string, column?: string) {
-    return async (control: AbstractControl) => {
-      if (!isDefined(control.value) || control.value === '') {
-        return null;
-      }
-      const res = await service?.verify(entity, column, control.value);
-      const errors = res ? null : { notUnique: {value: control.value} };
-      return errors;
-    };
   }
 }

@@ -1,4 +1,4 @@
-import { Order } from "../../../../utils/enums";
+import { Order } from "../../../../utils/types";
 import { ArrayUtils, isArray, isDefined } from "../../../../utils/types";
 import {
   DynamicFormControlInterface,

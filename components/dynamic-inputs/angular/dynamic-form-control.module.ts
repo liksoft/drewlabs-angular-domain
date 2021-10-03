@@ -20,13 +20,14 @@ import { DynamicCheckoxInputComponent } from "./components/dynamic-checkox-input
 import { DynamicRadioInputComponent } from "./components/dynamic-radio-input/dynamic-radio-input.component";
 import { SimpleDynamicFormComponent } from "./components/simple-dynamic-form/simple-form.component";
 import { DropzoneModule } from "../../dropzone";
-import { CustomPipesModule } from "../../pipes";
 import { IntlTelInputModule } from "../../intl-tel-input";
 import { DYNAMIC_FORM_LOADER, FormHttpLoader } from "./services";
 import {
   AbstractDynamicFormService,
   DynamicFormService,
 } from "./services/dynamic-form.service";
+import { SafeHTMLPipe } from "./pipes/safe-html.pipe";
+import { HttpModule } from "../../../http";
 
 export const DECLARATIONS = [
   DynamicFormControlComponent,
@@ -78,9 +79,9 @@ export const initializeDynamicFormContainer = (
     TranslateModule,
     ClarityModule,
     DropzoneModule,
-    CustomPipesModule,
+    HttpModule
   ],
-  declarations: [...DECLARATIONS],
+  declarations: [...DECLARATIONS, SafeHTMLPipe],
   exports: [...DECLARATIONS],
   providers: [],
 })

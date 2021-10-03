@@ -45,6 +45,5 @@ export class GeolocationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.geoService.getPlatformCurrentPosition();
-    console.log("Directive initialized...");
   }
 }

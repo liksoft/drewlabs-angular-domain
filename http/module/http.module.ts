@@ -1,40 +1,59 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpRequestService } from '../core/http-request.service';
-import { AuthModule } from '../../auth';
-import { DrewlabsRessourceServerClient } from '../core/ressource-server-client';
-import { parseV2HttpResponse } from '../core/v2/http-response';
-import { TransformResponseHandlerFn } from '../contracts';
+import { NgModule, ModuleWithProviders } from "@angular/core";
+import { HttpClientModule } from "@angular/common/http";
+import { AuthModule } from "../../auth";
+import {
+  DrewlabsRessourceServerClient,
+  HttpClient,
+  BinaryHttpClient,
+} from "../core";
+import { parseV2HttpResponse } from "../core/v2/http-response";
+import {
+  HTTP_BINARY_CLIENT,
+  HTTP_CLIENT,
+  HTTP_SERVER_RESOURCE_CLIENT,
+  SERVER_URL,
+  TransformResponseHandlerFn,
+} from "../contracts";
 
 // tslint:disable-next-line: interface-over-type-literal
-type ModuleConfigParams = { serverURL: string, requestResponseHandler?: TransformResponseHandlerFn };
+type ModuleConfigParams = {
+  serverURL: string;
+  requestResponseHandler?: TransformResponseHandlerFn;
+};
 
 @NgModule({
-  imports: [
-    HttpClientModule,
-    AuthModule
-  ],
-  exports: [
-    HttpClientModule
-  ],
-  providers: []
+  imports: [HttpClientModule, AuthModule],
+  exports: [HttpClientModule],
 })
-export class DrewlabsHttpModule {
-  static forRoot(configs: ModuleConfigParams): ModuleWithProviders<DrewlabsHttpModule> {
+export class HttpModule {
+  static forRoot(configs: ModuleConfigParams): ModuleWithProviders<HttpModule> {
     return {
-      ngModule: DrewlabsHttpModule,
+      ngModule: HttpModule,
       providers: [
-        HttpRequestService,
+        HttpClient,
+        DrewlabsRessourceServerClient,
+        BinaryHttpClient,
         {
-          provide: 'SERVER_URL',
-          useValue: configs.serverURL
+          provide: SERVER_URL,
+          useValue: configs.serverURL,
         },
         {
-          provide: 'ResponseTransformHandlerFn',
-          useValue: configs.requestResponseHandler || parseV2HttpResponse
+          provide: HTTP_CLIENT,
+          useClass: HttpClient,
         },
-        DrewlabsRessourceServerClient
-      ]
+        {
+          provide: HTTP_SERVER_RESOURCE_CLIENT,
+          useClass: DrewlabsRessourceServerClient,
+        },
+        {
+          provide: HTTP_BINARY_CLIENT,
+          useClass: BinaryHttpClient,
+        },
+        {
+          provide: "ResponseTransformHandlerFn",
+          useValue: configs.requestResponseHandler || parseV2HttpResponse,
+        },
+      ],
     };
   }
 }

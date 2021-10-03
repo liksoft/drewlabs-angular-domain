@@ -8,7 +8,6 @@ import {
 
 @Injectable()
 export class UserCameraService {
-
   private _video!: HTMLVideoElement;
   private _mediaStream!: MediaStream | undefined;
   private _onCameraStartedCallback!: OnStartUserCameraHandlerFn;
@@ -59,6 +58,16 @@ export class UserCameraService {
     callback: OnStartUserCameraHandlerFn,
     customResolution?: { width: { exact: number }; height: { exact: number } }
   ) => {
+    // Constraints
+
+    // const constraints = {
+    //   audio: false,
+    //   video: {
+    //     facingMode: "user",
+    //     width: { min: 640, ideal: 1200, max: 1920 },
+    //     height: { min: 480, ideal: 720, max: 1080 },
+    //   },
+    // };
     const constraints: VideoConstraints = {
       qvga: { width: { exact: 320 }, height: { exact: 240 } },
       vga: { width: { exact: 640 }, height: { exact: 480 } },
@@ -87,7 +96,7 @@ export class UserCameraService {
             this.onVideoCanPlay.bind(this),
             false
           );
-          video.addEventListener('pause', () => {
+          video.addEventListener("pause", () => {
             video.play();
           });
           resolve({});

@@ -1,4 +1,3 @@
-export * from './config';
-export { HttpRequestService, HTTPErrorState } from './http-request.service';
-export { DrewlabsRessourceServerClient } from './ressource-server-client';
-export { DrewlabsHttpResponseStatusCode } from './http-response';
+export { DrewlabsRessourceServerClient } from "./ressource-server-client";
+export { BinaryHttpClient } from "./binary-client.service";
+export { HttpClient } from "./http-client.service";

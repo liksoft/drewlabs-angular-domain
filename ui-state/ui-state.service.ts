@@ -1,62 +1,59 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, ReplaySubject } from "rxjs";
 import { startWith } from "rxjs/operators";
-import { UIState, UIStateProvider, UIStateStatusCode } from "../contracts/ui-state";
-import { HTTPErrorState } from "../http/core/http-request.service";
-import { DrewlabsHttpResponseStatusCode } from "../http/core/http-response";
+import { isServerErrorResponse } from "../http";
+import { HTTPErrorState } from "../http/contracts";
 import { createSubject } from "../rxjs/helpers";
+import { UIState, UIStateProvider, UIStateStatusCode } from "./types";
 
 const initialUIState: UIState = {
-    performingAction: false,
-    uiMessage: undefined,
-    hasError: false,
-    status: undefined
+  performingAction: false,
+  uiMessage: undefined,
+  hasError: false,
+  status: undefined,
 };
 
 /**
  * @description UIstate status code helper for getting state from http response error status
  */
- export const uiStatusUsingHttpErrorResponse = (httpErrorState: HTTPErrorState) =>
- (httpErrorState.status === DrewlabsHttpResponseStatusCode.SERVER_ERROR) ||
-   (httpErrorState.status === DrewlabsHttpResponseStatusCode.UNKNOWN) ?
-   UIStateStatusCode.ERROR : UIStateStatusCode.BAD_REQUEST;
+export const uiStatusUsingHttpErrorResponse = (
+  httpErrorState: HTTPErrorState
+) =>
+  isServerErrorResponse(httpErrorState.status)
+    ? UIStateStatusCode.ERROR
+    : UIStateStatusCode.BAD;
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class AppUIStateProvider implements UIStateProvider {
-    private store$ = createSubject<UIState>();
+  store$ = createSubject<UIState>();
 
-    // tslint:disable-next-line: typedef
-    intialize() {
-        this.store$.next(initialUIState);
-    }
+  // get uiState$(): Observable<UIState> {
+  //   return this.store$.pipe(startWith(initialUIState));
+  // }
 
-    get uiState(): Observable<UIState> {
-        return this.store$.pipe(
-            startWith(initialUIState)
-        );
-    }
+  get uiState(): Observable<UIState> {
+    return this.store$.pipe(startWith(initialUIState));
+  }
 
-    startAction(message?: string): void {
-        this.store$.next({
-            performingAction: true,
-            uiMessage: message,
-            hasError: false,
-            status: undefined
-        });
-    }
+  startAction(message?: string): void {
+    this.store$.next({
+      performingAction: true,
+      uiMessage: message,
+      hasError: false,
+      status: undefined,
+    });
+  }
 
-    endAction(message?: string, status?: UIStateStatusCode): void {
-        this.store$.next({
-            performingAction: false,
-            uiMessage: message,
-            hasError: status === UIStateStatusCode.ERROR ? true : false,
-            status
-        });
-    }
+  endAction(message?: string, status?: UIStateStatusCode): void {
+    this.store$.next({
+      performingAction: false,
+      uiMessage: message,
+      hasError: status === UIStateStatusCode.ERROR ? true : false,
+      status,
+    });
+  }
 
-    resetState(): void {
-        this.store$.next(initialUIState);
-    }
+  resetState(): void {
+    this.store$.next(initialUIState);
+  }
 }

@@ -14,7 +14,7 @@ import { ControlOptionInterface } from "../../compact/types";
 import { isDefined, isObject } from "../../../../../utils";
 import { emptyObservable } from "../../../../../rxjs/helpers";
 import { ControlOption } from "../models";
-import { defaultHttpErrorHandler } from "../../../../../http/helpers/http-response";
+import { defaultHttpErrorHandler } from "../../../../../http/helpers/response";
 
 export const deserializeOption = (serialized: { [index: string]: any }) =>
   ControlOption.builder().fromSerialized(serialized);

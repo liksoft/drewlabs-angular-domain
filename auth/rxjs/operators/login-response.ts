@@ -3,10 +3,10 @@ import { Observable } from 'rxjs';
 import { ILoginResponse, IAppUser } from '../../../auth/contracts/v2';
 import { ILoginState } from '../../../auth/contracts/v2/login.response';
 import { getResultData } from '../../../http/contracts/types';
-import { responseStatusOK } from '../../../http/core/helpers';
+import { responseStatusOK } from '../../../http';
 import { IUserStorageHandler } from '../../../auth/contracts/v2/user/storage-user';
 import { map } from 'rxjs/operators';
-import { IHttpResponseData } from '../../../http/contracts/http-response';
+import { IHttpResponseData } from '../../../http/contracts';
 import { HandlerResult, LoginReponseHandlerFunc, LoginResponseWithAuthenticationResult } from '../../../rxjs/types';
 
 /**
@@ -27,7 +27,7 @@ export const getLoginState: (response: IHttpResponseData) => ILoginState =
  * @param loginResponse Instance of the {@link ILoginResponse}
  */
 export const drewlabsIsAuthenticationSuccessful: (loginResponse: ILoginResponse) => boolean =
-  (loginResponse: ILoginResponse) => loginResponse.success && responseStatusOK(loginResponse.statusCode);
+  (loginResponse: ILoginResponse) => Boolean(loginResponse?.body?.responseData?.loginState?.authenticated) && responseStatusOK(loginResponse.statusCode);
 
 /**
  * @description Checks user has double authentication activated on his account

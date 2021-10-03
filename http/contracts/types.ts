@@ -1,26 +1,24 @@
-import { HandlerResult } from '../../rxjs/types';
+import { HandlerResult } from "../../rxjs/types";
 
-export interface IHttpResponse<T extends any>  extends HandlerResult<T> {
-    statusCode: number;
-    statusMessage?: string;
-    errors?: string[]|object;
-    errorMessage?: string;
-    data: T;
+export interface IHttpResponse<T extends any> extends HandlerResult<T> {
+  statusCode: number;
+  statusMessage?: string;
+  errors?: string[] | object;
+  errorMessage?: string;
+  data: T;
 }
-
 
 /**
  *  @description Returns the response data object contains in the http response
  * @param response [[IHttpResponse<T>]]
  */
-export type getResultData<T> = (response: HandlerResult<T>) =>  T;
+export type getResultData<T> = (response: HandlerResult<T>) => T;
 
 /**
  * @description Returns true if the HTTP request completed sucessfully
  * @param response [[IHttpResponse<any>]]
  */
-export type statusOk = (response: number|string)  =>  boolean;
-
+export type statusOk = (response: number | string) => boolean;
 
 /**
  * @description Returns the HTTP response status code

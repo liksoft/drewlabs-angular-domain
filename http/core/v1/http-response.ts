@@ -5,7 +5,7 @@ import {
   IHttpResourceResponse,
   IHttpResourceResponseBody,
   IHttpResponseData, IV1HttpResourceResponse
-} from '../../contracts/http-response';
+} from '../../contracts/response';
 
 export class V1HttpResourceResponse implements IV1HttpResourceResponse {
   data!: IHttpResourceResponse;
@@ -20,7 +20,6 @@ export class V1HttpResourceResponse implements IV1HttpResourceResponse {
 }
 
 export class V1HttpResourceResponseContent implements IHttpResourceResponse {
-  success!: boolean;
   body!: IHttpResourceResponseBody;
   statusCode!: number;
 
@@ -28,7 +27,6 @@ export class V1HttpResourceResponseContent implements IHttpResourceResponse {
   // tslint:disable-next-line: typedef
   static getJsonableProperties() {
     return {
-      success: 'success',
       body: { name: 'body', type: V1HttpResourceResponseBody },
       code: 'statusCode'
     } as { [index: string]: keyof V1HttpResourceResponseContent } | { [index: string]: any };

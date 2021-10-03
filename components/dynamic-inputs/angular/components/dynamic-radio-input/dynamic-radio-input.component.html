@@ -30,7 +30,7 @@
 <clr-control-helper
   *ngIf="inputConfig.descriptionText && showLabelAndDescription"
 >
-  <span [innerHTML]="inputConfig.descriptionText | safeWebContent"></span>
+  <span [innerHTML]="inputConfig.descriptionText | safeHtml"></span>
 </clr-control-helper>
 <clr-control-error
   class="field-has-error"

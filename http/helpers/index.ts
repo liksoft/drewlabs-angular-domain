@@ -1,1 +1,7 @@
-export { getResponseDataFromHttpResponse, getResponseV2DataFromHttpResponse } from './http-response';
+export {
+  getResponseDataFromHttpResponse,
+  getResponseV2DataFromHttpResponse,
+  isServerErrorResponse,
+  responseStatusOK,
+  isServerBadRequest,
+} from "./response";

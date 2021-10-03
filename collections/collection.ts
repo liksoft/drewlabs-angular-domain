@@ -1,6 +1,6 @@
-import { ICollection } from '../contracts/collection-interface';
 import { getObjectProperty } from '../utils';
 import { isDefined } from '../utils/types/type-utils';
+import { ICollection } from './types';
 
 export class Collection<T> implements ICollection<T> {
   protected items: { [index: string]: T } = {};

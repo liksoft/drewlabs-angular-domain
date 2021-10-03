@@ -1,8 +1,7 @@
-import { IHttpResourceResponse, IHttpResourceResponseBody, IHttpResponseData } from '../../contracts/http-response';
+import { IHttpResourceResponse, IHttpResourceResponseBody, IHttpResponseData } from '../../contracts';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
 
 export class HttpResourceResponse implements IHttpResourceResponse {
-  success!: boolean;
   body!: IHttpResourceResponseBody;
   statusCode!: number;
 
@@ -10,7 +9,6 @@ export class HttpResourceResponse implements IHttpResourceResponse {
   // tslint:disable-next-line: typedef
   static getJsonableProperties() {
     return {
-      success: 'success',
       body: { name: 'body', type: HttpResourceResponseBody },
       code: 'statusCode'
     } as { [index: string]: keyof HttpResourceResponseBody } | { [index: string]: any };
@@ -41,7 +39,7 @@ export function parseV2HttpResponse(response: any) {
   return {
     errorMessage: httpResponse.body ? (httpResponse.body.errorMessage || null) : null,
     statusCode: httpResponse.statusCode || null,
-    data: (httpResponse.body as HttpResourceResponseBody).getContent(),
+    data: (httpResponse.body as IHttpResponseData).getContent(),
     errors: httpResponse.body.errors || null
   };
 }

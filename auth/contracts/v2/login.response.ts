@@ -1,8 +1,7 @@
-import { IHttpResponseData } from '../../../http/contracts/http-response';
+import { IHttpResponseData } from '../../../http/contracts';
 import { AppUser, IAppUser } from './user/user';
 
 export interface ILoginResponse extends IHttpResponseData {
-  success: boolean;
   body?: ILoginResponseBody;
   statusCode: number;
 }
@@ -25,7 +24,6 @@ export interface ILoginState {
 }
 
 export class LoginResponse implements ILoginResponse {
-  success!: boolean;
   body!: LoginResponseBody;
   statusCode!: number;
 
@@ -36,7 +34,6 @@ export class LoginResponse implements ILoginResponse {
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {
     return {
-      success: 'success',
       body: { name: 'body', type: LoginResponseBody },
       code: 'statusCode'
     } as { [index: string]: keyof LoginResponse } | { [index: string]: any };
@@ -46,7 +43,6 @@ export class LoginResponse implements ILoginResponse {
 // Added to Add support for new structure of the http response
 export class LoginV2_1Response implements ILoginResponse, ILoginResponseBody {
 
-  success!: boolean;
   statusCode!: number;
   errorMessage!: string;
   responseData!: LoginResponseData;
@@ -59,7 +55,6 @@ export class LoginV2_1Response implements ILoginResponse, ILoginResponseBody {
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {
     return {
-      success: 'success',
       code: 'statusCode',
       error_message: 'errorMessage',
       response_data: { name: 'responseData', type: LoginResponseData },

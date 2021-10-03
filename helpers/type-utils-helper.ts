@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup, FormArray } from '@angular/forms';
-import { IDynamicForm } from '../components/dynamic-inputs/core';
 import { isArray, isDefined } from '../utils';
 import { collect } from '../collections/collection';
-import { ICollection } from '../contracts/collection-interface';
 import { FileFormControl } from '../components/dynamic-inputs/angular/types';
+import { ICollection } from '../collections';
 
 
 @Injectable({

@@ -1,8 +1,7 @@
 import { FormV2 } from '../models/form';
 import { createAction, DefaultStoreAction, DrewlabsFluxStore, onErrorAction, StoreAction } from '../../../../../rxjs/state/rx-state';
-import { DrewlabsRessourceServerClient } from '../../../../../http/core/ressource-server-client';
 import { catchError, map } from 'rxjs/operators';
-import { getResponseDataFromHttpResponse } from '../../../../../http/helpers/http-response';
+import { getResponseDataFromHttpResponse } from '../../../../../http/helpers/response';
 import { emptyObservable } from '../../../../../rxjs/helpers';
 import { GenericUndecoratedSerializaleSerializer } from '../../../../../built-value/core/js/serializer';
 import { isArray, isDefined, isObject } from '../../../../../utils/types';
@@ -11,6 +10,7 @@ import { DynamicFormInterface } from '../../compact/types';
 import { FormControlV2 } from '../models';
 import { PaginationDataState } from '../../../../../rxjs/types';
 import { UIStateStatusCode } from '../../../../../contracts/ui-state';
+import { IResourcesServerClient } from 'src/app/lib/core/http';
 
 export interface FormState {
   performingAction: boolean;
@@ -40,7 +40,7 @@ export enum FormStoreActions {
 
 export const onPaginateFormsAction = (store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (
-    client: DrewlabsRessourceServerClient,
+    client: IResourcesServerClient<any>,
     path: string,
     params: { [index: string]: any } = {}
   ) => {
@@ -81,7 +81,7 @@ export const onFormPaginationDataLoaded = (store: DrewlabsFluxStore<FormState, P
 
 export const createFormAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, body: { [index: string]: any }) =>
+  createAction(store, (client: IResourcesServerClient<any>, path: string, body: { [index: string]: any }) =>
   ({
     type: DefaultStoreAction.ASYNC_UI_ACTION,
     payload: client.create(path, body)
@@ -118,7 +118,7 @@ export const formCreatedAction = (
 export const loadFormUsingIDAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (
-    client: DrewlabsRessourceServerClient,
+    client: IResourcesServerClient<any>,
     path: string,
     id: string | number,
     params: { [prop: string]: any } = { load_bindings: true }
@@ -157,7 +157,7 @@ export const onNewFormAction = (
 
 export const updateFormAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, body: { [index: string]: any }) =>
+  createAction(store, (client: IResourcesServerClient<any>, path: string, body: { [index: string]: any }) =>
   ({
     type: DefaultStoreAction.ASYNC_UI_ACTION,
     payload: client.update(path, body)
@@ -199,7 +199,7 @@ export const formUpdatedAction = (
 
 export const deleteFormAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: number | string) =>
+  createAction(store, (client: IResourcesServerClient<any>, path: string, id: number | string) =>
   ({
     type: DefaultStoreAction.ASYNC_UI_ACTION,
     payload: client.deleteUsingID(path, id)
@@ -243,7 +243,7 @@ export const selectFormAction = (
 
 export const createFormControlAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, body: { [index: string]: any }) =>
+  createAction(store, (client: IResourcesServerClient<any>, path: string, body: { [index: string]: any }) =>
   ({
     type: DefaultStoreAction.ASYNC_UI_ACTION,
     payload: client.create(path, body)
@@ -279,7 +279,7 @@ export const formControlCreatedAction = (
 
 export const updateFormControlAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, body: { [index: string]: any }) =>
+  createAction(store, (client: IResourcesServerClient<any>, path: string, body: { [index: string]: any }) =>
   ({
     type: DefaultStoreAction.ASYNC_UI_ACTION,
     payload: client.update(path, body)
@@ -321,7 +321,7 @@ export const formControlUpdatedAction = (
 export const deleteFormFormControl = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>) =>
   createAction(store, (
-    client: DrewlabsRessourceServerClient,
+    client: IResourcesServerClient<any>,
     path: string,
     params: { [prop: string]: any } = {},
     controlID?: number) =>

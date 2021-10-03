@@ -1,19 +1,22 @@
-import { getJSObjectPropertyValue } from './types/type-utils';
-import { environment } from 'src/environments/environment';
+import { getJSObjectPropertyValue } from "./types/type-utils";
+import { environment } from "src/environments/environment";
 
 /**
  * @description Generate a storage key by prefixing the provided key with the application unique key
  * @param value [[string]]
  */
 export const storageEntry = (value: string, secret?: string): string => {
-  return `${secret ? secret : 'APP_SECRET_BY_SEDANA_DREW'}_${value}`;
+  return `${secret ? secret : "APP_SECRET_BY_SEDANA_DREW"}_${value}`;
 };
 
 /**
  * @description Generate a unique big integer as filename
  */
 export const randomfilename = () => {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  return (
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15)
+  );
 };
 
 /**
@@ -30,9 +33,15 @@ export const getEnv = (key: string) => {
   return getJSObjectPropertyValue(environment, key);
 };
 
-export { Dialog, WindowRef, readFileAsDataURI, b64toBlob, Browser } from './browser';
-export { MomentUtils, Month, MonthProvider, MONTHS } from './datetime';
-export { ExcelUtils } from './doc-utils';
+export {
+  Dialog,
+  WindowRef,
+  readFileAsDataURI,
+  b64toBlob,
+  Browser,
+} from "./browser";
+export { MomentUtils, Month, MonthProvider, MONTHS } from "./datetime";
+export { ExcelUtils } from "./doc-utils";
 
 // JS Types helper functions
 export {
@@ -48,14 +57,15 @@ export {
   Filtrable,
   getObjectProperty,
   maxNumberSize,
-  setObjectProperty
-} from './types';
-
-// Enumeration values that can globally be used
-export { Order } from './enums';
+  setObjectProperty,
+  Order,
+} from "./types";
 
 // URL Utilities functions
-export { URLUtils } from './url/url';
+export { URLUtils } from "./url/url";
 
 // Numbers formatters implementations
-export { AmountFormatter } from './formatters';
+export { numberToAmountFormat } from "./format/number";
+
+// Loggers provider
+export { Err, Log } from "./logger";

@@ -1,9 +1,6 @@
 import * as _ from 'moment';
 import * as __ from 'lodash';
-
-export interface Filtrable {
-  has(key: string, value: any): boolean;
-}
+import { Filtrable } from './contracts/filtrable';
 
 /**
  * Class de manipulation des Objet de type tableau

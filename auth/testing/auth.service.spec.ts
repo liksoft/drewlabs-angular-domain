@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpRequestService } from '../../http/core';
 import { AuthTokenService, AuthRememberTokenService } from '../../auth-token/core';
 import { SpyObj } from '../../testing';
 import { UserStorageProvider } from '../core/services/user-storage';
@@ -14,6 +13,8 @@ import { HttpClientStub } from '../../testing/http-client';
 import { InMemoryStoreService } from '../../storage/core';
 import { filter } from 'rxjs/operators';
 import { isDefined } from '../../utils/types';
+import { drewlabsIsAuthenticationSuccessful } from '../rxjs/operators';
+import { HTTP_CLIENT } from '../../http/contracts';
 
 const testSetup = () => {
   const routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']) as SpyObj<Router>;
@@ -23,7 +24,7 @@ const testSetup = () => {
 
   TestBed.configureTestingModule({
     providers: [
-      { provide: HttpRequestService, useValue: httpClientServiceSpy },
+      { provide: HTTP_CLIENT, useValue: httpClientServiceSpy },
       AuthTokenService,
       UserStorageProvider,
       {
@@ -59,7 +60,7 @@ describe('Authentication Service provider tests', () => {
 
     // Assert
     result$.subscribe((source: ILoginResponse) => {
-      expect(source.success).toBe(true);
+      expect(drewlabsIsAuthenticationSuccessful(source)).toBe(true);
     });
   });
 

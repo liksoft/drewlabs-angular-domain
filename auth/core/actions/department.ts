@@ -1,24 +1,23 @@
 import { PaginationData } from '../../../pagination/types';
 import { createAction, DefaultStoreAction, DrewlabsFluxStore, onErrorAction, StoreAction } from '../../../rxjs/state/rx-state';
-import { DrewlabsRessourceServerClient } from '../../../http/core/ressource-server-client';
 import { catchError, map } from 'rxjs/operators';
 import { isArray, isDefined, isObject } from '../../../utils';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
 import { emptyObservable } from '../../../rxjs/helpers';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DepartmentV2 } from '../../contracts/v2/company/department';
-import { getResponseDataFromHttpResponse } from '../../../http/helpers/http-response';
-import { Log } from '../../../utils/logger';
+import { getResponseDataFromHttpResponse } from '../../../http/helpers/response';
+import { IResourcesServerClient } from '../../../http';
 
 export interface DepartmentV2sState {
   performingAction: boolean;
   items: DepartmentV2[];
   pagination: PaginationData<DepartmentV2>;
-  createdDepartment: DepartmentV2;
-  selected: DepartmentV2;
-  updateResult: boolean;
-  deleteResult: boolean;
-  error: any;
+  selected?: DepartmentV2;
+  createdDepartment?: DepartmentV2;
+  updateResult?: boolean;
+  deleteResult?: boolean;
+  error?: any;
 }
 
 const deserializeSerializedDepartmentV2 = (serialized: any) => {
@@ -39,7 +38,7 @@ export enum DepartmentV2sStoreActions {
 
 export const paginateDepartmentV2Action = (store: DrewlabsFluxStore<DepartmentV2sState, Partial<StoreAction>>) =>
   createAction(store, (
-    client: DrewlabsRessourceServerClient,
+    client: IResourcesServerClient<any>,
     path: string,
     params: { [index: string]: any } = {}
   ) => {
@@ -78,7 +77,7 @@ export const onDepartmentV2PaginationDataLoaded = (store: DrewlabsFluxStore<Depa
 
 export const createDepartmentV2Action = (
   store: DrewlabsFluxStore<DepartmentV2sState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, body: { [index: string]: any }) =>
+  createAction(store, (client: IResourcesServerClient<any>, path: string, body: { [index: string]: any }) =>
     ({
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.create(path, body)
@@ -110,7 +109,7 @@ export const departmentCreated = (
 
 export const updateDepartmentV2Action = (
   store: DrewlabsFluxStore<DepartmentV2sState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: number | string, body: { [index: string]: any }) =>
+  createAction(store, (client: IResourcesServerClient<any>, path: string, id: number | string, body: { [index: string]: any }) =>
     ({
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.updateUsingID(path, id, body)
@@ -151,7 +150,7 @@ export const departmentUpdatedAction = (
 
 export const deleteDepartmentV2Action = (
   store: DrewlabsFluxStore<DepartmentV2sState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: number | string) =>
+  createAction(store, (client: IResourcesServerClient<any>, path: string, id: number | string) =>
     ({
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.deleteUsingID(path, id)
@@ -191,7 +190,7 @@ export const departmentDeletedAction = (
 
 export const getDepartmentUsingID = (
   store: DrewlabsFluxStore<DepartmentV2sState, Partial<StoreAction>>) =>
-  createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: string | number) => {
+  createAction(store, (client: IResourcesServerClient<any>, path: string, id: string | number) => {
     return {
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.getUsingID(path, id)
@@ -228,12 +227,7 @@ export const addDepartmentToList = (store: DrewlabsFluxStore<DepartmentV2sState,
 export const initialDepartmentsState: DepartmentV2sState = {
   items: [],
   pagination: {} as PaginationData<DepartmentV2>,
-  createdDepartment: null,
-  performingAction: false,
-  selected: null,
-  error: null,
-  updateResult: null,
-  deleteResult: null
+  performingAction: false
 };
 
 export const resetDepartmentsStore = (store: DrewlabsFluxStore<DepartmentV2sState, Partial<StoreAction>>) =>

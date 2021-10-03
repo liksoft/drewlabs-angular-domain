@@ -1,6 +1,6 @@
 import { IHTMLFormControl } from './dynamic-input';
-import { ICollection } from '../../../../contracts/collection-interface';
 import { isDefined } from '../../../../utils';
+import {  ICollection } from '../../../../collections';
 /**
  * @description Interface definition for model that are bind to the dynamic form instance
  */

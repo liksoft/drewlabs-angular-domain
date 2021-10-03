@@ -1,10 +1,6 @@
 import { Inject, Injectable, OnDestroy } from "@angular/core";
 import { AuthPathConfig } from "./config";
 import { AuthTokenService } from "../../auth-token/core/auth-token.service";
-import {
-  HttpRequestService,
-  HTTPErrorState,
-} from "../../http/core/http-request.service";
 import { AuthRememberTokenService } from "../../auth-token/core/auth-remember-token.service";
 import { createSubject, observableOf } from "../../rxjs/helpers";
 import { mapToHttpResponse, doLog } from "../../rxjs/operators";
@@ -29,7 +25,6 @@ import {
 import { isDefined } from "../../utils/types/type-utils";
 import { SessionStorage } from "../../storage/core/session-storage.service";
 import { Router } from "@angular/router";
-import { HttpRequestConfigs } from "../../http/core";
 import { AuthState, AuthStorageValues } from "./actions";
 import { createStore } from "../../rxjs/state/rx-state";
 import {
@@ -44,6 +39,12 @@ import { MapToHandlerResponse } from "../../rxjs/types";
 import { httpServerHost } from "../../utils/url/url";
 import { DrewlabsV2LoginResultHandlerFunc } from "../rxjs/operators/v2/login-response";
 import { onAuthenticationResultEffect } from "../rxjs/operators/login-response";
+import {
+  Client,
+  ErrorHandler,
+  HTTPErrorState,
+  HTTP_CLIENT,
+} from "../../http/contracts";
 
 const initalState: AuthState = {
   isLoggedIn: false,
@@ -85,7 +86,7 @@ export class AuthService implements OnDestroy {
     public userStorage: UserStorageProvider,
     private oAuthTokenProvider: AuthTokenService,
     private rememberTokenProvider: AuthRememberTokenService,
-    private httpClient: HttpRequestService,
+    @Inject(HTTP_CLIENT) private httpClient: Client & ErrorHandler,
     private sessionStorage: SessionStorage,
     private router: Router,
     @Inject("LOGIN_RESPONSE_HANDLER_FUNC")
@@ -108,10 +109,7 @@ export class AuthService implements OnDestroy {
               this.oAuthTokenProvider.removeToken();
               this.sessionStorage.clear();
               intitAuthStateAction(this._authStore$)();
-              this.sessionStorage.set(
-                HttpRequestConfigs.sessionExpiredStorageKey,
-                true
-              );
+              this.sessionStorage.set("X_SESSION_EXPIRED", true);
               // To be review
               this.router.navigate([AuthPathConfig.LOGIN_PATH], {
                 replaceUrl: true,
@@ -175,7 +173,6 @@ export class AuthService implements OnDestroy {
         catchError((err) => {
           if (err instanceof HttpErrorResponse) {
             return observableOf({
-              success: false,
               body: {
                 errorMessage: err.statusText,
                 responseData: undefined,
@@ -226,7 +223,6 @@ export class AuthService implements OnDestroy {
         catchError((err) => {
           if (err instanceof HttpErrorResponse) {
             return observableOf({
-              success: false,
               body: {
                 errorMessage: err.statusText,
                 responseData: undefined,
