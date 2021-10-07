@@ -1,7 +1,10 @@
 import { Observable } from "rxjs";
 import { VideoConstraints } from "./constraints";
 
-export type OnVideoStreamHandlerFn = (source: any, dest: any) => void;
+export type OnVideoStreamHandlerFn = (
+  source: MediaStream | any,
+  dest: any
+) => void;
 
 /**
  * @description Type definition of a web camservice

@@ -12,7 +12,10 @@ import {
 } from "@angular/core";
 import { forkJoin } from "rxjs";
 import { takeUntil, tap } from "rxjs/operators";
-import { createSubject } from "src/app/lib/core/rxjs/helpers";
+import {
+  createSubject,
+  timeout as setTimeoutFn,
+} from "src/app/lib/core/rxjs/helpers";
 import {
   BlazeFaceDetector,
   BLAZE_FACE,
@@ -75,6 +78,7 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
     encodedURI?: string;
   }>();
   @Output() noFaceDetectedEvent = new EventEmitter<boolean>();
+  @Output() videoStreamEvent = new EventEmitter<MediaStream>();
 
   showCameraError: boolean = false;
 
@@ -122,12 +126,15 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
           this.videoHTMLElement,
           "custom",
           (_, dst) => {
+            this.videoStreamEvent.next(_);
+            console.log('Content: ', dst);
+            console.log('Unknown: ', _);
             const image = dst;
             const canvas = this.canvasHTMLElement;
             if (image && canvas) {
               // Set a timeout to wait for before checking the detected faces
               // Notify the container component of no face detected event
-              const timeout = setTimeout(() => {
+              setTimeoutFn(() => {
                 if (
                   typeof this._detectFacesResult === "undefined" ||
                   this._detectFacesResult === null
@@ -137,10 +144,9 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
               }, this.noFacesDetectedTimeOut);
 
               // Wait for certain time before detecting client faces
-              setTimeout(() => {
+              setTimeoutFn(() => {
                 if (this._detectFacesResult) {
                   this.detectFacesResultEvent.emit(this._detectFacesResult);
-                  clearTimeout(timeout);
                 }
               }, this.detectorTimeOut);
 

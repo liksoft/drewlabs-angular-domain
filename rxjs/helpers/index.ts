@@ -7,6 +7,7 @@ export {
   observableFrom,
   isObservable,
   emptyObservable,
+  timeout
 } from './creator-functions';
 
 export {

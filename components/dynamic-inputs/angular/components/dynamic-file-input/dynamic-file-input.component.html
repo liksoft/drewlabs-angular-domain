@@ -15,9 +15,12 @@
   *ngIf="dropzoneConfigs"
   #dropzoneContainer
   [dropzoneConfig]="dropzoneConfigs"
-  [wrapperClass]="inputConfig?.classes"
+  [class]="inputConfig?.classes"
   (removedFile)="onDropzoneFileRemoved($event)"
   (addedFile)="onDropzoneFileAdded()"
+  [uploadFileText]="'uploadFileLabel' | translate"
+  [dragFileText]="'dragFileLabel' | translate"
+  [defaultMessage]="'messageLabel' | translate"
 ></app-dropzone>
 <clr-control-error
   class="field-has-error"

@@ -1,19 +1,28 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { CommonModule } from '@angular/common';
-import {
-  DropzoneModule as DZModule,
-} from 'ngx-dropzone-wrapper';
-import { NgModule } from '@angular/core';
-import { DropzoneComponent } from './dropzone.component';
-import { DropzoneService } from './dropzone.service';
-import { ClarityModule } from '@clr/angular';
+import { CommonModule } from "@angular/common";
+import { ModuleWithProviders, NgModule } from "@angular/core";
+import { DropzoneComponent } from "./dropzone.component";
+import { DropzoneService } from "./dropzone.service";
+import { ClarityModule } from "@clr/angular";
+import { DropzoneConfig, DROPZONE_CONFIG } from "./types";
 
 @NgModule({
-  imports: [CommonModule, DZModule, ClarityModule, TranslateModule],
+  imports: [CommonModule, ClarityModule],
   declarations: [DropzoneComponent],
   exports: [DropzoneComponent],
-  providers: [
-    DropzoneService
-  ]
+  providers: [DropzoneService],
 })
-export class DropzoneModule { }
+export class DropzoneModule {
+  static forRoot(config: {
+    dropzoneConfig: DropzoneConfig;
+  }): ModuleWithProviders<DropzoneModule> {
+    return {
+      ngModule: DropzoneModule,
+      providers: [
+        {
+          provide: DROPZONE_CONFIG,
+          useValue: config?.dropzoneConfig,
+        },
+      ],
+    };
+  }
+}

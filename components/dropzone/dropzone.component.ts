@@ -10,29 +10,24 @@ import {
   PLATFORM_ID,
   Inject,
   OnDestroy,
-  Optional,
 } from "@angular/core";
-import {
-  DropzoneConfigInterface,
-  DropzoneDirective,
-} from "ngx-dropzone-wrapper";
 import { isPlatformBrowser } from "@angular/common";
 import { DropzoneEvents, DropzoneEvent } from "./dropzone-interfaces";
 import { DropzoneService } from "./dropzone.service";
-import { createSubject, createStateful } from "../../rxjs/helpers/index";
-import { takeUntil } from "rxjs/operators";
+import { createSubject, createStateful, timeout } from "../../rxjs/helpers";
 import { isEmpty } from "lodash";
-import { WINDOW } from "../../utils/ng/common";
+import { DropzoneDirective } from "./dropzone.directive";
+import { DropzoneConfig } from "./types";
 
 @Component({
   selector: "app-dropzone",
   template: `
-    <ng-container *ngIf="localConfigs$ | async as localConfigs">
+    <ng-container *ngIf="defaults$ | async as defaults">
       <div
         [class.disabled]="disabled"
         [class]="wrapperClass"
         [class.dropzone]="useDropzoneClass"
-        [dropzone]="localConfigs"
+        [dropzone]="defaults"
         [disabled]="disabled"
         (init)="DZ_INIT.emit($event)"
         (error)="onUploadError()"
@@ -46,13 +41,13 @@ import { WINDOW } from "../../utils/ng/common";
           <div class="text-center dz-upload-btn">
             <clr-icon shape="upload-cloud"></clr-icon>
           </div>
-          <span>{{ "dragFileLabel" | translate }}</span>
+          <span>{{ dragFileText }}</span>
           <span class="dz-text">
             <a href="javascript:undefined;">{{
-              localConfigs?.dictDefaultMessage || (messageLabel | translate)
+              defaults?.dictDefaultMessage ?? defaultMessage
             }}</a>
           </span>
-          <span> {{ "uploadFileLabel" | translate }}</span>
+          <span> {{ uploadFileText }}</span>
           <div
             *ngIf="placeholder"
             class="dz-image"
@@ -63,127 +58,35 @@ import { WINDOW } from "../../utils/ng/common";
       </div>
     </ng-container>
   `,
-  styles: [
-    `
-      /* Drew Dropzone design */
-      .dropzone.dz-wrapper-inline {
-        position: relative !important;
-        overflow: auto !important;
-        /* min-height: 75px !important; */
-        border-top: 2px dashed #d4d9dc;
-        border-left: 2px dashed #d4d9dc;
-        border-right: 2px dashed #d4d9dc;
-        color: #666 !important;
-        text-align: center !important;
-        background-color: rgba(247, 247, 247, 0.8) !important;
-        margin: 0px !important;
-        padding: 0px;
-      }
-      .dropzone.dz-wrapper {
-        position: relative !important;
-        overflow: auto !important;
-        min-height: 120px !important;
-        border-top: 2px dashed #d4d9dc;
-        border-left: 2px dashed #d4d9dc;
-        border-right: 2px dashed #d4d9dc;
-        color: #666 !important;
-        text-align: center !important;
-        background-color: rgba(247, 247, 247, 0.8) !important;
-        margin: 0px !important;
-        padding: 10px;
-      }
-
-      .progress-bar {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        color: #fff;
-        text-align: center;
-        background-color: #bdc2c8 !important;
-        transition: width 0.6s ease;
-        height: 8px !important;
-      }
-
-      .progress {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        height: 8px;
-        overflow: hidden;
-        font-size: 0.75rem;
-        background-color: #e9ecef;
-        border-radius: 0.25rem;
-      }
-
-      .dropzone.dz-wrapper .dz-message {
-        font-weight: 300;
-        font-size: 0.649rem;
-      }
-
-      .dropzone.dz-wrapper-inline .dz-upload-btn {
-        /* margin-top: 4px; */
-        margin-bottom: -16px;
-      }
-
-      .dropzone.dz-wrapper .dz-upload-btn {
-        margin-top: 16px;
-        margin-bottom: -4px;
-      }
-      .dropzone.dz-wrapper .dz-message .dz-text {
-        position: relative !important;
-        display: inline-block;
-        padding: 10px !important;
-        transform: translateY(0%) !important;
-        cursor: pointer;
-      }
-
-      .dropzone.dz-wrapper-inline .dz-message .dz-text {
-        position: relative !important;
-        display: inline-block;
-        padding: 4px !important;
-        transform: translateY(0%) !important;
-        cursor: pointer;
-      }
-      .disabled {
-        opacity: 0.5;
-      }
-      .dropzone.dz-wrapper-inline .drop-zone-file-container {
-        margin-top: 1px;
-      }
-      /* End Drew Dropzone design */
-    `,
-  ],
+  styleUrls: ["./dropzone.component.scss"],
 })
 export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(DropzoneDirective, { static: false })
   dropzoneDirective!: DropzoneDirective;
 
-  @Input() dropzoneConfig!: DropzoneConfigInterface;
+  @Input() defaultMessage!: string;
+  @Input() dragFileText!: string;
+  @Input() uploadFileText!: string;
+  @Input() dropzoneConfig!: DropzoneConfig;
   @Input() messageLabel = "browse";
   @Input() placeholder!: string;
   @Input() useDropzoneClass = true;
   @Input() disabled = false;
   @Input() previewFileIcon = "fa fa-file-alt";
   @Input() acceptedFilesTypeName!: string;
-  private _wrapperClass!: string;
-  @Input() set wrapperClass(value: string) {
+  private _class!: string;
+  @Input() set class(value: string) {
     value = value ? `${value.replace("clr-input", "")}` : "";
-    this._wrapperClass = !isEmpty(value)
+    this._class = !isEmpty(value)
       ? `${value.replace("clr-input", "")}`
       : "dz-wrapper";
   } //  inline-input
 
-  get wrapperClass() {
-    return this._wrapperClass;
+  get class() {
+    return this._class;
   }
 
+  // #region Output properties
   // tslint:disable-next-line: no-output-rename
   @Output("init") DZ_INIT = new EventEmitter<any>();
 
@@ -253,17 +156,14 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
     new EventEmitter<any>();
 
   // tslint:disable-next-line: variable-name
-  private _localConfigSuject$ = createStateful<
-    DropzoneConfigInterface | undefined
-  >(undefined);
-  localConfigs$ = this._localConfigSuject$.asObservable();
+  private _config = createStateful<DropzoneConfig | undefined>(undefined);
+  defaults$ = this._config.asObservable();
   // tslint:disable-next-line: variable-name
   private _destroy$ = createSubject();
 
   constructor(
     @Inject(PLATFORM_ID) private platform: object,
-    @Inject(WINDOW) @Optional() private winRef: Window,
-    private componentService: DropzoneService
+    private service: DropzoneService
   ) {}
 
   // tslint:disable-next-line: typedef
@@ -278,58 +178,48 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // tslint:disable-next-line: typedef
   ngOnInit() {
-    this.componentService
-      .dzDefaultConfig(
-        this.dropzoneConfig,
-        this.acceptedFilesTypeName || undefined
-      )
-      .then((value) => {
-        this.dropzoneConfig = value;
-        if (!isDefined(this.dropzoneConfig)) {
-          this._localConfigSuject$.next(
-            Object.assign({}, {
-              previewTemplate: this.componentService.dzDefaultPreviewTemplate(
-                this.previewFileIcon
-              ),
-            } as DropzoneConfigInterface)
-          );
-        } else if (
-          isDefined(this.dropzoneConfig) &&
-          !isDefined(this.dropzoneConfig.previewTemplate)
-        ) {
-          this._localConfigSuject$.next(
-            Object.assign(this.dropzoneConfig, {
-              previewTemplate: this.componentService.dzDefaultPreviewTemplate(
-                this.dropzoneConfig.acceptedFiles &&
-                  this.dropzoneConfig.acceptedFiles.indexOf("image/*") !== -1
-                  ? "fa fa-image"
-                  : this.previewFileIcon
-              ),
-            } as DropzoneConfigInterface)
-          );
-        }
-      });
+    this.dropzoneConfig = this.service.dzDefaultConfig(
+      this.dropzoneConfig,
+      this.acceptedFilesTypeName || undefined
+    );
+    if (!isDefined(this.dropzoneConfig)) {
+      this._config.next({
+        ...{},
+        previewTemplate: this.service.dzDefaultPreviewTemplate(
+          this.previewFileIcon
+        ),
+      } as DropzoneConfig);
+    } else if (
+      isDefined(this.dropzoneConfig) &&
+      !isDefined(this.dropzoneConfig.previewTemplate)
+    ) {
+      this._config.next({
+        ...this.dropzoneConfig,
+        previewTemplate: this.service.dzDefaultPreviewTemplate(
+          this.dropzoneConfig.acceptedFiles &&
+            this.dropzoneConfig.acceptedFiles.indexOf("image/*") !== -1
+            ? "fa fa-image"
+            : this.previewFileIcon
+        ),
+      } as DropzoneConfig);
+    }
   }
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platform)) {
       return;
     }
-    this.winRef?.setTimeout(() => {
+    timeout(() => {
       DropzoneEvents.forEach((event: DropzoneEvent) => {
         if (this.dropzoneDirective) {
           const output = `DZ_${event.toUpperCase()}`;
-          const dropzoneDirectiveOutput = output as keyof DropzoneDirective;
-          const componentOutput = output as keyof DropzoneComponent;
-          this.dropzoneDirective[dropzoneDirectiveOutput] = this[
-            componentOutput
-          ] as any;
+          this.dropzoneDirective.setEmitter(
+            output as keyof DropzoneDirective,
+            this[output as keyof DropzoneComponent] as EventEmitter<any>
+          );
         }
       });
     }, 0);
-    this.DZ_MAXFILESREACHED.pipe(takeUntil(this._destroy$)).subscribe((_) => {
-      // TODO : FIRES MAXFILES REACHED EVENT
-    });
   }
 
   /**
@@ -350,6 +240,6 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // tslint:disable-next-line: typedef
   ngOnDestroy() {
-    this._destroy$.next({});
+    this._destroy$.next();
   }
 }
