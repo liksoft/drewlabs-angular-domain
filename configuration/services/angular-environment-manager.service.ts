@@ -1,12 +1,13 @@
-import { Inject, Injectable, Optional } from '@angular/core';
-import { ConfigurationManager } from '../contracts/configuration-manager';
-import { getJSObjectPropertyValue } from './helpers';
-import { ENVIRONMENT } from './tokens';
+import { Inject, Injectable, Optional } from "@angular/core";
+import { getJSObjectPropertyValue } from "../../utils";
+import { ConfigurationManager } from "../contracts/configuration-manager";
+import { ENVIRONMENT } from "./tokens";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AngularEnvironmentService implements ConfigurationManager {
+
   private _configuration: { [index: string]: any } = {};
 
   constructor(
@@ -19,7 +20,7 @@ export class AngularEnvironmentService implements ConfigurationManager {
     this._configuration = configuration || {};
   }
 
-  get(key: string|undefined = undefined, default_: any = undefined) {
+  get(key: string | undefined = undefined, default_: any = undefined) {
     if (key) {
       return (
         getJSObjectPropertyValue(this._configuration || {}, key) ||

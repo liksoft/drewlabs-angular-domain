@@ -1,15 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Optional } from '@angular/core';
-import { tap } from 'rxjs/operators';
-import { ConfigurationManager } from '../contracts/configuration-manager';
-import { getJSObjectPropertyValue } from './helpers';
-import { ANGULAR_ENVIRONMENT_MANAGER, JSON_CONFIG_URL } from './tokens';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Optional } from "@angular/core";
+import { tap } from "rxjs/operators";
+import { getJSObjectPropertyValue } from "../../utils";
+import { ConfigurationManager } from "../contracts/configuration-manager";
+import { ANGULAR_ENVIRONMENT_MANAGER, JSON_CONFIG_URL } from "./tokens";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class JSONConfigurationManager implements ConfigurationManager {
-  _enviroment: { [index: string]: any } =  {};
+  _enviroment: { [index: string]: any } = {};
   _configuration: { [index: string]: any } = {};
 
   constructor(
@@ -23,16 +23,14 @@ export class JSONConfigurationManager implements ConfigurationManager {
   }
 
   load(url?: string) {
-    return this._client
-      .get(url || this._url , {})
-      .pipe(
-        tap((state) => {
-          this._configuration = {
-            ...(this._enviroment || {}),
-            ...(state || {}),
-          };
-        }),
-      );
+    return this._client.get(url || this._url, {}).pipe(
+      tap((state) => {
+        this._configuration = {
+          ...(this._enviroment || {}),
+          ...(state || {}),
+        };
+      })
+    );
   }
 
   get(key: string | undefined = undefined, default_: any = undefined) {

@@ -1,8 +1,7 @@
-import { createStateful, createSubject, observableOf } from "../helpers";
-import { isObservable, Observable, Subject } from "rxjs";
+import { createSubject, observableOf } from "../helpers";
+import { isObservable, Observable } from "rxjs";
 import {
   scan,
-  // shareReplay,
   filter,
   delay,
   first,
@@ -11,8 +10,6 @@ import {
   tap,
   takeUntil,
 } from "rxjs/operators";
-import { doLog } from "../operators/index";
-import { isDefined } from "../../utils/types/type-utils";
 
 export interface StoreAction {
   type: string;
@@ -55,7 +52,6 @@ export abstract class InjectableStore<T, A extends Partial<StoreAction>>
 }
 
 export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
-
   private _destroy$ = createSubject();
 
   private readonly _store$ = createSubject<T>(2);
@@ -87,11 +83,11 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
             ? (action as Observable<AType>)
             : (observableOf<AType>(action) as Observable<AType>)
         ),
-        filter((state) => isDefined(state)),
+        filter((state) => typeof state !== "undefined" && state !== null),
         startWith(initial as any),
         scan(reducer),
         // Update the store vale
-        tap((state) => this._store$.next(state)),
+        tap((state) => this._store$.next(state))
         // doLog("Actual state: ")
       )
       .subscribe();
@@ -123,10 +119,11 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
    *
    * @returns
    */
-  destroy = () => (() => {
-    this._store$.unsubscribe();
-    this._destroy$.next();
-  })();
+  destroy = () =>
+    (() => {
+      this._store$.unsubscribe();
+      this._destroy$.next();
+    })();
 }
 
 // tslint:disable-next-line: typedef
