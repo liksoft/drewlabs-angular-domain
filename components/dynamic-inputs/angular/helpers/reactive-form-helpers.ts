@@ -7,7 +7,6 @@ import {
   ValidatorFn,
   Validators,
 } from "@angular/forms";
-import { isDefined, maxNumberSize } from "../../../../utils/types";
 import { CustomValidators } from "src/app/lib/core/validators/validators";
 import {
   CheckboxItem,
@@ -52,8 +51,8 @@ export class ComponentReactiveFormHelpers {
           config.rules && config.rules.maxLength
             ? validators.push(
                 Validators.maxLength(
-                  isDefined((config as TextInput).maxLength)
-                    ? (config as TextInput).maxLength || maxNumberSize()
+                  (config as TextInput)?.maxLength
+                    ? (config as TextInput).maxLength || Math.pow(2, 31) - 1
                     : 255
                 )
               )
@@ -63,7 +62,7 @@ export class ComponentReactiveFormHelpers {
             config.rules && config.rules.minLength
               ? validators.push(
                   Validators.minLength(
-                    isDefined((config as TextInput).minLength)
+                    (config as TextInput)?.minLength
                       ? (config as TextInput).minLength || 1
                       : 255
                   )
@@ -86,7 +85,7 @@ export class ComponentReactiveFormHelpers {
           config.rules && config.rules.min
             ? validators.push(
                 Validators.min(
-                  isDefined((config as NumberInput).min)
+                  (config as NumberInput)?.min
                     ? (config as NumberInput).min
                     : -1
                 )
@@ -97,9 +96,9 @@ export class ComponentReactiveFormHelpers {
             config.rules && config.rules.max
               ? validators.push(
                   Validators.max(
-                    isDefined((config as NumberInput).max)
-                      ? (config as NumberInput).max || maxNumberSize()
-                      : maxNumberSize()
+                    (config as NumberInput)?.max
+                      ? (config as NumberInput).max || Math.pow(2, 31) - 1
+                      : Math.pow(2, 31) - 1
                   )
                 )
               : // tslint:disable-next-line:no-unused-expression
@@ -110,7 +109,7 @@ export class ComponentReactiveFormHelpers {
           config.rules && config.rules.minDate
             ? validators.push(
                 CustomValidators.minDate(
-                  isDefined((config as DateInput).minDate)
+                  (config as DateInput)?.minDate
                     ? MomentUtils.parseDate(
                         (config as DateInput).minDate as string,
                         undefined,
@@ -125,7 +124,7 @@ export class ComponentReactiveFormHelpers {
             config.rules && config.rules.maxDate
               ? validators.push(
                   CustomValidators.maxDate(
-                    isDefined((config as DateInput).maxDate)
+                    (config as DateInput)?.maxDate
                       ? MomentUtils.parseDate(
                           (config as DateInput).maxDate,
                           undefined,
@@ -254,14 +253,9 @@ export const createAngularAbstractControl = (
   builder: FormBuilder,
   form?: IDynamicForm
 ) => {
-  if (!isDefined(form)) {
-    return undefined;
-  }
-  const c = [...(form?.controlConfigs as Array<IHTMLFormControl>)];
-  const formGroup: FormGroup =
-    ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
-      builder,
-      c
-    ) as FormGroup;
-  return formGroup;
+  return form
+    ? (ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(builder, [
+        ...(form?.controlConfigs as Array<IHTMLFormControl>),
+      ]) as FormGroup)
+    : undefined;
 };

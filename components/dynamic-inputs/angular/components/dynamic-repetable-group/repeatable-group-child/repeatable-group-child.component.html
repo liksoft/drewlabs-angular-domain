@@ -1,24 +1,29 @@
 <clr-accordion>
-  <clr-accordion-panel [clrAccordionPanelOpen]="true" [clrAccordionPanelDisabled]="true">
+  <clr-accordion-panel
+    [clrAccordionPanelOpen]="true"
+    [clrAccordionPanelDisabled]="true"
+  >
     <clr-accordion-title>
       {{ label }}
-      <button class="icon-variant" *ngIf="!showEditButton">
-        <clr-icon (click)="componentDestroyer.emit({})" shape="trash"></clr-icon>
+      <button class="icon-variant">
+        <clr-icon (click)="destroy($event)" shape="trash"></clr-icon>
       </button>
     </clr-accordion-title>
-    <ng-container *ngIf="typeHelper?.isDefined(formGroup) && typeHelper?.isDefined(form)">
+    <ng-container *ngIf="(formGroup || false) && (form || false)">
       <clr-accordion-content>
         <div class="maring-bottom">
           <div class="clr-row">
             <div class="clr-col-12" [formGroup]="formGroup">
-              <app-dynamic-form-wapper [singleColumnControl]="singleColumnView" [componentFormGroup]="formGroup"
-                [form]="form"></app-dynamic-form-wapper>
+              <app-dynamic-form-wapper
+                [singleColumnControl]="singleColumnView"
+                [componentFormGroup]="formGroup"
+                [form]="form"
+              ></app-dynamic-form-wapper>
             </div>
           </div>
-          <div class="button-container" *ngIf="showEditButton">
-            <button *ngIf="showEditButton" (click)="edit.emit(formGroup)" type="button"
-              class="btn btn-sm btn-outline-warning" [disabled]="performingAction">Modifier</button>
-          </div>
+          <!-- Form actions part -->
+          <ng-content></ng-content>
+          <!--\ Form actions part -->
         </div>
       </clr-accordion-content>
     </ng-container>

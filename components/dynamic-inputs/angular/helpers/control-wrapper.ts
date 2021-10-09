@@ -1,4 +1,3 @@
-import { isDefined } from "../../../../utils/types/type-utils";
 import { IHTMLFormControl } from "../../core/contracts/dynamic-input";
 import { IDynamicForm } from "../../core/contracts/dynamic-form";
 import { includes, toNumber, isNumber } from "lodash";
@@ -14,8 +13,8 @@ export const applyHiddenAttributeCallback =
   (form: IDynamicForm, bidings: BindingInterface, value: string | number) =>
   (formgroup: AbstractControl) => {
     if (
-      isDefined(form.controlConfigs) &&
-      (form.controlConfigs as Array<IHTMLFormControl>).length > 0
+      Array.isArray(form.controlConfigs) &&
+      form.controlConfigs.length !== 0
     ) {
       form.controlConfigs = (
         form.controlConfigs as Array<IHTMLFormControl>
@@ -58,12 +57,12 @@ export const getControlBinding =
   (form: IDynamicForm) => (formgroup: AbstractControl) => {
     const bindings = {} as ControlBindings;
     if (
-      isDefined(form.controlConfigs) &&
-      isDefined(formgroup) &&
-      (form.controlConfigs as Array<IHTMLFormControl>).length > 0
+      Array.isArray(form.controlConfigs) &&
+      form.controlConfigs.length !== 0 &&
+      formgroup
     ) {
       (form.controlConfigs as IHTMLFormControl[]).forEach((c) => {
-        if (isDefined(c.requiredIf)) {
+        if (c.requiredIf) {
           bindings[c.formControlName] = {
             key: c.formControlName,
             binding: c.requiredIf,
@@ -76,7 +75,10 @@ export const getControlBinding =
       });
       for (const [_, value] of Object.entries(bindings)) {
         const binding = value.binding || undefined;
-        if (binding && isDefined(formgroup.get(binding?.formControlName))) {
+        if (
+          binding &&
+          false !== (formgroup.get(binding?.formControlName) || false)
+        ) {
           const { control, dynamicForm } = applyAttribute(
             form,
             value,

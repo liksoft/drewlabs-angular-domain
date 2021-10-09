@@ -5,3 +5,5 @@ export {
   responseStatusOK,
   isServerBadRequest,
 } from "./response";
+
+export { httpHost } from "./client";

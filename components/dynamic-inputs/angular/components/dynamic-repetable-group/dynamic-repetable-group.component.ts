@@ -20,6 +20,7 @@ import { DynamicComponentService } from "../../../../services/dynamic-component-
 import { createSubject } from "../../../../../rxjs/helpers/creator-functions";
 import { takeUntil } from "rxjs/operators";
 import { sortformbyindex, copyform } from "../../../core/helpers";
+import { ChildComponent } from "./types";
 
 @Component({
   selector: "app-dynamic-repetable-group",
@@ -33,111 +34,72 @@ import { sortformbyindex, copyform } from "../../../core/helpers";
   ],
 })
 export class DynamicRepetableGroupComponent implements OnDestroy {
-  // Injectable inputs
+  // Component detruction listener
+  private _destroy$ = createSubject();
+  // #region Component inputs
   @Input() control!: FormArray;
-  @Input() formBindings: { [prop: string]: IDynamicForm } = {};
-  /**
-   * @deprecated
-   */
-  @Input() form!: IDynamicForm;
   @Input() addButtonText = "Plus";
-  @Input() hideAddNewFormgroupButton = false;
+  @Input() buttonDisabled = false;
   @Input() prefixLabel!: string;
-  @Input() offsetAddNewGroupButton = true;
-
-  @Output() childCreate = new EventEmitter<AbstractControl>();
-  @Output() childEdit = new EventEmitter<AbstractControl>();
-  @Output() updateParentValueAndValidity = new EventEmitter<object>();
-  @Output() removedControlGroup = new EventEmitter<object>();
   // tslint:disable-next-line: no-inferrable-types
   @Input() singleColumnView: boolean = false;
+  // #endregion Component inputs
 
-  // Output event
+  // #region Component outputs
   @Output() addNewControlGroup: EventEmitter<object> = new EventEmitter();
+  @Output() removedControlGroup = new EventEmitter<object>();
+  // #endregion Component outputs
 
-  private controlsContainerRefs: Array<
-    ComponentRef<RepeatableGroupChildComponent>
-  > = [];
+  private controlsContainerRefs: ComponentRef<ChildComponent>[] = [];
   @ViewChild("controlsContainer", { read: ViewContainerRef, static: true })
   controlsContainer!: ViewContainerRef;
-  private totalAddedComponent = 0;
-  public initComponent = new EventEmitter<object>();
-  public addNewGroupButtonContainerClass = this.offsetAddNewGroupButton
-    ? "clr-col-3 clr-offset-2 clr-offset-margin-right"
-    : "";
+  private total = 0;
 
-  private _destroy$ = createSubject();
-
-  constructor(
-    private dynamicComponentLoader: DynamicComponentService<RepeatableGroupChildComponent>
-  ) {}
-
-  // tslint:disable-next-line: typedef
-  collapseChildControlComponents() {
-    this.controlsContainerRefs.forEach((ref) => {
-      ref.instance.isAccordionOpened = false;
-    });
-  }
+  constructor(private service: DynamicComponentService<ChildComponent>) {}
 
   // tslint:disable-next-line: typedef
   addChildComponent(
-    controlIndex: number,
-    formGroupState: AbstractControl,
-    showEditButton = false,
+    index: number,
+    state: AbstractControl,
     form?: IDynamicForm
   ) {
-    this.totalAddedComponent += 1;
-    const controlComponentRef: ComponentRef<RepeatableGroupChildComponent> =
-      this.dynamicComponentLoader.createComponent(
-        this.controlsContainer,
-        RepeatableGroupChildComponent
-      );
-    (formGroupState as FormGroup).addControl(
+    const total = (this.total += 1);
+    const controlComponentRef = this.service.createComponent(
+      this.controlsContainer,
+      RepeatableGroupChildComponent
+    );
+    (state as FormGroup).addControl(
       "formarray_control_index",
-      new FormControl(controlIndex)
+      new FormControl(index)
     );
     // Initialize child component input properties
     if (form) {
-      controlComponentRef.instance.form = sortformbyindex(
-        copyform(form)
-      );
+      controlComponentRef.instance.form = sortformbyindex(copyform(form));
     }
-    controlComponentRef.instance.formGroup = formGroupState as FormGroup;
-    controlComponentRef.instance.index = {
-      index: this.totalAddedComponent,
-    }.index;
-    controlComponentRef.instance.label = `${this.prefixLabel} ${
-      { index: this.totalAddedComponent }.index
-    }`;
-    controlComponentRef.instance.formGroup.addControl(
+    controlComponentRef.instance.formGroup = state as FormGroup;
+    controlComponentRef.instance.index = total;
+    controlComponentRef.instance.label = `${this.prefixLabel} ${total}`;
+    (controlComponentRef.instance.formGroup as FormGroup).addControl(
       "index",
       new FormControl(controlComponentRef.instance.index)
     );
-    controlComponentRef.instance.showEditButton = showEditButton;
     controlComponentRef.instance.singleColumnView = this.singleColumnView;
-
     // Ends child component properties initialization
-    controlComponentRef.instance.create
-      .pipe(takeUntil(this._destroy$))
-      .subscribe((state) => this.childCreate.emit(state));
-    controlComponentRef.instance.edit
-      .pipe(takeUntil(this._destroy$))
-      .subscribe((state) => this.childEdit.emit(state));
 
     controlComponentRef.instance.componentDestroyer
       .pipe(takeUntil(this._destroy$))
       .subscribe(() => {
-        if (this.totalAddedComponent > 1) {
+        if (this.total > 1) {
           controlComponentRef.destroy();
-          this.totalAddedComponent -= 1;
+          this.total -= 1;
           // Remove the elment from the list of reference components
           this.controlsContainerRefs = this.controlsContainerRefs.filter(
-            (v: ComponentRef<RepeatableGroupChildComponent>) => {
+            (v: ComponentRef<ChildComponent>) => {
               return v.instance === controlComponentRef.instance ? false : true;
             }
           );
           this.control.removeAt(
-            controlComponentRef.instance.formGroup.getRawValue()
+            (controlComponentRef.instance.formGroup as FormGroup).getRawValue()
               .formarray_control_index
           );
           this.removedControlGroup.emit({});

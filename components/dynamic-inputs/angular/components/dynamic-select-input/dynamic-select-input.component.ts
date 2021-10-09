@@ -10,16 +10,14 @@ import { AbstractControl } from "@angular/forms";
 import {
   createStateful,
   createSubject,
-} from "../../../../../rxjs/helpers/index";
-import { isDefined } from "../../../../../utils/types";
+} from "../../../../../rxjs/helpers";
 import { DrewlabsRessourceServerClient } from "../../../../../http/core";
 import { map, switchMap, takeUntil, tap } from "rxjs/operators";
-import { getResponseDataFromHttpResponse } from "../../../../../http/helpers";
+import { getResponseDataFromHttpResponse, httpHost } from "../../../../../http/helpers";
 import { isArray, isEmpty } from "lodash";
 import { controlBindingsSetter } from "../../../core/helpers";
 import { doLog } from "../../../../../rxjs/operators";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
-import { httpServerHost } from "../../../../../utils/url/url";
 import { SelectInput } from "../../../core/types/select";
 import { InputEventArgs } from "../../types/dynamic-inputs";
 @Component({
@@ -117,7 +115,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
         }),
         switchMap(() =>
           this.client
-            .get(`${httpServerHost(host)}/${path}`, {
+            .get(`${httpHost(host)}/${path}`, {
               params: {
                 table_config: this._inputConfig.serverBindings,
               },
@@ -146,8 +144,8 @@ export class DynamicSelectInputComponent implements OnDestroy {
   onFocus(): void {
     const { state } = this._inputItems$.getValue();
     if (
-      !isDefined(state) ||
-      (isEmpty(state) && isDefined(this._inputConfig.serverBindings))
+      !(typeof state !== "undefined" && state !== null) ||
+      (isEmpty(state) && this._inputConfig.serverBindings)
     ) {
       // Load the data from the remote server
       this._controlFocusEvent$.next({ state });

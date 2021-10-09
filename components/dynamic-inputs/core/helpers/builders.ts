@@ -1,4 +1,4 @@
-import { getObjectProperty, isDefined } from "../../../../utils/types";
+import { getObjectProperty } from "../../../../utils";
 import { DynamicFormControlInterface } from "../compact/types";
 import {
   CheckboxItem,
@@ -8,31 +8,31 @@ import {
 import { parseControlItemsConfigs } from "./parsers";
 
 export const buildRequiredIfConfig = (stringifiedConfig: string) => {
-  if (!isDefined(stringifiedConfig) || stringifiedConfig.indexOf(":") === -1) {
-    return null;
+  if (stringifiedConfig?.indexOf(":") !== -1) {
+    // split the string into the two parts
+    const parts = stringifiedConfig.split(":");
+    let values: any[] = [];
+    // Split by '|' Character
+    const result =
+      parts[1].indexOf("|") !== -1 ? parts[1].split("|") : [parts[1]];
+    // Split by ',' character
+    // @deprecated
+    result.forEach((part) => {
+      const split = part.indexOf(",") !== -1 ? part.split(",") : part;
+      values = [...values, ...split];
+    });
+    return {
+      formControlName: parts[0].trim(),
+      values,
+    };
   }
-  // split the string into the two parts
-  const parts = stringifiedConfig.split(":");
-  let values: any[] = [];
-  // Split by '|' Character
-  const result =
-    parts[1].indexOf("|") !== -1 ? parts[1].split("|") : [parts[1]];
-  // Split by ',' character
-  // @deprecated
-  result.forEach((part) => {
-    const split = part.indexOf(",") !== -1 ? part.split(",") : part;
-    values = [...values, ...split];
-  });
-  return {
-    formControlName: parts[0].trim(),
-    values,
-  };
+  return undefined;
 };
 
 export const buildCheckboxItems = (
   model: Partial<DynamicFormControlInterface>
 ) => {
-  if (isDefined(model.selectableValues)) {
+  if (model.selectableValues) {
     const items = model.selectableValues?.split("|") || [];
     return items?.map((v, i) => {
       if (v.indexOf(":") !== -1) {
@@ -50,7 +50,7 @@ export const buildCheckboxItems = (
         };
       }
     });
-  } else if (isDefined(model.selectableModel)) {
+  } else if (model.selectableModel) {
     let { keyfield, valuefield, groupfield } = parseControlItemsConfigs(model);
     keyfield = model.keyfield || keyfield;
     valuefield = model.valuefield || valuefield;
@@ -75,7 +75,7 @@ export const buildCheckboxItems = (
 export const buildSelectItems = (
   model: Partial<DynamicFormControlInterface>
 ) => {
-  if (isDefined(model.selectableValues)) {
+  if (model.selectableValues) {
     const items = model.selectableValues?.split("|") || [];
     return items.map((v, i) => {
       if (v.indexOf(":") !== -1) {
@@ -93,7 +93,7 @@ export const buildSelectItems = (
         } as ISelectItem;
       }
     });
-  } else if (isDefined(model.selectableModel)) {
+  } else if (model.selectableModel) {
     let { keyfield, valuefield, groupfield } = parseControlItemsConfigs(model);
     keyfield = model.keyfield || keyfield;
     valuefield = model.valuefield || valuefield;
@@ -119,7 +119,7 @@ export const buildSelectItems = (
 export const buildRadioInputItems = (
   model: Partial<DynamicFormControlInterface>
 ) => {
-  if (isDefined(model.selectableValues)) {
+  if (model.selectableValues) {
     const items = model.selectableValues?.split("|") || [];
     return items.map((v, i) => {
       if (v.indexOf(":") !== -1) {
@@ -137,7 +137,7 @@ export const buildRadioInputItems = (
         };
       }
     });
-  } else if (isDefined(model.selectableModel)) {
+  } else if (model.selectableModel) {
     let { keyfield, valuefield, groupfield } = parseControlItemsConfigs(model);
     keyfield = model.keyfield || keyfield;
     valuefield = model.valuefield || valuefield;

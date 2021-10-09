@@ -62,4 +62,4 @@ export const emptyObservable = () => observableFrom(EMPTY);
  * @param milliseconds
  * @returns
  */
-export const timeout = (callback: () => void, milliseconds: number = 1000) => interval(milliseconds).pipe(first()).subscribe();
+export const timeout = (callback: () => void, milliseconds: number = 1000) => interval(milliseconds).pipe(first()).subscribe(() => callback());

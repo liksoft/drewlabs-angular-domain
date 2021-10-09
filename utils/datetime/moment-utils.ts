@@ -1,5 +1,4 @@
-import * as moment from 'moment';
-import { isDefined } from '../types/type-utils';
+import * as moment from "moment";
 
 export class MomentUtils {
   /**
@@ -13,9 +12,7 @@ export class MomentUtils {
     value?: moment.DurationInputArg1,
     key?: moment.unitOfTime.DurationConstructor
   ): Date {
-    return moment(currentDate)
-      .add(value, key)
-      .toDate();
+    return moment(currentDate).add(value, key).toDate();
   }
 
   /**
@@ -29,9 +26,7 @@ export class MomentUtils {
     value: moment.DurationInputArg1,
     key?: moment.unitOfTime.DurationConstructor
   ): Date {
-    return moment(currentDate)
-      .subtract(value, key)
-      .toDate();
+    return moment(currentDate).subtract(value, key).toDate();
   }
   /**
    * Check if the first date is after the other date
@@ -41,7 +36,9 @@ export class MomentUtils {
   public static isAfter(date1: Date | string, date2: Date | string): boolean {
     const firstDate = MomentUtils.parseDate(date1);
     const secondDate = MomentUtils.parseDate(date2);
-    return moment(firstDate, this.longDateFormat()).isAfter(moment(secondDate, this.longDateFormat()));
+    return moment(firstDate, this.longDateFormat()).isAfter(
+      moment(secondDate, this.longDateFormat())
+    );
   }
 
   /**
@@ -52,7 +49,11 @@ export class MomentUtils {
   public static isBefore(date1: Date | string, date2: Date | string): boolean {
     const firstDate = MomentUtils.parseDate(date1);
     const secondDate = MomentUtils.parseDate(date2);
-    return moment(firstDate, this.longDateFormat()).isBefore(moment(secondDate, this.longDateFormat())) ? true : false;
+    return moment(firstDate, this.longDateFormat()).isBefore(
+      moment(secondDate, this.longDateFormat())
+    )
+      ? true
+      : false;
   }
 
   /**
@@ -74,8 +75,12 @@ export class MomentUtils {
     outputformat?: string,
     inputformat?: string
   ): string {
-    outputformat = isDefined(outputformat) ? outputformat : moment.localeData().longDateFormat('L');
-    inputformat = isDefined(inputformat) ? inputformat : moment.localeData('en-gb').longDateFormat('L');
+    outputformat = outputformat
+      ? outputformat
+      : moment.localeData().longDateFormat("L");
+    inputformat = inputformat
+      ? inputformat
+      : moment.localeData("en-gb").longDateFormat("L");
     const value = moment(date, inputformat).format(outputformat);
     return value;
   }
@@ -87,7 +92,7 @@ export class MomentUtils {
       }
       return date;
     } catch (error) {
-      throw Error('Invalid date input');
+      throw Error("Invalid date input");
     }
   }
 
@@ -113,7 +118,11 @@ export class MomentUtils {
    * @param interval [[moment.unitOfTime.DurationConstructor]]
    * @param precise [[boolean]]
    */
-  public static diff(date: moment.MomentInput, interval: moment.unitOfTime.DurationConstructor, precise?: boolean): number {
+  public static diff(
+    date: moment.MomentInput,
+    interval: moment.unitOfTime.DurationConstructor,
+    precise?: boolean
+  ): number {
     return moment().diff(date, interval, precise);
   }
 
@@ -140,7 +149,7 @@ export class MomentUtils {
    * @param locale [[string]]
    */
   public static longDateFormat(locale?: string): string {
-    return MomentUtils.defaultLocale(locale).longDateFormat('L');
+    return MomentUtils.defaultLocale(locale).longDateFormat("L");
   }
 
   /**

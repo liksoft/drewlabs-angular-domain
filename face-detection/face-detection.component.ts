@@ -127,8 +127,6 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
           "custom",
           (_, dst) => {
             this.videoStreamEvent.next(_);
-            console.log('Content: ', dst);
-            console.log('Unknown: ', _);
             const image = dst;
             const canvas = this.canvasHTMLElement;
             if (image && canvas) {

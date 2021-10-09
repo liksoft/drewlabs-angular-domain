@@ -1,5 +1,15 @@
 import { Observable } from "rxjs";
 
+/**
+ * Type definitions during development
+ */
+interface MediaRecorderOptions {
+  audioBitsPerSecond?: number;
+  bitsPerSecond?: number;
+  mimeType?: string;
+  videoBitsPerSecond?: number;
+}
+
 export type MediaRecorderConfig = MediaRecorderOptions;
 
 export interface MediaRecorder {
@@ -21,5 +31,16 @@ export interface MediaRecorder {
   /**
    * @description Get the current recorded track
    */
-  currentTrack(): void;
+  toBlob(): BlobPart|Blob;
+
+  /**
+   * @description Pauses the recording task
+   */
+  pause(): void;
+
+  /**
+   * @description Resumes the recording task
+   */
+  resume(): void;
+
 }

@@ -9,14 +9,14 @@ import {
   OnDestroy,
 } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
-import { DropzoneConfigInterface } from "ngx-dropzone-wrapper";
 import { isDefined, readFileAsDataURI } from "../../../../../utils";
-import { DynamicInputTypeHelper } from "../../services/input-type.service";
-import { FileFormControl } from "../dynamic-form-control.component";
+import { DynamicInputTypeHelper } from "../../services";
 import { map } from "rxjs/operators";
 import { DropzoneComponent } from "../../../../dropzone/dropzone.component";
 import { createSubject } from "../../../../../rxjs/helpers";
 import { FileInput } from "../../../core/types";
+import { DropzoneConfig } from "../../../../dropzone";
+import { FileFormControl } from "../../types";
 
 @Component({
   selector: "app-dynamic-file-input",
@@ -42,8 +42,8 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
   @Input() showLabelAndDescription = true;
 
   // Property for handling File Input types
-  public dropzoneConfigs!: DropzoneConfigInterface;
-  public dropzoneConfig!: DropzoneConfigInterface;
+  public dropzoneConfigs!: DropzoneConfig;
+  // public dropzoneConfig!: DropzoneConfig;
   @ViewChild("dropzoneContainer")
   dropzoneContainer!: DropzoneComponent;
   // Configuration parameters of the input

@@ -1,5 +1,4 @@
-import { Order } from "../../../../utils/types";
-import { ArrayUtils, isArray, isDefined } from "../../../../utils/types";
+import { ArrayUtils } from "../../../../utils/types";
 import {
   DynamicFormControlInterface,
   DynamicFormInterface,
@@ -9,7 +8,6 @@ import { IHTMLFormControl } from "../contracts/dynamic-input";
 import { DynamicForm } from "../types/dynamic-form";
 import { cloneDeep } from "lodash";
 import { buildControl } from "../types/builder";
-import { Log } from "src/app/lib/core/utils/logger";
 
 export class DynamicFormHelpers {
   /**
@@ -33,14 +31,14 @@ export class DynamicFormHelpers {
       f: DynamicFormInterface
     ) => {
       let configs: IHTMLFormControl[] | undefined = [];
-      if (isArray(f?.formControls) && f?.formControls?.length > 0) {
+      if (Array.isArray(f?.formControls) && f?.formControls?.length !== 0) {
         configs = f.formControls
           ?.map((control) => {
             const config = buildControl(control);
             // tslint:disable-next-line: max-line-length
             return { ...config } as IHTMLFormControl;
           })
-          .filter((value) => isDefined(value));
+          .filter((value) => value ?? false);
       }
       let forms: any[] | undefined =
         f?.children && f?.children?.length > 0
@@ -92,18 +90,15 @@ export const copyform = (form: IDynamicForm) => createform(cloneDeep(form));
  * @param form
  */
 export const sortformbyindex = (form: IDynamicForm) => {
-  const loopThroughFormsFn = (
-    form_: IDynamicForm,
-    sortingOrder: Order = Order.ASC
-  ) => {
+  const loopThroughFormsFn = (form_: IDynamicForm, order = 1) => {
     const hasControls =
-      isArray(form_.controlConfigs) &&
-      (form_.controlConfigs as Array<IHTMLFormControl>).length > 0;
+      Array.isArray(form_.controlConfigs) &&
+      (form_.controlConfigs as Array<IHTMLFormControl>).length !== 0;
     if (hasControls) {
       form_.controlConfigs = ArrayUtils.sort(
         form_.controlConfigs as Array<IHTMLFormControl>,
         "formControlIndex",
-        sortingOrder
+        order
       ) as IHTMLFormControl[];
     }
     return form_;
@@ -113,13 +108,11 @@ export const sortformbyindex = (form: IDynamicForm) => {
 
 /**
  * @description Sort form loaded from backend server by control index
- * @param f
  */
 export const sortRawFormControls = (value: DynamicFormInterface) => {
-  Log('Value before sorting:', value);
   if (
-    isArray(value.formControls) &&
-    (value.formControls as DynamicFormControlInterface[]).length > 0
+    Array.isArray(value.formControls) &&
+    (value.formControls as DynamicFormControlInterface[]).length !== 0
   ) {
     value.formControls = ArrayUtils.sort(
       value.formControls as DynamicFormControlInterface[],
@@ -127,7 +120,6 @@ export const sortRawFormControls = (value: DynamicFormInterface) => {
       1
     ) as DynamicFormControlInterface[];
   }
-  Log('After before sorting:', value);
   return value;
 };
 

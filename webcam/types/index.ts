@@ -1,4 +1,3 @@
 export { OnVideoStreamHandlerFn, Webcam } from "./camera";
-export { WEBCAM, MEDIA_RECORDER } from "./tokens";
+export { WEBCAM } from "./tokens";
 export { VideoConstraints } from "./constraints";
-export { MediaRecorderConfig, MediaRecorder } from "./media-recorder";

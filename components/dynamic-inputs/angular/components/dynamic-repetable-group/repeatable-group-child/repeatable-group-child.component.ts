@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, Input } from "@angular/core";
-import { FormGroup, AbstractControl } from "@angular/forms";
-import { IDynamicForm } from "../../../../core/contracts/dynamic-form";
-import { TypeUtilHelper } from "../../../../../../helpers/type-utils-helper";
+import { FormGroup } from "@angular/forms";
+import { IDynamicForm } from "../../../../core/contracts";
+import { ChildComponent } from "../types";
 
 @Component({
   selector: "app-repetable-group-child",
@@ -19,20 +19,23 @@ import { TypeUtilHelper } from "../../../../../../helpers/type-utils-helper";
     `,
   ],
 })
-export class RepeatableGroupChildComponent {
+export class RepeatableGroupChildComponent implements ChildComponent {
+  // #region Component outputs
   @Output() componentDestroyer = new EventEmitter();
-  @Output() create = new EventEmitter<AbstractControl>();
-  @Output() edit = new EventEmitter<AbstractControl>();
+  // #endregion Component outputs
+
+  // #region Component inputs
   @Input() formGroup!: FormGroup;
   @Input() form!: IDynamicForm;
-  @Input() isAccordionOpened = false;
   @Input() index!: number;
-  @Output() isAccordionOpenedChange: EventEmitter<boolean> = new EventEmitter();
-  @Input() showEditButton = false;
   @Input() label!: string;
   // tslint:disable-next-line: no-inferrable-types
   @Input() singleColumnView: boolean = false;
   @Input() performingAction = false;
+  // #endregion Component inputs
 
-  constructor(public readonly typeHelper: TypeUtilHelper) {}
+  public destroy(e: Event) {
+    this.componentDestroyer.emit();
+    e?.preventDefault();
+  }
 }
