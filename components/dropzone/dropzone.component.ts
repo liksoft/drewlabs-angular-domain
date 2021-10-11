@@ -24,6 +24,7 @@ import { DropzoneConfig } from "./types";
   template: `
     <ng-container *ngIf="defaults$ | async as defaults">
       <div
+        class="dropzone-wrapper"
         [class.disabled]="disabled"
         [class]="wrapperClass"
         [class.dropzone]="useDropzoneClass"
@@ -58,7 +59,10 @@ import { DropzoneConfig } from "./types";
       </div>
     </ng-container>
   `,
-  styleUrls: ["./dropzone.component.scss"],
+  styleUrls: [
+    "./dropzone.component.scss",
+    // "~dropzone/dist/min/dropzone.min.css"
+  ],
 })
 export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(DropzoneDirective, { static: false })

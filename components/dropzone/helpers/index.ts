@@ -1,2 +1,2 @@
 export { createDzConfig } from './dz-config';
-export { createDropzone } from './dz-core';
+export { createDropzone, autoDiscover} from './dz-core';

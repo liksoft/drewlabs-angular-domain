@@ -25,7 +25,7 @@ import {
   DropzoneEvents,
   DropzoneConfig,
 } from "./types";
-import { createDropzone, createDzConfig } from "./helpers";
+import { autoDiscover, createDropzone, createDzConfig } from "./helpers";
 import { timeout } from "../../rxjs/helpers";
 
 @Directive({
@@ -83,7 +83,9 @@ export class DropzoneDirective
     private differs: KeyValueDiffers,
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DROPZONE_CONFIG) @Optional() private defaults: DropzoneConfig
-  ) {}
+  ) {
+    autoDiscover(false);
+  }
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) {

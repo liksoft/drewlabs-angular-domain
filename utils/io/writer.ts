@@ -8,7 +8,7 @@ import { saveAs } from 'file-saver';
  */
 export const writeStream = async (
   content: Blob | string | ArrayBuffer,
-  fileName: string
+  name: string
 ) => {
   const blob =
     content instanceof Blob
@@ -16,7 +16,7 @@ export const writeStream = async (
       : typeof content === "string"
       ? (await Base64.fromString(content, "application/octet-stream")).toBlob()
       : new Blob([new Uint8Array(content)]);
-  saveAs(blob, fileName);
+  saveAs(blob, name);
 };
 
 /**

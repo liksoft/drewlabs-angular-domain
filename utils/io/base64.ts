@@ -1,8 +1,9 @@
+import { after } from "../types";
 import { readAsDataURL } from "./reader";
 
-export class Base64 {
-  // Base64 object inializer
-  private constructor(
+export class DataURIEncoded {
+  // DataURIEncoded object inializer
+  protected constructor(
     private content: string,
     private contentType: string = "",
     private sliceSize: number = 512
@@ -27,15 +28,21 @@ export class Base64 {
       for (let i = 0; i < slice.length; i++) {
         byteNumbers[i] = slice.charCodeAt(i);
       }
-       byteArrays.push(new Uint8Array(byteNumbers));
+      byteArrays.push(new Uint8Array(byteNumbers));
     }
     return new Blob(byteArrays, { type: contentType });
   }
 
-  static async fromBlob(content: Blob) {
+  static async fromBlob(
+    content: Blob,
+    contentType: string | undefined = undefined
+  ) {
     try {
       const _content = (await readAsDataURL(content)) as string;
-      return new Base64(_content, content.type);
+      return DataURIEncoded.fromString(
+        after("base64,", _content),
+        contentType ?? content?.type
+      );
     } catch (error) {
       throw new Error(error as string);
     }
@@ -46,9 +53,20 @@ export class Base64 {
     contentType: string = "",
     sliceSize: number = 512
   ) {
-    return new Base64(content, contentType, sliceSize);
+    return new DataURIEncoded(content, contentType, sliceSize);
   }
 
-  // Convert the base64 object to string
-  toString = () => this.content;
+  // Convert the data uri encoded object to string
+  toString = () =>
+    this.content?.startsWith("data:")
+      ? this.content
+      : `data:${
+          this.contentType && this.contentType !== ""
+            ? this.contentType.endsWith(";")
+              ? this.contentType.substring(0, this.contentType?.length - 1)
+              : this.contentType
+            : "application/octet-stream"
+        };base64,${this.content}`;
 }
+
+export class Base64 extends DataURIEncoded {}

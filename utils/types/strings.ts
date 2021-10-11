@@ -14,7 +14,6 @@ export const afterLast = (char: string, haystack: string) => (_.last(haystack.sp
  */
 export const after = (char: string, haystack: string) => (haystack.split(char)[1] || '');
 
-
 /**
  * Returns the strings before the first occurence the specified character
  * @param char [[string]]

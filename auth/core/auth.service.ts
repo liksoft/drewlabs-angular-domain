@@ -36,7 +36,6 @@ import { authReducer } from "./reducers";
 import { isEmpty } from "lodash";
 import { Log } from "../../utils/logger";
 import { MapToHandlerResponse } from "../../rxjs/types";
-import { httpServerHost } from "../../utils/url/url";
 import { DrewlabsV2LoginResultHandlerFunc } from "../rxjs/operators/v2/login-response";
 import { onAuthenticationResultEffect } from "../rxjs/operators/login-response";
 import {
@@ -45,6 +44,7 @@ import {
   HTTPErrorState,
   HTTP_CLIENT,
 } from "../../http/contracts";
+import { httpHost } from "../../http/helpers";
 
 const initalState: AuthState = {
   isLoggedIn: false,
@@ -144,10 +144,10 @@ export class AuthService implements OnDestroy {
   public authenticate = (body: ILoginRequest) => {
     authenticatingAction(this._authStore$)();
     return this.httpClient
-      .post(
-        `${httpServerHost(this.host)}/${this.loginPath}`,
-        Object.assign(body, { remember_me: body.remember || false })
-      )
+      .post(`${httpHost(this.host)}/${this.loginPath}`, {
+        ...body,
+        remember_me: body.remember || false,
+      })
       .pipe(
         mapToHttpResponse<ILoginResponse>(
           this.loginResponseHandlerFunc || DrewlabsV2LoginResultHandlerFunc
@@ -195,7 +195,7 @@ export class AuthService implements OnDestroy {
   }) => {
     authenticatingAction(this._authStore$)();
     return this.httpClient
-      .post(`${httpServerHost(this.host)}/${this.loginPath}/${body.id}`, {
+      .post(`${httpHost(this.host)}/${this.loginPath}/${body.id}`, {
         remember_token: body.token,
       })
       .pipe(
@@ -241,7 +241,7 @@ export class AuthService implements OnDestroy {
    */
   public logout = () => {
     return this.httpClient
-      .get(`${httpServerHost(this.host)}/${this.logoutPath}`)
+      .get(`${httpHost(this.host)}/${this.logoutPath}`)
       .pipe(
         tap(() => {
           this._logoutSubject$.next(true);
