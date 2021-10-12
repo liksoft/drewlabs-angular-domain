@@ -60,6 +60,7 @@ import { DropzoneConfig } from "./types";
     </ng-container>
   `,
   styleUrls: [
+    "./dropzone-wrapper.component.scss",
     "./dropzone.component.scss",
     // "~dropzone/dist/min/dropzone.min.css"
   ],
