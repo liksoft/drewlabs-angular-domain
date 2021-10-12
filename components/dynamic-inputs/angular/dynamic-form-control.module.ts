@@ -79,7 +79,7 @@ export const initializeDynamicFormContainer = (
     TranslateModule,
     ClarityModule,
     DropzoneModule,
-    HttpModule
+    HttpModule,
   ],
   declarations: [...DECLARATIONS, SafeHTMLPipe],
   exports: [...DECLARATIONS],
