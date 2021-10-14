@@ -11,8 +11,9 @@ import {
   ViewChild,
 } from "@angular/core";
 import { forkJoin } from "rxjs";
-import { takeUntil, tap } from "rxjs/operators";
+import { filter, takeUntil, tap } from "rxjs/operators";
 import {
+  createStateful,
   createSubject,
   timeout as setTimeoutFn,
 } from "src/app/lib/core/rxjs/helpers";
@@ -27,8 +28,9 @@ import { Canvas } from "../utils/browser";
 import { WEBCAM, Webcam } from "../webcam";
 import { Video } from "../webcam/helpers";
 import { getReadInterval } from "./helpers";
+import { FaceDetectionComponentState } from "./types/face-detection.component.state";
 
-declare var cv: any;
+// declare var cv: any;
 
 @Component({
   selector: "app-face-detection",
@@ -79,8 +81,20 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
   }>();
   @Output() noFaceDetectedEvent = new EventEmitter<boolean>();
   @Output() videoStreamEvent = new EventEmitter<MediaStream>();
-
   showCameraError: boolean = false;
+  @Output() stateChange = new EventEmitter<
+    Partial<FaceDetectionComponentState>
+  >();
+
+  _state$ = createStateful<FaceDetectionComponentState>({
+    loadingCamera: false,
+    loadingModel: false,
+    totalFaceDetected: undefined,
+    base64Data: undefined,
+    hasCanvas: false,
+    hasError: false,
+    detecting: false,
+  });
 
   constructor(
     @Inject(WEBCAM) private camera: Webcam,
@@ -88,7 +102,20 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private document: Document,
     @Inject(FACE_MESH) private faceMeshDetector: FaceMeshDetector,
     private drawer: FaceMeshPointsDrawerService
-  ) {}
+  ) {
+    // Subscribe to state changes and notify parent
+    this._state$
+      .asObservable()
+      .pipe(
+        filter((state) => typeof state !== "undefined" && state !== null),
+        takeUntil(this._destroy$),
+        tap((state) => {
+          this.stateChange.emit(state);
+        })
+      )
+      .subscribe();
+    // Subscribe to state changes and notify parent
+  }
 
   async ngOnInit() {
     await this.initializeComponent();
@@ -98,6 +125,17 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
     (async () => {
       this.showCameraError = false;
       this.showCanvas = false;
+      // #region Initialize the Component state
+      this._state$.next({
+        loadingCamera: false,
+        loadingModel: false,
+        totalFaceDetected: undefined,
+        base64Data: undefined,
+        hasCanvas: false,
+        hasError: false,
+        detecting: false,
+      });
+      // #endRegion
       if (this.detectorTimeOut > this.noFacesDetectedTimeOut) {
         throw new Error(
           "Detector wait time out must be less than the noFacesDetectedTimeOut input value"
@@ -108,6 +146,11 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
         typeof this.faceMeshDetector.getModel() === "undefined" ||
         this.faceMeshDetector.getModel() === null
       ) {
+        // #region Loading model
+        this._state$.next({
+          ...this._state$.getValue(),
+          loadingModel: true,
+        });
         await forkJoin([
           this.faceMeshDetector.loadModel(undefined, {
             shouldLoadIrisModel: true,
@@ -115,6 +158,12 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
             maxFaces: this.totalFaces || 3,
           }),
         ]).toPromise();
+        // #region Ended loading the model
+        this._state$.next({
+          ...this._state$.getValue(),
+          loadingModel: false,
+        });
+        // #endregion Ended loading model
       }
       this.videoHTMLElement = this.videoElement
         .nativeElement as HTMLVideoElement;
@@ -122,10 +171,22 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
         .nativeElement as HTMLCanvasElement;
 
       try {
+        // #region loading the camera
+        this._state$.next({
+          ...this._state$.getValue(),
+          loadingCamera: true,
+        });
+        // #endregion loading the camera
         await this.camera.startCamera(
           this.videoHTMLElement,
           "custom",
           (_, dst) => {
+            // #region loading the camera
+            this._state$.next({
+              ...this._state$.getValue(),
+              loadingCamera: false,
+            });
+            // #endregion loading the camera
             this.videoStreamEvent.next(_);
             const image = dst;
             const canvas = this.canvasHTMLElement;
@@ -137,20 +198,40 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
                   typeof this._detectFacesResult === "undefined" ||
                   this._detectFacesResult === null
                 ) {
+                  // #region Timeout
+                  this._state$.next({
+                    ...this._state$.getValue(),
+                    detecting: false,
+                    totalFaceDetected: 0,
+                  });
+                  // #endregion Timeout
                   this.noFaceDetectedEvent.emit(true);
                 }
               }, this.noFacesDetectedTimeOut);
 
               // Wait for certain time before detecting client faces
               setTimeoutFn(() => {
+                // #region Timeout
+                this._state$.next({
+                  ...this._state$.getValue(),
+                  detecting: false,
+                  totalFaceDetected: this._detectFacesResult.size,
+                  base64Data: this._detectFacesResult?.encodedURI,
+                });
+                // #endregion Timeout
                 if (this._detectFacesResult) {
                   this.detectFacesResultEvent.emit(this._detectFacesResult);
                 }
               }, this.detectorTimeOut);
 
               const interval_ = getReadInterval();
-              // Run opencv face detector
               // Run the face mesh detector as well
+              // #region Detecting faces
+              this._state$.next({
+                ...this._state$.getValue(),
+                detecting: true,
+              });
+              // #endregion Detecting faces
               this.faceMeshDetector
                 .detectFaces(image as HTMLVideoElement, interval_)
                 .pipe(
@@ -193,6 +274,12 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
         );
       } catch (error) {
         this.showCameraError = true;
+        // #region Error case
+        this._state$.next({
+          ...this._state$.getValue(),
+          hasError: true,
+        });
+        // #endregion Error case
       }
     })();
 

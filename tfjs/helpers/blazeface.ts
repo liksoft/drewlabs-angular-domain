@@ -33,3 +33,6 @@ export const predict = async (
 export const estimateFaces = async (
   element: HTMLVideoElement | HTMLCanvasElement | HTMLImageElement
 ) => await predict(await loadModel(), element);
+
+
+// export const
