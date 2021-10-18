@@ -1,6 +1,5 @@
 import { NgModule, ModuleWithProviders } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
-import { AuthModule } from "../../auth";
 import {
   DrewlabsRessourceServerClient,
   HttpClient,
@@ -22,7 +21,7 @@ type ModuleConfigParams = {
 };
 
 @NgModule({
-  imports: [HttpClientModule, AuthModule],
+  imports: [HttpClientModule],
   exports: [HttpClientModule],
 })
 export class HttpModule {
