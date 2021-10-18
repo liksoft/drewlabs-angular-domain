@@ -3,7 +3,6 @@ import { Observable, ReplaySubject } from "rxjs";
 import { startWith } from "rxjs/operators";
 import { isServerErrorResponse } from "../http";
 import { HTTPErrorState } from "../http/contracts";
-import { createSubject } from "../rxjs/helpers";
 import { UIState, UIStateProvider, UIStateStatusCode } from "./types";
 
 const initialUIState: UIState = {
@@ -25,11 +24,7 @@ export const uiStatusUsingHttpErrorResponse = (
 
 @Injectable()
 export class AppUIStateProvider implements UIStateProvider {
-  store$ = createSubject<UIState>();
-
-  // get uiState$(): Observable<UIState> {
-  //   return this.store$.pipe(startWith(initialUIState));
-  // }
+  store$ = new ReplaySubject<UIState>(1);
 
   get uiState(): Observable<UIState> {
     return this.store$.pipe(startWith(initialUIState));
