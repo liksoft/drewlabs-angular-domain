@@ -5,7 +5,6 @@ import { Log } from "../../utils";
   selector: "drewlabswebcam",
 })
 export class CameraDirective implements OnDestroy {
-
   @Input() set width(value: number) {
     Log(value);
   }

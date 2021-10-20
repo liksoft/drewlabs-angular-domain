@@ -1,1 +1,1 @@
-export { select_form } from './selectors';
+export { select_form, selectall } from "./selectors";

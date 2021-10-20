@@ -3,7 +3,6 @@ import { AuthPathConfig } from "./config";
 import { AuthTokenService } from "../../auth-token/core/auth-token.service";
 import { AuthRememberTokenService } from "../../auth-token/core/auth-remember-token.service";
 import { createSubject, observableOf } from "../../rxjs/helpers";
-import { mapToHttpResponse, doLog } from "../../rxjs/operators";
 import {
   mergeMap,
   catchError,
@@ -35,7 +34,6 @@ import {
 import { authReducer } from "./reducers";
 import { isEmpty } from "lodash";
 import { Log } from "../../utils/logger";
-import { MapToHandlerResponse } from "../../rxjs/types";
 import { DrewlabsV2LoginResultHandlerFunc } from "../rxjs/operators/v2/login-response";
 import { onAuthenticationResultEffect } from "../rxjs/operators/login-response";
 import {
@@ -45,6 +43,8 @@ import {
   HTTP_CLIENT,
 } from "../../http/contracts";
 import { httpHost } from "../../http/helpers";
+import { MapToHandlerResponse, mapToHttpResponse } from "../../http/rx";
+import { doLog } from "../../rxjs/operators";
 
 const initalState: AuthState = {
   isLoggedIn: false,

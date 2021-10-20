@@ -77,7 +77,6 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
     this._actions$
       .pipe(
         takeUntil(this._destroy$),
-        // doLog("Current state: "),
         concatMap((action) =>
           isObservable(action)
             ? (action as Observable<AType>)
@@ -86,9 +85,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
         filter((state) => typeof state !== "undefined" && state !== null),
         startWith(initial as any),
         scan(reducer),
-        // Update the store vale
         tap((state) => this._store$.next(state))
-        // doLog("Actual state: ")
       )
       .subscribe();
   };

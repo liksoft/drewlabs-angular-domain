@@ -1,12 +1,12 @@
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
 import { Observable } from "rxjs";
-import { ConfigurationManager } from "./contracts/configuration-manager";
-import { AngularEnvironmentService } from "./services/angular-environment-manager.service";
-import { JSONConfigurationManager } from "./services/json-config.service";
+import { ConfigurationManager } from "./contracts/configuration";
+import { EnvironmentService } from "./services/environment.service";
+import { AppConfigurationManager } from "./services/configuration.service";
 import {
   ANGULAR_ENVIRONMENT_MANAGER,
+  CONFIG_MANAGER,
   ENVIRONMENT,
-  JSON_CONFIG_MANAGER,
   JSON_CONFIG_URL,
 } from "./services/tokens";
 
@@ -30,12 +30,12 @@ export class ConfigurationModule {
       ngModule: ConfigurationModule,
       providers: [
         {
-          provide: JSON_CONFIG_MANAGER,
-          useClass: JSONConfigurationManager,
+          provide: ANGULAR_ENVIRONMENT_MANAGER,
+          useClass: EnvironmentService,
         },
         {
-          provide: ANGULAR_ENVIRONMENT_MANAGER,
-          useClass: AngularEnvironmentService,
+          provide: CONFIG_MANAGER,
+          useClass: AppConfigurationManager,
         },
         {
           // Injection de environment
@@ -72,7 +72,7 @@ export class ConfigurationModule {
           useFactory: (manager: ConfigurationManager) =>
             appInitialization(manager),
           multi: true,
-          deps: [JSON_CONFIG_MANAGER],
+          deps: [CONFIG_MANAGER],
         },
       ],
     };

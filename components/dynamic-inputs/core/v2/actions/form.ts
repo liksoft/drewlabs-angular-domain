@@ -13,13 +13,14 @@ import { GenericUndecoratedSerializaleSerializer } from "../../../../../built-va
 import { HttpErrorResponse } from "@angular/common/http";
 import { DynamicFormInterface } from "../../compact/types";
 import { FormControlV2 } from "../models";
-import { PaginationDataState } from "../../../../../rxjs/types";
 import { UIStateStatusCode } from "../../../../../contracts/ui-state";
 import { IResourcesServerClient } from "src/app/lib/core/http";
+import { Paginable } from "src/app/lib/core/pagination";
+import { isObject } from "src/app/lib/core/utils";
 
 export interface FormState {
   performingAction: boolean;
-  collections: PaginationDataState<DynamicFormInterface>;
+  collections: Paginable<DynamicFormInterface>;
   selectedFormId?: number;
   currentForm?: FormV2;
   createResult?: UIStateStatusCode;
@@ -33,11 +34,17 @@ export interface FormState {
 
 export enum FormStoreActions {
   FORM_SELECTED_ACTION = "[FORM_SELECTED]",
+  CREATE_ACTION = "[CREATE]",
+  UPDATE_ACTION = "[UPDATE]",
   FORM_PAGINATION_DATA_ACTION = "[FORM_PAGINATION_DATA]",
   CREATE_RESULT_ACTION = "[CREATED_FORM]",
   NEW_VALUE_ACTION = "[ADD_TO_FORMS_STACK]",
   UPDATE_RESULT_ACTION = "[FORM_UPDATED]",
   DELETE_RESULT_ACTION = "[FORM_DELETED]",
+  CREATE_CONTROL_ACTION = "[CREATE_CONTROL]",
+  UPDATE_CONTROL_ACTION = "[UPDATE_CONTROL]",
+  DELETE_CONTROL_ACTION = "[DELETE_CONTROL]",
+  DELETE_FORM_CONTROL_ACTION = "[DELETE_FORM_CONTROL]",
   CONTROL_CREATE_RESULT_ACTION = "[FORM_CONTROL_CREATED]",
   CONTROL_UPDATE_RESULT_ACTION = "[FORM_CONTROL_UPDATED]",
   CONTROL_DELETE_RESULT_ACTION = "[FORM_CONTROL_REMOVED]",
@@ -86,7 +93,7 @@ export const onPaginateFormsAction = (
 export const onFormPaginationDataLoaded = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>
 ) =>
-  createAction(store, (payload: PaginationDataState<FormV2>) => {
+  createAction(store, (payload: Paginable<FormV2>) => {
     return {
       type: FormStoreActions.FORM_PAGINATION_DATA_ACTION,
       payload,
@@ -110,12 +117,12 @@ export const createFormAction = (
           const data = getResponseDataFromHttpResponse(state);
           if (data) {
             return formCreatedAction(store)({
-              currentForm:
+              value:
                 new GenericUndecoratedSerializaleSerializer().fromSerialized(
                   FormV2,
                   data
                 ) as FormV2,
-              createResult: UIStateStatusCode.STATUS_CREATED,
+              createResult: UIStateStatusCode.OK,
             });
           }
           return emptyObservable();
@@ -208,7 +215,7 @@ export const updateFormAction = (
           const data = getResponseDataFromHttpResponse(state);
           if (data && typeof data === "object" && !Array.isArray(data)) {
             return formUpdatedAction(store)({
-              currentForm:
+              value:
                 new GenericUndecoratedSerializaleSerializer().fromSerialized(
                   FormV2,
                   data
@@ -257,17 +264,10 @@ export const deleteFormAction = (
         map((state) => {
           // tslint:disable-next-line: one-variable-per-declaration
           const data = getResponseDataFromHttpResponse(state);
-          if (data && typeof data === "object" && !Array.isArray(data)) {
-            return formDeletedAction(store)({
-              item: { id },
-              deleteResult: UIStateStatusCode.OK,
-            });
-          } else {
-            return formDeletedAction(store)({
-              deleteResult: UIStateStatusCode.OK,
-              item: { id },
-            });
-          }
+          return formDeletedAction(store)({
+            item: isObject(data) ? data : { id },
+            deleteResult: UIStateStatusCode.OK,
+          });
         }),
         catchError((err) => {
           if (err instanceof HttpErrorResponse) {

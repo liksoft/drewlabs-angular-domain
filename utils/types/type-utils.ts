@@ -135,14 +135,14 @@ export function isArray(param: any): boolean {
  */
 export function getJSObjectPropertyValue(
   item: any,
-  field: string,
+  key: string,
   deepPropertySeperator: string = '.'
 ) {
-  if (!isDefined(field)) {
-    return field;
+  if (!isDefined(key)) {
+    return key;
   }
-  if (field.indexOf(deepPropertySeperator || '.') !== -1) {
-    const innerFields: Array<string> = field.split(deepPropertySeperator || '.');
+  if (key.indexOf(deepPropertySeperator || '.') !== -1) {
+    const innerFields: Array<string> = key.split(deepPropertySeperator || '.');
     let currentObj = item;
     for (const v of innerFields) {
       if (isObject(currentObj) && currentObj[v]) {
@@ -154,7 +154,7 @@ export function getJSObjectPropertyValue(
     }
     return currentObj;
   } else {
-    return item[field];
+    return item[key];
   }
 }
 

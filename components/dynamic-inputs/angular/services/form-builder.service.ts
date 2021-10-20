@@ -2,17 +2,19 @@ import { Injectable } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { isDefined } from "../../../../utils";
 import { IDynamicForm, IHTMLFormControl } from "../../core/contracts";
-import {
-  ComponentReactiveFormHelpers,
-} from "../helpers";
+import { ComponentReactiveFormHelpers } from "../helpers";
 
+/**
+ * @deprecated
+ */
 @Injectable({
   providedIn: "root",
 })
 export class DynamicFormBuilder {
-  public constructor(private fb: FormBuilder) {}
+  // Creates an instance of the class
+  public constructor(private builder: FormBuilder) {}
 
-  public readonly formBuilder = this.fb;
+  public readonly formBuilder = this.builder;
 
   /**
    * @description Provides a wrapper arround static method for parsing dynamic controls into an angular formgoup
@@ -21,7 +23,7 @@ export class DynamicFormBuilder {
    */
   public buildFormGroupFromInputConfig(inputs: IHTMLFormControl[]) {
     return ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
-      this.fb,
+      this.builder,
       inputs
     );
   }

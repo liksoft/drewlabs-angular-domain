@@ -22,5 +22,3 @@ export const doLog = <T>(prefix?: string) => {
     })
   );
 };
-
-export { mapToHttpResponse } from './map-to-response-type';

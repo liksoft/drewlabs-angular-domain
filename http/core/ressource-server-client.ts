@@ -1,5 +1,4 @@
 import { Observable } from "rxjs";
-import { mapToHttpResponse } from "../../rxjs/operators";
 import { Injectable, Inject } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http";
 import { doLog } from "../../rxjs/operators";
@@ -14,6 +13,7 @@ import {
 } from "../contracts";
 import { UIStateStatusCode } from "../../ui-state";
 import { isServerErrorResponse, isServerBadRequest } from "../helpers/response";
+import { mapToHttpResponse } from "../rx";
 
 @Injectable()
 export class DrewlabsRessourceServerClient

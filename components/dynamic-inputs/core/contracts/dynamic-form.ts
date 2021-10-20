@@ -1,6 +1,7 @@
 import { IHTMLFormControl } from './dynamic-input';
 import { isDefined } from '../../../../utils';
 import {  ICollection } from '../../../../collections';
+import { AbstractControl } from '@angular/forms';
 /**
  * @description Interface definition for model that are bind to the dynamic form instance
  */

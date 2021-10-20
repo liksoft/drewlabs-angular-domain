@@ -1,32 +1,40 @@
 import { createStore, onErrorAction } from "../../../../rxjs/state/rx-state";
-import { FormState } from "../../core/v2/actions";
-import { formsReducer } from "../../core/v2/reducers";
-import { Observable, throwError } from "rxjs";
-import { Inject, Injectable, OnDestroy } from "@angular/core";
 import {
+  FormState,
+  FormStoreActions,
+  onAddFormToStackAction,
   createFormAction,
   createFormControlAction,
   deleteFormFormControl,
-  onNewFormAction,
   updateFormAction,
   updateFormControlAction,
-} from "../../core/v2/actions/form";
+  formCreatedAction,
+  formUpdatedAction,
+  formDeletedAction,
+  formControlCreatedAction,
+  formControlRemovedAction,
+  formControlUpdatedAction,
+  selectFormAction,
+  onPaginateFormsAction,
+} from "../../core/v2";
+import { formsReducer } from "../../core/v2/reducers";
+import { throwError } from "rxjs";
+import { Inject, Injectable, OnDestroy } from "@angular/core";
 import { catchError, map, tap } from "rxjs/operators";
 import { DynamicFormInterface } from "../../core/compact";
 import { doLog } from "../../../../rxjs/operators";
 import { DrewlabsRessourceServerClient } from "../../../../http/core";
 import { getResponseDataFromHttpResponse } from "../../../../http/helpers";
 import { FORM_RESOURCES_PATH } from "../../core/constants/injection-tokens";
-import {
-  DYNAMIC_FORM_LOADER,
-  FormsLoaderInterface,
-} from "./forms-loaders/types";
+import { DYNAMIC_FORM_LOADER } from "./forms-loaders";
 import { FormV2 } from "../../core/v2/models";
 import { emptyObservable } from "src/app/lib/core/rxjs/helpers";
+import { ActionResult } from "src/app/lib/core/rxjs/handlers";
+import { FormsLoader, FormsProvider } from "../../core";
 
 export const initialState: FormState = {
   collections: {
-    currentPage: 1,
+    page: 1,
     total: 0,
     items: {},
     data: [],
@@ -34,132 +42,87 @@ export const initialState: FormState = {
   performingAction: false,
 };
 
-export abstract class AbstractDynamicFormService {
-  // Readonly store object
-  public readonly store$ = createStore(formsReducer, initialState);
-
-  // Http Client
-  public readonly client: DrewlabsRessourceServerClient;
-
-  get state$(): Observable<FormState> {
-    return this.store$.connect();
-  }
-
-  /**
-   * Provides predefined dynamic forms loader implementation
-   *
-   * @param endpoint
-   * @param options
-   */
-  abstract loadConfiguredForms(
-    endpoint: string,
-    options?: { [index: string]: any }
-  ): Observable<never> | Observable<DynamicFormInterface[]>;
-
-  abstract update(
-    url: string,
-    body: { [index: string]: any }
-  ): Observable<any> | void;
-
-  abstract create(
-    url: string,
-    body: { [index: string]: any }
-  ): Observable<any> | void;
-
-  abstract updateControl(
-    url: string,
-    body: { [index: string]: any }
-  ): Observable<any> | void;
-
-  abstract createControl(
-    url: string,
-    body: { [index: string]: any }
-  ): Observable<any> | void;
-
-  abstract deleteFormFormControl(
-    url: string,
-    controlID: number
-  ): Observable<any> | void;
-
-  abstract getAll(
-    params: { [index: string]: any },
-    callback?: (value: any[]) => DynamicFormInterface[]
-  ): Observable<{ [index: string]: any }[]>;
-
-  abstract get(
-    id: string | number,
-    params?: { [prop: string]: any }
-  ): Observable<DynamicFormInterface>;
-}
-
 @Injectable()
-export class DynamicFormService
-  extends AbstractDynamicFormService
-  implements OnDestroy
-{
-  /**
-   * Provides predefined dynamic forms loader implementation
-   *
-   * @param endpoint
-   * @param options
-   */
-  loadConfiguredForms = (
-    endpoint: string,
-    options: { [index: string]: any } = {}
-  ) => {
-    return this.loader.load(endpoint, options).pipe(
-      tap((state) => onNewFormAction(this.store$)(state)),
-      doLog("DynamicFormService service: "),
-      catchError((err) => {
-        onErrorAction(this.store$)();
-        return emptyObservable();
-      })
-    );
-  };
-
-  ngOnDestroy(): void {
-    this.store$.destroy();
-  }
+export class DynamicFormService implements OnDestroy, FormsProvider {
+  // Store instance
   public readonly store$ = createStore(formsReducer, initialState);
+
+  // Provider state
+  public state$ = this.store$?.connect();
 
   constructor(
     public readonly client: DrewlabsRessourceServerClient,
     @Inject(FORM_RESOURCES_PATH) private path: string,
-    @Inject(DYNAMIC_FORM_LOADER) private loader: FormsLoaderInterface
-  ) {
-    super();
+    @Inject(DYNAMIC_FORM_LOADER) private loader: FormsLoader
+  ) {}
+
+  handle(
+    action: FormStoreActions,
+    payload: Partial<FormState>
+  ): void | ActionResult<any> {
+    switch (action) {
+      case FormStoreActions.CREATE_RESULT_ACTION:
+        formCreatedAction(this.store$)(payload);
+        break;
+      case FormStoreActions.NEW_VALUE_ACTION:
+        onAddFormToStackAction(this.store$)(payload);
+        break;
+      case FormStoreActions.UPDATE_RESULT_ACTION:
+        formUpdatedAction(this.store$)(payload);
+        break;
+      case FormStoreActions.DELETE_RESULT_ACTION:
+        formDeletedAction(this.store$)(payload);
+        break;
+      case FormStoreActions.CONTROL_CREATE_RESULT_ACTION:
+        formControlCreatedAction(this.store$)(payload);
+        break;
+      case FormStoreActions.CONTROL_UPDATE_RESULT_ACTION:
+        formControlUpdatedAction(this.store$)(payload);
+        break;
+      case FormStoreActions.CONTROL_DELETE_RESULT_ACTION:
+        formControlRemovedAction(this.store$)(payload);
+        break;
+      case FormStoreActions.FORM_SELECTED_ACTION:
+        selectFormAction(this.store$)(payload);
+        break;
+      default:
+        return;
+    }
   }
 
-  // tslint:disable-next-line: typedef
-  get state$(): Observable<FormState> {
-    return this.store$.connect();
+  /**
+   * @inheritdoc
+   */
+  update(url: string, body: { [index: string]: any }) {
+    updateFormAction(this.store$)(this.client, url, body);
   }
-
-  update = (url: string, body: { [index: string]: any }) =>
-    (() => {
-      updateFormAction(this.store$)(this.client, url, body);
-    })();
-
-  create = (url: string, body: { [index: string]: any }) =>
-    (() => {
-      createFormAction(this.store$)(this.client, url, body);
-    })();
-
-  updateControl = (url: string, body: { [index: string]: any }) =>
-    (() => {
-      updateFormControlAction(this.store$)(this.client, url, body);
-    })();
-
-  createControl = (url: string, body: { [index: string]: any }) =>
-    (() => {
-      createFormControlAction(this.store$)(this.client, url, body);
-    })();
-
-  deleteFormFormControl = (url: string, controlID: number) =>
-    (() => {
-      deleteFormFormControl(this.store$)(url, {}, controlID);
-    })();
-
+  /**
+   * @inheritdoc
+   */
+  create(url: string, body: { [index: string]: any }) {
+    createFormAction(this.store$)(this.client, url, body);
+  }
+  /**
+   * @inheritdoc
+   */
+  updateControl(url: string, body: { [index: string]: any }) {
+    updateFormControlAction(this.store$)(this.client, url, body);
+  }
+  /**
+   * @inheritdoc
+   */
+  createControl(url: string, body: { [index: string]: any }) {
+    createFormControlAction(this.store$)(this.client, url, body);
+  }
+  /**
+   * @inheritdoc
+   */
+  deleteFormControl(url: string, controlID: number) {
+    deleteFormFormControl(this.store$)(url, {}, controlID);
+  }
+  /**
+   * @inheritdoc
+   */
   getAll = (
     params: { [index: string]: any },
     callback?: (value: any[]) => DynamicFormInterface[]
@@ -177,7 +140,7 @@ export class DynamicFormService
       ))();
 
   /**
-   * @description Get the form with the provided using the loaded form id
+   * @inheritdoc
    */
   get = (id: string | number, params?: { [prop: string]: any }) => {
     return this.client.get(`${this.path}/${id}`, params).pipe(
@@ -187,4 +150,33 @@ export class DynamicFormService
       })
     );
   };
+
+  paginate(url: string, params: { [index: string]: any }) {
+    onPaginateFormsAction(this.store$)(this.client, url, params);
+  }
+
+  /**
+   * Provides predefined dynamic forms loader implementation
+   *
+   * @param endpoint
+   * @param options
+   */
+  cache = (endpoint: string, options: { [index: string]: any } = {}) => {
+    return this.loader.load(endpoint, options).pipe(
+      tap((state) =>
+        onAddFormToStackAction(this.store$)(
+          state?.map((value) => ({ ...value, cached: true }))
+        )
+      ),
+      doLog("DynamicFormService service: "),
+      catchError((err) => {
+        onErrorAction(this.store$)();
+        return emptyObservable();
+      })
+    );
+  };
+
+  ngOnDestroy(): void {
+    this.store$.destroy();
+  }
 }

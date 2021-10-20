@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs';
-import { MapToHandlerResponse } from '../types';
-import { map } from 'rxjs/operators';
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { MapToHandlerResponse } from "../types/map";
 
 /**
  * @description RxJs operator for mapping handler result to a {HandlerResult} of type T
@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 export function mapToHttpResponse<T>(handlerFn: MapToHandlerResponse<T>) {
   return (source$: Observable<any>) => {
     return source$.pipe(
-      map(state => {
+      map((state) => {
         const result = handlerFn(state);
         return result;
       })

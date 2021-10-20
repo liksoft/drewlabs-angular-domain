@@ -1,3 +1,4 @@
+export { formsReducer } from "./reducers";
 export {
   SelectableControl,
   ServerSideSelectableControl,
@@ -14,13 +15,11 @@ export {
   updateFormAction,
   deleteFormAction,
   selectFormAction,
+  createFormAction,
+  createFormControlAction,
+  deleteFormFormControl,
+  updateFormControlAction,
+  formControlCreatedAction,
+  formControlRemovedAction,
+  formControlUpdatedAction,
 } from "./actions";
-
-export { formsReducer } from "./reducers";
-
-
-// TODO : Needs to be remove in future release
-export {
-  DynamicFormService as FormsProvider,
-  initialState,
-} from "../../angular/services/dynamic-form.service";

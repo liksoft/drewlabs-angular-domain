@@ -68,6 +68,15 @@ export class DynamicFormControlComponent implements OnDestroy, AfterViewInit {
       .subscribe();
   }
 
+  getInlineTextAreaInput(input: IHTMLFormControl) {
+    return {
+      ...input,
+      classes: input.classes?.includes("clr-textarea")
+        ? input.classes?.replace("textarea", "input")
+        : `${input?.classes} clr-input`,
+    };
+  }
+
   ngOnDestroy() {
     this._destroy$.next();
   }

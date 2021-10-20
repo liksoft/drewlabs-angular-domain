@@ -5,6 +5,5 @@ export {
   CONTROL_BINDINGS_RESOURCES_PATH,
   FORM_FORM_CONTROL_RESOURCES_PATH,
   DynamicFormControlModule,
-  HTMLFormControlService,
   DynamicInputTypeHelper,
 } from "../angular";

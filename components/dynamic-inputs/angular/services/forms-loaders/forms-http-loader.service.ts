@@ -3,12 +3,12 @@ import { Injectable } from "@angular/core";
 import { isArray } from "lodash";
 import { map } from "rxjs/operators";
 import { GenericUndecoratedSerializaleSerializer } from "../../../../../built-value/core/js/serializer";
+import { FormsLoader } from "../../../core";
 import { DynamicFormInterface } from "../../../core/compact";
 import { FormV2 } from "../../../core/v2/models";
-import { FormsLoaderInterface } from "./types";
 
 @Injectable()
-export class FormHttpLoader implements FormsLoaderInterface {
+export class FormHttpLoader implements FormsLoader {
   public constructor(private _http: HttpClient) {}
 
   public load = (endpoint: string, options?: { [index: string]: any }) => {

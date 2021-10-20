@@ -21,7 +21,7 @@ export const deserializeOption = (serialized: { [index: string]: any }) =>
 
 export const initialState: OptionsState = {
   collections: {
-    currentPage: 1,
+    page: 1,
     total: 0,
     items: {},
     data: [],

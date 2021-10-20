@@ -21,13 +21,23 @@ import { DynamicRadioInputComponent } from "./components/dynamic-radio-input/dyn
 import { SimpleDynamicFormComponent } from "./components/simple-dynamic-form/simple-form.component";
 import { DropzoneModule } from "../../dropzone";
 import { IntlTelInputModule } from "../../intl-tel-input";
-import { DYNAMIC_FORM_LOADER, FormHttpLoader } from "./services";
 import {
-  AbstractDynamicFormService,
   DynamicFormService,
-} from "./services/dynamic-form.service";
+  DYNAMIC_FORM_LOADER,
+  FormHttpLoader,
+  ReactiveFormBuilderBrige,
+} from "./services";
 import { SafeHTMLPipe } from "./pipes/safe-html.pipe";
 import { HttpModule } from "../../../http";
+import {
+  FORMS_PROVIDER,
+  FORM_CLIENT,
+  ModuleConfigs,
+  ANGULAR_REACTIVE_FORM_BRIDGE,
+} from "./types";
+import { JSONFormsClient } from "./services/client";
+import { initializeDynamicFormContainer } from "./helpers/module";
+import { FormsProvider } from "../core";
 
 export const DECLARATIONS = [
   DynamicFormControlComponent,
@@ -47,28 +57,6 @@ export const DECLARATIONS = [
   SimpleDynamicFormComponent,
 ];
 
-export type ModuleConfigs = {
-  serverConfigs: {
-    host?: string;
-    controlOptionsPath?: string;
-    controlsPath?: string;
-    formsPath?: string;
-    controlBindingsPath?: string;
-  };
-  formsAssets?: string;
-};
-
-export const initializeDynamicFormContainer = (
-  service: AbstractDynamicFormService,
-  assetsURL: string
-) => {
-  return async () => {
-    return await service
-      .loadConfiguredForms(assetsURL || "/assets/resources/app-forms.json")
-      .toPromise();
-  };
-};
-
 @NgModule({
   imports: [
     CommonModule,
@@ -87,7 +75,7 @@ export const initializeDynamicFormContainer = (
 })
 export class DynamicFormControlModule {
   static forRoot(
-    configs: ModuleConfigs = {} as ModuleConfigs
+    configs?: ModuleConfigs
   ): ModuleWithProviders<DynamicFormControlModule> {
     return {
       ngModule: DynamicFormControlModule,
@@ -124,19 +112,30 @@ export class DynamicFormControlModule {
           provide: DYNAMIC_FORM_LOADER,
           useClass: FormHttpLoader,
         },
+        // Provides the JSON Client implementation
+        JSONFormsClient,
+        ReactiveFormBuilderBrige,
         {
-          provide: AbstractDynamicFormService,
+          provide: FORM_CLIENT,
+          useClass: JSONFormsClient,
+        },
+        {
+          provide: FORMS_PROVIDER,
           useClass: DynamicFormService,
         },
         {
           provide: APP_INITIALIZER,
-          useFactory: (service: AbstractDynamicFormService) =>
+          useFactory: (service: FormsProvider) =>
             initializeDynamicFormContainer(
               service,
               configs?.formsAssets || "/assets/resources/app-forms.json"
             ),
           multi: true,
-          deps: [AbstractDynamicFormService],
+          deps: [FORMS_PROVIDER],
+        },
+        {
+          provide: ANGULAR_REACTIVE_FORM_BRIDGE,
+          useClass: ReactiveFormBuilderBrige,
         },
       ],
     };

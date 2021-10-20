@@ -4,10 +4,10 @@
     class="clr-control-label"
     *ngIf="showLabelAndDescription"
   >
-    {{ inputType.asEmailInput(inputConfig).label }}
+    {{ inputType.asTextInput(inputConfig).label }}
     <small
       class="required-text"
-      *ngIf="inputType.asEmailInput(inputConfig).rules?.isRequired"
+      *ngIf="inputType.asTextInput(inputConfig).rules?.isRequired"
     >
       (*)
     </small>
@@ -41,25 +41,25 @@
           })
         "
         [type]="
-          inputType.asEmailInput(inputConfig).type === inputTypes.EMAIL_INPUT
+          inputType.asTextInput(inputConfig).type === inputTypes.EMAIL_INPUT
             ? 'email'
             : 'text'
         "
         [maxLength]="
-          inputType.asEmailInput(inputConfig).maxLength
-            ? inputType.asEmailInput(inputConfig).maxLength
+          inputType.asTextInput(inputConfig).maxLength
+            ? inputType.asTextInput(inputConfig).maxLength
             : maxNumberSize()
         "
         [minLength]="
-          inputType.asEmailInput(inputConfig).minLength
-            ? inputType.asEmailInput(inputConfig).minLength
+          inputType.asTextInput(inputConfig).minLength
+            ? inputType.asTextInput(inputConfig).minLength
             : 0
         "
-        [class]="inputType.asEmailInput(inputConfig).classes"
+        [class]="inputType.asTextInput(inputConfig).classes"
         [formControl]="control"
         [placeholder]="
-          inputType.asEmailInput(inputConfig).placeholder
-            ? inputType.asEmailInput(inputConfig).placeholder
+          inputType.asTextInput(inputConfig).placeholder
+            ? inputType.asTextInput(inputConfig).placeholder
             : ''
         "
       />
@@ -77,7 +77,7 @@
       <span
         [translate]="'validation.maxValue'"
         [translateParams]="{
-          value: inputType.asEmailInput(inputConfig).maxLength
+          value: inputType.asTextInput(inputConfig).maxLength
         }"
       ></span>
     </clr-control-error>
@@ -88,8 +88,8 @@
       <span
         [translate]="'validation.minValue'"
         [translateParams]="{
-          value: inputType.asEmailInput(inputConfig).minLength
-            ? inputType.asEmailInput(inputConfig).minLength
+          value: inputType.asTextInput(inputConfig).minLength
+            ? inputType.asTextInput(inputConfig).minLength
             : getErrorAsNumber(control.errors['minLength'], 'minLength')
         }"
       ></span>

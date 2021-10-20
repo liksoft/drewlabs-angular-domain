@@ -8,9 +8,10 @@ export interface DynamicFormInterface {
   url?: string;
   status?: number;
   appcontext?: string;
+  cached?: boolean;
 }
 export interface DynamicFormControlInterface {
-  id?: number;
+  id: number;
   label: string;
   placeholder?: string;
   type: string;

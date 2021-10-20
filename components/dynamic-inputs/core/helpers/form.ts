@@ -26,38 +26,31 @@ export class DynamicFormHelpers {
    *
    * @param form
    */
-  static buildFormSync = (form: DynamicFormInterface) => {
-    const generatorFn: (f: DynamicFormInterface) => IDynamicForm | undefined = (
-      f: DynamicFormInterface
-    ) => {
-      let configs: IHTMLFormControl[] | undefined = [];
-      if (Array.isArray(f?.formControls) && f?.formControls?.length !== 0) {
-        configs = f.formControls
-          ?.map((control) => {
-            const config = buildControl(control);
-            // tslint:disable-next-line: max-line-length
-            return { ...config } as IHTMLFormControl;
+  static buildFormSync(form: DynamicFormInterface) {
+    const generatorFn = function (instance: DynamicFormInterface) {
+      const hasControls =
+        Array.isArray(instance?.formControls) &&
+        instance?.formControls?.length !== 0;
+      return form
+        ? createform({
+            id: instance.id,
+            title: instance.title,
+            description: instance.description,
+            endpointURL: instance.url,
+            controlConfigs: hasControls
+              ? instance.formControls
+                  ?.map((control) => {
+                    const config = buildControl(control);
+                    // tslint:disable-next-line: max-line-length
+                    return { ...config } as IHTMLFormControl;
+                  })
+                  .filter((value) => value ?? false)
+              : [],
           })
-          .filter((value) => value ?? false);
-      }
-      let forms: any[] | undefined =
-        f?.children && f?.children?.length > 0
-          ? f.children.map((value) => generatorFn(value))
-          : undefined;
-      if (form) {
-        return new DynamicForm({
-          id: f.id,
-          title: f.title,
-          description: f.description,
-          endpointURL: f.url,
-          controlConfigs: configs,
-          forms,
-        });
-      }
-      return undefined;
+        : undefined;
     };
     return generatorFn(form);
-  };
+  }
 }
 
 // # Forms Creators
