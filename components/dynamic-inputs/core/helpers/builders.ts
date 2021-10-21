@@ -1,5 +1,5 @@
 import { getObjectProperty } from "../../../../utils";
-import { DynamicFormControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact/types";
 import {
   CheckboxItem,
   ISelectItem,
@@ -30,7 +30,7 @@ export const buildRequiredIfConfig = (stringifiedConfig: string) => {
 };
 
 export const buildCheckboxItems = (
-  model: Partial<DynamicFormControlInterface>
+  model: Partial<ControlInterface>
 ) => {
   if (model.selectableValues) {
     const items = model.selectableValues?.split("|") || [];
@@ -73,7 +73,7 @@ export const buildCheckboxItems = (
  * @deprecated
  */
 export const buildSelectItems = (
-  model: Partial<DynamicFormControlInterface>
+  model: Partial<ControlInterface>
 ) => {
   if (model.selectableValues) {
     const items = model.selectableValues?.split("|") || [];
@@ -117,7 +117,7 @@ export const buildSelectItems = (
 };
 
 export const buildRadioInputItems = (
-  model: Partial<DynamicFormControlInterface>
+  model: Partial<ControlInterface>
 ) => {
   if (model.selectableValues) {
     const items = model.selectableValues?.split("|") || [];

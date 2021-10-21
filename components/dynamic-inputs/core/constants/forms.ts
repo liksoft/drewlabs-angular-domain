@@ -1,4 +1,4 @@
-import { DynamicFormInterface } from "../compact/types";
+import { FormInterface } from "../compact/types";
 import { CONTROL_OPTIONS_STATIC_FORM } from "./control-options-form";
 
 export const STATIC_FORMS = {
@@ -1118,5 +1118,5 @@ export const STATIC_FORMS = {
     ],
     formControls: []
   },
-  createControlOptions: CONTROL_OPTIONS_STATIC_FORM as DynamicFormInterface
+  createControlOptions: CONTROL_OPTIONS_STATIC_FORM as FormInterface
 };

@@ -1,7 +1,7 @@
 import { ArrayUtils } from "../../../../utils/types";
 import {
-  DynamicFormControlInterface,
-  DynamicFormInterface,
+  ControlInterface,
+  FormInterface,
 } from "../compact/types";
 import { IDynamicForm } from "../contracts/dynamic-form";
 import { IHTMLFormControl } from "../contracts/dynamic-input";
@@ -12,10 +12,10 @@ import { buildControl } from "../types/builder";
 export class DynamicFormHelpers {
   /**
    * @description Create an instance of IDynamic interface
-   *
+   * @deprecated
    * @param form
    */
-  static buildDynamicForm = (form: DynamicFormInterface) => {
+  static buildDynamicForm = (form: FormInterface) => {
     return new Promise<IDynamicForm | undefined>((resolve, _) => {
       resolve(DynamicFormHelpers.buildFormSync(form));
     });
@@ -26,11 +26,11 @@ export class DynamicFormHelpers {
    *
    * @param form
    */
-  static buildFormSync(form: DynamicFormInterface) {
-    const generatorFn = function (instance: DynamicFormInterface) {
+  static buildFormSync(form: FormInterface) {
+    const generatorFn = function (instance: FormInterface) {
       const hasControls =
-        Array.isArray(instance?.formControls) &&
-        instance?.formControls?.length !== 0;
+        Array.isArray(instance?.controls) &&
+        instance?.controls?.length !== 0;
       return form
         ? createform({
             id: instance.id,
@@ -38,7 +38,7 @@ export class DynamicFormHelpers {
             description: instance.description,
             endpointURL: instance.url,
             controlConfigs: hasControls
-              ? instance.formControls
+              ? instance.controls
                   ?.map((control) => {
                     const config = buildControl(control);
                     // tslint:disable-next-line: max-line-length
@@ -102,16 +102,16 @@ export const sortformbyindex = (form: IDynamicForm) => {
 /**
  * @description Sort form loaded from backend server by control index
  */
-export const sortRawFormControls = (value: DynamicFormInterface) => {
+export const sortRawFormControls = (value: FormInterface) => {
   if (
-    Array.isArray(value.formControls) &&
-    (value.formControls as DynamicFormControlInterface[]).length !== 0
+    Array.isArray(value.controls) &&
+    (value.controls as ControlInterface[]).length !== 0
   ) {
-    value.formControls = ArrayUtils.sort(
-      value.formControls as DynamicFormControlInterface[],
+    value.controls = ArrayUtils.sort(
+      value.controls as ControlInterface[],
       "controlIndex",
       1
-    ) as DynamicFormControlInterface[];
+    ) as ControlInterface[];
   }
   return value;
 };

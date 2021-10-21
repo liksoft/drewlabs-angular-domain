@@ -1,42 +1,50 @@
-import { FormControlV2 } from './form-control';
-import { ControlOptionInterface, DynamicFormControlInterface, DynamicFormInterface } from '../../compact/types';
-import { GenericSerializaleSerializer, UndecoratedSerializer } from '../../../../../built-value/core/js/serializer';
+import { Control } from "./form-control";
+import {
+  OptionInterface,
+  ControlInterface,
+  FormInterface,
+} from "../../compact/types";
+import {
+  GenericSerializaleSerializer,
+  UndecoratedSerializer,
+} from "../../../../../built-value/core/js/serializer";
 
-export class FormV2 implements DynamicFormInterface {
+export class Form implements FormInterface {
   id!: number;
   title!: string;
   parentId!: string;
   description!: string;
-  children!: FormV2[];
-  formControls: DynamicFormControlInterface[] = [];
+  /**
+   * @deprecated
+   */
+  children!: FormInterface[];
+  controls: ControlInterface[] = [];
   url!: string;
   status!: number;
   appcontext!: string;
 
   static builder = () => {
-    return new GenericSerializaleSerializer(
-      FormV2,
-      new UndecoratedSerializer()
-    );
+    return new GenericSerializaleSerializer(Form, new UndecoratedSerializer());
   };
 
-  public static getJsonableProperties(): { [index: string]: keyof FormV2 | { name: string, type: any } } {
+  public static getJsonableProperties(): {
+    [index: string]: keyof Form | { name: string; type: any };
+  } {
     return {
-      title: 'title',
-      parentId: 'parentId',
-      description: 'description',
-      children: { name: 'children', type: FormV2 },
-      formControls: { name: 'formControls', type: FormControlV2 },
-      url: 'url',
-      status: 'status',
-      id: 'id',
-      appcontext: 'appcontext'
+      title: "title",
+      parentId: "parentId",
+      description: "description",
+      children: { name: "children", type: Form },
+      formControls: { name: "formControls", type: Control },
+      url: "url",
+      status: "status",
+      id: "id",
+      appcontext: "appcontext",
     };
   }
 }
 
-
-export class ControlOption implements ControlOptionInterface {
+export class Option implements OptionInterface {
   id!: number;
   table!: string;
   keyfield!: string;
@@ -48,18 +56,32 @@ export class ControlOption implements ControlOptionInterface {
    * @description Calls to get the builder provider of the current class|type
    */
   static builder() {
-    return new GenericSerializaleSerializer<ControlOptionInterface>(ControlOption, new UndecoratedSerializer);
+    return new GenericSerializaleSerializer<OptionInterface>(
+      Option,
+      new UndecoratedSerializer()
+    );
   }
 
-  static getJsonableProperties(): { [index: string]: keyof ControlOption } | { [index: string]: { name: string, type: any } } {
+  static getJsonableProperties():
+    | { [index: string]: keyof Option }
+    | { [index: string]: { name: string; type: any } } {
     return {
-      id: 'id',
-      table: 'table',
-      keyfield: 'keyfield',
-      groupfield: 'groupfield',
-      valuefield: 'description',
-      display_label: 'displayLabel',
+      id: "id",
+      table: "table",
+      keyfield: "keyfield",
+      groupfield: "groupfield",
+      valuefield: "description",
+      display_label: "displayLabel",
     };
   }
 }
 
+export function createFormElement(value: { [index: string]: any }) {
+  return Form.builder().fromSerialized(value) as FormInterface;
+}
+
+export function createOptionElement(value: { [index: string]: any }) {
+  return Option.builder().fromSerialized(
+    value
+  ) as OptionInterface;
+}

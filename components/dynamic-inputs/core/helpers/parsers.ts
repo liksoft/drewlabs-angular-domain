@@ -1,7 +1,7 @@
-import { DynamicFormControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact/types";
 
 export const parseControlItemsConfigs = (
-  model: Partial<DynamicFormControlInterface>
+  model: Partial<ControlInterface>
 ) => {
   const items = model.selectableModel?.split("|") || [];
   let keyfield: string | undefined;

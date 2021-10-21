@@ -1,4 +1,4 @@
-import { DynamicFormControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact/types";
 import {
   IHTMLFormControl,
   IHTMLFormControlValidationRule,
@@ -29,7 +29,7 @@ export class RadioInput extends AbstractHTMLFormControl {
    * @param model [[FormControlModel]]
    */
   static fromFormControlModel(
-    model: Partial<DynamicFormControlInterface>
+    model: Partial<ControlInterface>
   ): IHTMLFormControl {
     return new RadioInput({
       label: model.label,

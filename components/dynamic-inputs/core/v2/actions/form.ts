@@ -1,4 +1,4 @@
-import { FormV2 } from "../models/form";
+import { Form } from "../models/form";
 import {
   createAction,
   DefaultStoreAction,
@@ -11,8 +11,8 @@ import { getResponseDataFromHttpResponse } from "../../../../../http/helpers/res
 import { emptyObservable } from "../../../../../rxjs/helpers";
 import { GenericUndecoratedSerializaleSerializer } from "../../../../../built-value/core/js/serializer";
 import { HttpErrorResponse } from "@angular/common/http";
-import { DynamicFormInterface } from "../../compact/types";
-import { FormControlV2 } from "../models";
+import { FormInterface } from "../../compact/types";
+import { Control } from "../models";
 import { UIStateStatusCode } from "../../../../../contracts/ui-state";
 import { IResourcesServerClient } from "src/app/lib/core/http";
 import { Paginable } from "src/app/lib/core/pagination";
@@ -20,9 +20,9 @@ import { isObject } from "src/app/lib/core/utils";
 
 export interface FormState {
   performingAction: boolean;
-  collections: Paginable<DynamicFormInterface>;
+  collections: Paginable<FormInterface>;
   selectedFormId?: number;
-  currentForm?: FormV2;
+  currentForm?: FormInterface;
   createResult?: UIStateStatusCode;
   updateResult?: UIStateStatusCode;
   deleteResult?: UIStateStatusCode;
@@ -71,9 +71,9 @@ export const onPaginateFormsAction = (
                 data: (data as any[]).map(
                   (current) =>
                     new GenericUndecoratedSerializaleSerializer().fromSerialized(
-                      FormV2,
+                      Form,
                       current
-                    ) as FormV2
+                    ) as Form
                 ),
                 total,
               });
@@ -93,7 +93,7 @@ export const onPaginateFormsAction = (
 export const onFormPaginationDataLoaded = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>
 ) =>
-  createAction(store, (payload: Paginable<FormV2>) => {
+  createAction(store, (payload: Paginable<Form>) => {
     return {
       type: FormStoreActions.FORM_PAGINATION_DATA_ACTION,
       payload,
@@ -119,9 +119,9 @@ export const createFormAction = (
             return formCreatedAction(store)({
               value:
                 new GenericUndecoratedSerializaleSerializer().fromSerialized(
-                  FormV2,
+                  Form,
                   data
-                ) as FormV2,
+                ) as Form,
               createResult: UIStateStatusCode.OK,
             });
           }
@@ -143,7 +143,7 @@ export const createFormAction = (
 export const formCreatedAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>
 ) =>
-  createAction(store, (payload: FormV2) => ({
+  createAction(store, (payload: Form) => ({
     type: FormStoreActions.CREATE_RESULT_ACTION,
     payload,
   }));
@@ -169,9 +169,9 @@ export const loadFormUsingIDAction = (
             if (data) {
               return onNewFormAction(store)(
                 new GenericUndecoratedSerializaleSerializer().fromSerialized(
-                  FormV2,
+                  Form,
                   data
-                ) as FormV2
+                ) as Form
               );
             }
             return emptyObservable();
@@ -192,7 +192,7 @@ export const loadFormUsingIDAction = (
 export const onNewFormAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>
 ) => {
-  return createAction(store, (payload: FormV2[] | FormV2) => ({
+  return createAction(store, (payload: Form[] | Form) => ({
     type: FormStoreActions.NEW_VALUE_ACTION,
     payload,
   }));
@@ -217,9 +217,9 @@ export const updateFormAction = (
             return formUpdatedAction(store)({
               value:
                 new GenericUndecoratedSerializaleSerializer().fromSerialized(
-                  FormV2,
+                  Form,
                   data
-                ) as FormV2,
+                ) as Form,
               updateResult: UIStateStatusCode.OK,
             });
           } else {
@@ -317,9 +317,9 @@ export const createFormControlAction = (
             return formControlCreatedAction(store)({
               control:
                 new GenericUndecoratedSerializaleSerializer().fromSerialized(
-                  FormControlV2,
+                  Control,
                   data
-                ) as FormControlV2,
+                ) as Control,
               createControlResult: UIStateStatusCode.OK,
             });
           }
@@ -341,7 +341,7 @@ export const createFormControlAction = (
 export const formControlCreatedAction = (
   store: DrewlabsFluxStore<FormState, Partial<StoreAction>>
 ) =>
-  createAction(store, (payload: FormControlV2) => ({
+  createAction(store, (payload: Control) => ({
     type: FormStoreActions.CONTROL_CREATE_RESULT_ACTION,
     payload,
   }));
@@ -365,9 +365,9 @@ export const updateFormControlAction = (
             return formControlUpdatedAction(store)({
               control:
                 new GenericUndecoratedSerializaleSerializer().fromSerialized(
-                  FormControlV2,
+                  Control,
                   data
-                ) as FormControlV2,
+                ) as Control,
               updateControlResult: UIStateStatusCode.OK,
             });
           } else {
@@ -406,16 +406,16 @@ export const deleteFormFormControl = (
       client: IResourcesServerClient<any>,
       path: string,
       params: { [prop: string]: any } = {},
-      controlID?: number
+      id?: number
     ) => ({
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.delete(path, { params: params || {} }).pipe(
         map((state) => {
           // tslint:disable-next-line: one-variable-per-declaration
-          if (controlID) {
+          if (id) {
             formControlRemovedAction(store)({
               deleteControlResult: UIStateStatusCode.OK,
-              control: { id: controlID },
+              control: { id: id },
             });
           }
         }),

@@ -13,7 +13,7 @@ import {
   deserializeOption,
   OptionsInitialState,
 } from "../../core/v2/actions";
-import { ControlOptionInterface } from "../../core/compact/types";
+import { OptionInterface } from "../../core/compact/types";
 
 @Injectable({
   providedIn: "root",
@@ -33,7 +33,7 @@ export class OptionsService implements OnDestroy {
 
   public paginate(params: {
     [index: string]: any;
-  }): Observable<{ data: ControlOptionInterface[]; total: number }> {
+  }): Observable<{ data: OptionInterface[]; total: number }> {
     return this.client.get(this.path, { params }).pipe(
       map((state) => {
         const { data, total } =

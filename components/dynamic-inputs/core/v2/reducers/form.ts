@@ -15,49 +15,43 @@ import {
   Paginable,
   updatePaginableValue,
 } from "src/app/lib/core/pagination";
-import {
-  DynamicFormControlInterface,
-  DynamicFormInterface,
-} from "../../compact";
+import { ControlInterface, FormInterface } from "../../compact";
 
 const updateControls =
-  (control: DynamicFormControlInterface) =>
-  (state: Paginable<DynamicFormInterface>) => {
+  (control: ControlInterface) => (state: Paginable<FormInterface>) => {
     let value =
       control && control.formId ? state.items[control.formId] : undefined;
     if (value) {
       return updatePaginableValue({
         ...value,
-        formControls: updateListUsingID(value.formControls ?? [], control),
+        controls: updateListUsingID(value.controls ?? [], control),
       })(state);
     }
     return state;
   };
 
 const addControl =
-  (control: DynamicFormControlInterface) =>
-  (state: Paginable<DynamicFormInterface>) => {
+  (control: ControlInterface) => (state: Paginable<FormInterface>) => {
     let value =
       control && control.formId ? state.items[control.formId] : undefined;
     if (value) {
-      const controls = value.formControls ?? [];
+      const controls = value.controls ?? [];
       return updatePaginableValue({
         ...value,
-        formControls: lodash.uniqBy([...controls, control], "id"),
+        controls: lodash.uniqBy([...controls, control], "id"),
       })(state);
     }
     return state;
   };
 
 const deleteControl =
-  (control: DynamicFormControlInterface) =>
-  (state: Paginable<DynamicFormInterface>) => {
+  (control: ControlInterface) => (state: Paginable<FormInterface>) => {
     let value =
       control && control.formId ? state.items[control.formId] : undefined;
     if (value) {
       return updatePaginableValue({
         ...value,
-        formControls: deleteFromListUsingID(value.formControls ?? [], control),
+        controls: deleteFromListUsingID(value.controls ?? [], control),
       })(state);
     }
     return state;

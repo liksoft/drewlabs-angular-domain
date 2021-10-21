@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { DynamicFormInterface } from "../compact";
+import { FormInterface } from "../compact";
 
 export interface FormsLoader {
   /**
@@ -12,5 +12,5 @@ export interface FormsLoader {
   load(
     endpoint: string,
     options?: { [index: string]: any }
-  ): Observable<DynamicFormInterface[]>;
+  ): Observable<FormInterface[]>;
 }

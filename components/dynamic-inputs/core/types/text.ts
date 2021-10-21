@@ -1,4 +1,4 @@
-import { DynamicFormControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact/types";
 import {
   IHTMLFormControl,
   IHTMLFormControlValidationRule,
@@ -31,7 +31,7 @@ export class TextInput extends AbstractHTMLFormControl {
    * @param model [[FormControlModel]]
    */
   static fromFormControlModel(
-    model: Partial<DynamicFormControlInterface>
+    model: Partial<ControlInterface>
   ): IHTMLFormControl {
     return new TextInput({
       label: model.label,

@@ -1,4 +1,4 @@
-import { DynamicFormControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact/types";
 import { IHTMLFormControl } from "../contracts/dynamic-input";
 import { IHTMLFormControlValidationRule } from "../contracts/input-rules";
 import { buildRequiredIfConfig } from "../helpers/builders";
@@ -20,7 +20,7 @@ export class InputGroup extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel = (model: Partial<DynamicFormControlInterface>) =>
+  static fromFormControlModel = (model: Partial<ControlInterface>) =>
     new InputGroup({
       label: model.label,
       type: model.type,

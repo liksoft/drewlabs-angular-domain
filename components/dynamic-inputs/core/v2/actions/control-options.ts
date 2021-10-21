@@ -10,14 +10,13 @@ import {
   StoreAction,
 } from "../../../../../rxjs/state/rx-state";
 import { PaginationDataState } from "../../../../../rxjs/types";
-import { ControlOptionInterface } from "../../compact/types";
+import { OptionInterface } from "../../compact/types";
 import { isDefined, isObject } from "../../../../../utils";
 import { emptyObservable } from "../../../../../rxjs/helpers";
-import { ControlOption } from "../models";
 import { defaultHttpErrorHandler } from "../../../../../http/helpers/response";
+import { createOptionElement } from "..";
 
-export const deserializeOption = (serialized: { [index: string]: any }) =>
-  ControlOption.builder().fromSerialized(serialized);
+export const deserializeOption = (serialized: { [index: string]: any }) => createOptionElement(serialized);
 
 export const initialState: OptionsState = {
   collections: {
@@ -42,8 +41,8 @@ export const initialState: OptionsState = {
  */
 export interface OptionsState {
   performingAction: boolean;
-  collections: PaginationDataState<ControlOptionInterface>;
-  selected?: ControlOptionInterface;
+  collections: PaginationDataState<OptionInterface>;
+  selected?: OptionInterface;
   createResult?: UIStateStatusCode;
   updateResult?: UIStateStatusCode;
   deleteResult?: UIStateStatusCode;
@@ -95,7 +94,7 @@ export const createControlResultAction = (
     store,
     (payload: {
       createResult: UIStateStatusCode;
-      value: ControlOptionInterface;
+      value: OptionInterface;
     }) => ({
       type: Actions.CREATE_RESULT,
       payload,
@@ -140,7 +139,7 @@ export const updateControlOptionResultAction = (
     store,
     (payload: {
       updateResult: UIStateStatusCode;
-      value: ControlOptionInterface | { id: string | number };
+      value: OptionInterface | { id: string | number };
     }) => ({
       type: Actions.UPDATE_RESULT,
       payload,
@@ -150,7 +149,7 @@ export const updateControlOptionResultAction = (
 export const selectControlOptionAction = (
   store: DrewlabsFluxStore<OptionsState, Partial<StoreAction>>
 ) =>
-  createAction(store, (payload: ControlOptionInterface) => ({
+  createAction(store, (payload: OptionInterface) => ({
     type: Actions.SELECTED,
     payload,
   }));

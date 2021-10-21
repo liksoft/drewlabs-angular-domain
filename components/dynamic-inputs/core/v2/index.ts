@@ -23,3 +23,12 @@ export {
   formControlRemovedAction,
   formControlUpdatedAction,
 } from "./actions";
+
+export {
+  Control,
+  Form,
+  createFormElement,
+  createOptionElement,
+  createSerializedControlRequest,
+  createSerializedFormControlRequest,
+} from "./models";

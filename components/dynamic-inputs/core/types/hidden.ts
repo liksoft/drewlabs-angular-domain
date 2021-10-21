@@ -1,4 +1,4 @@
-import { DynamicFormControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact/types";
 import { IHTMLFormControl, IHTMLFormControlValidationRule } from "../contracts";
 import { buildRequiredIfConfig } from "../helpers/builders";
 import { AbstractHTMLFormControl } from "./dynamic-input";
@@ -12,7 +12,7 @@ export class HiddenInput extends AbstractHTMLFormControl {
    * @param model [[FormControlModel]]
    */
   static fromFormControlModel(
-    model: Partial<DynamicFormControlInterface>
+    model: Partial<ControlInterface>
   ): IHTMLFormControl {
     return new HiddenInput({
       type: model.type,

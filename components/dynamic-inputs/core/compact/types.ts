@@ -1,16 +1,16 @@
-export interface DynamicFormInterface {
+export interface FormInterface {
   id: number;
   title: string;
   parentId?: string;
   description?: string;
-  children?: DynamicFormInterface[];
-  formControls: DynamicFormControlInterface[];
+  children?: FormInterface[];
+  controls: ControlInterface[];
   url?: string;
   status?: number;
   appcontext?: string;
   cached?: boolean;
 }
-export interface DynamicFormControlInterface {
+export interface ControlInterface {
   id: number;
   label: string;
   placeholder?: string;
@@ -41,7 +41,7 @@ export interface DynamicFormControlInterface {
   value: string;
   uploadURL?: string;
   isRepeatable?: number | boolean;
-  children?: Partial<DynamicFormControlInterface>[];
+  children?: Partial<ControlInterface>[];
   uniqueOn?: string;
   dynamicControlContainerClass?: string;
   // Added properties
@@ -51,7 +51,7 @@ export interface DynamicFormControlInterface {
   formId?: number;
 }
 
-export interface ControlOptionInterface {
+export interface OptionInterface {
   id: number;
   table: string;
   keyfield: string;

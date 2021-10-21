@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   Output,
@@ -8,8 +9,9 @@ import {
 import { AbstractControl, FormGroup } from "@angular/forms";
 import { createSubject } from "src/app/lib/core/rxjs/helpers";
 import { IDynamicForm } from "../../../core/contracts";
+import { AngularReactiveFormBuilderBridge } from "../../contracts";
 import { ComponentReactiveFormHelpers } from "../../helpers";
-import { DynamicFormBuilder } from "../../services/form-builder.service";
+import { ANGULAR_REACTIVE_FORM_BRIDGE } from "../../types";
 
 @Component({
   selector: "app-simple-dynamic-form",
@@ -22,13 +24,12 @@ export class SimpleDynamicFormComponent implements OnDestroy {
 
   @Input() performingAction = false;
   @Input() buttonDisabled = false;
+  @Input() submitable: boolean = true;
 
   @Input() set form(value: IDynamicForm) {
     this._form = value;
     if (value) {
-      this._formgroup = this._parser.buildFormGroupFromDynamicForm(
-        value
-      ) as FormGroup;
+      this._formgroup = this.builder.group(value) as FormGroup;
       this.componentReadyStateChanges.emit();
     }
   }
@@ -38,13 +39,14 @@ export class SimpleDynamicFormComponent implements OnDestroy {
   get formgroup() {
     return this._formgroup;
   }
-
   @Output() public formEvent = new EventEmitter<{ [index: string]: any }>();
   @Output() public componentReadyStateChanges = new EventEmitter();
-
   public readonly destroy$ = createSubject();
 
-  public constructor(private _parser: DynamicFormBuilder) {}
+  public constructor(
+    @Inject(ANGULAR_REACTIVE_FORM_BRIDGE)
+    private builder: AngularReactiveFormBuilderBridge
+  ) {}
 
   listenFormControlChanges = (control: string) =>
     this._formgroup?.get(control)?.valueChanges;
@@ -104,9 +106,7 @@ export class SimpleDynamicFormComponent implements OnDestroy {
     (() => {
       this._form = value;
       if (value) {
-        this._formgroup = this._parser.buildFormGroupFromDynamicForm(
-          value
-        ) as FormGroup;
+        this._formgroup = this.builder.group(value) as FormGroup;
       }
     })();
 

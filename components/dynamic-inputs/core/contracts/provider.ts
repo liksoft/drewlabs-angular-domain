@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 import { ActionHandler } from "../../../../../core/rxjs/handlers";
-import { DynamicFormInterface } from "../../core/compact";
+import { FormInterface } from "../../core/compact";
 import { FormState, FormStoreActions } from "../../core/v2";
 
 interface Provider {
@@ -43,7 +43,7 @@ interface Provider {
    * @param url
    * @param controlID
    */
-  deleteFormControl(url: string, controlID: number): Observable<any> | any;
+  deleteControl(url: string, controlID: number | string): Observable<any> | any;
 
   /**
    * @description Get a list of server form instances
@@ -52,7 +52,7 @@ interface Provider {
    */
   getAll(
     params: { [index: string]: any },
-    callback?: (value: any[]) => DynamicFormInterface[]
+    callback?: (value: any[]) => FormInterface[]
   ): Observable<{ [index: string]: any }[]>;
 
   /**
@@ -63,7 +63,7 @@ interface Provider {
   get(
     id: string | number,
     params?: { [prop: string]: any }
-  ): Observable<DynamicFormInterface>;
+  ): Observable<FormInterface>;
 
   /**
    * @description Makes a pagination request to the data source
@@ -85,7 +85,7 @@ export interface CacheableProvider {
   cache(
     endpoint: string,
     options?: { [index: string]: any }
-  ): Observable<never> | Observable<DynamicFormInterface[]>;
+  ): Observable<never> | Observable<FormInterface[]>;
 }
 
 export type FormsProvider = Provider &

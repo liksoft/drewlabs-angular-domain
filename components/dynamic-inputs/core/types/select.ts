@@ -1,4 +1,4 @@
-import { DynamicFormControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact/types";
 import { IHTMLFormControl, IHTMLFormControlValidationRule } from "../contracts";
 import { BindingControlInterface } from "../contracts/dynamic-input";
 import { buildRequiredIfConfig } from "../helpers/builders";
@@ -49,7 +49,7 @@ export class SelectInput
    * @param model [[FormControlModel]]
    */
   static fromFormControlModel(
-    model: Partial<DynamicFormControlInterface>
+    model: Partial<ControlInterface>
   ): IHTMLFormControl {
     // Parse the model fields
     let { keyfield, valuefield, groupfield } = model.selectableModel

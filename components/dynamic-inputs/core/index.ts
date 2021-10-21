@@ -40,5 +40,15 @@ export {
   DynamicFormHelpers,
 } from "./helpers";
 export { STATIC_FORMS } from "./constants/forms";
-export { SelectableControl, ServerSideSelectableControl } from "./v2";
-export { FormState, FormStoreActions } from "./v2";
+export {
+  SelectableControl,
+  ServerSideSelectableControl,
+  FormState,
+  FormStoreActions,
+  Control,
+  Form,
+  createSerializedControlRequest,
+  createSerializedFormControlRequest,
+  createFormElement,
+  createOptionElement,
+} from "./v2";

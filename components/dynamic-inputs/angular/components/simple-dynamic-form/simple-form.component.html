@@ -1,19 +1,18 @@
-<!-- Page Content -->
 <div class="card-block">
-  <div class="user-form" *ngIf="formgroup">
+  <ng-container *ngIf="formgroup">
     <app-dynamic-form-wapper
       [form]="form"
       [componentFormGroup]="formgroup"
     ></app-dynamic-form-wapper>
-  </div>
+  </ng-container>
 </div>
-<div class="card-footer">
+<div class="card-footer" *ngIf="submitable">
   <button
     [disabled]="performingAction || buttonDisabled"
     class="btn btn-primary special"
     (click)="onFormSubmitted($event)"
   >
     <clr-icon shape="circle-arrow" dir="up"></clr-icon>
-    Continuer
+    SOUMETTRE
   </button>
 </div>

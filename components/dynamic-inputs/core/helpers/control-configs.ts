@@ -1,4 +1,4 @@
-import { DynamicFormControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact/types";
 import { IDynamicForm } from "../contracts/dynamic-form";
 import { IHTMLFormControl } from "../contracts/dynamic-input";
 import { InputTypes } from "../contracts/input-types";
@@ -34,7 +34,7 @@ export const rebuildFormControlConfigs = (
 };
 
 export function toDynamicControl(
-  model: Partial<DynamicFormControlInterface>
+  model: Partial<ControlInterface>
 ): IHTMLFormControl {
   switch (model.type) {
     case InputTypes.DATE_INPUT:

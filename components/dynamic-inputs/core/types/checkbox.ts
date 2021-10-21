@@ -1,4 +1,4 @@
-import { DynamicFormControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact/types";
 import {
   CheckboxItem,
   IHTMLFormControl,
@@ -24,7 +24,7 @@ export class CheckBoxInput extends AbstractHTMLFormControl {
    * @param model [[FormControlModel]]
    */
   static fromFormControlModel(
-    model: Partial<DynamicFormControlInterface>
+    model: Partial<ControlInterface>
   ): IHTMLFormControl {
     return new CheckBoxInput({
       label: model.label,

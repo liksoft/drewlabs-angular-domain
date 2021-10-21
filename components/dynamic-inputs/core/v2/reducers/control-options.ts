@@ -6,9 +6,9 @@ import {
   insertOrUpdateValuesUsingID,
   removeItemFromCache,
 } from "../../../../../rxjs/helpers";
-import { ControlOptionInterface } from "../../compact/types";
+import { OptionInterface } from "../../compact/types";
 import { OptionsState, Actions } from "../actions/control-options";
-import { ControlOption } from "../models/form";
+import { Option } from "../models/form";
 
 export const optionsReducer = (
   state: OptionsState,
@@ -81,7 +81,7 @@ export const optionsReducer = (
         createResult,
         updateResult,
         deleteResult,
-        selected: ControlOption.builder().build(ControlOption, {
+        selected: Option.builder().build(Option, {
           ...(state?.selected ? state?.selected : {}),
           ...value,
         }),
@@ -96,7 +96,7 @@ export const optionsReducer = (
               ...state.collections,
               items: removeItemFromCache(
                 state.collections ? state.collections.items || {} : {},
-                { id: value } as ControlOptionInterface
+                { id: value } as OptionInterface
               ),
             }
           : { ...state.collections },

@@ -1,4 +1,4 @@
-import { DynamicFormControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact/types";
 import { IHTMLFormControl } from "../contracts/dynamic-input";
 import { InputTypes } from "../contracts/input-types";
 import { CheckBoxInput } from "./checkbox";
@@ -15,7 +15,7 @@ import { TextInput } from "./text";
 import { TextAreaInput } from "./textarea";
 
 export function buildControl(
-  model: Partial<DynamicFormControlInterface>
+  model: Partial<ControlInterface>
 ): IHTMLFormControl {
   switch (model.type) {
     case InputTypes.DATE_INPUT:

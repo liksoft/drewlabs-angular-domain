@@ -1,7 +1,5 @@
 import { createStore, onErrorAction } from "../../../../rxjs/state/rx-state";
 import {
-  FormState,
-  FormStoreActions,
   onAddFormToStackAction,
   createFormAction,
   createFormControlAction,
@@ -21,16 +19,21 @@ import { formsReducer } from "../../core/v2/reducers";
 import { throwError } from "rxjs";
 import { Inject, Injectable, OnDestroy } from "@angular/core";
 import { catchError, map, tap } from "rxjs/operators";
-import { DynamicFormInterface } from "../../core/compact";
+import { FormInterface } from "../../core/compact";
 import { doLog } from "../../../../rxjs/operators";
 import { DrewlabsRessourceServerClient } from "../../../../http/core";
 import { getResponseDataFromHttpResponse } from "../../../../http/helpers";
 import { FORM_RESOURCES_PATH } from "../../core/constants/injection-tokens";
 import { DYNAMIC_FORM_LOADER } from "./forms-loaders";
-import { FormV2 } from "../../core/v2/models";
 import { emptyObservable } from "src/app/lib/core/rxjs/helpers";
 import { ActionResult } from "src/app/lib/core/rxjs/handlers";
-import { FormsLoader, FormsProvider } from "../../core";
+import {
+  FormsLoader,
+  FormsProvider,
+  createFormElement,
+  FormState,
+  FormStoreActions,
+} from "../../core";
 
 export const initialState: FormState = {
   collections: {
@@ -117,15 +120,15 @@ export class DynamicFormService implements OnDestroy, FormsProvider {
   /**
    * @inheritdoc
    */
-  deleteFormControl(url: string, controlID: number) {
-    deleteFormFormControl(this.store$)(url, {}, controlID);
+  deleteControl(url: string, id: number | string) {
+    deleteFormFormControl(this.store$)(url, {}, id);
   }
   /**
    * @inheritdoc
    */
   getAll = (
     params: { [index: string]: any },
-    callback?: (value: any[]) => DynamicFormInterface[]
+    callback?: (value: any[]) => FormInterface[]
   ) =>
     (() =>
       this.client.get(this.path, { params }).pipe(
@@ -146,13 +149,16 @@ export class DynamicFormService implements OnDestroy, FormsProvider {
     return this.client.get(`${this.path}/${id}`, params).pipe(
       map((state) => {
         const data = getResponseDataFromHttpResponse(state);
-        return data ? FormV2.builder().fromSerialized(data) : undefined;
+        return createFormElement(data);
       })
     );
   };
 
   paginate(url: string, params: { [index: string]: any }) {
-    onPaginateFormsAction(this.store$)(this.client, url, params);
+    onPaginateFormsAction(this.store$)(this.client, url, {
+      ...params,
+      with_controls: true,
+    });
   }
 
   /**
