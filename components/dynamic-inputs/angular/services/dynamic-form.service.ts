@@ -121,7 +121,7 @@ export class DynamicFormService implements OnDestroy, FormsProvider {
    * @inheritdoc
    */
   deleteControl(url: string, id: number | string) {
-    deleteFormFormControl(this.store$)(url, {}, id);
+    deleteFormFormControl(this.store$)(this.client, url, {}, id);
   }
   /**
    * @inheritdoc

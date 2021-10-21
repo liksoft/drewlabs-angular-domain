@@ -1,15 +1,10 @@
 <ng-container *ngIf="bindings$ | async as bindings">
-  <div class="form" *ngIf="componentFormGroup">
-    <div class="form form-container clr-row" *ngIf="componentFormGroup">
-      <ng-container
-        *ngIf="
-          componentForm?.controlConfigs &&
-          asArray(componentForm?.controlConfigs).length > 0
-        "
-      >
+  <div class="form" *ngIf="formgroup">
+    <div class="form form-container clr-row">
+      <ng-container *ngIf="hasInputs(form)">
         <div
-          [class]="getControlContainerClass(value?.containerClass)"
-          *ngFor="let value of componentForm?.controlConfigs"
+          [class]="getContainerClass(value?.containerClass)"
+          *ngFor="let value of form?.controlConfigs"
         >
           <app-dynamic-inputs
             [listenForChanges]="
@@ -21,15 +16,15 @@
             (keypress)="keypress.emit($event)"
             (fileAdded)="fileAdded.emit($event)"
             (fileRemoved)="fileRemoved.emit($event)"
-            [class]="getControlContainerClass(value?.containerClass)"
+            [class]="getContainerClass(value?.containerClass)"
             (multiSelectItemRemove)="
-              controlItemRemoved.emit({ event: $event, control: value })
+              itemRemoved.emit({ event: $event, control: value })
             "
             (valueChange)="
               handleControlChanges($event, value.formControlName, bindings)
             "
             [hidden]="value.hidden"
-            [control]="componentFormGroup.controls[value.formControlName]"
+            [control]="formgroup.get(value.formControlName)"
             [inputConfig]="value"
             [listItems]="value.items"
           ></app-dynamic-inputs>

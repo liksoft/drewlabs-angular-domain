@@ -43,6 +43,7 @@ export { STATIC_FORMS } from "./constants/forms";
 export {
   SelectableControl,
   ServerSideSelectableControl,
+  SelectableControlDataSource,
   FormState,
   FormStoreActions,
   Control,

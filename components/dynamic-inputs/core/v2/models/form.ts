@@ -35,7 +35,7 @@ export class Form implements FormInterface {
       parentId: "parentId",
       description: "description",
       children: { name: "children", type: Form },
-      formControls: { name: "formControls", type: Control },
+      controls: { name: "controls", type: Control },
       url: "url",
       status: "status",
       id: "id",

@@ -19,9 +19,9 @@ export type ApplyAttributeChangesResult = {
   form: IDynamicForm;
 };
 
-export type ApplyAttributeChangesToControlsFn = (
+export type ApplyAttributeChangesToControlsCallback = (
   form: IDynamicForm,
-  controlBinding: BindingInterface,
+  binding: BindingInterface,
   index: string | number
 ) => (formgroup: AbstractControl) => ApplyAttributeChangesResult;
 

@@ -5,7 +5,6 @@ export const initializeDynamicFormContainer = (
   assetsURL: string
 ) => {
   return async () => {
-    console.log(service);
     return await service
       .cache(assetsURL || "/assets/resources/app-forms.json")
       .toPromise();

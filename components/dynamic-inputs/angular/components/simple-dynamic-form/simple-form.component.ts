@@ -7,8 +7,8 @@ import {
   Output,
 } from "@angular/core";
 import { AbstractControl, FormGroup } from "@angular/forms";
-import { createSubject } from "src/app/lib/core/rxjs/helpers";
-import { IDynamicForm } from "../../../core/contracts";
+import { createSubject, timeout } from "../../../../../rxjs/helpers";
+import { IDynamicForm, IHTMLFormControl } from "../../../core/contracts";
 import { AngularReactiveFormBuilderBridge } from "../../contracts";
 import { ComponentReactiveFormHelpers } from "../../helpers";
 import { ANGULAR_REACTIVE_FORM_BRIDGE } from "../../types";
@@ -30,7 +30,9 @@ export class SimpleDynamicFormComponent implements OnDestroy {
     this._form = value;
     if (value) {
       this._formgroup = this.builder.group(value) as FormGroup;
-      this.componentReadyStateChanges.emit();
+      timeout(() => {
+        this.componentReadyStateChanges.emit();
+      }, 300);
     }
   }
   get form() {
@@ -109,6 +111,18 @@ export class SimpleDynamicFormComponent implements OnDestroy {
         this._formgroup = this.builder.group(value) as FormGroup;
       }
     })();
+
+  validateForm() {
+    ComponentReactiveFormHelpers.validateFormGroupFields(this.formgroup);
+    return this.formgroup;
+  }
+
+  public reset() {
+    this.formgroup.reset();
+    (this._form.controlConfigs as IHTMLFormControl[]).forEach((control) => {
+      this.formgroup.get(control.formControlName)?.setValue(control.value);
+    });
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();

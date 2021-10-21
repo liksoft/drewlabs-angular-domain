@@ -2,6 +2,7 @@ export { formsReducer } from "./reducers";
 export {
   SelectableControl,
   ServerSideSelectableControl,
+  SelectableControlDataSource,
 } from "./contracts/input-types";
 export {
   FormState,
