@@ -118,7 +118,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
    */
   destroy = () =>
     (() => {
-      this._store$.unsubscribe();
+      this._store$.complete();
       this._destroy$.next();
     })();
 }
