@@ -32,4 +32,5 @@ export {
   createOptionElement,
   createSerializedControlRequest,
   createSerializedFormControlRequest,
+  serializedOptionElement
 } from "./models";

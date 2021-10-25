@@ -1,8 +1,5 @@
 import { ArrayUtils } from "../../../../utils/types";
-import {
-  ControlInterface,
-  FormInterface,
-} from "../compact/types";
+import { ControlInterface, FormInterface } from "../compact/types";
 import { IDynamicForm } from "../contracts/dynamic-form";
 import { IHTMLFormControl } from "../contracts/dynamic-input";
 import { DynamicForm } from "../types/dynamic-form";
@@ -29,8 +26,7 @@ export class DynamicFormHelpers {
   static buildFormSync(form: FormInterface) {
     const generatorFn = function (instance: FormInterface) {
       const hasControls =
-        Array.isArray(instance?.controls) &&
-        instance?.controls?.length !== 0;
+        Array.isArray(instance?.controls) && instance?.controls?.length !== 0;
       return form
         ? createform({
             id: instance.id,
@@ -66,7 +62,8 @@ export const cloneform = (form: IDynamicForm) =>
  * @description Helper method for creating a new dynmaic form
  * @param form Object with the shape of the IDynamicForm interface
  */
-export const createform = (form: IDynamicForm) => new DynamicForm(form);
+export const createform = (form: IDynamicForm) =>
+  new DynamicForm(form) as IDynamicForm;
 
 /**
  * Create a new dynamic form from a copy of the user provided parameter

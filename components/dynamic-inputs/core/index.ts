@@ -52,4 +52,5 @@ export {
   createSerializedFormControlRequest,
   createFormElement,
   createOptionElement,
+  serializedOptionElement,
 } from "./v2";

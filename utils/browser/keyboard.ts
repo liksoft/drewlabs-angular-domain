@@ -7,4 +7,5 @@ export enum KEY_CODES {
 
 export enum KEY_NAMES {
     ESCAPE = 'Escape',
+    ENTER = 'enter'
 }

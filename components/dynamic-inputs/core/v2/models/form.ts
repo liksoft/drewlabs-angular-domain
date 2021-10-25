@@ -81,7 +81,9 @@ export function createFormElement(value: { [index: string]: any }) {
 }
 
 export function createOptionElement(value: { [index: string]: any }) {
-  return Option.builder().fromSerialized(
-    value
-  ) as OptionInterface;
+  return Option.builder().fromSerialized(value) as OptionInterface;
+}
+
+export function serializedOptionElement(value: OptionInterface) {
+  return Option.builder().toSerialized(value);
 }

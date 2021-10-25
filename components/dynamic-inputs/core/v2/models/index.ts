@@ -6,4 +6,10 @@ export {
   createSerializedFormControlRequest,
 } from "./form-control";
 
-export { Form, Option, createFormElement, createOptionElement } from "./form";
+export {
+  Form,
+  Option,
+  createFormElement,
+  createOptionElement,
+  serializedOptionElement,
+} from "./form";
