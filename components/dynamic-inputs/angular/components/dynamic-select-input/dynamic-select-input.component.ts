@@ -30,6 +30,7 @@ import { InputEventArgs } from "../../types/dynamic-inputs";
         display: block;
         max-width: 100% !important;
         width: 100%;
+        border-bottom-color: var(--clr-forms-border-color, #b3b3b3);
       }
 
       .ng-select.flat {
