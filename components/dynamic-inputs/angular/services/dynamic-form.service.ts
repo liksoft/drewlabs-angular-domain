@@ -20,7 +20,6 @@ import { throwError } from "rxjs";
 import { Inject, Injectable, OnDestroy } from "@angular/core";
 import { catchError, map, tap } from "rxjs/operators";
 import { FormInterface } from "../../core/compact";
-import { doLog } from "../../../../rxjs/operators";
 import { DrewlabsRessourceServerClient } from "../../../../http/core";
 import { getResponseDataFromHttpResponse } from "../../../../http/helpers";
 import { FORM_RESOURCES_PATH } from "../../core/constants/injection-tokens";
@@ -120,8 +119,8 @@ export class DynamicFormService implements OnDestroy, FormsProvider {
   /**
    * @inheritdoc
    */
-  deleteControl(url: string, id: number | string) {
-    deleteFormFormControl(this.store$)(this.client, url, {}, id);
+  deleteControl(url: string, id: number | string, form: number | string) {
+    deleteFormFormControl(this.store$)(this.client, url, { form_id: form }, id);
   }
   /**
    * @inheritdoc
@@ -174,7 +173,6 @@ export class DynamicFormService implements OnDestroy, FormsProvider {
           state?.map((value) => ({ ...value, cached: true }))
         )
       ),
-      doLog("DynamicFormService service: "),
       catchError((err) => {
         onErrorAction(this.store$)();
         return emptyObservable();

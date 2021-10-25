@@ -10,6 +10,7 @@ import {
   tap,
   takeUntil,
 } from "rxjs/operators";
+import { doLog } from "../operators";
 
 export interface StoreAction {
   type: string;
@@ -54,7 +55,7 @@ export abstract class InjectableStore<T, A extends Partial<StoreAction>>
 export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
   private _destroy$ = createSubject();
 
-  private readonly _store$ = createSubject<T>(2);
+  private readonly _store$ = createSubject<T>(1);
 
   // tslint:disable-next-line: variable-name
   state$: Observable<T> = this._store$.asObservable();
@@ -142,6 +143,7 @@ export const createStore = <T, K>(
   reducer: StateReducerFn<T, K>,
   initialState: T
 ) => {
+  console.log("Creating store...");
   return new DrewlabsFluxStore(reducer, initialState);
 };
 

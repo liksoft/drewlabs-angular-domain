@@ -11,7 +11,7 @@ import { getResponseDataFromHttpResponse } from "../../../../../http/helpers/res
 import { emptyObservable } from "../../../../../rxjs/helpers";
 import { GenericUndecoratedSerializaleSerializer } from "../../../../../built-value/core/js/serializer";
 import { HttpErrorResponse } from "@angular/common/http";
-import { FormInterface } from "../../compact/types";
+import { ControlInterface, FormInterface } from "../../compact";
 import { Control } from "../models";
 import { UIStateStatusCode } from "../../../../../contracts/ui-state";
 import { IResourcesServerClient } from "src/app/lib/core/http";
@@ -409,13 +409,16 @@ export const deleteFormFormControl = (
       id?: number
     ) => ({
       type: DefaultStoreAction.ASYNC_UI_ACTION,
-      payload: client.delete(path, { params: params || {} }).pipe(
+      payload: client.delete(path, { params: params ?? {} }).pipe(
         map((state) => {
           // tslint:disable-next-line: one-variable-per-declaration
           if (id) {
             formControlRemovedAction(store)({
               deleteControlResult: UIStateStatusCode.OK,
-              control: { id: id },
+              control: {
+                id: id,
+                formId: params?.form_id,
+              } as Partial<ControlInterface>,
             });
           }
         }),

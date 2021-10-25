@@ -41,9 +41,13 @@ interface Provider {
   /**
    * @description Delete a server form control instance
    * @param url
-   * @param controlID
+   * @param id
    */
-  deleteControl(url: string, controlID: number | string): Observable<any> | any;
+  deleteControl(
+    url: string,
+    id: number | string,
+    form: number | string
+  ): Observable<any> | any;
 
   /**
    * @description Get a list of server form instances

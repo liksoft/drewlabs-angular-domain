@@ -46,13 +46,16 @@ const addControl =
 
 const deleteControl =
   (control: ControlInterface) => (state: Paginable<FormInterface>) => {
-    let value =
-      control && control.formId ? state.items[control.formId] : undefined;
-    if (value) {
-      return updatePaginableValue({
-        ...value,
-        controls: deleteFromListUsingID(value.controls ?? [], control),
-      })(state);
+    if (control) {
+      let value =
+        control && control.formId ? state.items[control.formId] : undefined;
+      if (value) {
+        const controls = deleteFromListUsingID(value.controls ?? [], control);
+        return updatePaginableValue({
+          ...value,
+          controls,
+        })(state);
+      }
     }
     return state;
   };

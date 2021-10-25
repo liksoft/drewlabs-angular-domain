@@ -11,11 +11,11 @@ import {
 import { AuthService } from "./auth.service";
 import { AuthPathConfig } from "./config";
 import { Observable } from "rxjs";
-import { isDefined } from "../../utils/types/type-utils";
 import { AuthTokenService } from "../../auth-token/core/auth-token.service";
-import { filter, map, takeUntil } from "rxjs/operators";
+import { filter, map, takeUntil, tap } from "rxjs/operators";
 import { userCanAny, Authorizable, userCan } from "../contracts/v2/user/user";
 import { createSubject } from "../../rxjs/helpers/index";
+import { doLog } from "../../rxjs/operators";
 
 /**
  * @description Authentication guard
@@ -72,21 +72,23 @@ export class AuthGuardService
    */
   checkLogin(url: string): Observable<boolean> | boolean | Promise<boolean> {
     return this.authState$.pipe(
-      takeUntil(this._destroy$),
       filter(
         (state) =>
+          !state.authenticating &&
           !(
             typeof state.isInitialState === "undefined" ||
             state?.isInitialState === null
           )
       ),
       map((source) => {
-        if (!isDefined(source.user) || !isDefined(source.isLoggedIn)) {
-          this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-          return false;
+        if (source.isLoggedIn) {
+          return true;
         }
-        return true;
+        this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
+        return false;
       }),
+      doLog('Navigating...'),
+      takeUntil(this._destroy$)
     );
   }
   ngOnDestroy(): void {
@@ -125,18 +127,19 @@ export class AuthorizationsGuard implements CanActivate {
     return this.auth.state$.pipe(
       filter(
         (state) =>
+          !state.authenticating &&
           !(
             typeof state.isInitialState === "undefined" ||
             state?.isInitialState === null
           )
       ),
       map((source) => {
-        if (!isDefined(source.user)) {
+        if (typeof source.user === "undefined" || typeof source.user === null) {
           this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
           return false;
         }
         let isAuthorized = false;
-        if (authorizations && authorizations instanceof Array) {
+        if (Array.isArray(authorizations)) {
           isAuthorized = userCanAny(
             source.user as Authorizable,
             authorizations
@@ -180,24 +183,27 @@ export class RootComponentGuard implements CanActivate {
     return this.auth.state$.pipe(
       filter(
         (state) =>
+          !state.authenticating &&
           !(
             typeof state.isInitialState === "undefined" ||
             state?.isInitialState === null
           )
       ),
       map((source) => {
-        if (!isDefined(source.user)) {
+        if (typeof source.user === "undefined" || typeof source.user === null) {
           this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
           return false;
         }
         if (
-          isDefined(route.data.modulePermissions) &&
-          !userCanAny(source.user as Authorizable, route.data.modulePermissions)
+          !userCanAny(
+            source.user as Authorizable,
+            route.data.authorizations ?? []
+          )
         ) {
           this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
           return false;
         }
-        if (isDefined(this.authToken.token)) {
+        if (this.authToken.token) {
           this.router.navigate([url]);
         }
         return true;

@@ -2,7 +2,7 @@ import { Inject, Injectable, OnDestroy } from "@angular/core";
 import { AuthPathConfig } from "./config";
 import { AuthTokenService } from "../../auth-token/core/auth-token.service";
 import { AuthRememberTokenService } from "../../auth-token/core/auth-remember-token.service";
-import { createSubject, observableOf } from "../../rxjs/helpers";
+import { createSubject, observableOf, timeout } from "../../rxjs/helpers";
 import {
   mergeMap,
   catchError,
@@ -11,7 +11,7 @@ import {
   filter,
   delay,
 } from "rxjs/operators";
-import { throwError, merge, Observable } from "rxjs";
+import { throwError, merge } from "rxjs";
 import { ILoginRequest, ILoginResponse } from "../contracts/v2";
 import { UserStorageProvider } from "./services/user-storage";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -71,16 +71,17 @@ export class AuthService implements OnDestroy {
     authenticating: false,
     isInitialState: undefined,
   } as AuthState);
-  get state$(): Observable<Partial<AuthState>> {
-    return this._authStore$.connect().pipe(filter((state) => !isEmpty(state)));
-  }
+
+  // Auth state
+  state$ = this._authStore$.connect().pipe(filter((state) => !isEmpty(state)));
 
   /**
    * @deprecated
    */
-  get user(): IAppUser | Authorizable | NotifiableUserDetails {
-    return this.userStorage.user;
-  }
+  user = this.userStorage.user as
+    | IAppUser
+    | Authorizable
+    | NotifiableUserDetails;
 
   constructor(
     public userStorage: UserStorageProvider,
@@ -95,20 +96,19 @@ export class AuthService implements OnDestroy {
     @Inject("AUTH_LOGIN_PATH") private loginPath: string,
     @Inject("AUTH_LOGOUT_PATH") private logoutPath: string
   ) {
+    // Initialize authentication state
+    this.initState();
     merge(
       this.httpClient.errorState$,
       observableOf({} as HTTPErrorState).pipe(
-        takeUntil(this._destroy$),
         delay(0),
-        takeUntil(this._destroy$),
         tap((state) => {
-          this.initState();
           if (isDefined(state.status)) {
             if (state && state.status === 401) {
               this.userStorage.removeUserFromCache();
               this.oAuthTokenProvider.removeToken();
               this.sessionStorage.clear();
-              intitAuthStateAction(this._authStore$)();
+              this.signoutState();
               this.sessionStorage.set("X_SESSION_EXPIRED", true);
               // To be review
               this.router.navigate([AuthPathConfig.LOGIN_PATH], {
@@ -116,19 +116,28 @@ export class AuthService implements OnDestroy {
               });
             }
           }
-        })
+        }),
+        takeUntil(this._destroy$)
       )
     ).subscribe();
 
     this.logoutState$
-      .pipe(doLog("Loggin out..."), takeUntil(this._destroy$))
-      .subscribe(() => {
-        this.userStorage.removeUserFromCache();
-        this.oAuthTokenProvider.removeToken();
-        this.sessionStorage.clear();
-        intitAuthStateAction(this._authStore$)(initalState);
-        this.router.navigate([AuthPathConfig.LOGIN_PATH], { replaceUrl: true });
-      });
+      .pipe(
+        takeUntil(this._destroy$),
+        tap(() => {
+          this.userStorage.removeUserFromCache();
+          this.oAuthTokenProvider.removeToken();
+          this.sessionStorage.clear();
+          // intitAuthStateAction(this._authStore$)(initalState);
+          this.signoutState();
+          timeout(() => {
+            this.router.navigate([AuthPathConfig.LOGIN_PATH], {
+              replaceUrl: true,
+            });
+          }, 300);
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy = () => {
@@ -249,19 +258,30 @@ export class AuthService implements OnDestroy {
       );
   };
 
-  public initState = () => {
+  public initState() {
     const user = this.userStorage.user;
-    const token = this.oAuthTokenProvider.token;
-    const rememberToken = this.rememberTokenProvider.token;
-    this.setAuthenticationStateFromStoredValues({ user, token, rememberToken });
-  };
+    const token = this.oAuthTokenProvider.token ?? undefined;
+    const rememberToken = this.rememberTokenProvider.token ?? undefined;
+    this.setStateFromStoredValues({ user, token, rememberToken });
+  }
 
-  setAuthenticationStateFromStoredValues = (
-    state: Partial<AuthStorageValues>
-  ) => {
+  private signoutState() {
+    const payload = {
+      isLoggedIn: false,
+      is2FactorAuthActive: false,
+      isInitialState: true,
+      user: undefined,
+      token: undefined,
+      rememberToken: undefined,
+      signingOut: true,
+    } as AuthState;
+    intitAuthStateAction(this._authStore$)(payload);
+  }
+
+  private setStateFromStoredValues(state: Partial<AuthStorageValues>) {
     try {
       let payload = {};
-      if (isDefined(state.user) && isDefined(state.token)) {
+      if (state.user && state.token) {
         payload = {
           ...state,
           isLoggedIn: Boolean(true),
@@ -272,17 +292,19 @@ export class AuthService implements OnDestroy {
         };
       } else {
         payload = {
-          ...state,
           isLoggedIn: false,
           is2FactorAuthActive: false,
           isInitialState: true,
-        };
+          user: undefined,
+          token: undefined,
+          rememberToken: undefined,
+        } as AuthState;
       }
       intitAuthStateAction(this._authStore$)(payload);
     } catch (error) {
       Log("Error during initialization...", error);
     }
-  };
+  }
 
   getAuthorizationToken = () => this.oAuthTokenProvider.token;
 }
