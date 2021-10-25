@@ -59,6 +59,7 @@ export {
   maxNumberSize,
   setObjectProperty,
   Order,
+  toBinary,
 } from "./types";
 
 // URL Utilities functions

@@ -1,5 +1,5 @@
 import { Base64 } from "./base64";
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
 
 /**
  * Saves a file by opening file-save-as dialog in the browser
@@ -8,14 +8,18 @@ import { saveAs } from 'file-saver';
  */
 export const writeStream = async (
   content: Blob | string | ArrayBuffer,
-  name: string
+  name: string,
+  type: string | undefined = "application/octet-stream"
 ) => {
   const blob =
     content instanceof Blob
       ? content
       : typeof content === "string"
-      ? (await Base64.fromString(content, "application/octet-stream")).toBlob()
+      ? (
+          await Base64.fromString(content, type ?? "application/octet-stream")
+        ).toBlob(type)
       : new Blob([new Uint8Array(content)]);
+  console.log(blob);
   saveAs(blob, name);
 };
 

@@ -12,4 +12,4 @@ export { ArrayUtils } from "./array-utils";
 export { Filtrable, Order } from "./contracts";
 export { getObjectProperty, setObjectProperty } from "./object";
 export { maxNumberSize } from "./numbers";
-export { after, afterLast, before, beforeLast } from "./strings";
+export { after, afterLast, before, beforeLast, toBinary } from "./strings";
