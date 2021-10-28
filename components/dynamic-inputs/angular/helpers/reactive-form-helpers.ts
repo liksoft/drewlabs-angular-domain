@@ -26,14 +26,14 @@ export class ComponentReactiveFormHelpers {
   /**
    * @description Generate an abstract form control using input configuration
    *
-   * @param fb Angular forms reactive formbuilder
+   * @param builder Angular forms reactive formbuilder
    * @param input dynamic input configuration
    */
   static buildFormGroupFromInputConfig = (
-    fb: FormBuilder,
+    builder: FormBuilder,
     input: IHTMLFormControl[]
   ) => {
-    const group = fb.group({});
+    const group = builder.group({});
     input.map((config: IHTMLFormControl) => {
       if (config.type !== InputTypes.CHECKBOX_INPUT) {
         const validators = [
@@ -137,7 +137,7 @@ export class ComponentReactiveFormHelpers {
                 null;
         }
         // Add formControl to the form group with the generated validation rules
-        const control = fb.control(
+        const control = builder.control(
           {
             value: config.value,
             disabled: config.disabled,
@@ -165,7 +165,7 @@ export class ComponentReactiveFormHelpers {
             tap((items) => {
               items.map((it: CheckboxItem, index: number) => {
                 // Added validation rule to checkbox array
-                (array as FormArray).push(fb.control(it.checked));
+                (array as FormArray).push(builder.control(it.checked));
               });
             })
           )

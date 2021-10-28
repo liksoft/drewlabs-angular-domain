@@ -12,7 +12,15 @@ export class FormHttpLoader implements FormsLoader {
     return this._http.get(endpoint, options || {}).pipe(
       map((state) => {
         if (state && isArray(state)) {
-          return (state as any[]).map((value) => createFormElement(value));
+          return (state as any[]).map((value: { [index: string]: any }) => {
+            if (
+              (value?.formControls ?? [])?.length !== 0 &&
+              (value?.controls ?? []).length === 0
+            ) {
+              value = { ...value, controls: value?.formControls };
+            }
+            return createFormElement(value);
+          });
         }
         return [];
       })

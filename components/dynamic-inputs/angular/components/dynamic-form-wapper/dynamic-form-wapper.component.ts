@@ -38,14 +38,14 @@ export class DynamicFormWapperComponent {
   // tslint:disable-next-line: variable-name
   @Input() set form(value: any) {
     const { form, formgroup } = this.setComponentForm(value, this._formgroup);
-    this._form = form;
+    this._form = form as IDynamicForm;
     this._formgroup = formgroup as FormGroup;
   }
-  _formgroup: FormGroup;
+  _formgroup!: FormGroup;
   @Input("componentFormGroup")
   set formgroup(value: FormGroup) {
     const { form, formgroup } = this.setComponentForm(this._form, value);
-    this._form = form;
+    this._form = form as IDynamicForm;
     this._formgroup = formgroup as FormGroup;
   }
   get formgroup() {

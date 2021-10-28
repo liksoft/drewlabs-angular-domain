@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  HostListener,
   Inject,
   Input,
   OnDestroy,
@@ -44,6 +45,13 @@ export class SimpleDynamicFormComponent implements OnDestroy {
   @Output() public formEvent = new EventEmitter<{ [index: string]: any }>();
   @Output() public componentReadyStateChanges = new EventEmitter();
   public readonly destroy$ = createSubject();
+
+  @HostListener("keyup.enter", ["$event"])
+  onEnterButtonCliked(event: KeyboardEvent) {
+    if (!this.performingAction) {
+      this.onFormSubmitted(event);
+    }
+  }
 
   public constructor(
     @Inject(ANGULAR_REACTIVE_FORM_BRIDGE)
@@ -98,7 +106,6 @@ export class SimpleDynamicFormComponent implements OnDestroy {
     (() => {
       ComponentReactiveFormHelpers.validateFormGroupFields(this._formgroup);
       if (this._formgroup.valid) {
-        // TODO : Send Verification request to the client phone number
         this.formEvent.emit(this._formgroup.getRawValue());
       }
       event.preventDefault();
