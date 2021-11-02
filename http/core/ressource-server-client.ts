@@ -4,7 +4,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { doLog } from "../../rxjs/operators";
 import {
   Client,
-  HTTP_CLIENT,
   RequestBody,
   TransformResponseHandlerFn,
   IResourcesServerClient,
@@ -14,6 +13,7 @@ import {
 import { UIStateStatusCode } from "../../ui-state";
 import { isServerErrorResponse, isServerBadRequest } from "../helpers/response";
 import { mapToHttpResponse } from "../rx";
+import { HTTP_CLIENT } from "../tokens";
 
 @Injectable()
 export class DrewlabsRessourceServerClient

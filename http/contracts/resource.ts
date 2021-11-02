@@ -106,10 +106,3 @@ export interface IResourcesServerClient<T extends IHttpResponse<any>>
     | HttpErrorResponse
     | { status: UIStateStatusCode; validationErrors: { [prop: string]: any } };
 }
-
-/**
- * @description Server resource client provider
- */
-export const HTTP_SERVER_RESOURCE_CLIENT = new InjectionToken<
-  IResourcesServerClient<any>
->("Server Resource Client provider");

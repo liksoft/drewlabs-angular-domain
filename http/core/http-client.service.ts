@@ -7,13 +7,13 @@ import { Observable, throwError } from "rxjs";
 import { catchError, startWith } from "rxjs/operators";
 import { Injectable, Inject } from "@angular/core";
 import { URLUtils } from "../../utils/url/url";
-import { Browser } from "../../utils/browser/browser";
 import { isDefined } from "../../utils/types/type-utils";
 import { createSubject } from "../../rxjs/helpers/index";
 import { Err } from "../../utils/logger";
 import { ErrorHandler, HTTPErrorState } from "../contracts/error-handler";
-import { Client, SERVER_URL } from "../contracts";
-
+import { Client } from "../contracts";
+import { writeStream } from "../../utils/io";
+import { SERVER_URL } from "../tokens";
 
 /**
  * Derives file name from the http response by looking inside content-disposition
@@ -32,7 +32,6 @@ const getNameFromResponseHeaders = (res: any) => {
     matches?.length === 0 ? undefined : (matches[1] || "untitled").trim();
   return fileName;
 };
-
 
 @Injectable()
 export class HttpClient implements Client, ErrorHandler {
@@ -117,13 +116,13 @@ export class HttpClient implements Client, ErrorHandler {
     extension?: string,
     params?: { [prop: string]: any }
   ) =>
-    ((response: Blob) => {
+    (async (response: Blob) => {
       if (!isDefined(filename)) {
         filename = isDefined(extension)
           ? `${getNameFromResponseHeaders(response)}.${extension}`
           : `${getNameFromResponseHeaders(response)}`;
       }
-      Browser.saveFile(
+      await writeStream(
         response,
         isDefined(extension) ? `${filename}.${extension}` : `${filename}`
       );

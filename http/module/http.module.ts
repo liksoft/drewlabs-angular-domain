@@ -11,8 +11,8 @@ import {
   HTTP_CLIENT,
   HTTP_SERVER_RESOURCE_CLIENT,
   SERVER_URL,
-  TransformResponseHandlerFn,
-} from "../contracts";
+} from "../tokens";
+import { TransformResponseHandlerFn } from "../contracts";
 
 // tslint:disable-next-line: interface-over-type-literal
 type ModuleConfigParams = {

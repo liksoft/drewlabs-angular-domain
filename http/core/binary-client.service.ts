@@ -1,9 +1,13 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { HttpHeaders } from "@angular/common/http";
+import { Inject, Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
 import { URLUtils } from "../../utils";
 import { writeRawStream } from "../../utils/io";
-import { BinaryHttpClient as IBinaryHttpClient } from "../contracts";
+import {
+  BinaryHttpClient as IBinaryHttpClient,
+  Client as HttpClient,
+} from "../contracts";
+import { HTTP_CLIENT, SERVER_URL } from "../tokens";
 
 /**
  * Derives file name from the http response by looking inside content-disposition
@@ -26,7 +30,10 @@ const getNameFromResponseHeaders = (res: any) => {
 @Injectable()
 export class BinaryHttpClient implements IBinaryHttpClient {
   // Instance initializer
-  constructor(private http: HttpClient, private host: string) {}
+  constructor(
+    @Inject(HTTP_CLIENT) private http: HttpClient,
+    @Inject(SERVER_URL) private host: string
+  ) {}
   /**
    * @description provide a file download functionnality to the application
    * @param url

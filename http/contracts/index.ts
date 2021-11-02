@@ -3,15 +3,11 @@ export {
   TransformResponseHandlerFn,
   TransformManyResponseHandlerFn,
   IResourcesServerClient,
-  HTTP_SERVER_RESOURCE_CLIENT,
 } from "./resource";
 
 export {
   Client,
-  HTTP_CLIENT,
-  SERVER_URL,
   BinaryHttpClient,
-  HTTP_BINARY_CLIENT,
 } from "./client";
 
 export {

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core";
-import { BinaryHttpClient, HTTP_BINARY_CLIENT } from "../http/contracts";
+import { BinaryHttpClient, HTTP_BINARY_CLIENT } from "../http";
 import { readFileAsDataURI, b64toBlob } from "../utils/browser";
 import { writeRawStream } from "../utils/io";
 

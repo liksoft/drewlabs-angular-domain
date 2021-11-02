@@ -80,13 +80,3 @@ export interface BinaryHttpClient {
     params?: { [prop: string]: any }
   ): Observable<any>;
 }
-
-export const HTTP_CLIENT = new InjectionToken<
-  (Client | HttpClient) & ErrorHandler
->("HTTP Client instance provider");
-
-export const SERVER_URL = new InjectionToken<string>("Host URL");
-
-export const HTTP_BINARY_CLIENT = new InjectionToken<BinaryHttpClient>(
-  "HTTP Binary client instance provider"
-);

@@ -40,11 +40,10 @@ import {
   Client,
   ErrorHandler,
   HTTPErrorState,
-  HTTP_CLIENT,
-} from "../../http/contracts";
+  HTTP_CLIENT
+} from "../../http";
 import { httpHost } from "../../http/helpers";
 import { MapToHandlerResponse, mapToHttpResponse } from "../../http/rx";
-import { doLog } from "../../rxjs/operators";
 
 const initalState: AuthState = {
   isLoggedIn: false,
