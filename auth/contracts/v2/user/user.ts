@@ -30,7 +30,6 @@ export const userCanAny = (
   if (authorizations?.length === 0) {
     return true;
   }
-  console.log(authorizations);
   return (
     lodash.intersection(authorizable.authorizations, authorizations).length > 0
   );

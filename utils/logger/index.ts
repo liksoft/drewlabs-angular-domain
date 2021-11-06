@@ -12,8 +12,6 @@ export const logFormGroupControlsStatus = (control: FormGroup) => {
   Object.keys(control.controls).forEach((field: string) => {
     if (control.get(field) instanceof FormGroup) {
       logFormGroupControlsStatus(control.get(field) as FormGroup);
-    } else {
-      Log('Field status {valid, touched, dirty}: ', field, control.get(field)?.valid, control.get(field)?.touched, control.get(field)?.dirty);
     }
   });
 }

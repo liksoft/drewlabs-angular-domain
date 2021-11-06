@@ -19,7 +19,6 @@ export const writeStream = async (
           await Base64.fromString(content, type ?? "application/octet-stream")
         ).toBlob(type)
       : new Blob([new Uint8Array(content)]);
-  console.log(blob);
   saveAs(blob, name);
 };
 

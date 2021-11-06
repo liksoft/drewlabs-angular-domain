@@ -87,7 +87,6 @@ export class AuthGuardService
         this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
         return false;
       }),
-      doLog('Navigating...'),
       takeUntil(this._destroy$)
     );
   }
