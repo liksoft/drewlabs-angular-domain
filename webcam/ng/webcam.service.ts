@@ -1,5 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
+import { createStateful } from "../../rxjs/helpers";
 import { NAVIGATOR } from "../../utils/ng/common";
 import { OnVideoStreamHandlerFn, VideoConstraints, Webcam } from "../types";
 
@@ -9,6 +10,9 @@ export class WebcamService implements Webcam {
   private _mediaStream!: MediaStream | undefined;
   private _onCameraStartedCallback!: OnVideoStreamHandlerFn;
 
+  private _videoDevices$ = createStateful<MediaDeviceInfo[]>([]);
+  videoDevices$ = this._videoDevices$.asObservable();
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     @Inject(NAVIGATOR) private navigator: Navigator
@@ -17,6 +21,12 @@ export class WebcamService implements Webcam {
   onVideoCanPlay() {
     if (this._onCameraStartedCallback) {
       this._onCameraStartedCallback(this._mediaStream, this._video);
+
+      this.navigator.mediaDevices.enumerateDevices().then((devices) => {
+        this._videoDevices$.next(
+          devices.filter((value) => value.kind === "videoinput")
+        );
+      });
     }
   }
 

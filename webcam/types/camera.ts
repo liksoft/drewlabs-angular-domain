@@ -10,6 +10,9 @@ export type OnVideoStreamHandlerFn = (
  * @description Type definition of a web camservice
  */
 export interface Webcam {
+
+  videoDevices$: Observable<MediaDeviceInfo[]>;
+
   startCamera(
     video: any,
     resolution: string,
