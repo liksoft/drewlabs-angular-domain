@@ -78,10 +78,25 @@ export class WebcamService implements Webcam {
     };
     // Get video constraints
     let videoConstraint: any = undefined;
+    customResolution = customResolution ?? {};
     if (resolution === "custom") {
-      videoConstraint = customResolution;
+      videoConstraint = {
+        ...customResolution,
+        ...(customResolution?.deviceId
+          ? {}
+          : {
+              facingMode: videoConstraint?.facingMode ?? "user",
+            }),
+      };
     } else {
-      videoConstraint = constraints[resolution] || customResolution;
+      videoConstraint = constraints[resolution] ?? {
+        ...customResolution,
+        ...(customResolution?.deviceId
+          ? {}
+          : {
+              facingMode: videoConstraint?.facingMode ?? "user",
+            }),
+      };
     }
     if (!videoConstraint) {
       videoConstraint = true;
@@ -89,10 +104,7 @@ export class WebcamService implements Webcam {
     return new Promise((resolve, reject) => {
       this.navigator.mediaDevices
         .getUserMedia({
-          video: {
-            ...videoConstraint,
-            facingMode: videoConstraint?.facingMode || "user",
-          },
+          video: videoConstraint,
           audio: false,
         })
         .then((stream) => {

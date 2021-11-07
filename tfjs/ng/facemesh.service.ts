@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import { interval } from "rxjs";
 import { mergeMap, tap } from "rxjs/operators";
 import { emptyObservable, observableFrom } from "../../rxjs/helpers";
@@ -14,7 +14,7 @@ import {
 } from "../types";
 
 @Injectable()
-export class FaceMeshDetectorService implements FaceMeshDetector {
+export class FaceMeshDetectorService implements FaceMeshDetector, OnDestroy {
   _model!: TypeFaceMeshDetector | undefined;
 
   getModel() {
@@ -39,7 +39,7 @@ export class FaceMeshDetectorService implements FaceMeshDetector {
     if (this._model) {
       return interval(_interval).pipe(
         mergeMap((_) => {
-          if (this._model) {
+          if (this._model && input) {
             return observableFrom(
               predict(
                 this._model,
@@ -55,6 +55,11 @@ export class FaceMeshDetectorService implements FaceMeshDetector {
       "Model must be loaded before calling the detector function... Call loadModel() before calling this detectFaces()"
     );
   };
+
+  ngOnDestroy(): void {
+      this.deleteModel();
+  }
+
 }
 
 @Injectable({

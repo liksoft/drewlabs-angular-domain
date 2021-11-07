@@ -60,6 +60,5 @@ export const emptyObservable = () => observableFrom(EMPTY);
  * Exceute the user provided callback after a certain milliseconds
  * @param callback
  * @param milliseconds
- * @returns
  */
 export const timeout = (callback: () => void, milliseconds: number = 1000) => interval(milliseconds).pipe(first()).subscribe(() => callback());

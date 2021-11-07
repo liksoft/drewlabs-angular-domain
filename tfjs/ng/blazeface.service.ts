@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import { interval } from "rxjs";
 import { mergeMap, tap } from "rxjs/operators";
 import { emptyObservable, observableFrom } from "../../rxjs/helpers";
@@ -12,7 +12,7 @@ import {
 } from "../types";
 
 @Injectable()
-export class BlazeFaceDetectorService {
+export class BlazeFaceDetectorService implements OnDestroy {
   _model!: TypeBlazeDetector | undefined;
 
   public loadModel = (type?: BlazeModelConfig) => {
@@ -51,6 +51,10 @@ export class BlazeFaceDetectorService {
       "Model must be loaded before calling the detector function... Call loadModel() before calling this detectFaces()"
     );
   };
+
+  ngOnDestroy(): void {
+    this.deleteModel();
+  }
 }
 
 @Injectable()

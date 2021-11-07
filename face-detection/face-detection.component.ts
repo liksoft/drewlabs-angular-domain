@@ -12,11 +12,7 @@ import {
 } from "@angular/core";
 import { forkJoin } from "rxjs";
 import { filter, takeUntil, tap } from "rxjs/operators";
-import {
-  createStateful,
-  createSubject,
-  timeout as setTimeoutFn,
-} from "src/app/lib/core/rxjs/helpers";
+import { createStateful, createSubject } from "src/app/lib/core/rxjs/helpers";
 import {
   BlazeFaceDetector,
   BLAZE_FACE,
@@ -29,8 +25,6 @@ import { WEBCAM, Webcam } from "../webcam";
 import { Video } from "../webcam/helpers";
 import { getReadInterval } from "./helpers";
 import { FaceDetectionComponentState } from "./types/face-detection.component.state";
-
-// declare var cv: any;
 
 @Component({
   selector: "app-face-detection",
@@ -96,6 +90,9 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
     detecting: false,
   });
 
+  timeoutSubscription!: any;
+  faceDetectionSubscription!: any;
+
   constructor(
     @Inject(WEBCAM) private camera: Webcam,
     @Inject(BLAZE_FACE) private faceDetector: BlazeFaceDetector,
@@ -121,10 +118,13 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
     await this.initializeComponent();
   }
 
-  initializeComponent = () =>
+  initializeComponent = (deviceID?: string) =>
     (async () => {
       this.showCameraError = false;
       this.showCanvas = false;
+      clearTimeout(this.timeoutSubscription);
+      clearTimeout(this.faceDetectionSubscription);
+      // this._destroy$.next();
       // #region Initialize the Component state
       this._state$.next({
         loadingCamera: false,
@@ -193,7 +193,7 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
             if (image && canvas) {
               // Set a timeout to wait for before checking the detected faces
               // Notify the container component of no face detected event
-              setTimeoutFn(() => {
+              this.timeoutSubscription = setTimeout(() => {
                 if (
                   typeof this._detectFacesResult === "undefined" ||
                   this._detectFacesResult === null
@@ -207,10 +207,11 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
                   // #endregion Timeout
                   this.noFaceDetectedEvent.emit(true);
                 }
+                clearTimeout(this.timeoutSubscription);
               }, this.noFacesDetectedTimeOut);
 
               // Wait for certain time before detecting client faces
-              setTimeoutFn(() => {
+              this.faceDetectionSubscription = setTimeout(() => {
                 // #region Timeout
                 this._state$.next({
                   ...this._state$.getValue(),
@@ -222,6 +223,7 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
                 if (this._detectFacesResult) {
                   this.detectFacesResultEvent.emit(this._detectFacesResult);
                 }
+                clearTimeout(this.faceDetectionSubscription);
               }, this.detectorTimeOut);
 
               const interval_ = getReadInterval();
@@ -267,10 +269,16 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
                 .subscribe();
             }
           },
-          {
-            width: { exact: this.width },
-            height: { exact: this.height },
-          }
+          deviceID
+            ? {
+                width: { exact: this.width },
+                height: { exact: this.height },
+                deviceId: deviceID,
+              }
+            : {
+                width: { exact: this.width },
+                height: { exact: this.height },
+              }
         );
       } catch (error) {
         this.showCameraError = true;
@@ -309,8 +317,6 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._destroy$.next();
-    this.faceDetector.deleteModel();
-    this.faceMeshDetector.deleteModel();
     this.camera.stopCamera();
   }
 }
