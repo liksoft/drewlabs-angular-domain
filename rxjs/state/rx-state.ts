@@ -143,7 +143,6 @@ export const createStore = <T, K>(
   reducer: StateReducerFn<T, K>,
   initialState: T
 ) => {
-  console.log("Creating store...");
   return new DrewlabsFluxStore(reducer, initialState);
 };
 
