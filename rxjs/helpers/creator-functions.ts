@@ -9,7 +9,7 @@ import {
   ReplaySubject,
   interval,
 } from "rxjs";
-import { first } from "rxjs/operators";
+import { first, tap } from "rxjs/operators";
 import { GenericObserverHandlerFunc } from "../types";
 
 /**
@@ -62,3 +62,10 @@ export const emptyObservable = () => observableFrom(EMPTY);
  * @param milliseconds
  */
 export const timeout = (callback: () => void, milliseconds: number = 1000) => interval(milliseconds).pipe(first()).subscribe(() => callback());
+
+/**
+ * Exceute the user provided callback after a certain milliseconds
+ * @param callback
+ * @param milliseconds
+ */
+export const rxTimeout = (callback: () => void, milliseconds: number = 1000) => interval(milliseconds).pipe(first(), tap(() => callback()));

@@ -12,7 +12,12 @@ import {
 } from "@angular/core";
 import { forkJoin } from "rxjs";
 import { filter, takeUntil, tap } from "rxjs/operators";
-import { createStateful, createSubject } from "src/app/lib/core/rxjs/helpers";
+import {
+  createStateful,
+  createSubject,
+  rxTimeout,
+} from "src/app/lib/core/rxjs/helpers";
+import { untilDestroyed } from "../rxjs/operators";
 import {
   BlazeFaceDetector,
   BLAZE_FACE,
@@ -46,6 +51,7 @@ import { FaceDetectionComponentState } from "./types/face-detection.component.st
 export class FaceDetectionComponent implements OnInit, OnDestroy {
   @Input() width: number = 320;
   @Input() height: number = 240;
+  @Input() initialDevice!: string | undefined;
   public showCanvas = false;
 
   @ViewChild("videoElement") videoElement!: ElementRef;
@@ -88,10 +94,8 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
     hasCanvas: false,
     hasError: false,
     detecting: false,
+    switchingCamera: false,
   });
-
-  timeoutSubscription!: any;
-  faceDetectionSubscription!: any;
 
   constructor(
     @Inject(WEBCAM) private camera: Webcam,
@@ -105,7 +109,7 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
       .asObservable()
       .pipe(
         filter((state) => typeof state !== "undefined" && state !== null),
-        takeUntil(this._destroy$),
+        untilDestroyed(this, "ngOnDestroy"),
         tap((state) => {
           this.stateChange.emit(state);
         })
@@ -122,9 +126,6 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
     (async () => {
       this.showCameraError = false;
       this.showCanvas = false;
-      clearTimeout(this.timeoutSubscription);
-      clearTimeout(this.faceDetectionSubscription);
-      // this._destroy$.next();
       // #region Initialize the Component state
       this._state$.next({
         loadingCamera: false,
@@ -134,6 +135,7 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
         hasCanvas: false,
         hasError: false,
         detecting: false,
+        switchingCamera: false,
       });
       // #endRegion
       if (this.detectorTimeOut > this.noFacesDetectedTimeOut) {
@@ -166,9 +168,9 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
         // #endregion Ended loading model
       }
       this.videoHTMLElement = this.videoElement
-        .nativeElement as HTMLVideoElement;
+        ?.nativeElement as HTMLVideoElement;
       this.canvasHTMLElement = this.canvasElement
-        .nativeElement as HTMLCanvasElement;
+        ?.nativeElement as HTMLCanvasElement;
 
       try {
         // #region loading the camera
@@ -193,7 +195,7 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
             if (image && canvas) {
               // Set a timeout to wait for before checking the detected faces
               // Notify the container component of no face detected event
-              this.timeoutSubscription = setTimeout(() => {
+              rxTimeout(() => {
                 if (
                   typeof this._detectFacesResult === "undefined" ||
                   this._detectFacesResult === null
@@ -207,11 +209,12 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
                   // #endregion Timeout
                   this.noFaceDetectedEvent.emit(true);
                 }
-                clearTimeout(this.timeoutSubscription);
-              }, this.noFacesDetectedTimeOut);
+              }, this.noFacesDetectedTimeOut)
+                .pipe(takeUntil(this._destroy$))
+                .subscribe();
 
               // Wait for certain time before detecting client faces
-              this.faceDetectionSubscription = setTimeout(() => {
+              rxTimeout(() => {
                 // #region Timeout
                 this._state$.next({
                   ...this._state$.getValue(),
@@ -223,8 +226,9 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
                 if (this._detectFacesResult) {
                   this.detectFacesResultEvent.emit(this._detectFacesResult);
                 }
-                clearTimeout(this.faceDetectionSubscription);
-              }, this.detectorTimeOut);
+              }, this.detectorTimeOut)
+                .pipe(takeUntil(this._destroy$))
+                .subscribe();
 
               const interval_ = getReadInterval();
               // Run the face mesh detector as well
@@ -278,6 +282,7 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
             : {
                 width: { exact: this.width },
                 height: { exact: this.height },
+                deviceId: this.initialDevice,
               }
         );
       } catch (error) {
@@ -291,29 +296,25 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
       }
     })();
 
-  detectProfilFace() {}
+  async switchCamera(deviceId: string | undefined) {
+    // TODO : START SWITCHING CAMERA
+    this._state$.next({
+      ...this._state$.getValue(),
+      switchingCamera: true,
+    });
+    // TODO : RELOAD WEBCAM WITH FACE DETECTION VIEW
+    await this.reload(deviceId);
+    // TODO : END SWITCHING CAMERA
+    this._state$.next({
+      ...this._state$.getValue(),
+      switchingCamera: false,
+    });
+  }
 
-  onFacePointDetected = (image: HTMLVideoElement, state: any) =>
-    (() => {
-      const canvas = this.document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      if (context) {
-        const { videoWidth, videoHeight } = image;
-        canvas.width = videoWidth;
-        canvas.height = videoHeight;
-        const x = state?.x;
-        const y = state?.y;
-        const stateWith = state?.width;
-        const stateHeight = state?.height + 12;
-        context?.drawImage(image, 0, 0);
-        context.lineWidth = 1;
-        context.strokeStyle = "green";
-        context.strokeRect(x, y, stateWith, stateHeight);
-        const frontalFaceLandMarks = canvas.toDataURL();
-        return frontalFaceLandMarks;
-      }
-      return undefined;
-    })();
+  async reload(deviceId?: string | undefined) {
+    this._destroy$.next();
+    await this.initializeComponent(deviceId);
+  }
 
   ngOnDestroy(): void {
     this._destroy$.next();

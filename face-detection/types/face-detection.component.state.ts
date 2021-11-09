@@ -6,4 +6,5 @@ export interface FaceDetectionComponentState {
   hasCanvas: boolean;
   hasError: boolean;
   detecting: boolean;
+  switchingCamera?: boolean;
 }

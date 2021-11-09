@@ -7,6 +7,7 @@ export {
   isObservable,
   emptyObservable,
   timeout,
+  rxTimeout
 } from "./creator-functions";
 
 export {
