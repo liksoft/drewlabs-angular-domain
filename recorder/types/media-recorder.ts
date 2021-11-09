@@ -10,10 +10,16 @@ interface MediaRecorderOptions {
   videoBitsPerSecond?: number;
 }
 
+interface Disposable {
+  /**
+   * Cleanup object handles
+   */
+  dispose(): void | Promise<void>;
+}
+
 export type MediaRecorderConfig = MediaRecorderOptions;
 
-export interface MediaRecorder {
-
+export interface MediaRecorder extends Disposable {
   // Stream of recorded content
   stream$: Observable<Blob>;
 
@@ -31,7 +37,7 @@ export interface MediaRecorder {
   /**
    * @description Get the current recorded track
    */
-  toBlob(): BlobPart|Blob;
+  toBlob(): BlobPart | Blob;
 
   /**
    * @description Pauses the recording task
@@ -42,5 +48,4 @@ export interface MediaRecorder {
    * @description Resumes the recording task
    */
   resume(): void;
-
 }
