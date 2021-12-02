@@ -14,9 +14,9 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { ControlInterface, FormInterface } from "../../compact";
 import { Control } from "../models";
 import { UIStateStatusCode } from "../../../../../contracts/ui-state";
-import { IResourcesServerClient } from "src/app/lib/core/http";
-import { Paginable } from "src/app/lib/core/pagination";
-import { isObject } from "src/app/lib/core/utils";
+import { IResourcesServerClient } from "../../../../../http";
+import { Paginable } from "../../../../../pagination";
+import { isObject } from "../../../../../utils";
 
 export interface FormState {
   performingAction: boolean;

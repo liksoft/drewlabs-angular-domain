@@ -16,7 +16,7 @@ import {
   createStateful,
   createSubject,
   rxTimeout,
-} from "src/app/lib/core/rxjs/helpers";
+} from "../rxjs/helpers";
 import { untilDestroyed } from "../rxjs/operators";
 import {
   BlazeFaceDetector,

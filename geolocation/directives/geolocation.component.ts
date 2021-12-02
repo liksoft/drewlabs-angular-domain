@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { combineLatest } from "rxjs";
 import { tap } from "rxjs/operators";
-import { doLog } from "src/app/lib/core/rxjs/operators";
+import { doLog } from "../../rxjs/operators";
 import { createSubject } from "../../rxjs/helpers";
 import { GEOLOCATION_MANAGER } from "../service/geolocation.service";
 import { GeolocationManager } from "../types/geolocation";

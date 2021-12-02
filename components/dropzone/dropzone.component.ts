@@ -26,7 +26,7 @@ import { DropzoneConfig } from "./types";
       <div
         class="dropzone-wrapper"
         [class.disabled]="disabled"
-        [class]="wrapperClass"
+        [class]="class"
         [class.dropzone]="useDropzoneClass"
         [dropzone]="defaults"
         [disabled]="disabled"

@@ -7,7 +7,7 @@ import {
   ValidatorFn,
   Validators,
 } from "@angular/forms";
-import { CustomValidators } from "src/app/lib/core/validators/validators";
+import { CustomValidators } from "../../../../validators/validators";
 import {
   CheckboxItem,
   IDynamicForm,
@@ -16,7 +16,7 @@ import {
 } from "../../core/contracts";
 import { CheckBoxInput, DateInput, NumberInput, TextInput } from "../../core";
 import { MomentUtils } from "../../../../utils/datetime";
-import { observableOf } from "src/app/lib/core/rxjs/helpers";
+import { observableOf } from "../../../../rxjs/helpers";
 import { tap } from "rxjs/operators";
 
 /**

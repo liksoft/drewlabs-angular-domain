@@ -4,7 +4,7 @@ import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
 import { InputTypes } from "../../../core/contracts/input-types";
 import { map } from "rxjs/operators";
 import { createStateful } from "../../../../../rxjs/helpers";
-import { getObjectProperty } from "src/app/lib/core/utils";
+import { getObjectProperty } from "../../../../../../core/utils";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
 import { InputEventArgs } from "../../types/dynamic-inputs";
 

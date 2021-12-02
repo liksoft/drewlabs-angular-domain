@@ -14,7 +14,7 @@ import {
   mapPaginableTo,
   Paginable,
   updatePaginableValue,
-} from "src/app/lib/core/pagination";
+} from "../../../../../pagination";
 import { ControlInterface, FormInterface } from "../../compact";
 
 const updateControls =

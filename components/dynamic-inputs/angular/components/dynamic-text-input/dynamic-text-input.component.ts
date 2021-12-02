@@ -5,7 +5,7 @@ import { InputTypes } from "../../../core/contracts/input-types";
 import {
   getObjectProperty,
   maxNumberSize as utilsMaxNumberSize,
-} from "src/app/lib/core/utils";
+} from "../../../../../utils";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
 import { InputEventArgs } from "../../types/dynamic-inputs";
 

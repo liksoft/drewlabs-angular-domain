@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
-import { getObjectProperty } from "src/app/lib/core/utils";
+import { getObjectProperty } from "../../../../../../core/utils";
 import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
 import { InputEventArgs } from "../../types/dynamic-inputs";

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { filter, take } from "rxjs/operators";
-import { ActionHandler } from "src/app/lib/core/rxjs/handlers";
+import { ActionHandler } from "../../../../rxjs/handlers";
 import { FormsClient } from "../../core";
 import { FormInterface } from "../../core/compact";
 import { FormState, FormStoreActions } from "../../core/v2";

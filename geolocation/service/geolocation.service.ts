@@ -1,8 +1,8 @@
 import { Inject, Injectable, InjectionToken, OnDestroy } from "@angular/core";
 import { tap, takeUntil, map } from "rxjs/operators";
-import { createSubject } from "src/app/lib/core/rxjs/helpers";
-import { createStore } from "src/app/lib/core/rxjs/state/rx-state";
-import { SessionStorage } from "src/app/lib/core/storage/core";
+import { createSubject } from "../../rxjs/helpers";
+import { createStore } from "../../rxjs/state/rx-state";
+import { SessionStorage } from "../../storage/core";
 import {
   DEFAULT_POSITION_OPTIONS,
   GEOLOCATION,

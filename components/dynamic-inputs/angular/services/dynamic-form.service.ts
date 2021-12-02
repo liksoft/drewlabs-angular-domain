@@ -24,8 +24,8 @@ import { DrewlabsRessourceServerClient } from "../../../../http/core";
 import { getResponseDataFromHttpResponse } from "../../../../http/helpers";
 import { FORM_RESOURCES_PATH } from "../../core/constants/injection-tokens";
 import { DYNAMIC_FORM_LOADER } from "./forms-loaders";
-import { emptyObservable } from "src/app/lib/core/rxjs/helpers";
-import { ActionResult } from "src/app/lib/core/rxjs/handlers";
+import { emptyObservable } from "../../../../rxjs/helpers";
+import { ActionResult } from "../../../../rxjs/handlers";
 import {
   FormsLoader,
   FormsProvider,
