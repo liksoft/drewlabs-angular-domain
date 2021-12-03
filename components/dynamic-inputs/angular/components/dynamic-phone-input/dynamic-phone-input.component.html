@@ -20,11 +20,11 @@
             ? inputType.asPhoneInput(inputConfig)?.label
             : undefined
         "
-        [required]="inputType.asPhoneInput(inputConfig).rules?.isRequired"
-        [tabIndex]="inputConfig?.formControlIndex"
+        [required]="inputType.asPhoneInput(inputConfig).rules?.isRequired || false"
+        [tabIndex]="inputConfig.formControlIndex"
         [controlClass]="inputType.asDateInput(inputConfig).classes"
         [control]="control"
-        [disabled]="inputConfig.disabled"
+        [disabled]="inputConfig.disabled || false"
         [preferredCountries]="['tg', 'bj', 'gh']"
         [initialCountry]="'tg'"
       ></app-intl-tel-input>

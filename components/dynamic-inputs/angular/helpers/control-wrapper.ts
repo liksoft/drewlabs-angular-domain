@@ -74,8 +74,9 @@ export const getControlBinding =
       });
       for (const value of Object.values(bindings)) {
         const binding = value.binding ?? undefined;
-        const hasControl =
-          false !== (formgroup.get(binding?.formControlName) ?? false);
+        const hasControl = binding
+          ? false !== (formgroup.get(binding.formControlName) ?? false)
+          : false;
         const controlValue = value.binding
           ? formgroup.get(value.binding?.formControlName)?.value
           : undefined;

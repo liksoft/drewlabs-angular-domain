@@ -6,44 +6,44 @@ import {
 import { ControlInterface } from "../../compact/types";
 
 export class Control implements ControlInterface {
-  id: number = undefined;
-  formId: number = undefined;
-  formFormControlId: number = undefined;
-  label: string = undefined;
-  placeholder: string = undefined;
-  type: string = undefined;
-  classes: string = undefined;
-  required: number = undefined;
-  disabled: number = undefined;
-  readonly: number = undefined;
-  unique: number = undefined;
-  pattern: string = undefined;
-  description: string = undefined;
-  maxLength: number = undefined;
-  minLength: number = undefined;
-  min: number = undefined;
-  max: number = undefined;
-  minDate: string = undefined;
-  maxDate: string = undefined;
-  selectableValues: string = undefined;
-  selectableModel: string = undefined;
-  multiple: number = undefined;
-  controlGroupKey: string = undefined;
-  controlName: string = undefined;
-  controlIndex: number = undefined;
-  options: object[] = undefined;
-  rows: number = undefined;
-  columns: number = undefined;
-  value: string = undefined;
-  requiredIf: string = undefined;
-  uploadURL: string = undefined;
-  isRepeatable: number = undefined;
-  children: ControlInterface[] = undefined;
-  uniqueOn: string = undefined;
-  dynamicControlContainerClass: string = undefined;
-  valuefield: string = undefined;
-  groupfield: string = undefined;
-  keyfield: string = undefined;
+  id!: number;
+  formId!: number;
+  formFormControlId!: number;
+  label!: string;
+  placeholder!: string;
+  type!: string;
+  classes!: string;
+  required!: number;
+  disabled!: number;
+  readonly!: number;
+  unique!: number;
+  pattern!: string;
+  description!: string;
+  maxLength!: number;
+  minLength!: number;
+  min!: number;
+  max!: number;
+  minDate!: string;
+  maxDate!: string;
+  selectableValues!: string;
+  selectableModel!: string;
+  multiple!: number;
+  controlGroupKey!: string;
+  controlName!: string;
+  controlIndex!: number;
+  options!: object[];
+  rows!: number;
+  columns!: number;
+  value!: string;
+  requiredIf!: string;
+  uploadURL!: string;
+  isRepeatable!: number;
+  children!: ControlInterface[];
+  uniqueOn!: string;
+  dynamicControlContainerClass!: string;
+  valuefield!: string;
+  groupfield!: string;
+  keyfield!: string;
 
   static builder() {
     return new GenericSerializaleSerializer(
@@ -99,23 +99,23 @@ export class Control implements ControlInterface {
 }
 
 export class ControlRequest {
-  label: string;
-  placeholder: string;
-  type: string;
-  classes: string;
-  description: string;
-  maxLength: number;
-  minLength: number;
-  min: number;
-  max: number;
-  minDate: string;
-  maxDate: string;
-  selectableValues: string;
-  selectableModel: string;
-  modelFilters: string;
-  multiple: boolean;
-  columns: number;
-  rows: number;
+  label!: string;
+  placeholder!: string;
+  type!: string;
+  classes!: string;
+  description!: string;
+  maxLength!: number;
+  minLength!: number;
+  min!: number;
+  max!: number;
+  minDate!: string;
+  maxDate!: string;
+  selectableValues!: string;
+  selectableModel!: string;
+  modelFilters!: string;
+  multiple!: boolean;
+  columns!: number;
+  rows!: number;
 
   static builder() {
     return new GenericSerializaleSerializer(
@@ -149,7 +149,7 @@ export class ControlRequest {
   }
 
   public toSerialize(): { [prop: string]: any } {
-    const serialized = {};
+    const serialized: { [index: string]: any } = {};
     Object.entries(ControlRequest.getJsonableProperties()).forEach(
       ([key, value]) => {
         serialized[key] = this[value];
@@ -160,22 +160,22 @@ export class ControlRequest {
 }
 
 export class FormControlRequest {
-  formId: number;
-  formControlId: number;
-  controlName: string;
-  formControlGroupId: number | string;
-  index: number;
-  value: string | number;
-  required: boolean;
-  disabled: boolean;
-  readOnly: boolean;
-  unique: boolean;
-  pattern: string;
-  requiredIf: string;
-  uploadUrl: string;
-  repeatable: boolean;
-  uniqueOn: string;
-  containerClass: string;
+  formId!: number;
+  formControlId!: number;
+  controlName!: string;
+  formControlGroupId!: number | string;
+  index!: number;
+  value!: string | number;
+  required!: boolean;
+  disabled!: boolean;
+  readOnly!: boolean;
+  unique!: boolean;
+  pattern!: string;
+  requiredIf!: string;
+  uploadUrl!: string;
+  repeatable!: boolean;
+  uniqueOn!: string;
+  containerClass!: string;
 
   static builder() {
     return new GenericSerializaleSerializer(
@@ -208,7 +208,7 @@ export class FormControlRequest {
   }
 
   public toSerialize(): { [prop: string]: any } {
-    const serialized = {};
+    const serialized: { [index: string]: any } = {};
     Object.entries(FormControlRequest.getJsonableProperties()).forEach(
       ([key, value]) => {
         serialized[key] = this[value];

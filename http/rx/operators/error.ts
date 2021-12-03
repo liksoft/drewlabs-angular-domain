@@ -41,7 +41,7 @@ export const handleError =
  */
 export const handleHTTPError = <T extends any, KType, AType>(
   error: any,
-  store: DrewlabsFluxStore<KType, AType>,
+  store: DrewlabsFluxStore<KType, Partial<AType>>,
   client: IResourcesServerClient<IHttpResponse<T>>
 ) => {
   if (error instanceof HttpErrorResponse) {

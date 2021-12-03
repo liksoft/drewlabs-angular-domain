@@ -1,5 +1,5 @@
 import { Component, Inject, Input, LOCALE_ID } from "@angular/core";
-import { AbstractControl } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { MomentUtils } from "../../../../../utils";
 import { IHTMLFormControl } from "../../../core/contracts";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
@@ -27,8 +27,7 @@ import { DynamicInputTypeHelper } from "../../services/input-type.service";
   ],
 })
 export class DynamicDateInputComponent {
-  // @Input() controlDivContainerClass: string = 'clr-form-control';
-  @Input() control!: AbstractControl;
+  @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
   @Input() inputConfig!: IHTMLFormControl;

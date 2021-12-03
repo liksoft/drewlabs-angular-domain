@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { AbstractControl, FormGroup, FormBuilder } from "@angular/forms";
+import { FormGroup, FormBuilder, FormControl } from "@angular/forms";
 import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
 import { InputTypes } from "../../../core/contracts/input-types";
 import { CheckBoxInput } from "../../../core";
@@ -24,13 +24,13 @@ import { DynamicInputTypeHelper } from "../../services/input-type.service";
 export class DynamicCheckoxInputComponent {
   // @Input() controlDivContainerClass: string = 'clr-form-control';
   // tslint:disable-next-line: variable-name
-  private _control!: AbstractControl;
-  @Input() set control(value: AbstractControl) {
+  private _control!: FormControl;
+  @Input() set control(value: FormControl) {
     this._control = value;
   }
   // tslint:disable-next-line: typedef
-  get control() {
-    return this._control;
+  get control(): FormControl {
+    return this._control as FormControl;
   }
 
   // tslint:disable-next-line: variable-name

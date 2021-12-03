@@ -27,9 +27,11 @@ export class UserStorageProvider implements IUserStorageHandler {
 
   // tslint:disable-next-line: variable-name
   public _appUser$ = createStateful<
-    IAppUser | Authorizable | NotifiableUserDetails
-  >(null);
-  get appUser$(): Observable<IAppUser | Authorizable | NotifiableUserDetails> {
+    IAppUser | Authorizable | NotifiableUserDetails | undefined
+  >(undefined);
+  get appUser$(): Observable<
+    IAppUser | Authorizable | NotifiableUserDetails | undefined
+  > {
     return this._appUser$.asObservable();
   }
 

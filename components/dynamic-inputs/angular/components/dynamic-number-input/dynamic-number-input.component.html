@@ -15,37 +15,33 @@
   <div class="clr-control-container">
     <div class="clr-input-wrapper">
       <input
-        [tabIndex]="inputConfig?.formControlIndex"
+        [tabIndex]="inputConfig.formControlIndex"
         (keyup)="
           keyup.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
         (keydown)="
           keydown.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
         (keypress)="
           keypress.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
         (blur)="
           blur.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
         type="number"
-        [max]="
-          inputType.asNumberInput(inputConfig).max
-            ? inputType.asNumberInput(inputConfig).max
-            : maxNumberSize()
-        "
+        [max]="inputType.asNumberInput(inputConfig).max || maxNumberSize()"
         [min]="
           inputType.asNumberInput(inputConfig).min
             ? inputType.asNumberInput(inputConfig).min
@@ -73,8 +69,8 @@
       <span
         [translate]="'validation.min'"
         [translateParams]="{
-          value: getErrorAsNumber(control.errors['min'], 'min')
-            ? getErrorAsNumber(control.errors['min'], 'min')
+          value: getErrorAsNumber(control.errors?.min, 'min')
+            ? getErrorAsNumber(control.errors?.min, 'min')
             : inputType.asNumberInput(inputConfig).min
         }"
       ></span>
@@ -86,8 +82,8 @@
       <span
         [translate]="'validation.max'"
         [translateParams]="{
-          value: getErrorAsNumber(control.errors['max'], 'max')
-            ? getErrorAsNumber(control.errors['max'], 'max')
+          value: getErrorAsNumber(control.errors?.max, 'max')
+            ? getErrorAsNumber(control.errors?.max, 'max')
             : inputType.asNumberInput(inputConfig).max
         }"
       ></span>

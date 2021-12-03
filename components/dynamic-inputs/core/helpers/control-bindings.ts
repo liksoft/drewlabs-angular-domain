@@ -46,6 +46,6 @@ export const controlBindingsSetter = <T extends BindingControlInterface>(
           : []),
       ];
     }
-    return { ...control, items: result } as Partial<T>;
+    return { ...control, items: result } as T;
   };
 };

@@ -4,7 +4,7 @@
       (addedEvent)="fileAdded.emit($event)"
       (removedEvent)="fileRemoved.emit($event)"
       [control]="control"
-      [inputConfig]="inputConfig"
+      [inputConfig]="inputType.asFileInput(inputConfig)"
       [showLabelAndDescription]="showLabelAndDescription"
     ></app-dynamic-file-input>
   </ng-container>
@@ -17,18 +17,18 @@
       type="hidden"
       [class]="inputConfig.classes"
       [formControl]="control"
-      [value]="inputConfig?.value"
+      [value]="inputConfig.value"
     />
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.SELECT_INPUT">
     <app-dynamic-select-input
       [controlDivContainerClass]="getControlContainerClass()"
       [control]="control"
-      [inputConfig]="inputConfig"
+      [inputConfig]="inputType.asSelectInput(inputConfig)"
       [showLabelAndDescription]="showLabelAndDescription"
       (multiSelectItemRemove)="multiSelectItemRemove.emit($event)"
       (selected)="selected?.emit($event)"
-      [inputItems]="inputConfig?.items"
+      [inputItems]="inputConfig.items || []"
     ></app-dynamic-select-input>
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.PHONE_INPUT">
@@ -55,56 +55,56 @@
       [showLabelAndDescription]="showLabelAndDescription"
       (keyup)="
         keyup.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (keydown)="
         keydown.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (keypress)="
         keypress.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (blur)="
         blur.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
     ></app-dynamic-text-area-input>
     <app-dynamic-text-input
-    *ngIf="inline"
+      *ngIf="inline"
       [controlDivContainerClass]="getControlContainerClass()"
       [control]="control"
       [inputConfig]="getInlineTextAreaInput(inputConfig)"
       [showLabelAndDescription]="showLabelAndDescription"
       (keyup)="
         keyup.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (keydown)="
         keydown.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (keypress)="
         keypress.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (blur)="
         blur.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
@@ -118,25 +118,25 @@
       [inputConfig]="inputConfig"
       (keyup)="
         keyup.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (keydown)="
         keydown.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (keypress)="
         keypress.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (blur)="
         blur.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
@@ -165,25 +165,25 @@
       [showLabelAndDescription]="showLabelAndDescription"
       (keyup)="
         keyup.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (keydown)="
         keydown.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (keypress)="
         keypress.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (blur)="
         blur.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
@@ -197,25 +197,25 @@
       [showLabelAndDescription]="showLabelAndDescription"
       (keyup)="
         keyup.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (keydown)="
         keydown.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (keypress)="
         keypress.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "
       (blur)="
         blur.emit({
-          name: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "

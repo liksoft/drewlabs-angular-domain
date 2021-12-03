@@ -16,21 +16,21 @@
     <ng-select
       [class]="inputConfig?.multiple ? '' : 'not-multiple'"
       [virtualScroll]="true"
-      [items]="vm?.state"
+      [items]="vm?.state ?? []"
       [bindLabel]="'name'"
       [bindValue]="'value'"
       (focus)="onFocus()"
-      [loading]="vm?.performingAction"
+      [loading]="vm?.performingAction ?? false"
       [loadingText]="'loadingText' | translate"
-      [multiple]="inputConfig.multiple"
-      [placeholder]="inputConfig?.placeholder"
+      [multiple]="inputConfig.multiple ?? false"
+      [placeholder]="inputConfig.placeholder ?? ''"
       [formControl]="control"
       [groupBy]="'type'"
       [clearable]="true"
       (remove)="multiSelectItemRemove.emit($event)"
       (change)="
         selected.emit({
-          formcontrolname: inputConfig?.formControlName,
+          name: inputConfig.formControlName,
           value: $event
         })
       "

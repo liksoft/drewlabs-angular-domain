@@ -15,7 +15,7 @@
   <input
     [tabIndex]="inputConfig?.formControlIndex"
     type="date"
-    [disabled]="inputConfig?.disabled"
+    [disabled]="inputConfig.disabled || false"
     (blur)="onDateInputBlur()"
     [formControl]="control"
     [min]="inputType.asDateInput(inputConfig).minDate"
@@ -35,7 +35,7 @@
 >
   <span
     [translate]="'validation.minDate'"
-    [translateParams]="{ date: control.errors.minDate }"
+    [translateParams]="{ date: control.errors?.minDate }"
   ></span>
 </clr-control-error>
 <clr-control-error
@@ -44,7 +44,7 @@
 >
   <span
     [translate]="'validation.maxDate'"
-    [translateParams]="{ date: control.errors.maxDate }"
+    [translateParams]="{ date: control.errors?.maxDate }"
   ></span>
 </clr-control-error>
 <clr-control-helper

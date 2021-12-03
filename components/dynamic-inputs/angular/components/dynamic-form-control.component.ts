@@ -1,6 +1,5 @@
 import { IHTMLFormControl, InputTypes } from "../../core";
-import { FormGroup } from "@angular/forms";
-import { AbstractControl } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import {
   Component,
   Input,
@@ -12,6 +11,7 @@ import {
 import { InputEventArgs, SelectableControlItems } from "../types";
 import { takeUntil, tap } from "rxjs/operators";
 import { createSubject } from "../../../../rxjs/helpers";
+import { DynamicInputTypeHelper } from "../services";
 
 @Component({
   selector: "app-dynamic-inputs",
@@ -28,12 +28,12 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
   @Input() inputConfig!: IHTMLFormControl;
   @Input() listItems!: SelectableControlItems;
   @Input() listenForChanges!: boolean;
-  private _control!: AbstractControl;
-  @Input() set control(value: AbstractControl) {
+  private _control!: AbstractControl&FormControl;
+  @Input() set control(value: AbstractControl&FormControl) {
     this._control = value;
   }
   get control() {
-    return this._control;
+    return this._control as AbstractControl&FormControl;
   }
   @Input() name!: string;
 
@@ -53,7 +53,13 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
   @Output("blur") blur = new EventEmitter<InputEventArgs>();
 
   private _destroy$ = createSubject();
+
+  // Value changes emitters
   @Output() valueChange = new EventEmitter<any>();
+
+  constructor(
+    public readonly inputType: DynamicInputTypeHelper,
+  ) {}
 
   ngOnInit() {
     this._control?.valueChanges

@@ -6,28 +6,30 @@
           [class]="getContainerClass(value?.containerClass)"
           *ngFor="let value of form?.controlConfigs"
         >
-          <app-dynamic-inputs
-            [listenForChanges]="
-              shouldListenforChange(value.formControlName, bindings)
-            "
-            (keyup)="keyup.emit($event)"
-            (keydown)="keydown.emit($event)"
-            (blur)="blur.emit($event)"
-            (keypress)="keypress.emit($event)"
-            (fileAdded)="fileAdded.emit($event)"
-            (fileRemoved)="fileRemoved.emit($event)"
-            [class]="getContainerClass(value?.containerClass)"
-            (multiSelectItemRemove)="
-              itemRemoved.emit({ event: $event, control: value })
-            "
-            (valueChange)="
-              handleControlChanges($event, value.formControlName, bindings)
-            "
-            [hidden]="value.hidden"
-            [control]="formgroup.get(value.formControlName)"
-            [inputConfig]="value"
-            [listItems]="value.items"
-          ></app-dynamic-inputs>
+          <ng-container *ngIf="formgroup.get(value.formControlName) as control">
+            <app-dynamic-inputs
+              [listenForChanges]="
+                shouldListenforChange(value.formControlName, bindings)
+              "
+              (keyup)="keyup.emit($event)"
+              (keydown)="keydown.emit($event)"
+              (blur)="blur.emit($event)"
+              (keypress)="keypress.emit($event)"
+              (fileAdded)="fileAdded.emit($event)"
+              (fileRemoved)="fileRemoved.emit($event)"
+              [class]="getContainerClass(value?.containerClass)"
+              (multiSelectItemRemove)="
+                itemRemoved.emit({ event: $event, control: value })
+              "
+              (valueChange)="
+                handleControlChanges($event, value.formControlName, bindings)
+              "
+              [hidden]="value.hidden"
+              [control]="asFormControl(control)"
+              [inputConfig]="value"
+              [listItems]="value.items"
+            ></app-dynamic-inputs>
+          </ng-container>
         </div>
       </ng-container>
     </div>

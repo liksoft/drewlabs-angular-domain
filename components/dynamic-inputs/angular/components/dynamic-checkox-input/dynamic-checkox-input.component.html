@@ -26,8 +26,9 @@
       class="clr-checkbox-wrapper"
       formArrayName="formGroupItems"
       *ngFor="
-        let order of inputType.asFormArray(formArrayGroup.get('formGroupItems'))
-          .controls;
+        let order of inputType.asFormArray(
+          formArrayGroup.get('formGroupItems') || undefined
+        ).controls;
         let i = index
       "
     >

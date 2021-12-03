@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { AbstractControl } from "@angular/forms";
+import { AbstractControl, FormControl } from "@angular/forms";
 import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
 import { InputEventArgs } from "../../types/dynamic-inputs";
@@ -28,10 +28,10 @@ import { InputEventArgs } from "../../types/dynamic-inputs";
 })
 export class DynamicTextAreaInputComponent {
   @Input() controlDivContainerClass: string = "clr-form-control";
-  @Input() control?: AbstractControl;
+  @Input() control!: AbstractControl & FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
-  @Input() inputConfig?: IHTMLFormControl;
+  @Input() inputConfig!: IHTMLFormControl;
 
   @Output() keyup = new EventEmitter<InputEventArgs>();
   @Output() keydown = new EventEmitter<InputEventArgs>();

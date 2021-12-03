@@ -26,7 +26,7 @@ export abstract class AbstractHTMLFormControl implements IHTMLFormControl {
    * @description Instance initializer
    * @param param Required input configuration object
    */
-  constructor(param: Partial<IHTMLFormControl>) {
+  constructor(param: IHTMLFormControl) {
     this.label = param.label;
     this.type = param.type;
     this.formControlName = param.formControlName;
@@ -37,13 +37,13 @@ export abstract class AbstractHTMLFormControl implements IHTMLFormControl {
     this.items = param.items;
     this.disabled = param.disabled ? param.disabled : false;
     this.readOnly = param.readOnly ? param.readOnly : false;
-    this.value = param.value ? param.value : null;
-    this.formControlIndex = param.formControlIndex ? param.formControlIndex : null;
-    this.formControlGroupKey = param.formControlGroupKey ? param.formControlGroupKey : null;
-    this.requiredIf = param.requiredIf ? param.requiredIf : null;
+    this.value = param.value ? param.value : undefined;
+    this.formControlIndex = param.formControlIndex ? param.formControlIndex : undefined;
+    this.formControlGroupKey = param.formControlGroupKey ? param.formControlGroupKey : undefined;
+    this.requiredIf = param.requiredIf ? param.requiredIf : undefined;
     this.hidden = false;
     this.isRepeatable = param.isRepeatable ? param.isRepeatable : false;
-    this.uniqueCondition = param.uniqueCondition ? param.uniqueCondition : null;
-    this.containerClass = param.containerClass ? param.containerClass : null;
+    this.uniqueCondition = param.uniqueCondition ? param.uniqueCondition : undefined;
+    this.containerClass = param.containerClass;
   }
 }

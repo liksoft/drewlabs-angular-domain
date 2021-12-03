@@ -30,18 +30,18 @@ export class SelectInput
    * @description Instance initializer
    * @param value Required input configuration object
    */
-  constructor(value: Partial<SelectInput>) {
+  constructor(value: SelectInput) {
     super(value);
-    this.items = value.items || [];
+    this.items = value.items ?? [];
     this.optionsLabel = value.optionsLabel;
     this.optionsValueIndex = value.optionsValueIndex;
     this.multiple = value.multiple ? value.multiple : false;
     this.groupByKey = value.groupByKey;
     this.serverBindings = value.serverBindings;
     this.clientBindings = value.clientBindings;
-    this.groupfield = value.groupfield || "id";
-    this.valuefield = value.valuefield || "label";
-    this.keyfield = value.keyfield || "id";
+    this.groupfield = value.groupfield ?? "id";
+    this.valuefield = value.valuefield ?? "label";
+    this.keyfield = value.keyfield ?? "id";
   }
 
   /**

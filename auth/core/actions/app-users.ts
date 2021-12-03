@@ -26,14 +26,14 @@ export const initialUsersState: AppUsersState = {
 };
 
 export interface AppUsersState {
-  performingAction: boolean;
-  error: any;
+  performingAction?: boolean;
+  error?: any;
   items: { [index: string]: User };
   pagination: PaginationData<User>;
   createdUser?: User;
   manageableUsers: User[];
-  updateResult: boolean;
-  deleteResult: boolean;
+  updateResult?: boolean;
+  deleteResult?: boolean;
 }
 
 const deserializeSerializedUser = (serialized: any) => {

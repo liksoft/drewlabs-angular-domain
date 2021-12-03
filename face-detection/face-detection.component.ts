@@ -12,11 +12,7 @@ import {
 } from "@angular/core";
 import { forkJoin } from "rxjs";
 import { filter, takeUntil, tap } from "rxjs/operators";
-import {
-  createStateful,
-  createSubject,
-  rxTimeout,
-} from "../rxjs/helpers";
+import { createStateful, createSubject, rxTimeout } from "../rxjs/helpers";
 import { untilDestroyed } from "../rxjs/operators";
 import {
   BlazeFaceDetector,
@@ -82,9 +78,7 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
   @Output() noFaceDetectedEvent = new EventEmitter<boolean>();
   @Output() videoStreamEvent = new EventEmitter<MediaStream>();
   showCameraError: boolean = false;
-  @Output() stateChange = new EventEmitter<
-    Partial<FaceDetectionComponentState>
-  >();
+  @Output() stateChange = new EventEmitter<FaceDetectionComponentState>();
 
   _state$ = createStateful<FaceDetectionComponentState>({
     loadingCamera: false,

@@ -10,8 +10,8 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
       return {
         ...state,
         performingAction: true,
-        error: null,
-        createdUser: null,
+        error: undefined,
+        createdUser: undefined,
         updateResult: false,
         deleteResult: false,
       } as AppUsersState;
@@ -20,27 +20,27 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
         ...state,
         performingAction: false,
         error: action.payload,
-        createdUser: null,
-        updateResult: null,
-        deleteResult: null,
+        createdUser: undefined,
+        updateResult: undefined,
+        deleteResult: undefined,
       } as AppUsersState;
     case AppUserStoreActions.INIT_ITEMS_CACHE_ACTION:
       return {
         ...state,
         items: listItemToIdMaps(action.payload),
         performingAction: false,
-        error: null,
-        createdUser: null,
-        updateResult: null,
-        deleteResult: null,
+        error: undefined,
+        createdUser: undefined,
+        updateResult: undefined,
+        deleteResult: undefined,
       } as AppUsersState;
     case AppUserStoreActions.INSERT_OR_UPDATE_ACTION:
       return {
         ...state,
         items: insertOrUpdateValuesUsingID(state.items, action.payload),
-        createdUser: null,
-        updateResult: null,
-        deleteResult: null,
+        createdUser: undefined,
+        updateResult: undefined,
+        deleteResult: undefined,
         performingAction: false,
         error: null
       } as AppUsersState;
@@ -49,10 +49,10 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
         ...state,
         pagination: action.payload,
         performingAction: false,
-        error: null,
-        createdUser: null,
-        updateResult: null,
-        deleteResult: null,
+        error: undefined,
+        createdUser: undefined,
+        updateResult: undefined,
+        deleteResult: undefined,
       } as AppUsersState;
     case AppUserStoreActions.ADD_USER_ACTION:
       return {
@@ -60,9 +60,9 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
         items: addItemToCache(state.items, !lodash.isEmpty(action.payload) ? action.payload : {}),
         createdUser: action.payload,
         performingAction: false,
-        error: null,
-        updateResult: null,
-        deleteResult: null,
+        error: undefined,
+        updateResult: undefined,
+        deleteResult: undefined,
       } as AppUsersState;
     case AppUserStoreActions.UPDATE_USER_ACTION:
       return {
@@ -70,9 +70,9 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
         items: insertOrUpdateValuesUsingID(state.items, action.payload),
         performingAction: false,
         updateResult,
-        error: null,
-        createdUser: null,
-        deleteResult: null,
+        error: undefined,
+        createdUser: undefined,
+        deleteResult: undefined,
       } as AppUsersState;
     case AppUserStoreActions.DELETE_USER_ACTION:
       return {
@@ -80,9 +80,9 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
         items: removeItemFromCache(state.items, action.payload),
         performingAction: false,
         deleteResult,
-        error: null,
-        createdUser: null,
-        updateResult: null,
+        error: undefined,
+        createdUser: undefined,
+        updateResult: undefined,
       } as AppUsersState;
     default:
       return state;

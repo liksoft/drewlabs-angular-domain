@@ -6,14 +6,14 @@ import {
   Inject,
   OnDestroy,
 } from "@angular/core";
-import { AbstractControl } from "@angular/forms";
-import {
-  createStateful,
-  createSubject,
-} from "../../../../../rxjs/helpers";
+import { FormControl } from "@angular/forms";
+import { createStateful, createSubject } from "../../../../../rxjs/helpers";
 import { DrewlabsRessourceServerClient } from "../../../../../http/core";
 import { map, switchMap, takeUntil, tap } from "rxjs/operators";
-import { getResponseDataFromHttpResponse, httpHost } from "../../../../../http/helpers";
+import {
+  getResponseDataFromHttpResponse,
+  httpHost,
+} from "../../../../../http/helpers";
 import { isArray, isEmpty } from "lodash";
 import { controlBindingsSetter } from "../../../core/helpers";
 import { doLog } from "../../../../../rxjs/operators";
@@ -61,12 +61,12 @@ import { InputEventArgs } from "../../types/dynamic-inputs";
 })
 export class DynamicSelectInputComponent implements OnDestroy {
   @Input() controlDivContainerClass: string = "clr-form-control";
-  private _control!: AbstractControl;
-  @Input() set control(value: AbstractControl) {
+  private _control!: FormControl;
+  @Input() set control(value: FormControl) {
     this._control = value;
   }
-  get control(): AbstractControl {
-    return this._control;
+  get control(): FormControl {
+    return this._control as FormControl;
   }
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name

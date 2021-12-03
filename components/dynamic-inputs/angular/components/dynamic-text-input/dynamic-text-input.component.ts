@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { AbstractControl } from "@angular/forms";
+import { AbstractControl, FormControl } from "@angular/forms";
 import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
 import { InputTypes } from "../../../core/contracts/input-types";
 import {
@@ -30,7 +30,7 @@ import { InputEventArgs } from "../../types/dynamic-inputs";
 })
 export class DynamicTextInputComponent {
   @Input() controlDivContainerClass: string = "clr-form-control";
-  @Input() control!: AbstractControl;
+  @Input() control!: AbstractControl & FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
   @Input() inputConfig!: IHTMLFormControl;

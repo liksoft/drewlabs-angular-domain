@@ -8,7 +8,6 @@ import {
   EventEmitter,
   OnDestroy,
 } from "@angular/core";
-import { AbstractControl } from "@angular/forms";
 import { isDefined, readFileAsDataURI } from "../../../../../utils";
 import { DynamicInputTypeHelper } from "../../services";
 import { map } from "rxjs/operators";
@@ -17,6 +16,7 @@ import { createSubject } from "../../../../../rxjs/helpers";
 import { FileInput } from "../../../core/types";
 import { DropzoneConfig } from "../../../../dropzone";
 import { FileFormControl } from "../../types";
+import { FormControl } from "@angular/forms";
 
 @Component({
   selector: "app-dynamic-file-input",
@@ -38,7 +38,7 @@ import { FileFormControl } from "../../types";
 })
 export class DynamicFileInputComponent implements OnInit, OnDestroy {
   @Input() controlDivContainerClass: string = "clr-form-control";
-  @Input() control!: AbstractControl;
+  @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
 
   // Property for handling File Input types

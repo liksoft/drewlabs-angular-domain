@@ -71,8 +71,8 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   phoneControlElement!: ElementRef;
   @ViewChild('clrDropdown', { static: true }) clrDropdown!: ElementRef;
 
-  @Input() tabIndex!: number;
-  @Input() label!: string;
+  @Input() tabIndex?: number;
+  @Input() label?: string;
 
   allCountries: Array<Country> = [];
   preferredCountriesInDropDown: Array<Country> = [];

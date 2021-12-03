@@ -5,7 +5,7 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { AbstractControl, FormGroup } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { createform, sortformbyindex } from "../../../core/helpers";
 import { createStateful } from "../../../../../rxjs/helpers/creator-functions";
 import { IDynamicForm, IHTMLFormControl } from "../../../core/contracts";
@@ -125,5 +125,9 @@ export class DynamicFormWapperComponent {
       value?.controlConfigs &&
       (value?.controlConfigs as IHTMLFormControl[]).length !== 0
     );
+  }
+
+  asFormControl(control: AbstractControl) {
+    return control as FormControl;
   }
 }

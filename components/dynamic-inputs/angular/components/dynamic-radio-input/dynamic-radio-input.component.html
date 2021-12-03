@@ -19,9 +19,9 @@
       type="radio"
       clrRadio
       required
-      [disabled]="control?.status == 'DISABLED'"
+      [disabled]="control.status === 'DISABLED'"
       [checked]="control.value == item.value"
-      [value]="inputValue(inputConfig?.formControlName, item?.value)"
+      [value]="inputValue(inputConfig.formControlName, item?.value)"
       (change)="onValueChanges(item.value)"
     />
     <label>{{ item.description }}</label>

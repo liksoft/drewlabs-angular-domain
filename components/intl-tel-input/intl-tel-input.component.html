@@ -24,7 +24,7 @@
         (click)="onCountrySelect(country)"
       >
         <span class="country-name">{{ country.name }}</span>
-        <span class="dial-code"> +{{ country?.dialCode }}</span>
+        <span class="dial-code">+{{ country?.dialCode }}</span>
       </button>
       <div class="dropdown-divider"></div>
       <cdk-virtual-scroll-viewport class="countries-viewport" itemSize="20">
@@ -35,7 +35,7 @@
           (click)="onCountrySelect(country)"
         >
           <span class="country-name">{{ country?.name }}</span>
-          <span class="dial-code"> +{{ country?.dialCode }}</span>
+          <span class="dial-code">+{{ country?.dialCode }}</span>
         </button>
       </cdk-virtual-scroll-viewport>
     </clr-dropdown-menu>

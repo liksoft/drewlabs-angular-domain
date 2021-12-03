@@ -15,28 +15,28 @@
   <div class="clr-control-container">
     <div class="clr-input-wrapper">
       <input
-        [tabIndex]="inputConfig?.formControlIndex"
+        [tabIndex]="inputConfig.formControlIndex"
         (keyup)="
           keyup.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
         (keydown)="
           keydown.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
         (keypress)="
           keypress.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
         (blur)="
           blur.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
@@ -90,7 +90,7 @@
         [translateParams]="{
           value: inputType.asTextInput(inputConfig).minLength
             ? inputType.asTextInput(inputConfig).minLength
-            : getErrorAsNumber(control.errors['minLength'], 'minLength')
+            : getErrorAsNumber(control.errors?.minLength, 'minLength')
         }"
       ></span>
     </clr-control-error>

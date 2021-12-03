@@ -17,25 +17,25 @@
       <textarea
         (keyup)="
           keyup.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
         (keydown)="
           keydown.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
         (keypress)="
           keypress.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
         (blur)="
           blur.emit({
-            name: inputConfig?.formControlName,
+            name: inputConfig.formControlName,
             value: $event
           })
         "
@@ -68,7 +68,7 @@
     ></span>
   </clr-control-error>
   <clr-control-helper
-    *ngIf="inputConfig?.descriptionText && showLabelAndDescription"
+    *ngIf="inputConfig.descriptionText && showLabelAndDescription"
   >
     <span [innerHTML]="inputConfig.descriptionText | safeHtml"></span>
   </clr-control-helper>

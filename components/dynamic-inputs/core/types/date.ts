@@ -4,9 +4,9 @@ import { buildRequiredIfConfig } from "../helpers/builders";
 import { AbstractHTMLFormControl } from "./dynamic-input";
 
 export class DateInput extends AbstractHTMLFormControl {
-  minDate: Date | string;
-  maxDate: Date | string;
-  currentDate: Date | string;
+  minDate: string;
+  maxDate: string;
+  currentDate: string;
   dateInputFormat?: string;
 
   /**
