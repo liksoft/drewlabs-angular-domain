@@ -1,9 +1,8 @@
-import { ArrayUtils } from "../../../../utils/types";
+import { ArrayUtils, JSObject } from "../../../../utils";
 import { ControlInterface, FormInterface } from "../compact/types";
 import { IDynamicForm } from "../contracts/dynamic-form";
 import { IHTMLFormControl } from "../contracts/dynamic-input";
 import { DynamicForm } from "../types/dynamic-form";
-import { cloneDeep } from "lodash";
 import { buildControl } from "../types/builder";
 
 export class DynamicFormHelpers {
@@ -56,7 +55,7 @@ export class DynamicFormHelpers {
  * @param form
  */
 export const cloneform = (form: IDynamicForm) =>
-  cloneDeep(form) as IDynamicForm;
+  JSObject.cloneDeep(form) as IDynamicForm;
 
 /**
  * @description Helper method for creating a new dynmaic form
@@ -71,7 +70,8 @@ export const createform = (form: IDynamicForm) =>
  * @param form
  * @returns
  */
-export const copyform = (form: IDynamicForm) => createform(cloneDeep(form));
+export const copyform = (form: IDynamicForm) =>
+  createform(JSObject.cloneDeep(form));
 
 // #Forms Soring function
 

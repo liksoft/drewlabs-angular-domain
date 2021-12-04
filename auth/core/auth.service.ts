@@ -32,18 +32,13 @@ import {
   authenticationRequestCompletedAction,
 } from "./actions";
 import { authReducer } from "./reducers";
-import { isEmpty } from "lodash";
 import { Log } from "../../utils/logger";
 import { DrewlabsV2LoginResultHandlerFunc } from "../rxjs/operators/v2/login-response";
 import { onAuthenticationResultEffect } from "../rxjs/operators/login-response";
-import {
-  Client,
-  ErrorHandler,
-  HTTPErrorState,
-  HTTP_CLIENT
-} from "../../http";
+import { Client, ErrorHandler, HTTPErrorState, HTTP_CLIENT } from "../../http";
 import { httpHost } from "../../http/helpers";
 import { MapToHandlerResponse, mapToHttpResponse } from "../../http/rx";
+import { JSObject } from "../../utils";
 
 const initalState: AuthState = {
   isLoggedIn: false,
@@ -72,7 +67,9 @@ export class AuthService implements OnDestroy {
   } as AuthState);
 
   // Auth state
-  state$ = this._authStore$.connect().pipe(filter((state) => !isEmpty(state)));
+  state$ = this._authStore$
+    .connect()
+    .pipe(filter((state) => !JSObject.isEmpty(state)));
 
   /**
    * @deprecated

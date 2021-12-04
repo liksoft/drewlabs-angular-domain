@@ -1,12 +1,12 @@
 import { DefaultStoreAction, StoreAction } from "../../../rxjs/state/rx-state";
 import { RolesState, RoleStoreActions } from "../actions/roles";
-import * as lodash from "lodash";
 import {
   addItemToCache,
   insertOrUpdateValuesUsingID,
   listItemToIdMaps,
   removeItemFromCache,
 } from "../../../rxjs/helpers";
+import { JSObject } from "../../../utils";
 
 export const rolesReducer = (
   state: RolesState,
@@ -38,7 +38,7 @@ export const rolesReducer = (
         ...state,
         items: addItemToCache(
           state.items,
-          !lodash.isEmpty(action.payload) ? action.payload : {}
+          JSObject.defaultIfEmpty(action.payload, {})
         ),
         performingAction: false,
         error: undefined,

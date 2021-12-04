@@ -19,7 +19,7 @@ import {
   applyHiddenAttributeCallback,
   getControlBinding,
 } from "../../helpers";
-import { isEmpty } from "lodash";
+import { JSObject } from "../../../../../utils";
 
 type UndefinedDynamicForm = IDynamicForm | undefined;
 type UndefinedFormGroup = AbstractControl | undefined;
@@ -75,7 +75,7 @@ export class DynamicFormWapperComponent {
   // tslint:disable-next-line: typedef
   setComponentForm(value: UndefinedDynamicForm, control?: UndefinedFormGroup) {
     const bindings_ = this._bindings$.getValue();
-    if (value && control && isEmpty(bindings_)) {
+    if (value && control && JSObject.isEmpty(bindings_)) {
       let _form = sortformbyindex(createform(value));
       const { bindings, form, formgroup } = getControlBinding(_form)(
         control as AbstractControl

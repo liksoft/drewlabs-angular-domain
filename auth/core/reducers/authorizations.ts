@@ -3,15 +3,15 @@ import {
   AuthorizationsState,
   AuthorizationsStoreActions,
 } from "../actions/authorizations";
-import * as lodash from "lodash";
 import { Authorization } from "../../contracts";
+import { ArrayUtils, JSObject } from "../../../utils";
 
 export const authorizationsReducer = (
   state: AuthorizationsState,
   action: Partial<StoreAction>
 ) => {
   let items: Authorization[] = [];
-  const values = state.items ? [...state.items] : [];
+  let values = state.items ? [...state.items] : [];
   const { item, updateResult, deleteResult } = action.payload || {};
   switch (action.type) {
     case DefaultStoreAction.ASYNC_UI_ACTION:
@@ -45,7 +45,7 @@ export const authorizationsReducer = (
         ...state,
         items: [
           ...state.items,
-          ...(!lodash.isEmpty(action.payload) ? [action.payload] : []),
+          ...(!JSObject.isEmpty(action.payload) ? [action.payload] : []),
         ],
         createdAuthorization: action.payload,
         performingAction: false,
@@ -69,7 +69,7 @@ export const authorizationsReducer = (
     case AuthorizationsStoreActions.AUTHORIZATION_DELETED_ACTION:
       items = [...state.items];
       if (item) {
-        lodash.remove(values, (v) => v.id === item.id);
+        values = ArrayUtils.reject(values, (v) => v.id === item.id);
       }
       return {
         ...state,

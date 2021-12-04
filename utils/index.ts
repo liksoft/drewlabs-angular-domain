@@ -60,6 +60,8 @@ export {
   setObjectProperty,
   Order,
   toBinary,
+  JSObject,
+  JSArray
 } from "./types";
 
 // URL Utilities functions

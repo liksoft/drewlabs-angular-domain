@@ -8,8 +8,8 @@ export {
   getJSObjectPropertyValue,
   check,
 } from "./type-utils";
-export { ArrayUtils } from "./array-utils";
+export { ArrayUtils, JSArray } from "./array-utils";
 export { Filtrable, Order } from "./contracts";
-export { getObjectProperty, setObjectProperty } from "./object";
+export { getObjectProperty, setObjectProperty, JSObject } from "./object";
 export { maxNumberSize } from "./numbers";
 export { after, afterLast, before, beforeLast, toBinary } from "./strings";

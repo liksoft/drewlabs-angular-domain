@@ -1,5 +1,5 @@
+import { ArrayUtils } from "../../../../utils";
 import { IAppUserDetails, AppUserDetails } from "./user-details";
-import * as lodash from "lodash";
 
 /**
  * Checkis if a given authorizable instance has any of the provided authorization
@@ -31,7 +31,7 @@ export const userCanAny = (
     return true;
   }
   return (
-    lodash.intersection(authorizable.authorizations, authorizations).length > 0
+    ArrayUtils.intersect(authorizable.authorizations, authorizations).length > 0
   );
 };
 

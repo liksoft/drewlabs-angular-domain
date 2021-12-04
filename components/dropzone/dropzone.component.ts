@@ -1,4 +1,4 @@
-import { isDefined } from "../../utils";
+import { isDefined, JSObject } from "../../utils";
 import {
   Component,
   OnInit,
@@ -15,7 +15,6 @@ import { isPlatformBrowser } from "@angular/common";
 import { DropzoneEvents, DropzoneEvent } from "./dropzone-interfaces";
 import { DropzoneService } from "./dropzone.service";
 import { createSubject, createStateful, timeout } from "../../rxjs/helpers";
-import { isEmpty } from "lodash";
 import { DropzoneDirective } from "./dropzone.directive";
 import { DropzoneConfig } from "./types";
 
@@ -82,7 +81,7 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
   private _class!: string;
   @Input() set class(value: string) {
     value = value ? `${value.replace("clr-input", "")}` : "";
-    this._class = !isEmpty(value)
+    this._class = !JSObject.isEmpty(value)
       ? `${value.replace("clr-input", "")}`
       : "dz-wrapper";
   } //  inline-input

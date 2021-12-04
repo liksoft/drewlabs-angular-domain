@@ -1,8 +1,7 @@
 // This file contains methods for working with entity object with
 // a unique field / property named [[id]]
 
-import { reduce } from "lodash";
-import { isArray, isDefined } from "../../utils/types";
+import { JSObject } from "../../utils";
 import { PaginationDataState } from "../types";
 
 export const updatePaginationData = <T extends { id: string | number }>(
@@ -47,7 +46,9 @@ export function addToCollection<T extends { id: string | number }>(
   // tslint:disable-next-line: variable-name
   const _items = _values.items || {};
   if (payload) {
-    const _payload = !isArray(payload) ? [payload as T] : (payload as T[]);
+    const _payload = !Array.isArray(payload)
+      ? [payload as T]
+      : (payload as T[]);
     _values = {
       ..._values,
       data: [..._payload, ..._values.data],
@@ -74,22 +75,20 @@ export const insertOrUpdateValuesUsingID = <T extends { id: string | number }>(
   // tslint:disable-next-line: variable-name
   const _items = items || {};
   if (payload) {
-    payload = (isArray(payload) ? (payload as T[]) : [payload as T]) as T[];
-    return reduce(
-      payload,
-      (acc, current) => {
-        if (!isDefined(current.id)) {
-          return { ...acc };
-        }
-        let newItem: { [index: string]: any } = {};
-        if (acc) {
-          const key = current.id.toString();
-          newItem[key] = current;
-        }
-        return { ...acc, ...newItem };
-      },
-      _items
-    );
+    payload = (
+      Array.isArray(payload) ? (payload as T[]) : [payload as T]
+    ) as T[];
+    return payload.reduce((acc, current) => {
+      if (!JSObject.isDefined(current.id)) {
+        return { ...acc };
+      }
+      let newItem: { [index: string]: any } = {};
+      if (acc) {
+        const key = current.id.toString();
+        newItem[key] = current;
+      }
+      return { ...acc, ...newItem };
+    }, _items);
   }
   return _items;
 };
@@ -100,7 +99,7 @@ export const listItemToIdMaps = <T extends { id: string | number }>(
   // tslint:disable-next-line: variable-name
   const _cache: { [index: string]: any } = {};
   list.forEach((item) => {
-    if (isDefined(item.id)) {
+    if (JSObject.isDefined(item.id)) {
       _cache[item.id.toString()] = item;
     }
   });
@@ -113,7 +112,7 @@ export const addItemToCache = <T extends { id: string | number }>(
 ) => {
   // tslint:disable-next-line: variable-name
   const _cache = { ...cache };
-  if (!isDefined(match) || !isDefined(match.id)) {
+  if (!JSObject.isDefined(match) || !JSObject.isDefined(match.id)) {
     return _cache;
   }
   _cache[match.id.toString()] = match;
@@ -126,7 +125,7 @@ export const removeItemFromCache = <T extends { id: string | number }>(
 ) => {
   // tslint:disable-next-line: variable-name
   const _cache = { ...cache };
-  if (!isDefined(match) || !isDefined(match.id)) {
+  if (!JSObject.isDefined(match) || !JSObject.isDefined(match.id)) {
     return _cache;
   }
   delete _cache[match.id.toString()];

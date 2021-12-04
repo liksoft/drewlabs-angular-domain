@@ -18,10 +18,9 @@ import {
 } from '@angular/forms';
 import * as _ from 'google-libphonenumber';
 import { PhoneNumberUtils } from './phone-number-utils';
-import { isDefined } from '../../utils';
+import { isDefined, JSObject } from '../../utils';
 import { createSubject } from '../../rxjs/helpers';
 import { takeUntil, tap, distinctUntilChanged } from 'rxjs/operators';
-import { isEmpty } from 'lodash';
 import { createStateful } from '../../rxjs/helpers/creator-functions';
 
 export class PhoneNumberValidator {
@@ -127,7 +126,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         state => {
-          if (isEmpty(state)) {
+          if (JSObject.isEmpty(state)) {
             this.control.setErrors({ invalidPhoneNumber: null });
             // Set the control value to null
             this.control.setValue(null);

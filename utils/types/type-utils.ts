@@ -98,6 +98,7 @@ export function isPrimitive(param: any): boolean {
  * @description Checks if the provided function parameter is of type number
  */
 export function isNumber(value: any): boolean {
+  value = isNaN(value as any) ? value : +value;
   return (
     typeof value === "number" || value instanceof Number || value === Number
   );
@@ -115,17 +116,9 @@ export const isNullOrNaN = (value: any) => {
 
 /**
  * @description Checks if a variable is of Array type
- * @param param [[any]]
+ * @value value [[any]]
  */
-export function isArray(param: any): boolean {
-  if (param === Array) {
-    return true;
-  } else if (typeof Array.isArray === "function") {
-    return Array.isArray(param);
-  } else {
-    return !!(param instanceof Array);
-  }
-}
+export const isArray = (value: any) => Array.isArray(value);
 
 /**
  * @description Get property from a JS obecjt. The function dynamically load property that are inner property
@@ -136,13 +129,13 @@ export function isArray(param: any): boolean {
 export function getJSObjectPropertyValue(
   item: any,
   key: string,
-  deepPropertySeperator: string = '.'
+  deepPropertySeperator: string = "."
 ) {
   if (!isDefined(key)) {
     return key;
   }
-  if (key.indexOf(deepPropertySeperator || '.') !== -1) {
-    const innerFields: Array<string> = key.split(deepPropertySeperator || '.');
+  if (key.indexOf(deepPropertySeperator || ".") !== -1) {
+    const innerFields: Array<string> = key.split(deepPropertySeperator || ".");
     let currentObj = item;
     for (const v of innerFields) {
       if (isObject(currentObj) && currentObj[v]) {

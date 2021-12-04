@@ -1,6 +1,6 @@
 import { ClrDatagridStateInterface } from "@clr/angular";
-import { uniqBy } from "lodash";
 import { Paginable } from ".";
+import { JSArray } from "../utils";
 import { isArray } from "../utils/types/type-utils";
 import { PaginableValue } from "./types";
 
@@ -71,7 +71,7 @@ export const mapPaginableTo =
       });
       _values = {
         ..._values,
-        data: uniqBy(payload.data ?? _values.data, "id"),
+        data: JSArray.uniqBy(payload.data ?? _values.data, "id"),
         total: payload.total || _values.total,
         items: _items,
         page: payload.page || _values.page,
@@ -97,7 +97,7 @@ export const addPaginableValue =
       const _payload = !isArray(payload) ? [payload as T] : (payload as T[]);
       _values = {
         ..._values,
-        data: uniqBy(
+        data: JSArray.uniqBy(
           _values.data ? [..._payload, ..._values.data] : [..._payload],
           "id"
         ),
@@ -129,7 +129,7 @@ export const updatePaginableValue =
       _items[_payload.id.toString()] = _payload;
       _values = {
         ..._values,
-        data: uniqBy(
+        data: JSArray.uniqBy(
           [
             ...[_payload],
             ..._values.data?.filter((value) => value.id !== _payload.id),
@@ -153,7 +153,7 @@ export const deletePaginableValue =
       delete _items[payload.id.toString()];
       _values = {
         ..._values,
-        data: uniqBy(
+        data: JSArray.uniqBy(
           [..._values.data?.filter((value) => value.id !== payload.id)],
           "id"
         ),

@@ -1,9 +1,17 @@
-import { DefaultStoreAction, StoreAction } from '../../../rxjs/state/rx-state';
-import { AppUsersState, AppUserStoreActions } from '../actions/app-users';
-import * as lodash from 'lodash';
-import { addItemToCache, insertOrUpdateValuesUsingID, listItemToIdMaps, removeItemFromCache } from '../../../rxjs/helpers';
+import { DefaultStoreAction, StoreAction } from "../../../rxjs/state/rx-state";
+import { AppUsersState, AppUserStoreActions } from "../actions/app-users";
+import {
+  addItemToCache,
+  insertOrUpdateValuesUsingID,
+  listItemToIdMaps,
+  removeItemFromCache,
+} from "../../../rxjs/helpers";
+import { JSObject } from "../../../utils";
 
-export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>) => {
+export const usersReducer = (
+  state: AppUsersState,
+  action: Partial<StoreAction>
+) => {
   const { updateResult, deleteResult } = action.payload || {};
   switch (action.type) {
     case DefaultStoreAction.ASYNC_UI_ACTION:
@@ -42,7 +50,7 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
         updateResult: undefined,
         deleteResult: undefined,
         performingAction: false,
-        error: null
+        error: null,
       } as AppUsersState;
     case AppUserStoreActions.PAGINATION_DATA_ACTION:
       return {
@@ -57,7 +65,10 @@ export const usersReducer = (state: AppUsersState, action: Partial<StoreAction>)
     case AppUserStoreActions.ADD_USER_ACTION:
       return {
         ...state,
-        items: addItemToCache(state.items, !lodash.isEmpty(action.payload) ? action.payload : {}),
+        items: addItemToCache(
+          state.items,
+          JSObject.defaultIfEmpty(action.payload, {})
+        ),
         createdUser: action.payload,
         performingAction: false,
         error: undefined,

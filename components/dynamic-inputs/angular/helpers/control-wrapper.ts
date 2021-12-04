@@ -1,6 +1,5 @@
 import { IHTMLFormControl } from "../../core/contracts/dynamic-input";
 import { IDynamicForm } from "../../core/contracts/dynamic-form";
-import { includes, toNumber, isNumber } from "lodash";
 import { AbstractControl } from "@angular/forms";
 import {
   ApplyAttributeChangesToControlsCallback,
@@ -8,6 +7,7 @@ import {
   ControlBindings,
 } from "../types";
 import { ComponentReactiveFormHelpers } from "./reactive-form-helpers";
+import { isNumber } from "../../../../utils";
 
 export const applyHiddenAttributeCallback =
   (form: IDynamicForm, bidings: BindingInterface, value: string | number) =>
@@ -18,15 +18,15 @@ export const applyHiddenAttributeCallback =
       form.controlConfigs = (form.controlConfigs as IHTMLFormControl[]).map(
         (_control) => {
           if (_control.formControlName === bidings.key) {
-            value = isNaN(value as any) ? value : toNumber(value);
+            value = isNaN(value as any) ? value : +value;
             const requiredIfValues = isNumber(value)
               ? _control.requiredIf
                 ? _control.requiredIf.values.map((item) => {
-                    return isNaN(item) ? item : toNumber(item);
+                    return isNaN(item) ? item : +item;
                   })
                 : []
               : _control.requiredIf?.values || [];
-            _control.hidden = !includes(requiredIfValues, value) ? true : false;
+            _control.hidden = !requiredIfValues.includes(value) ? true : false;
             if (_control.hidden) {
               formgroup.get(bidings.key)?.setValue(null);
               ComponentReactiveFormHelpers.clearControlValidators(

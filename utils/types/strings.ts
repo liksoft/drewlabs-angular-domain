@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import { JSArray } from "./array-utils";
 
 /**
  * Returns the substring after the last occurrence of the specified character
@@ -6,7 +6,7 @@ import * as _ from "lodash";
  * @param haystack [[string]]
  */
 export const afterLast = (char: string, haystack: string) =>
-  _.last(haystack.split(char));
+  JSArray.last(haystack.split(char));
 
 /**
  * Returns the strings after the first occurence the specified character

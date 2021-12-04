@@ -15,9 +15,9 @@ import {
   HttpRequest,
   HttpHandler,
 } from "@angular/common/http";
-import { isEmpty } from "lodash";
 import { createGeoposition, GeoPosition } from "../types/geoposition";
 import { GeolocationManager } from "../types/geolocation";
+import { JSObject } from "../../utils";
 
 const BROWSER_POSITION_SESSION_KEY = "CLIENT_GEOLOCATION_LOCATION";
 
@@ -76,7 +76,7 @@ export class GeolocationService implements GeolocationManager, OnDestroy {
 
   getPosition(): GeoPosition {
     let value = this.session.get(BROWSER_POSITION_SESSION_KEY);
-    value = isEmpty(value) ? this.tempPosition : value;
+    value = JSObject.isEmpty(value) ? this.tempPosition : value;
     return this.tempPosition;
   }
 

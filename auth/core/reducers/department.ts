@@ -3,15 +3,15 @@ import {
   DepartmentV2sStoreActions,
   DepartmentV2sState,
 } from "../actions/department";
-import * as lodash from "lodash";
 import { DepartmentV2 } from "../../contracts";
+import { ArrayUtils, JSObject } from "../../../utils";
 
 export const departmentsReducer = (
   state: DepartmentV2sState,
   action: Partial<StoreAction>
 ) => {
   let items: DepartmentV2[] = [];
-  const values = state.items ? [...state.items] : [];
+  let values = state.items ? [...state.items] : [];
   const { item, updateResult, deleteResult } = action.payload || {};
   switch (action.type) {
     case DefaultStoreAction.ASYNC_UI_ACTION:
@@ -63,7 +63,7 @@ export const departmentsReducer = (
         ...state,
         items: [
           ...state.items,
-          ...(!lodash.isEmpty(action.payload) ? [action.payload] : []),
+          ...(!JSObject.isEmpty(action.payload) ? [action.payload] : []),
         ],
         createdDepartment: action.payload,
         performingAction: false,
@@ -87,7 +87,7 @@ export const departmentsReducer = (
     case DepartmentV2sStoreActions.DEPARTMENT_DELETED_ACTION:
       items = [...state.items];
       if (item) {
-        lodash.remove(values, (v) => v.id === item.id);
+        values = ArrayUtils.reject(values, (v) => v.id === item.id);
       }
       return {
         ...state,

@@ -1,14 +1,14 @@
 import { DefaultStoreAction, StoreAction } from "../../../rxjs/state/rx-state";
 import { CompaniesStoreActions, CompaniesState } from "../actions/organisation";
-import * as lodash from "lodash";
 import { Company } from "../../contracts";
+import { ArrayUtils, JSObject } from "../../../utils";
 
 export const companiesReducer = (
   state: CompaniesState,
   action: Partial<StoreAction>
 ) => {
   let items: Company[] = [];
-  const values = state.items ? [...state.items] : [];
+  let values = state.items ? [...state.items] : [];
   const { item, updateResult, deleteResult } = action.payload || {};
   switch (action.type) {
     case DefaultStoreAction.ASYNC_UI_ACTION:
@@ -42,7 +42,7 @@ export const companiesReducer = (
         ...state,
         items: [
           ...state.items,
-          ...(!lodash.isEmpty(action.payload) ? [action.payload] : []),
+          ...(!JSObject.isEmpty(action.payload) ? [action.payload] : []),
         ],
         createdCompany: action.payload,
         performingAction: false,
@@ -66,7 +66,7 @@ export const companiesReducer = (
     case CompaniesStoreActions.COMPANY_DELETED_ACTION:
       items = [...state.items];
       if (item) {
-        lodash.remove(values, (v) => v.id === item.id);
+        values = ArrayUtils.reject(values, (v) => v.id === item.id);
       }
       return {
         ...state,

@@ -14,12 +14,12 @@ import {
   getResponseDataFromHttpResponse,
   httpHost,
 } from "../../../../../http/helpers";
-import { isArray, isEmpty } from "lodash";
 import { controlBindingsSetter } from "../../../core/helpers";
 import { doLog } from "../../../../../rxjs/operators";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
 import { SelectInput } from "../../../core/types/select";
 import { InputEventArgs } from "../../types/dynamic-inputs";
+import { JSObject } from "../../../../../utils";
 @Component({
   selector: "app-dynamic-select-input",
   templateUrl: "./dynamic-select-input.component.html",
@@ -125,7 +125,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
               doLog("Load binding result: "),
               map((state) => {
                 const data = getResponseDataFromHttpResponse(state);
-                if (data && isArray(data)) {
+                if (data && Array.isArray(data)) {
                   return controlBindingsSetter(data)(this._inputConfig)
                     .items as any[];
                 }
@@ -146,7 +146,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
     const { state } = this._inputItems$.getValue();
     if (
       !(typeof state !== "undefined" && state !== null) ||
-      (isEmpty(state) && this._inputConfig.serverBindings)
+      (JSObject.isEmpty(state) && this._inputConfig.serverBindings)
     ) {
       // Load the data from the remote server
       this._controlFocusEvent$.next({ state });

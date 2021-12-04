@@ -1,4 +1,3 @@
-import * as lodash from "lodash";
 import { FormState, FormStoreActions } from "../actions";
 import {
   DefaultStoreAction,
@@ -16,6 +15,7 @@ import {
   updatePaginableValue,
 } from "../../../../../pagination";
 import { ControlInterface, FormInterface } from "../../compact";
+import { JSArray } from "../../../../../utils";
 
 const updateControls =
   (control: ControlInterface) => (state: Paginable<FormInterface>) => {
@@ -38,7 +38,7 @@ const addControl =
       const controls = value.controls ?? [];
       return updatePaginableValue({
         ...value,
-        controls: lodash.uniqBy([...controls, control], "id"),
+        controls: JSArray.uniqBy([...controls, control], "id"),
       })(state);
     }
     return state;

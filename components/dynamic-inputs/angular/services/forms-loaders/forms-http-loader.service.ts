@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { isArray } from "lodash";
 import { map } from "rxjs/operators";
 import { createFormElement, FormsLoader } from "../../../core";
 
@@ -11,7 +10,7 @@ export class FormHttpLoader implements FormsLoader {
   public load = (endpoint: string, options?: { [index: string]: any }) => {
     return this._http.get(endpoint, options || {}).pipe(
       map((state) => {
-        if (state && isArray(state)) {
+        if (state && Array.isArray(state)) {
           return (state as any[]).map((value: { [index: string]: any }) => {
             if (
               (value?.formControls ?? [])?.length !== 0 &&

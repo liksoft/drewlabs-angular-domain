@@ -1,6 +1,5 @@
 import { isPlatformBrowser } from "@angular/common";
 import { isDefined } from "../types/type-utils";
-import * as _ from "lodash";
 import { writeRawStream, writeStream } from "../io";
 
 type WindowEvent = (self: Window, ev?: Event) => any;
@@ -10,16 +9,16 @@ type WindowEvent = (self: Window, ev?: Event) => any;
  * @param file [[File|any]]
  */
 export function readFileAsDataURI(file?: File | Blob) {
-  return new Promise<string | undefined>((_, __) => {
+  return new Promise<string | undefined>((resolve) => {
     if (file) {
       if (isDefined(file)) {
         const reader = new FileReader();
         reader.onload = async (e: ProgressEvent) => {
-          _((e.target as any)?.result.toString());
+          resolve((e.target as any)?.result.toString());
         };
         reader.readAsDataURL(file);
       } else {
-        _(undefined);
+        resolve(undefined);
       }
     }
   });
