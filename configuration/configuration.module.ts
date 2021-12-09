@@ -38,32 +38,12 @@ export class ConfigurationModule {
           useClass: AppConfigurationManager,
         },
         {
-          // Injection de environment
           provide: ENVIRONMENT,
-          // useClass, useValue, ou useFactory
-          // useClass: Prend en paramètre une classe injectable
-          // useValue: Fournie une valeur au lieu d'une implémentation, c-a-d le useValue
-          // Prend un object, ou une valeur de type primitive
-          // useFactory() -> Prend en paramètre une function de créaction d'un object our d'une class
           useValue: config.environment,
-          // Exactement égale
-          // useFactory: () => {
-          //   return environment;
-          // }
         },
         {
-          // Injection de environment
           provide: JSON_CONFIG_URL,
-          // useClass, useValue, ou useFactory
-          // useClass: Prend en paramètre une classe injectable
-          // useValue: Fournie une valeur au lieu d'une implémentation, c-a-d le useValue
-          // Prend un object, ou une valeur de type primitive
-          // useFactory() -> Prend en paramètre une function de créaction d'un object our d'une class
-          useValue: config.jsonConfigURL || "/assets/resources/appconfing.json",
-          // Exactement égale
-          // useFactory: () => {
-          //   return environment;
-          // }
+          useValue: config.jsonConfigURL || "/assets/resources/config.json",
         },
         {
           // APP_INITIALIZER est un token du framework angular permettant d'excécuter une
