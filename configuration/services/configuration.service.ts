@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Optional } from "@angular/core";
 import { throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
-import { getJSObjectPropertyValue } from "../../utils";
+import { JSObject } from "../../utils";
 import { ConfigurationManager } from "../contracts/configuration";
 import { ANGULAR_ENVIRONMENT_MANAGER, JSON_CONFIG_URL } from "./tokens";
 
@@ -10,8 +10,8 @@ import { ANGULAR_ENVIRONMENT_MANAGER, JSON_CONFIG_URL } from "./tokens";
   providedIn: "root",
 })
 export class AppConfigurationManager implements ConfigurationManager {
-  _enviroment: { [index: string]: any } = {};
-  _configuration: { [index: string]: any } = {};
+  private enviroment_: { [index: string]: any } = {};
+  private configuration_: { [index: string]: any } = {};
 
   constructor(
     private _client: HttpClient,
@@ -20,19 +20,19 @@ export class AppConfigurationManager implements ConfigurationManager {
     @Optional()
     ngEnviromentManager?: ConfigurationManager
   ) {
-    this._enviroment = ngEnviromentManager?.get();
+    this.enviroment_ = ngEnviromentManager?.get();
   }
 
   load(url?: string) {
-    return this._client.get(url || this._url, {}).pipe(
+    return this._client.get(url ?? this._url, {}).pipe(
       tap((state) => {
-        this._configuration = {
-          ...(this._enviroment || {}),
-          ...(state || {}),
+        this.configuration_ = {
+          ...(this.enviroment_ || {}),
+          ...(state ?? {}),
         };
       }),
       catchError((err) => {
-        this._configuration = this._enviroment || {};
+        this.configuration_ = this.enviroment_ ?? {};
         return throwError(err);
       })
     );
@@ -41,11 +41,11 @@ export class AppConfigurationManager implements ConfigurationManager {
   get(key: string | undefined = undefined, default_: any = undefined) {
     if (key) {
       return (
-        getJSObjectPropertyValue(this._configuration ?? {}, key) ??
+        JSObject.getProperty(this.configuration_ ?? {}, key) ??
         default_ ??
         undefined
       );
     }
-    return this._configuration ?? {};
+    return this.configuration_ ?? {};
   }
 }

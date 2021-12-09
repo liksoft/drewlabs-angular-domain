@@ -1,6 +1,6 @@
 import { Component, Inject, Input, LOCALE_ID } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { MomentUtils } from "../../../../../utils";
+import { JSDate } from "src/app/lib/core/utils";
 import { IHTMLFormControl } from "../../../core/contracts";
 import { DynamicInputTypeHelper } from "../../services/input-type.service";
 
@@ -32,7 +32,7 @@ export class DynamicDateInputComponent {
   // Configuration parameters of the input
   @Input() inputConfig!: IHTMLFormControl;
 
-  today = MomentUtils.parseDate();
+  today = JSDate.format();
 
   constructor(
     public readonly inputType: DynamicInputTypeHelper,

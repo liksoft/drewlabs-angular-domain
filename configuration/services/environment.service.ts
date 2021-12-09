@@ -1,5 +1,5 @@
 import { Inject, Injectable, Optional } from "@angular/core";
-import { getJSObjectPropertyValue } from "../../utils";
+import { JSObject } from "../../utils";
 import { ConfigurationManager } from "../contracts/configuration";
 import { ENVIRONMENT } from "./tokens";
 
@@ -22,7 +22,7 @@ export class EnvironmentService implements ConfigurationManager {
   get(key: string | undefined = undefined, default_: any = undefined) {
     if (key) {
       return (
-        getJSObjectPropertyValue(this._configuration ?? {}, key) ??
+        JSObject.getProperty(this._configuration ?? {}, key) ??
         default_ ??
         undefined
       );

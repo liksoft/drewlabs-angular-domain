@@ -57,6 +57,7 @@ export function b64toBlob(
  * @deprecated
  */
 export class Browser {
+
   public static print() {
     window.print();
   }

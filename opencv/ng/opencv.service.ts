@@ -8,8 +8,8 @@ import {
   createSubject,
   observableFrom,
 } from "../../rxjs/helpers";
+import { JSObject } from "../../utils";
 import { WINDOW } from "../../utils/ng/common";
-import { isDefined, setObjectProperty } from "../../utils";
 import { OPENCV_DEFAULT_LOAD_RESULT } from "../constants/load-result";
 import { OPENCV_DEFAULT_OPTIONS } from "../constants/options";
 import { drawRectStroke, logError } from "../helpers";
@@ -59,10 +59,10 @@ export class OpenCVSvervice implements OpenCVProviderInterface {
   }
 
   public loadLibrary = (options: OpenCVOptions) => {
-    if (isDefined(cv)) {
+    if (cv) {
       this._onScriptLoaded(options);
     } else {
-      this.window = setObjectProperty(this.window, "Module", { ...options });
+      this.window = JSObject.setProperty(this.window, "Module", { ...options });
       const script = this.document.createElement("script");
       script.setAttribute("async", "");
       script.setAttribute("type", "text/javascript");
@@ -182,7 +182,7 @@ export class OpenCVFaceDetectorService implements OnDestroy {
   cleanup = () => {
     this.ressources
       .filter((item) => {
-        return isDefined(item);
+        return JSObject.isDefined(item);
       })
       .forEach((resource) => {
         try {
@@ -248,7 +248,7 @@ export class OpenCVFaceDetectorService implements OnDestroy {
   detectFace =
     (video: HTMLVideoElement, _interval: number) =>
     (intializerFn: () => void) => {
-      if (!isDefined(this.model)) {
+      if (!JSObject.isDefined(this.model)) {
         throw new Error(
           "Model must be loaded before calling the detector function... Call loadModel() before calling this detectFaces()"
         );

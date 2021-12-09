@@ -15,7 +15,7 @@ import {
   InputTypes,
 } from "../../core/contracts";
 import { CheckBoxInput, DateInput, NumberInput, TextInput } from "../../core";
-import { MomentUtils } from "../../../../utils/datetime";
+import { JSDate } from "../../../../utils/datetime";
 import { observableOf } from "../../../../rxjs/helpers";
 import { tap } from "rxjs/operators";
 
@@ -110,12 +110,11 @@ export class ComponentReactiveFormHelpers {
             ? validators.push(
                 CustomValidators.minDate(
                   (config as DateInput)?.minDate
-                    ? MomentUtils.parseDate(
+                    ? JSDate.format(
                         (config as DateInput).minDate as string,
-                        undefined,
                         "YYYY-MM-DD"
                       )
-                    : MomentUtils.parseDate()
+                    : JSDate.format(undefined, "YYYY-MM-DD")
                 )
               )
             : // tslint:disable-next-line:no-unused-expression
@@ -125,12 +124,11 @@ export class ComponentReactiveFormHelpers {
               ? validators.push(
                   CustomValidators.maxDate(
                     (config as DateInput)?.maxDate
-                      ? MomentUtils.parseDate(
-                          (config as DateInput).maxDate,
-                          undefined,
-                          "YYYY-MM-DD"
-                        )
-                      : MomentUtils.parseDate()
+                    ? JSDate.format(
+                        (config as DateInput).maxDate as string,
+                        "YYYY-MM-DD"
+                      )
+                    : JSDate.format(undefined, "YYYY-MM-DD")
                   )
                 )
               : // tslint:disable-next-line:no-unused-expression

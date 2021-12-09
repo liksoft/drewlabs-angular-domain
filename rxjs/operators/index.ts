@@ -1,6 +1,5 @@
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
-import { getEnv } from "../../utils";
 import { Log } from "../../utils/logger";
 
 // This will be provided through Terser global definitions by Angular CLI. This will

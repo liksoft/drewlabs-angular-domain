@@ -1,3 +1,5 @@
+import { JSObject } from "./object";
+
 export type Callable = () => any;
 export type Fn = (value?: any) => void;
 
@@ -65,19 +67,26 @@ export function equals(o1: any, o2: any): boolean {
   return false;
 }
 
-export function isDefined(value: any): boolean {
-  return typeof value !== "undefined" && value !== null && value !== undefined;
-}
+/**
+ * Check if the value of the object is not equals to null or undefined
+ *
+ * @param value
+ * @returns
+ */
+export const isDefined = (value: any) => JSObject.isDefined(value);
 
-export function isObject(item: any): boolean {
-  return item && typeof item === "object" && !Array.isArray(item);
-}
+/**
+ * Check if a given value is a JS object
+ * @param item
+ * @returns
+ */
+export const isObject = (item: any) => JSObject.isJsObject(item);
 
 /**
  * @description Checks if a variable is of primitive type aka string|number|boolean
  * @param param [[any]]
  */
-export function isPrimitive(param: any): boolean {
+export const isPrimitive = (param: any) => {
   switch (typeof param) {
     case "string":
     case "number":
@@ -97,7 +106,7 @@ export function isPrimitive(param: any): boolean {
 /**
  * @description Checks if the provided function parameter is of type number
  */
-export function isNumber(value: any): boolean {
+export const isNumber = (value: any) => {
   value = isNaN(value as any) ? value : +value;
   return (
     typeof value === "number" || value instanceof Number || value === Number

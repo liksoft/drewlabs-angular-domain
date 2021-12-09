@@ -1,5 +1,8 @@
 import * as moment from "moment";
 
+/**
+ * @deprecated v1.x Use {JSDate} object
+ */
 export class MomentUtils {
   /**
    * @description Add date unit to a given date

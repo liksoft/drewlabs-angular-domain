@@ -1,6 +1,6 @@
 import { AbstractControl, FormGroup, FormControl, ValidatorFn } from '@angular/forms';
+import { JSDate } from '../utils';
 import { isDefined } from '../utils/types/type-utils';
-import { MomentUtils } from '../utils/datetime/moment-utils';
 
 
 export class CustomValidators {
@@ -35,7 +35,7 @@ export class CustomValidators {
   static minDate(minDate: string | Date): ValidatorFn {
     return (control: AbstractControl) => {
       if (control.validator) {
-        if (control.value && MomentUtils.isAfter(minDate, control.value)) {
+        if (control.value && JSDate.isAfter(minDate, control.value)) {
           return { minDate };
         }
       }
@@ -46,7 +46,7 @@ export class CustomValidators {
   static maxDate(maxDate: string | Date): ValidatorFn {
     return (control: AbstractControl) => {
       if (control.validator) {
-        if (control.value && MomentUtils.isBefore(maxDate, control.value)) {
+        if (control.value && JSDate.isBefore(maxDate, control.value)) {
           return { maxDate };
         }
       }

@@ -5,6 +5,7 @@ import { WINDOW } from "../ng/common";
   providedIn: "root",
 })
 export class WindowRef {
+
   get nativeWindow() {
     return this.window;
   }
@@ -16,6 +17,7 @@ export class WindowRef {
   providedIn: "root",
 })
 export class Dialog {
+
   constructor(@Inject(WINDOW) @Optional() private window: Window) {}
 
   /**
