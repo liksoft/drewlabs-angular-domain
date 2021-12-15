@@ -63,3 +63,15 @@ export {
   MonthProvider,
   MONTHS,
 } from "./datetime";
+
+export {
+  compose,
+  reverseCompose,
+  UnaryFunction,
+  ReducerFunc,
+  FilterFunc,
+  CollectorFunc,
+  ListCollectorFunc,
+  ComposeFunc,
+  mapReduce,
+} from "./functional";

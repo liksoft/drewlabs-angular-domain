@@ -99,7 +99,7 @@ export class Collection<T> implements ICollection<T> {
     return values;
   }
 
-  [Symbol.iterator]() {
+  *[Symbol.iterator] () {
     return this.values()[Symbol.iterator]();
   }
 
