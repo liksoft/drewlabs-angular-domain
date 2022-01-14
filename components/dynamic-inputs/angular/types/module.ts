@@ -6,6 +6,10 @@ export type ModuleConfigs = {
     formsPath?: string;
     controlBindingsPath?: string;
   };
+
   formsAssets?: string;
+
   clientFactory?: Function;
+
+  uploadedFilesServerURL?: string;
 };

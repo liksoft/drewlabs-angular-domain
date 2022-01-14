@@ -137,6 +137,10 @@ export class DynamicFormControlModule {
           provide: ANGULAR_REACTIVE_FORM_BRIDGE,
           useClass: ReactiveFormBuilderBrige,
         },
+        {
+          provide: 'FILE_STORE_PATH',
+          useValue: configs?.uploadedFilesServerURL ?? 'http://localhost'
+        }
       ],
     };
   }
