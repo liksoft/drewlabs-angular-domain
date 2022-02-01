@@ -10,12 +10,13 @@ export interface HTTPErrorState {
 
 export interface ErrorHandler {
 
-    errorState$: Observable<HTTPErrorState>;
+  errorState$: Observable<HTTPErrorState>;
 
-    /**
-     * @description Convert HTTP Error response error object into an HTTpResponse onbject
-     * @param error Erro object
-     */
-    handleError(
-        error: HttpErrorResponse): HttpErrorResponse | { status: UIStateStatusCode, validationErrors: { [prop: string]: any } } | Observable<never>;
+  /**
+   * @description Convert HTTP Error response error object into an HTTpResponse onbject
+   */
+  handleError(error: HttpErrorResponse): HttpErrorResponse | {
+    status: UIStateStatusCode,
+    validationErrors: { [prop: string]: any }
+  } | Observable<never>;
 }

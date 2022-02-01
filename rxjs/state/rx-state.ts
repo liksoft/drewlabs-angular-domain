@@ -53,7 +53,7 @@ export abstract class InjectableStore<T, A extends Partial<StoreAction>>
 }
 
 export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
-  private _destroy$ = createSubject();
+  private _destroy$ = createSubject<void>();
 
   private readonly _store$ = createSubject<T>(1);
 
@@ -86,7 +86,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
         filter((state) => typeof state !== "undefined" && state !== null),
         startWith(initial as any),
         scan(reducer),
-        tap((state) => this._store$.next(state))
+        tap((state) => this._store$.next(state as any))
       )
       .subscribe();
   };
@@ -96,13 +96,17 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
     (...args: any) => {
       const action = handler.call(null, ...args) as AType;
       this._actions$.next(action);
-      if (isObservable<any>(action.payload)) {
+      if (isObservable(action.payload)) {
         // Simulate a wait before calling the next method
-        observableOf([action.payload])
-          .pipe(first(), delay(10))
-          .subscribe((state) => {
-            this._actions$.next(state[0]);
-          });
+        action.payload
+          .pipe(
+            first(),
+            delay(10),
+            tap((state) => {
+              this._actions$.next(state[0]);
+            })
+          )
+          .subscribe();
       }
       return action;
     };

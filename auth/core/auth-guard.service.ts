@@ -15,11 +15,8 @@ import { AuthTokenService } from "../../auth-token/core/auth-token.service";
 import { filter, map, takeUntil, tap } from "rxjs/operators";
 import { userCanAny, Authorizable, userCan } from "../contracts/v2/user/user";
 import { createSubject } from "../../rxjs/helpers/index";
-import { doLog } from "../../rxjs/operators";
 
-/**
- * @description Authentication guard
- */
+
 @Injectable()
 export class AuthGuardService
   implements CanActivate, CanActivateChild, CanLoad, OnDestroy
@@ -30,12 +27,6 @@ export class AuthGuardService
 
   constructor(private router: Router, private auth: AuthService) {}
 
-  /**
-   * @description Handle for component instance activation.
-   * Check if user is authenticated before authorizing access to the current component
-   * @param route [[ActivatedRouteSnapshot]] instance
-   * @param state [[RouterStateSnapshot]] instance
-   */
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
@@ -44,11 +35,6 @@ export class AuthGuardService
     return this.checkLogin(url);
   }
 
-  /**
-   * @description CanActivate guard appliqué aux enfants de composants dont l'accès requiert que l'utilisateur soit authentifié
-   * @param route [[ActivatedRouteSnapshot]] instance
-   * @param state [[RouterStateSnapshot]] instance
-   */
   canActivateChild(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
@@ -56,20 +42,11 @@ export class AuthGuardService
     return this.canActivate(route, state);
   }
 
-  /**
-   * @description CanActivate guard appliqué aux module dont le chargement requiert que l'utilisateur soit authentifié
-   * @param route [[ActivatedRouteSnapshot]] instance
-   * @param state [[RouterStateSnapshot]] instance
-   */
   canLoad(route: Route): Observable<boolean> | boolean | Promise<boolean> {
     const url = `/${route.path}`;
     return this.checkLogin(url);
   }
 
-  /**
-   * @description Méthode de vérification de d'accès
-   * @param url [[string]] redirection url
-   */
   checkLogin(url: string): Observable<boolean> | boolean | Promise<boolean> {
     return this.authState$.pipe(
       filter(
@@ -81,15 +58,16 @@ export class AuthGuardService
           )
       ),
       map((source) => {
-        if (source.isLoggedIn) {
-          return true;
+        if (!source.isLoggedIn) {
+          this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
+          return false;
         }
-        this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
-        return false;
+        return true;
       }),
       takeUntil(this._destroy$)
     );
   }
+
   ngOnDestroy(): void {
     this._destroy$.next();
   }
@@ -150,7 +128,6 @@ export class AuthorizationsGuard implements CanActivate {
           );
         }
         if (!isAuthorized) {
-          // Navigate to the login page with extras
           this.router.navigate([AuthPathConfig.REDIRECT_PATH]);
           return false;
         }

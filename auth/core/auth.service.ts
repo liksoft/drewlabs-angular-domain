@@ -54,7 +54,7 @@ const initalState: AuthState = {
 })
 export class AuthService implements OnDestroy {
   // tslint:disable-next-line: variable-name
-  private _destroy$ = createSubject<{}>();
+  private _destroy$ = createSubject<void>();
   // tslint:disable-next-line: variable-name
   private _logoutSubject$ = createSubject<boolean>();
 
@@ -124,7 +124,6 @@ export class AuthService implements OnDestroy {
           this.userStorage.removeUserFromCache();
           this.oAuthTokenProvider.removeToken();
           this.sessionStorage.clear();
-          // intitAuthStateAction(this._authStore$)(initalState);
           this.signoutState();
           timeout(() => {
             this.router.navigate([AuthPathConfig.LOGIN_PATH], {
@@ -138,14 +137,9 @@ export class AuthService implements OnDestroy {
 
   ngOnDestroy = () => {
     this._destroy$.next();
-    // Destroy the _authStore$ when the service is destroyed
     this._authStore$.destroy();
   };
 
-  /**
-   * @description Authenticate user using server credentials and try logging in user
-   * @param body Login request body {@link ILogginRequest}
-   */
   public authenticate = (body: ILoginRequest) => {
     authenticatingAction(this._authStore$)();
     return this.httpClient
@@ -191,9 +185,6 @@ export class AuthService implements OnDestroy {
       );
   };
 
-  /**
-   * @description Handler for authenticating a user via user id and a remember token
-   */
   public authenticateViaRememberToken = (body: {
     id: string | number;
     token: string;
@@ -241,9 +232,6 @@ export class AuthService implements OnDestroy {
       );
   };
 
-  /**
-   * @description Logout the application user
-   */
   public logout = () => {
     return this.httpClient
       .get(`${httpHost(this.host)}/${this.logoutPath}`)

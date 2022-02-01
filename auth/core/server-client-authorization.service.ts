@@ -30,8 +30,6 @@ export class XClientAuthorizationHeadersInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler) {
         const client = this._provider.getXAuthClient();
         if (client) {
-            // Clone the request and replace the original headers with
-            // cloned headers, updated with the authorization.
             req = req.clone({
                 headers: req.headers.set('X-AUTHORIZATION-CLIENT-ID', `${client?.clientID}`)
                     .set('X-AUTHORIZATION-CLIENT-TOKEN', `${client?.clientSecret}`)

@@ -27,3 +27,5 @@ export {
   departmentFormViewModelBindings,
 } from "./v2/company/department";
 export { DivisionV2 } from "./v2/company/division";
+
+export { AuthorizationInterface, AuthorizationGroupInterface } from './authorizations';

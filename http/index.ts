@@ -1,6 +1,5 @@
-// Export the module
 export { HttpModule } from "./module/http.module";
-// Export the Helpers
+
 export {
   getResponseDataFromHttpResponse,
   getResponseV2DataFromHttpResponse,

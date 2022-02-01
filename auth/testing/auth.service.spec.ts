@@ -14,7 +14,7 @@ import { InMemoryStoreService } from '../../storage/core';
 import { filter } from 'rxjs/operators';
 import { isDefined } from '../../utils/types';
 import { drewlabsIsAuthenticationSuccessful } from '../rxjs/operators';
-import { HTTP_CLIENT } from '../../http/contracts';
+import { HTTP_CLIENT } from '../../http';
 
 const testSetup = () => {
   const routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']) as SpyObj<Router>;
