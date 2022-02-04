@@ -77,7 +77,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   preferredCountriesInDropDown: Array<Country> = [];
   selectedCountry: Country = new Country();
 
-  private _destroy$ = createSubject();
+  private _destroy$ = createSubject<void>();
 
   @Input() set disabled(value: boolean) {
     this._disableState$.next({ disabled: value || false });

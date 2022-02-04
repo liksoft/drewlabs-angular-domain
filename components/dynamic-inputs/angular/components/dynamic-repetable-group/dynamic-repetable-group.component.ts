@@ -35,7 +35,7 @@ import { ChildComponent } from "./types";
 })
 export class DynamicRepetableGroupComponent implements OnDestroy {
   // Component detruction listener
-  private _destroy$ = createSubject();
+  private _destroy$ = createSubject<void>();
   // #region Component inputs
   @Input() control!: FormArray;
   @Input() addButtonText = "Plus";

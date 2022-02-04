@@ -163,7 +163,7 @@ export class DropzoneComponent implements OnInit, AfterViewInit, OnDestroy {
   private _config = createStateful<DropzoneConfig | undefined>(undefined);
   defaults$ = this._config.asObservable();
   // tslint:disable-next-line: variable-name
-  private _destroy$ = createSubject();
+  private _destroy$ = createSubject<void>();
 
   constructor(
     @Inject(PLATFORM_ID) private platform: object,

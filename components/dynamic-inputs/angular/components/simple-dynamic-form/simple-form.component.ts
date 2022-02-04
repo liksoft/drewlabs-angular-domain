@@ -44,7 +44,7 @@ export class SimpleDynamicFormComponent implements OnDestroy {
   }
   @Output() public formEvent = new EventEmitter<{ [index: string]: any }>();
   @Output() public componentReadyStateChanges = new EventEmitter();
-  public readonly destroy$ = createSubject();
+  public readonly destroy$ = createSubject<void>();
 
   @HostListener("keyup.enter", ["$event"])
   onEnterButtonCliked(event: KeyboardEvent) {

@@ -52,7 +52,7 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
   @Output("keypress") keypress = new EventEmitter<InputEventArgs>();
   @Output("blur") blur = new EventEmitter<InputEventArgs>();
 
-  private _destroy$ = createSubject();
+  private _destroy$ = createSubject<void>();
 
   // Value changes emitters
   @Output() valueChange = new EventEmitter<any>();

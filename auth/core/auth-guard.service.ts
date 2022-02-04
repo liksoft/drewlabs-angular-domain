@@ -23,7 +23,7 @@ export class AuthGuardService
 {
   private authState$ = this.auth.state$;
   // tslint:disable-next-line: variable-name
-  private _destroy$ = createSubject();
+  private _destroy$ = createSubject<void>();
 
   constructor(private router: Router, private auth: AuthService) {}
 

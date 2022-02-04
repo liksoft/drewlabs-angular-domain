@@ -11,7 +11,7 @@ import { AuthService } from "./auth.service";
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor, OnDestroy {
   // Service destroy handler
-  private _destroy$ = createSubject();
+  private _destroy$ = createSubject<void>();
   // Authenticated user token
   private token: string | undefined;
 

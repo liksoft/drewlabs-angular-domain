@@ -52,7 +52,7 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
   @Output() addedEvent = new EventEmitter<any>();
   @Output() removedEvent = new EventEmitter<any>();
 
-  private _destroy$ = createSubject();
+  private _destroy$ = createSubject<void>();
 
   constructor(
     public readonly inputType: DynamicInputTypeHelper,
