@@ -3,7 +3,6 @@ import { IAppStorage } from "../contracts/store-interface";
 import { isObject, storageEntry } from "../../utils";
 import { SESSION_STORAGE } from "../../utils/ng/common/tokens/storage";
 import { SecureWebStorage } from "./storage.secure";
-import { Log } from "../../utils/logger";
 
 /**
  * @description Browser session storage class for saving data
