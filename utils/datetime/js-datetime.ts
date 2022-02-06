@@ -326,6 +326,12 @@ export class JSDate {
     return JSDate.rawFormat_(JSDate.create(date), format_);
   };
 
+  static timeSince<T extends JsDateParamType>(date: T) {
+    return Math.floor(
+      JSDate.computeTimeDiff(JSDate.now(), JSDate.create(date))
+    );
+  }
+
   private static rawFormat_ = (date: Date, format_: string) => {
     const matchReplaceFirst = (
       value: string,
