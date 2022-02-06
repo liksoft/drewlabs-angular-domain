@@ -11,10 +11,10 @@ import {
 import { AuthService } from "./auth.service";
 import { AuthPathConfig } from "./config";
 import { Observable } from "rxjs";
-import { AuthTokenService } from "../../auth-token/core/auth-token.service";
 import { filter, map, takeUntil, tap } from "rxjs/operators";
 import { userCanAny, Authorizable, userCan } from "../contracts/v2/user/user";
 import { createSubject } from "../../rxjs/helpers/index";
+import { AuthTokenService } from "../token";
 
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { IUserRememberTokenParam } from '../../../auth-token/contracts';
+import { IUserRememberTokenParam } from '../../token/contracts';
 import { createAction, DrewlabsFluxStore, StoreAction } from '../../../rxjs/state/rx-state';
 import { Authorizable, IAppUser, NotifiableUserDetails } from '../../contracts/v2';
 

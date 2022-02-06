@@ -19,7 +19,7 @@ import { DynamicPasswordInputComponent } from "./components/dynamic-password-inp
 import { DynamicCheckoxInputComponent } from "./components/dynamic-checkox-input/dynamic-checkox-input.component";
 import { DynamicRadioInputComponent } from "./components/dynamic-radio-input/dynamic-radio-input.component";
 import { SimpleDynamicFormComponent } from "./components/simple-dynamic-form/simple-form.component";
-import { DropzoneModule } from "../../dropzone";
+import { DropzoneModule, DROPZONE_CONFIG } from "../../dropzone";
 import { IntlTelInputModule } from "../../intl-tel-input";
 import {
   DynamicFormService,
@@ -74,47 +74,43 @@ export const DECLARATIONS = [
   providers: [],
 })
 export class DynamicFormControlModule {
-  static forRoot(
-    configs?: ModuleConfigs
-  ): ModuleWithProviders<DynamicFormControlModule> {
+  static forRoot(configs: ModuleConfigs) {
     return {
       ngModule: DynamicFormControlModule,
       providers: [
+        // Provides the JSON Client implementation
+        JSONFormsClient,
+        ReactiveFormBuilderBrige,
         {
           provide: "FORM_SERVER_HOST",
-          useValue: configs?.serverConfigs?.host || null,
+          useValue: configs?.serverConfigs?.host ?? null,
         },
         {
           provide: "FORM_RESOURCES_PATH",
-          useValue: configs?.serverConfigs?.formsPath || "forms",
+          useValue: configs?.serverConfigs?.formsPath ?? "forms",
         },
         {
           provide: "FORM_CONTROL_RESOURCES_PATH",
-          useValue: configs?.serverConfigs?.controlsPath || "form-controls",
+          useValue: configs?.serverConfigs?.controlsPath ?? "form-controls",
         },
         {
           provide: "FORM_FORM_CONTROL_RESOURCES_PATH",
           useValue:
-            configs?.serverConfigs?.controlsPath || "form-form-controls",
+            configs?.serverConfigs?.controlsPath ?? "form-form-controls",
         },
         {
           provide: "CONTROL_OPTION_RESOURCES_PATH",
           useValue:
-            configs?.serverConfigs?.controlOptionsPath ||
-            "form-control-options",
+            configs?.serverConfigs?.optionsPath ?? "form-control-options",
         },
         {
           provide: "CONTROL_BINDINGS_RESOURCES_PATH",
-          useValue:
-            configs?.serverConfigs?.controlBindingsPath || "control-bindings",
+          useValue: configs?.serverConfigs?.bindingsPath ?? "control-bindings",
         },
         {
           provide: DYNAMIC_FORM_LOADER,
           useClass: FormHttpLoader,
         },
-        // Provides the JSON Client implementation
-        JSONFormsClient,
-        ReactiveFormBuilderBrige,
         {
           provide: FORM_CLIENT,
           useClass: JSONFormsClient,
@@ -128,7 +124,7 @@ export class DynamicFormControlModule {
           useFactory: (service: FormsProvider) =>
             initializeDynamicFormContainer(
               service,
-              configs?.formsAssets || "/assets/resources/app-forms.json"
+              configs?.formsAssets ?? "/assets/resources/app-forms.json"
             ),
           multi: true,
           deps: [FORMS_PROVIDER],
@@ -136,6 +132,18 @@ export class DynamicFormControlModule {
         {
           provide: ANGULAR_REACTIVE_FORM_BRIDGE,
           useClass: ReactiveFormBuilderBrige,
+        },
+        {
+          provide: DROPZONE_CONFIG,
+          useValue: configs?.dropzoneConfigs ?? {
+            url: configs?.serverConfigs?.host ?? "http://localhost",
+            maxFilesize: 10,
+            acceptedFiles: "image/*",
+            autoProcessQueue: false,
+            uploadMultiple: false,
+            maxFiles: 1,
+            addRemoveLinks: true,
+          },
         },
       ],
     };

@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
   AuthGuardService,
@@ -6,7 +6,10 @@ import {
   RootComponentGuard,
 } from "../core/auth-guard.service";
 import { UserStorageProvider } from "../core/services/user-storage";
-import { GenericUndecoratedSerializaleSerializer } from "../../built-value/core/js/serializer";
+import {
+  GenericSerializaleSerializer,
+  UndecoratedSerializer,
+} from "../../built-value/core/js/serializer";
 import { AppUser, IAppUser } from "../contracts/v2/user/user";
 import {
   IGenericSerializableBuilder,
@@ -35,73 +38,99 @@ export interface AuthModuleConfigs {
   userSerializer?:
     | IGenericSerializableBuilder<IAppUser>
     | ISerializableBuilder<IAppUser>;
+  cacheConfigs?: {
+    rememberTokenKeyName?: string;
+    userStorageKeyName?: string;
+    oauthTokenKeyName?: string;
+  };
 }
 @NgModule({
   imports: [CommonModule],
 })
 export class AuthModule {
-  static forRoot(config?: AuthModuleConfigs): ModuleWithProviders<AuthModule> {
+  static forRoot(config?: AuthModuleConfigs) {
     return {
       ngModule: AuthModule,
       providers: [
+        RootComponentGuard,
+        AuthGuardService,
+        UserStorageProvider,
+        AuthorizationsGuard,
         {
           provide: "USER_SERIALIZER",
           useValue: config
-            ? config.userSerializer ||
-              new GenericUndecoratedSerializaleSerializer<AppUser>()
-            : new GenericUndecoratedSerializaleSerializer<AppUser>(),
+            ? config.userSerializer ??
+              new GenericSerializaleSerializer(
+                AppUser,
+                new UndecoratedSerializer()
+              )
+            : new GenericSerializaleSerializer(
+                AppUser,
+                new UndecoratedSerializer()
+              ),
         },
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptorService,
           multi: true,
         },
-        RootComponentGuard,
-        AuthGuardService,
-        UserStorageProvider,
-        AuthorizationsGuard,
         {
           provide: "LOGIN_RESPONSE_HANDLER_FUNC",
           useValue:
-            config?.loginResponseHandler || DrewlabsV2LoginResultHandlerFunc,
+            config?.loginResponseHandler ?? DrewlabsV2LoginResultHandlerFunc,
         },
         {
           provide: "AUTH_SERVER_HOST",
-          useValue: config?.serverConfigs?.host || null,
+          useValue: config?.serverConfigs?.host ?? null,
         },
         {
           provide: "AUTH_LOGIN_PATH",
-          useValue: config?.serverConfigs?.loginPath || "auth/login",
+          useValue: config?.serverConfigs?.loginPath ?? "auth/login",
         },
         {
           provide: "AUTH_LOGOUT_PATH",
-          useValue: config?.serverConfigs?.logoutPath || "auth/logout",
+          useValue: config?.serverConfigs?.logoutPath ?? "auth/logout",
         },
         {
           provide: "AUTH_USERS_RESOURCE_PATH",
-          useValue: config?.serverConfigs?.usersPath || "admin/users",
+          useValue: config?.serverConfigs?.usersPath ?? "admin/users",
         },
         {
           provide: "AUTH_ROLES_RESOURCE_PATH",
-          useValue: config?.serverConfigs?.rolesPath || "admin/roles",
+          useValue: config?.serverConfigs?.rolesPath ?? "admin/roles",
         },
         {
           provide: "AUTH_AUTHORIZATIONS_RESOURCE_PATH",
           useValue:
-            config?.serverConfigs?.authorizationsPath || "admin/authorizations",
+            config?.serverConfigs?.authorizationsPath ?? "admin/authorizations",
         },
         {
           provide: "AUTH_DEPARTMENTS_RESOURCE_PATH",
           useValue:
-            config?.serverConfigs?.departmentsPath || "admin/departments",
+            config?.serverConfigs?.departmentsPath ?? "admin/departments",
         },
         {
           provide: "AUTH_COMPANIES_RESOURCE_PATH",
-          useValue: config?.serverConfigs?.companiesPath || "admin/companies",
+          useValue: config?.serverConfigs?.companiesPath ?? "admin/companies",
         },
         {
           provide: "AUTH_AGENCES_RESOURCE_PATH",
-          useValue: config?.serverConfigs?.agencesPath || "admin/companies",
+          useValue: config?.serverConfigs?.agencesPath ?? "admin/companies",
+        },
+        {
+          provide: "DREWLABS_USER_REMEMBER_TOKEN_KEY",
+          useValue:
+            config?.cacheConfigs?.rememberTokenKeyName ??
+            "X_AUTH_REMEMBER_TOKEN",
+        },
+        {
+          provide: "DREWLABS_USER_ID_KEY",
+          useValue:
+            config?.cacheConfigs?.userStorageKeyName ?? "X_AUTH_USER_ID",
+        },
+        {
+          provide: "DREWLABS_USER_TOKEN_KEY",
+          useValue: config?.cacheConfigs?.oauthTokenKeyName ?? "X_AUTH_TOKEN",
         },
       ],
     };

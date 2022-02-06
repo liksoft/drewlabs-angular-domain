@@ -2,7 +2,7 @@ import { OperatorFunction } from "rxjs";
 import {
   IAuthTokenHandler,
   IRememberTokenHandler,
-} from "../../../auth-token/contracts";
+} from "../../token/contracts";
 import { ILoginResponse, IUserStorageHandler } from "../../contracts";
 
 export interface LoginResponseWithAuthenticationResult {

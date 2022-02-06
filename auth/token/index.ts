@@ -1,10 +1,42 @@
-import { Injectable, Inject } from "@angular/core";
+import { IRememberTokenHandler, IUserRememberTokenParam, IAuthTokenHandler } from "./contracts";
+import { Injectable, Inject, Optional } from "@angular/core";
+import { LocalStorage } from "../../storage/core/local-storage.service";
 import { SessionStorage } from "../../storage/core/session-storage.service";
-import { IAuthTokenHandler } from "../contracts/auth-token";
 import { createStateful } from "../../rxjs/helpers";
-import { Observable } from "rxjs";
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
+export class AuthRememberTokenService implements IRememberTokenHandler {
+  constructor(
+    private cache: LocalStorage,
+    @Optional()
+    @Inject("DREWLABS_USER_REMEMBER_TOKEN_KEY")
+    private name: string = "X_AUTH_REMEMBER_TOKEN"
+  ) {}
+
+  public get token() {
+    return this.cache.get(this.name) as IUserRememberTokenParam;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  setToken(params: IUserRememberTokenParam) {
+    this.cache.set(this.name, params);
+    return this;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  removeToken(): void {
+    this.cache.delete(this.name);
+  }
+}
+@Injectable({
+  providedIn: "root",
+})
 export class AuthTokenService implements IAuthTokenHandler {
   constructor(
     private sessionStorage: SessionStorage,

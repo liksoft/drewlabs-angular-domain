@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { AuthTokenService, AuthRememberTokenService } from '../../auth-token/core';
+import { AuthTokenService, AuthRememberTokenService } from '../token';
 import { SpyObj } from '../../testing';
 import { UserStorageProvider } from '../core/services/user-storage';
 import { authenticatedResponse, unauthenticatedResponse } from '../testing';

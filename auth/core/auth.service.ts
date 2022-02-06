@@ -1,7 +1,9 @@
 import { Inject, Injectable, OnDestroy } from "@angular/core";
 import { AuthPathConfig } from "./config";
-import { AuthTokenService } from "../../auth-token/core/auth-token.service";
-import { AuthRememberTokenService } from "../../auth-token/core/auth-remember-token.service";
+import {
+  AuthTokenService,
+  AuthRememberTokenService,
+} from "../token";
 import { createSubject, observableOf, timeout } from "../../rxjs/helpers";
 import {
   mergeMap,

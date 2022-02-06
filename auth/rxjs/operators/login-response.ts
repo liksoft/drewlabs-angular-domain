@@ -1,7 +1,7 @@
 import {
   IAuthTokenHandler,
   IRememberTokenHandler,
-} from "../../../auth-token/contracts";
+} from "../../token/contracts";
 import { Observable } from "rxjs";
 import { ILoginResponse, IAppUser } from "../../../auth/contracts/v2";
 import { ILoginState } from "../../../auth/contracts/v2/login.response";

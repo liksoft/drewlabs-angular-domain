@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import {
   DrewlabsRessourceServerClient,
@@ -25,7 +25,7 @@ type ModuleConfigParams = {
   exports: [HttpClientModule],
 })
 export class HttpModule {
-  static forRoot(configs: ModuleConfigParams): ModuleWithProviders<HttpModule> {
+  static forRoot(configs: ModuleConfigParams) {
     return {
       ngModule: HttpModule,
       providers: [
@@ -50,7 +50,7 @@ export class HttpModule {
         },
         {
           provide: "ResponseTransformHandlerFn",
-          useValue: configs.requestResponseHandler || parseV2HttpResponse,
+          useValue: configs.requestResponseHandler ?? parseV2HttpResponse,
         },
       ],
     };
