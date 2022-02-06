@@ -3,4 +3,4 @@ export {
   RouteLink,
   RouteLinkCollectionItemInterface,
   routeMapToLink,
-} from "./routes-definitions.v2";
+} from "./routes-definitions";

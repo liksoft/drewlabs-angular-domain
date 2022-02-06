@@ -23,8 +23,7 @@ export {
   DOM,
   LoadLibraryOptions,
 } from "./browser";
-export { MomentUtils } from "./datetime";
-export { ExcelUtils } from "./doc-utils";
+export { ExcelUtils } from "./docs";
 
 // JS Types helper functions
 export {
@@ -56,12 +55,14 @@ export { numberToAmountFormat } from "./format/number";
 // Loggers provider
 export { Err, Log } from "./logger";
 
+// Date and Time handlers
 export {
   JSDate,
   JsDateParamType,
   Month,
   MonthProvider,
   MONTHS,
+  TimeAgo
 } from "./datetime";
 
 export {
