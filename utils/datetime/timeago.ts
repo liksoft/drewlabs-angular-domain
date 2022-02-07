@@ -5,7 +5,7 @@ type ShortTimeUnit_ = "y" | "m" | "w" | "d" | "h" | "i" | "s";
 type Locale_ = "en-US" | "fr-FR" | string;
 
 type TimeSinceLocaleConfig = {
-  [index: Locale_]: {
+  [index in Locale_]: {
     timeUnit: {
       [ShortTimeUnit_: string]: any;
     };
