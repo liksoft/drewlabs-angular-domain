@@ -42,8 +42,8 @@ export const mapPaginatorStateWith =
     }
     let currenState = {
       ...filters,
-      page: state?.page?.current || 1,
-      per_page: state?.page?.size || 20,
+      page: state?.page?.current ?? 1,
+      per_page: state?.page?.size ?? 20,
       ...query,
     };
     if (isArray(params)) {
