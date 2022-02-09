@@ -14,12 +14,7 @@ import { forkJoin } from "rxjs";
 import { filter, takeUntil, tap } from "rxjs/operators";
 import { createStateful, createSubject, rxTimeout } from "../rxjs/helpers";
 import { untilDestroyed } from "../rxjs/operators";
-import {
-  BlazeFaceDetector,
-  BLAZE_FACE,
-  FaceMeshDetector,
-  FACE_MESH,
-} from "../tfjs";
+import { FaceMeshDetector, FACE_MESH } from "../tfjs";
 import { FaceMeshPointsDrawerService } from "../tfjs/ng";
 import { Canvas } from "../utils/browser";
 import { WEBCAM, Webcam } from "../webcam";
@@ -93,7 +88,6 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(WEBCAM) private camera: Webcam,
-    @Inject(BLAZE_FACE) private faceDetector: BlazeFaceDetector,
     @Inject(DOCUMENT) private document: Document,
     @Inject(FACE_MESH) private faceMeshDetector: FaceMeshDetector,
     private drawer: FaceMeshPointsDrawerService
@@ -150,8 +144,8 @@ export class FaceDetectionComponent implements OnInit, OnDestroy {
         await forkJoin([
           this.faceMeshDetector.loadModel(undefined, {
             shouldLoadIrisModel: true,
-            scoreThreshold: this.confidenceScore || 0.9,
-            maxFaces: this.totalFaces || 3,
+            scoreThreshold: this.confidenceScore ?? 0.9,
+            maxFaces: this.totalFaces ?? 3,
           }),
         ]).toPromise();
         // #region Ended loading the model
