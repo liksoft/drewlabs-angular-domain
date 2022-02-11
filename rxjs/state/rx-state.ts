@@ -22,7 +22,7 @@ export enum DefaultStoreAction {
   INITIALIZE_STORE_STATE = "[RESET_STORE_STATE]",
 }
 
-export type StateReducerFn<T, A> = (state: T, action: A) => T;
+export type StateReducerFn<T, A> = (state: T | any, action: A) => T;
 
 export type ActionCreatorHandlerFn<A> = (...params: any[]) => A;
 
@@ -92,23 +92,23 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
 
   public bindActionCreator =
     <K>(handler: ActionCreatorHandlerFn<AType>) =>
-      (...args: any) => {
-        const action = handler.call(null, ...args) as AType;
-        this._actions$.next(action);
-        if (isObservable(action.payload)) {
-          // Simulate a wait before calling the next method
-          action.payload
-            .pipe(
-              first(),
-              delay(10),
-              tap((state: any) => {
-                this._actions$.next(state);
-              })
-            )
-            .subscribe();
-        }
-        return action;
-      };
+    (...args: any) => {
+      const action = handler.call(null, ...args) as AType;
+      this._actions$.next(action);
+      if (isObservable(action.payload)) {
+        // Simulate a wait before calling the next method
+        action.payload
+          .pipe(
+            first(),
+            delay(10),
+            tap((state: any) => {
+              this._actions$.next(state);
+            })
+          )
+          .subscribe();
+      }
+      return action;
+    };
 
   /**
    * @description Connect to the store data stream

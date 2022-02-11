@@ -1,5 +1,5 @@
 import { ControlInterface } from "../compact/types";
-import { IHTMLFormControl, IHTMLFormControlValidationRule } from "../contracts";
+import {  IHTMLFormControlValidationRule } from "../contracts";
 import { buildRequiredIfConfig } from "../helpers/builders";
 import { AbstractHTMLFormControl } from "./dynamic-input";
 
@@ -23,10 +23,8 @@ export class NumberInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(
-    model: Partial<ControlInterface>
-  ): IHTMLFormControl {
-    return new NumberInput({
+  static fromFormControlModel = (model: Partial<ControlInterface>) =>
+    new NumberInput({
       label: model.label,
       type: model.type,
       formControlName: model.controlName,
@@ -52,5 +50,4 @@ export class NumberInput extends AbstractHTMLFormControl {
       min: model.min,
       max: model.max,
     } as NumberInput);
-  }
 }

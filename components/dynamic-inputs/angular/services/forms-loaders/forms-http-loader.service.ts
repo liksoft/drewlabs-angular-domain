@@ -12,11 +12,15 @@ export class FormHttpLoader implements FormsLoader {
       map((state) => {
         if (state && Array.isArray(state)) {
           return (state as any[]).map((value: { [index: string]: any }) => {
-            if (
-              (value?.formControls ?? [])?.length !== 0 &&
-              (value?.controls ?? []).length === 0
-            ) {
-              value = { ...value, controls: value?.formControls };
+            let controls = value ? (value["formControls"] as any[]) ?? [] : [];
+            if (controls.length === 0) {
+              controls = value ? (value["controls"] as any[]) ?? [] : [];
+            }
+            if (controls.length !== 0) {
+              value = {
+                ...value,
+                controls: controls,
+              };
             }
             return createFormElement(value);
           });

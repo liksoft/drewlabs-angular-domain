@@ -69,8 +69,14 @@
       <span
         [translate]="'validation.min'"
         [translateParams]="{
-          value: getErrorAsNumber(control.errors?.min, 'min')
-            ? getErrorAsNumber(control.errors?.min, 'min')
+          value: getErrorAsNumber(
+            control.errors ? control.errors['min'] : '',
+            'min'
+          )
+            ? getErrorAsNumber(
+                control.errors ? control.errors['min'] : '',
+                'min'
+              )
             : inputType.asNumberInput(inputConfig).min
         }"
       ></span>
@@ -82,8 +88,14 @@
       <span
         [translate]="'validation.max'"
         [translateParams]="{
-          value: getErrorAsNumber(control.errors?.max, 'max')
-            ? getErrorAsNumber(control.errors?.max, 'max')
+          value: getErrorAsNumber(
+            control.errors ? control.errors['max'] : '',
+            'max'
+          )
+            ? getErrorAsNumber(
+                control.errors ? control.errors['max'] : '',
+                'max'
+              )
             : inputType.asNumberInput(inputConfig).max
         }"
       ></span>

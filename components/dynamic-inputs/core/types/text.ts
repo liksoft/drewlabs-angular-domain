@@ -30,10 +30,8 @@ export class TextInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(
-    model: Partial<ControlInterface>
-  ): IHTMLFormControl {
-    return new TextInput({
+  static fromFormControlModel = (model: Partial<ControlInterface>) =>
+    new TextInput({
       label: model.label,
       type: model.type,
       formControlName: model.controlName,
@@ -65,5 +63,4 @@ export class TextInput extends AbstractHTMLFormControl {
       minLength: model.minLength,
       maxLength: model.maxLength,
     } as TextInput);
-  }
 }

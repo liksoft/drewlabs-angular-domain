@@ -16,7 +16,6 @@ import { userCanAny, Authorizable, userCan } from "../contracts/v2/user/user";
 import { createSubject } from "../../rxjs/helpers/index";
 import { AuthTokenService } from "../token";
 
-
 @Injectable()
 export class AuthGuardService
   implements CanActivate, CanActivateChild, CanLoad, OnDestroy
@@ -82,7 +81,7 @@ export class AuthorizationsGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     const url: string = state.url;
-    return this.isAuthorized(next.data.authorizations, url);
+    return this.isAuthorized(next.data["authorizations"], url);
   }
 
   canActivateChild(
@@ -94,7 +93,10 @@ export class AuthorizationsGuard implements CanActivate {
 
   canLoad(route: Route): boolean | Observable<boolean> | Promise<boolean> {
     const url = `/${route.path}`;
-    return this.isAuthorized(route.data?.authorizations, url);
+    return this.isAuthorized(
+      route.data ? route.data["authorizations"] : [],
+      url
+    );
   }
 
   private isAuthorized(
@@ -173,7 +175,7 @@ export class RootComponentGuard implements CanActivate {
         if (
           !userCanAny(
             source.user as Authorizable,
-            route.data.authorizations ?? []
+            route.data['authorizations'] ?? []
           )
         ) {
           this.router.navigate([AuthPathConfig.REDIRECT_PATH]);

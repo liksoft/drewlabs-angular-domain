@@ -41,7 +41,7 @@ export class DropzoneService {
           isDefined(config.acceptedFiles) &&
           config.acceptedFiles?.indexOf(",") !== -1
         ) {
-          let types = config?.acceptedFiles?.split(",");
+          let types: string[] = config?.acceptedFiles?.split(",") ?? [];
           types = types?.filter((v) => file.type.match(v));
           matches = types?.length !== 0 ? true : false;
         } else {

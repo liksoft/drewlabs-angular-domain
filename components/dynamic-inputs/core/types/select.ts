@@ -1,5 +1,5 @@
 import { ControlInterface } from "../compact/types";
-import { IHTMLFormControl, IHTMLFormControlValidationRule } from "../contracts";
+import { IHTMLFormControlValidationRule } from "../contracts";
 import { BindingControlInterface } from "../contracts/dynamic-input";
 import { buildRequiredIfConfig } from "../helpers/builders";
 import { controlBindingsSetter } from "../helpers/control-bindings";
@@ -13,7 +13,7 @@ export class SelectInput
   extends AbstractHTMLFormControl
   implements Partial<BindingControlInterface>
 {
-  items: any[];
+  override items: any[];
   optionsLabel?: string;
   optionsValueIndex?: string | number;
   multiple?: boolean;
@@ -48,9 +48,7 @@ export class SelectInput
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(
-    model: Partial<ControlInterface>
-  ): IHTMLFormControl {
+  static fromFormControlModel(model: Partial<ControlInterface>) {
     // Parse the model fields
     let { keyfield, valuefield, groupfield } = model.selectableModel
       ? parseControlItemsConfigs(model)

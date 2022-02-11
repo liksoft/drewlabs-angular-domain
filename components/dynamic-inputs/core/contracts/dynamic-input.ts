@@ -14,7 +14,7 @@ export interface IHTMLFormControl {
   formControlName: string;
   classes: string;
   requiredIf?: HTMLFormControlRequireIfConfig;
-  items?: Array<any>;
+  items?: any[];
   rules?: IHTMLFormControlValidationRule;
   placeholder?: string;
   value?: string | any;
