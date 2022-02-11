@@ -67,7 +67,7 @@ export {
   authorizationDeletedAction,
   getAuthorizationAction,
   authorizationsDataAction
-} from './permissions';
+} from './authorizations';
 
 export {
   CompaniesState,

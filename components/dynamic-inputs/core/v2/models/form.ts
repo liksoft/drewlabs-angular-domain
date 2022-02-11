@@ -1,58 +1,89 @@
-import { FormControlV2 } from './form-control';
-import { DynamicFormControlInterface, DynamicFormInterface } from '../../compact/types';
-import { GenericSerializaleSerializer, UndecoratedSerializer } from '../../../../../built-value/core/js/serializer';
-import { ISerializableBuilder } from '../../../../../built-value/contracts';
+import { Control } from "./form-control";
+import {
+  OptionInterface,
+  ControlInterface,
+  FormInterface,
+} from "../../compact/types";
+import {
+  GenericSerializaleSerializer,
+  UndecoratedSerializer,
+} from "../../../../../built-value/core/js/serializer";
 
-export class FormV2 implements DynamicFormInterface {
-  id: number = undefined;
-  title: string = undefined;
-  parentId: string = undefined;
-  description: string = undefined;
-  children: FormV2[] = undefined;
-  formControls: DynamicFormControlInterface[] = undefined;
-  url: string = undefined;
-  status: number = undefined;
+export class Form implements FormInterface {
+  id!: number;
+  title!: string;
+  parentId!: string;
+  description!: string;
+  /**
+   * @deprecated
+   */
+  children!: FormInterface[];
+  controls: ControlInterface[] = [];
+  url!: string;
+  status!: number;
+  appcontext!: string;
 
-  static builder(): ISerializableBuilder<FormV2> {
-    return new GenericSerializaleSerializer(FormV2, new UndecoratedSerializer());
-  }
+  static builder = () => {
+    return new GenericSerializaleSerializer(Form, new UndecoratedSerializer());
+  };
 
-  public static getJsonableProperties(): { [index: string]: keyof FormV2 | { name: string, type: any } } {
+  public static getJsonableProperties(): {
+    [index: string]: keyof Form | { name: string; type: any };
+  } {
     return {
-      title: 'title',
-      parentId: 'parentId',
-      description: 'description',
-      children: { name: 'children', type: FormV2 },
-      formControls: { name: 'formControls', type: FormControlV2 },
-      url: 'url',
-      status: 'status',
-      id: 'id'
+      title: "title",
+      parentId: "parentId",
+      description: "description",
+      children: { name: "children", type: Form },
+      controls: { name: "controls", type: Control },
+      url: "url",
+      status: "status",
+      id: "id",
+      appcontext: "appcontext",
     };
   }
 }
 
+export class Option implements OptionInterface {
+  id!: number;
+  table!: string;
+  keyfield!: string;
+  groupfield!: string;
+  description!: string;
+  displayLabel!: string;
 
-export class FormControlOption {
-  id: number = undefined;
-  table: string = undefined;
-  keyfield: string = undefined;
-  groupfield: string = undefined;
-  description: string = undefined;
-  displayLabel: string = undefined;
-
-
-  static builder(): ISerializableBuilder<FormControlOption> {
-    return new GenericSerializaleSerializer(FormControlOption, new UndecoratedSerializer());
+  /**
+   * @description Calls to get the builder provider of the current class|type
+   */
+  static builder() {
+    return new GenericSerializaleSerializer<OptionInterface>(
+      Option,
+      new UndecoratedSerializer()
+    );
   }
 
-  public static getJsonableProperties(): { [index: string]: keyof FormControlOption | { name: string, type: any } } {
+  static getJsonableProperties():
+    | { [index: string]: keyof Option }
+    | { [index: string]: { name: string; type: any } } {
     return {
-      id: 'id',
-      table: 'table',
-      keyfield: 'keyfield',
-      groupfield: 'groupfield',
-      valuefield: 'description',
-      display_label: 'displayLabel',
+      id: "id",
+      table: "table",
+      keyfield: "keyfield",
+      groupfield: "groupfield",
+      valuefield: "description",
+      display_label: "displayLabel",
     };
   }
+}
+
+export function createFormElement(value: { [index: string]: any }) {
+  return Form.builder().fromSerialized(value) as FormInterface;
+}
+
+export function createOptionElement(value: { [index: string]: any }) {
+  return Option.builder().fromSerialized(value) as OptionInterface;
+}
+
+export function serializedOptionElement(value: OptionInterface) {
+  return Option.builder().toSerialized(value);
 }

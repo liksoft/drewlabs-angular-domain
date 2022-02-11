@@ -1,9 +1,16 @@
-import * as _ from 'moment';
-import * as __ from 'lodash';
-
-export interface Filtrable {
-  has(key: string, value: any): boolean;
-}
+import { Filtrable } from "./contracts/filtrable";
+import {
+  chain,
+  difference,
+  flatten,
+  intersection,
+  last,
+  remove,
+  slice,
+  sortBy,
+  take,
+  uniqBy,
+} from "lodash";
 
 /**
  * Class de manipulation des Objet de type tableau
@@ -79,7 +86,7 @@ export class ArrayUtils {
     return items.sort((a: any, b: any) => {
       // We go for each property followed by path
       if (path instanceof Array) {
-        path.forEach(property => {
+        path.forEach((property) => {
           a = a[property];
           b = b[property];
         });
@@ -102,7 +109,7 @@ export class ArrayUtils {
    * @param list A two dimensionnal array of objects
    */
   public static flatten(list: any[][]) {
-    return __.flatten(list);
+    return flatten(list);
   }
 
   /**
@@ -111,7 +118,7 @@ export class ArrayUtils {
    * @param n Number of objects to collect
    */
   public static take(list: any[], n: number) {
-    return __.take(list, n);
+    return take(list, n);
   }
 
   /**
@@ -120,7 +127,7 @@ export class ArrayUtils {
    * @param index Starting index
    */
   public static skip(list: any[], index: number) {
-    return __.slice(list, index);
+    return slice(list, index);
   }
 
   /**
@@ -131,9 +138,9 @@ export class ArrayUtils {
    */
   public static sortBy(list: any[], key: string, order = 1) {
     if (order === -1) {
-      return __.chain(__.sortBy(list, key)).reverse().value();
+      return chain(sortBy(list, key)).reverse().value();
     }
-    return __.sortBy(list, key);
+    return sortBy(list, key);
   }
 
   /**
@@ -142,15 +149,6 @@ export class ArrayUtils {
    */
   public static isArray(value: any): boolean {
     return Array.isArray(value);
-  }
-
-  /**
-   * @description Returns the intersection of two array
-   * @param lhs [[any[]]]
-   * @param rhs [[any[]]]
-   */
-  public static intersect(lhs: any[], rhs: any[]) {
-    return (__.intersection(lhs, rhs) as any[]);
   }
 
   public static equals(lhs: any[], rhs: any[]) {
@@ -177,4 +175,55 @@ export class ArrayUtils {
   public static containsAll(lhs: any[], rhs: any[]) {
     return ArrayUtils.equals(ArrayUtils.intersect(lhs, rhs), rhs);
   }
+
+  /**
+   * Returns values in both src and dst list
+   * @param first
+   * @param other
+   * @returns
+   */
+  public static intersect = <T extends any>(first: T[], other: T[]) =>
+    intersection(first, other);
+
+  /**
+   * Returns a copy of {values} rejecting items matching the predicate
+   *
+   * @param values
+   * @param fn
+   * @returns
+   */
+  public static reject = <T>(values: T[], fn: (value: T) => boolean) => {
+    const values_ = [...values];
+    remove(values_, fn);
+    return values_;
+  };
+
+  /**
+   * Compute the diff of two set of values
+   *
+   * @param first
+   * @param other
+   * @returns
+   */
+  public static diff = <T extends any>(first: T[], other: T[]) =>
+    difference(first, other);
+
+  /**
+   * Compute a set/list of unique values using the user given key
+   *
+   * @param values
+   * @param key
+   * @returns
+   */
+  public static uniqBy = <T>(values: T[], key: string) => uniqBy(values, key);
+
+  /**
+   * Returns the last element of the list
+   *
+   * @param values
+   * @returns
+   */
+  static last = <T>(values: T[]) => last(values);
 }
+
+export { ArrayUtils as JSArray };

@@ -1,6 +1,6 @@
-import { isPlatformBrowser } from '@angular/common';
-import { isDefined } from '../types/type-utils';
-import { saveAs } from 'file-saver';
+import { isPlatformBrowser } from "@angular/common";
+import { isDefined } from "../types/type-utils";
+import { writeRawStream, writeStream } from "../io";
 
 type WindowEvent = (self: Window, ev?: Event) => any;
 
@@ -8,16 +8,18 @@ type WindowEvent = (self: Window, ev?: Event) => any;
  * Provides with promise base file reader functionnality
  * @param file [[File|any]]
  */
-export function readFileAsDataURI(file: File | Blob) {
-  return new Promise<string>((_, __) => {
-    if (isDefined(file)) {
-      const reader = new FileReader();
-      reader.onload = async (e: ProgressEvent) => {
-        _((e.target as FileReader).result.toString());
-      };
-      reader.readAsDataURL(file);
-    } else {
-      _(null);
+export function readFileAsDataURI(file?: File | Blob) {
+  return new Promise<string | undefined>((resolve) => {
+    if (file) {
+      if (isDefined(file)) {
+        const reader = new FileReader();
+        reader.onload = async (e: ProgressEvent) => {
+          resolve((e.target as any)?.result.toString());
+        };
+        reader.readAsDataURL(file);
+      } else {
+        resolve(undefined);
+      }
     }
   });
 }
@@ -28,8 +30,12 @@ export function readFileAsDataURI(file: File | Blob) {
  * @param contentType [[string]]
  * @param sliceSize [[number]] Size of each BlobPart
  */
-export function b64toBlob(b64Data: string, contentType: string, sliceSize?: number) {
-  contentType = contentType || '';
+export function b64toBlob(
+  b64Data: string,
+  contentType: string,
+  sliceSize?: number
+) {
+  contentType = contentType || "";
   sliceSize = sliceSize || 512;
 
   const byteCharacters = atob(b64Data);
@@ -46,7 +52,12 @@ export function b64toBlob(b64Data: string, contentType: string, sliceSize?: numb
   }
   return new Blob(byteArrays, { type: contentType });
 }
+
+/**
+ * @deprecated
+ */
 export class Browser {
+
   public static print() {
     window.print();
   }
@@ -56,9 +67,9 @@ export class Browser {
     callBackAfterPrint: WindowEvent
   ) {
     if (window.matchMedia) {
-      const mediaQueryList = window.matchMedia('print');
+      const mediaQueryList = window.matchMedia("print");
       // tslint:disable-next-line: deprecation
-      mediaQueryList.addListener(mql => {
+      mediaQueryList.addListener((mql) => {
         if (mql.matches) {
           callBackBeforePrint(window);
         } else {
@@ -90,20 +101,19 @@ export class Browser {
   /**
    * Saves a file by opening file-save-as dialog in the browser
    * using file-save library.
-   * @param blobContent file content as a Blob
-   * @param fileName name file should be saved as
+   * @param content file content as a Blob
+   * @param name name file should be saved as
    */
-  static saveFile(blobContent: Blob | string, fileName: string) {
-    const blob = new Blob([blobContent], { type: 'application/octet-stream' });
-    saveAs(blob, fileName);
+  static async saveFile(content: Blob | string, name: string) {
+    await writeStream(content, name);
   }
 
   /**
    * @description Save file as it is, without converting it to a blob content
-   * @param blobContent [[Blob|string]]
-   * @param fileName [[string]]
+   * @param content [[Blob|string]]
+   * @param name [[string]]
    */
-  static saveFileAsRaw(blobContent: Blob | string, fileName: string) {
-    saveAs(blobContent, fileName);
+  static saveFileAsRaw(content: Blob | string, name: string) {
+    writeRawStream(content, name);
   }
 }

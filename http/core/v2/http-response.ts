@@ -1,16 +1,14 @@
-import { IHttpResourceResponse, IHttpResourceResponseBody, IHttpResponseData } from '../../contracts/http-response';
+import { IHttpResourceResponse, IHttpResourceResponseBody, IHttpResponseData } from '../../contracts';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
 
 export class HttpResourceResponse implements IHttpResourceResponse {
-  success: boolean = undefined;
-  body: IHttpResourceResponseBody = undefined;
-  statusCode: number = undefined;
+  body!: IHttpResourceResponseBody;
+  statusCode!: number;
 
   // Static method definition for attribute parsing
   // tslint:disable-next-line: typedef
   static getJsonableProperties() {
     return {
-      success: 'success',
       body: { name: 'body', type: HttpResourceResponseBody },
       code: 'statusCode'
     } as { [index: string]: keyof HttpResourceResponseBody } | { [index: string]: any };
@@ -18,9 +16,9 @@ export class HttpResourceResponse implements IHttpResourceResponse {
 }
 
 class HttpResourceResponseBody implements IHttpResourceResponseBody, IHttpResponseData {
-  errorMessage: string = undefined;
-  responseData: IHttpResponseData = undefined;
-  errors: any[] = undefined;
+  errorMessage!: string;
+  responseData!: IHttpResponseData;
+  errors!: any[];
 
   // Static method definition for attribute parsing
   // tslint:disable-next-line: typedef
@@ -31,7 +29,8 @@ class HttpResourceResponseBody implements IHttpResourceResponseBody, IHttpRespon
       errors: 'errors'
     } as { [index: string]: keyof HttpResourceResponseBody } | { [index: string]: any };
   }
-  getData = () => this.responseData;
+
+  getContent = () => this.responseData;
 }
 
 // tslint:disable-next-line: typedef
@@ -40,7 +39,7 @@ export function parseV2HttpResponse(response: any) {
   return {
     errorMessage: httpResponse.body ? (httpResponse.body.errorMessage || null) : null,
     statusCode: httpResponse.statusCode || null,
-    data: (httpResponse.body as HttpResourceResponseBody).getData(),
+    data: (httpResponse.body as IHttpResponseData).getContent(),
     errors: httpResponse.body.errors || null
   };
 }

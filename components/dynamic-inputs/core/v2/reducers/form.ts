@@ -1,85 +1,164 @@
-import * as lodash from 'lodash';
-import { FormState, FormStoreActions } from '../actions';
-import { DefaultStoreAction, StoreAction } from '../../../../../rxjs/state/rx-state';
-import { isArray } from '../../../../../utils/types/type-utils';
+import { FormState, FormStoreActions } from "../actions";
+import {
+  DefaultStoreAction,
+  StoreAction,
+} from "../../../../../rxjs/state/rx-state";
+import {
+  deleteFromListUsingID,
+  updateListUsingID,
+} from "../../../../../rxjs/helpers";
+import {
+  addPaginableValue,
+  deletePaginableValue,
+  mapPaginableTo,
+  Paginable,
+  updatePaginableValue,
+} from "../../../../../pagination";
+import { ControlInterface, FormInterface } from "../../compact";
+import { JSArray } from "../../../../../utils";
 
-export const formsReducer = (state: FormState, action: Partial<StoreAction>) => {
-  let items = [];
-  const { item, updateResult, deleteResult } = action.payload || {};
+const updateControls =
+  (control: ControlInterface) => (state: Paginable<FormInterface>) => {
+    let value =
+      control && control.formId ? state.items[control.formId] : undefined;
+    if (value) {
+      return updatePaginableValue({
+        ...value,
+        controls: updateListUsingID(value.controls ?? [], control),
+      })(state);
+    }
+    return state;
+  };
+
+const addControl =
+  (control: ControlInterface) => (state: Paginable<FormInterface>) => {
+    let value =
+      control && control.formId ? state.items[control.formId] : undefined;
+    if (value) {
+      const controls = value.controls ?? [];
+      return updatePaginableValue({
+        ...value,
+        controls: JSArray.uniqBy([...controls, control], "id"),
+      })(state);
+    }
+    return state;
+  };
+
+const deleteControl =
+  (control: ControlInterface) => (state: Paginable<FormInterface>) => {
+    if (control) {
+      let value =
+        control && control.formId ? state.items[control.formId] : undefined;
+      if (value) {
+        const controls = deleteFromListUsingID(value.controls ?? [], control);
+        return updatePaginableValue({
+          ...value,
+          controls,
+        })(state);
+      }
+    }
+    return state;
+  };
+
+export const formsReducer = (
+  state: FormState,
+  action: Partial<StoreAction>
+) => {
+  const {
+    updateResult,
+    deleteResult,
+    createResult,
+    control,
+    createControlResult,
+    updateControlResult,
+    deleteControlResult,
+    value,
+  } = action.payload ?? {};
+
   switch (action.type) {
     case DefaultStoreAction.ASYNC_UI_ACTION:
       return {
         ...state,
         performingAction: true,
-        error: null
+        error: null,
       } as FormState;
     case DefaultStoreAction.ERROR_ACTION:
       return {
         ...state,
         performingAction: false,
-        error: action.payload
-      } as FormState; //
-    case FormStoreActions.FORM_SELECTED_ACTION:
+        error: action.payload,
+      } as FormState;
+    case FormStoreActions.NEW_VALUE_ACTION:
       return {
         ...state,
+        collections: addPaginableValue(action.payload)(state?.collections),
         performingAction: false,
         error: null,
-        selectedFormId: action.payload
-      } as FormState;
-    case FormStoreActions.ADD_TO_FORMS_STACK_ACTION:
-      items = isArray(action.payload) ? [...state.items, ...action.payload] : [...state.items, action.payload];
-      return {
-        ...state,
-        items: lodash.uniqBy(items, 'id'),
-        performingAction: false,
-        error: null
       } as FormState;
     case FormStoreActions.FORM_PAGINATION_DATA_ACTION:
       return {
         ...state,
-        pagination: action.payload,
+        collections: mapPaginableTo(action.payload)(state?.collections),
         performingAction: false,
-        error: null
+        error: null,
       } as FormState;
-    case FormStoreActions.CREATED_FORM_ACTION:
+    case FormStoreActions.CREATE_RESULT_ACTION:
       return {
         ...state,
-        items: [...state.items, ...(!lodash.isEmpty(action.payload) ? [action.payload] : [])],
-        createdForm: action.payload,
+        collections: addPaginableValue(value)(state?.collections),
+        createResult,
         performingAction: false,
-        error: null
+        error: null,
       } as FormState;
-    case FormStoreActions.FORM_UPDATED_ACTION:
-      const values = [...state.items];
-      if (item) {
-        values.splice
-          (items.findIndex(
-            (i) => i.id === item.id),
-            1,
-            action.payload
-          );
-      }
+    case FormStoreActions.UPDATE_RESULT_ACTION:
       return {
         ...state,
-        items: [...values],
+        collections: updatePaginableValue(value)(state?.collections),
         performingAction: false,
         updateResult,
-        error: null
+        error: null,
       } as FormState;
-    case FormStoreActions.FORM_UPDATED_ACTION:
-      items = [...state.items];
-      if (item) {
-        lodash.remove(values, (v) => v.id === item.id);
-      }
+    case FormStoreActions.CONTROL_CREATE_RESULT_ACTION:
       return {
         ...state,
-        items: [...values],
+        collections: addControl(control)(state.collections),
+        updateControlResult,
+        createControlResult,
+        performingAction: false,
+        updateResult,
+        createResult,
+        error: null,
+      } as FormState;
+    case FormStoreActions.CONTROL_UPDATE_RESULT_ACTION:
+      return {
+        ...state,
+        collections: updateControls(control)(state.collections),
+        updateControlResult,
+        createControlResult,
+        performingAction: false,
+        updateResult,
+        createResult,
+        error: null,
+      } as FormState;
+    case FormStoreActions.CONTROL_DELETE_RESULT_ACTION:
+      return {
+        ...state,
+        collections: deleteControl(control)(state.collections),
+        updateControlResult,
+        createControlResult,
+        deleteControlResult,
+        performingAction: false,
+        error: null,
+      } as FormState;
+    case FormStoreActions.DELETE_RESULT_ACTION:
+      return {
+        ...state,
+        collections: deletePaginableValue(action.payload)(state.collections),
         performingAction: false,
         deleteResult,
-        error: null
+        error: null,
       } as FormState;
     default:
       return state;
   }
 };
-

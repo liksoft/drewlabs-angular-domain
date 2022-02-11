@@ -5,7 +5,8 @@ export function authReducer(state: Partial<AuthState>, action: Partial<AuthState
     case AuthStoreActions.AUTHENTICATING_ACTION:
       return {
         ...state,
-        authenticating: true
+        authenticating: true,
+        signingOut: false
       };
     case AuthStoreActions.INIT_AUTHENTICATION_STATE_ACTION:
       return {

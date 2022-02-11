@@ -1,0 +1,54 @@
+<clr-date-container>
+  <label
+    class="clr-control-label"
+    *ngIf="showLabelAndDescription"
+    [for]="inputType.asDateInput(inputConfig).formControlName"
+  >
+    {{ inputType.asDateInput(inputConfig).label }}
+    <span
+      class="required-text"
+      *ngIf="inputType.asDateInput(inputConfig).rules?.isRequired"
+    >
+      (*)
+    </span>
+  </label>
+  <input
+    [tabIndex]="inputConfig?.formControlIndex"
+    type="date"
+    [disabled]="inputConfig.disabled || false"
+    (blur)="onDateInputBlur()"
+    [formControl]="control"
+    [min]="inputType.asDateInput(inputConfig).minDate"
+    [max]="inputType.asDateInput(inputConfig).maxDate"
+    clrDate
+  />
+</clr-date-container>
+<clr-control-error
+  class="field-has-error"
+  *ngIf="control.hasError('required') && control.touched"
+>
+  <span [translate]="'validation.required'"></span>
+</clr-control-error>
+<clr-control-error
+  class="field-has-error"
+  *ngIf="control.hasError('minDate') && control.touched"
+>
+  <span
+    [translate]="'validation.minDate'"
+    [translateParams]="{ date: control.errors?.minDate }"
+  ></span>
+</clr-control-error>
+<clr-control-error
+  class="field-has-error"
+  *ngIf="control.hasError('maxDate') && control.touched"
+>
+  <span
+    [translate]="'validation.maxDate'"
+    [translateParams]="{ date: control.errors?.maxDate }"
+  ></span>
+</clr-control-error>
+<clr-control-helper
+  *ngIf="inputConfig.descriptionText && showLabelAndDescription"
+>
+  <span [innerHTML]="inputConfig.descriptionText | safeHtml"></span>
+</clr-control-helper>

@@ -1,5 +1,5 @@
-import { IHTMLFormControlValidationRule } from './input-rules';
-
+import { SelectableControl } from "../v2";
+import { IHTMLFormControlValidationRule } from "./input-rules";
 export interface HTMLFormControlRequireIfConfig {
   formControlName: string;
   values: any[];
@@ -17,7 +17,7 @@ export interface IHTMLFormControl {
   items?: Array<any>;
   rules?: IHTMLFormControlValidationRule;
   placeholder?: string;
-  value?: string|any;
+  value?: string | any;
   disabled?: boolean;
   readOnly?: boolean;
   descriptionText?: string;
@@ -27,4 +27,13 @@ export interface IHTMLFormControl {
   isRepeatable: boolean;
   uniqueCondition?: string;
   containerClass: string;
+}
+
+export interface BindingControlInterface {
+  serverBindings?: string;
+  clientBindings?: string;
+  groupfield: string;
+  valuefield: string;
+  keyfield: string;
+  items: SelectableControl[];
 }

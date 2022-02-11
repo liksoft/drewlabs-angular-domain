@@ -1,4 +1,4 @@
-import { isDefined } from '../utils/types/type-utils';
+import { isDefined } from "../utils/types/type-utils";
 
 /**
  * @description Type definition for application links
@@ -6,27 +6,27 @@ import { isDefined } from '../utils/types/type-utils';
 export interface RoutesMap {
   key: string;
   route?: string;
-  // Route icon to be shown on the view
   routeIcon?: string;
-  permissions?: string[];
+  authorizations?: string[];
   children?: RoutesMap[];
 }
 
 /**
- * @description Type definition for an application navigation link.This type is use to easily generate topbar and navigation bar links.
+ * @description Type definition for an application navigation link.
+ * This type is use to easily generate topbar and navigation bar links.
  */
 export interface RouteLink {
   routePath?: string;
   routeDescription: string;
   routeIcon?: string;
-  routePermissions?: string[];
+  authorizations?: string[];
   children?: RouteLink[];
 }
 
 /**
  * @description  Type definition for a route collection item
  */
-export interface IRouteLinkCollectionItem {
+export interface RouteLinkCollectionItemInterface {
   key: string;
   value: RouteLink;
 }
@@ -36,40 +36,39 @@ export interface IRouteLinkCollectionItem {
  * @param map [[RoutesMap[]]]
  * @param translations [[any]]
  */
-export const builLinkFromRoutesMap = (map: RoutesMap[], translations: any) => {
-  if (!isDefined(map) || map.length === 0) {
-    return [];
-  }
-  return map.map((m: RoutesMap) => {
-    let children = [];
-    if (m.children) {
-      children = m.children.map((v: RoutesMap) => {
-        return {
-          routePath: v.route,
-          routeDescription: translations[v.key],
-          routeIcon: v.routeIcon,
-          routePermissions: v.permissions ? v.permissions : []
-        };
+export const routeMapToLink = (map: RoutesMap[], translations: any) =>
+  !isDefined(map) || map.length === 0
+    ? []
+    : map.map((m: RoutesMap) => {
+        let children: RouteLink[] = [];
+        if (m.children) {
+          children = m.children.map(
+            (v: RoutesMap) =>
+              ({
+                routePath: v.route,
+                routeDescription: translations[v.key],
+                routeIcon: v.routeIcon,
+                authorizations: v.authorizations ? v.authorizations : [],
+              } as RouteLink)
+          );
+          return {
+            key: m.key,
+            value: {
+              routeDescription: translations[m.key],
+              authorizations: m.authorizations ? m.authorizations : [],
+              children,
+              routeIcon: m.routeIcon,
+            } as RouteLink,
+          } as RouteLinkCollectionItemInterface;
+        } else {
+          return {
+            key: m.key,
+            value: {
+              routePath: m.route,
+              routeDescription: translations[m.key],
+              routeIcon: m.routeIcon,
+              authorizations: m.authorizations ? m.authorizations : [],
+            } as RouteLink,
+          } as RouteLinkCollectionItemInterface;
+        }
       });
-      return {
-        key: m.key,
-        value: {
-          routeDescription: translations[m.key],
-          children,
-          routeIcon: m.routeIcon
-        }
-      } as IRouteLinkCollectionItem;
-    } else {
-      return {
-        key: m.key,
-        value: {
-          routePath: m.route,
-          routeDescription: translations[m.key],
-          routeIcon: m.routeIcon,
-          routePermissions: m.permissions ? m.permissions : []
-        }
-      } as IRouteLinkCollectionItem;
-    }
-  });
-};
-
