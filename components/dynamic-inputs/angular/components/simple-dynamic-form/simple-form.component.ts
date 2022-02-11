@@ -10,6 +10,7 @@ import {
 import { AbstractControl, FormGroup } from "@angular/forms";
 import { createSubject, timeout } from "../../../../../rxjs/helpers";
 import { IDynamicForm, IHTMLFormControl } from "../../../core/contracts";
+import { createform } from "../../../core/helpers";
 import { AngularReactiveFormBuilderBridge } from "../../contracts";
 import { ComponentReactiveFormHelpers } from "../../helpers";
 import { ANGULAR_REACTIVE_FORM_BRIDGE } from "../../types";
@@ -20,13 +21,11 @@ import { ANGULAR_REACTIVE_FORM_BRIDGE } from "../../types";
   styles: [],
 })
 export class SimpleDynamicFormComponent implements OnDestroy {
+  // Properties definitions
   _formgroup!: FormGroup;
   _form!: IDynamicForm;
 
-  @Input() performingAction = false;
-  @Input() buttonDisabled = false;
-  @Input() submitable: boolean = true;
-
+  // Inputs
   @Input() set form(value: IDynamicForm) {
     this._form = value;
     if (value) {
@@ -42,6 +41,11 @@ export class SimpleDynamicFormComponent implements OnDestroy {
   get formgroup() {
     return this._formgroup;
   }
+  @Input() performingAction = false;
+  @Input() buttonDisabled = false;
+  @Input() submitable: boolean = true;
+
+  // Outputs
   @Output() public formEvent = new EventEmitter<{ [index: string]: any }>();
   @Output() public componentReadyStateChanges = new EventEmitter();
   public readonly destroy$ = createSubject<void>();
@@ -61,63 +65,67 @@ export class SimpleDynamicFormComponent implements OnDestroy {
   listenFormControlChanges = (control: string) =>
     this._formgroup?.get(control)?.valueChanges;
 
-  getControlValue = (control: string, _default?: any) => {
-    const value = this._formgroup.get(control)?.value;
-    return value || _default || undefined;
-  };
+  getControlValue = (control: string, _default?: any) =>
+    this._formgroup.get(control)?.value ?? _default ?? undefined;
 
   setControlValue = (control: string, value: any) =>
-    (() => {
-      this._formgroup.get(control)?.setValue(value);
-    })();
+    this._formgroup.get(control)?.setValue(value);
 
   disableControls = (controls: {
     [index: string]: { onlySelf: boolean; emitEvent: boolean } | undefined;
   }) =>
-    (() => {
-      Object.entries(controls || {}).forEach(([key, entry]) =>
-        this.formgroup.get(key)?.disable(entry)
-      );
-    })();
+    Object.entries(controls || {}).forEach(([key, entry]) =>
+      this.formgroup.get(key)?.disable(entry)
+    );
 
   enableControls = (controls: {
     [index: string]: { onlySelf: boolean; emitEvent: boolean } | undefined;
   }) =>
-    (() => {
-      Object.entries(controls || {}).forEach(([key, entry]) =>
-        this.formgroup.get(key)?.enable(entry)
-      );
-    })();
+    Object.entries(controls ?? {}).forEach(([key, entry]) =>
+      this.formgroup.get(key)?.enable(entry)
+    );
 
   addControl = (name: string, control: AbstractControl) =>
-    (() => {
-      if (this._formgroup.get(name)) {
-        return this._formgroup.get(name)?.setValue(control.value);
-      }
-      this._formgroup.addControl(name, control);
-    })();
+    this._formgroup.get(name)
+      ? this._formgroup.get(name)?.setValue(control.value)
+      : this._formgroup.addControl(name, control);
 
-  getControl = (name: string) =>
-    (() => {
-      return this.formgroup.get(name);
-    })();
+  getControl = (name: string) => this.formgroup.get(name);
 
-  onFormSubmitted = (event: Event) =>
-    (() => {
-      ComponentReactiveFormHelpers.validateFormGroupFields(this._formgroup);
-      if (this._formgroup.valid) {
-        this.formEvent.emit(this._formgroup.getRawValue());
-      }
-      event.preventDefault();
-    })();
+  onFormSubmitted(event: Event) {
+    this.validateForm();
+    if (this._formgroup.valid) {
+      this.formEvent.emit(this._formgroup.getRawValue());
+    }
+    event.preventDefault();
+  }
 
-  public setComponentForm = (value: IDynamicForm) =>
-    (() => {
+  setComponentForm(value: IDynamicForm) {
+    if (value) {
       this._form = value;
-      if (value) {
-        this._formgroup = this.builder.group(value) as FormGroup;
-      }
-    })();
+      this._formgroup = this.builder.group(value) as FormGroup;
+    }
+  }
+
+  getControlConfig = (name: string) =>
+    [...this._form.controlConfigs].find(
+      (control) => control.formControlName === name
+    );
+
+  setControlConfig(config?: IHTMLFormControl, name?: string) {
+    if (config) {
+      name = name ?? config.formControlName;
+      const controls = [...this._form.controlConfigs];
+      const index = controls.findIndex(
+        (control) => control.formControlName === name
+      );
+      controls.splice(1, 1, config);
+      this._form = createform({
+        ...this._form,
+        controlConfigs: controls,
+      });
+    }
+  }
 
   validateForm() {
     ComponentReactiveFormHelpers.validateFormGroupFields(this.formgroup);
@@ -126,7 +134,7 @@ export class SimpleDynamicFormComponent implements OnDestroy {
 
   public reset() {
     this.formgroup.reset();
-    (this._form.controlConfigs as IHTMLFormControl[]).forEach((control) => {
+    this._form.controlConfigs.forEach((control) => {
       this.formgroup.get(control.formControlName)?.setValue(control.value);
     });
   }
