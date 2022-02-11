@@ -1,0 +1,46 @@
+<div [class]="controlDivContainerClass">
+  <label
+    class="clr-control-label"
+    *ngIf="showLabelAndDescription"
+    [for]="inputType.asPhoneInput(inputConfig).formControlName"
+  >
+    {{ inputType.asPhoneInput(inputConfig).label }}
+    <span
+      class="required-text"
+      *ngIf="inputType.asPhoneInput(inputConfig).rules?.isRequired"
+    >
+      (*)
+    </span>
+  </label>
+  <div class="clr-control-container">
+    <div class="clr-input-wrapper">
+      <app-intl-tel-input
+        [label]="
+          showLabelAndDescription
+            ? inputType.asPhoneInput(inputConfig)?.label
+            : undefined
+        "
+        [required]="inputType.asPhoneInput(inputConfig).rules?.isRequired || false"
+        [tabIndex]="inputConfig.formControlIndex"
+        [controlClass]="inputType.asDateInput(inputConfig).classes"
+        [control]="control"
+        [disabled]="inputConfig.disabled || false"
+        [preferredCountries]="['tg', 'bj', 'gh']"
+        [initialCountry]="'tg'"
+      ></app-intl-tel-input>
+    </div>
+    <input
+      [tabIndex]="inputConfig?.formControlIndex"
+      [class]="inputType.asPhoneInput(inputConfig).classes"
+      [formControl]="control"
+      type="hidden"
+    />
+  </div>
+  <div>
+    <clr-control-helper
+      *ngIf="inputConfig.descriptionText && showLabelAndDescription"
+    >
+      <span [innerHTML]="inputConfig.descriptionText | safeHtml"></span>
+    </clr-control-helper>
+  </div>
+</div>

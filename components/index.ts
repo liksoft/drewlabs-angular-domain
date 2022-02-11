@@ -1,1 +1,1 @@
-export {CoreComponentModule} from './core-components.module';
+export { DynamicComponentService } from "./services/dynamic-component-resolver";

@@ -1,18 +1,16 @@
-import { IUserRememberTokenParam } from '../../../auth-token/contracts';
+import { IUserRememberTokenParam } from '../../token/contracts';
 import { createAction, DrewlabsFluxStore, StoreAction } from '../../../rxjs/state/rx-state';
 import { Authorizable, IAppUser, NotifiableUserDetails } from '../../contracts/v2';
 
-/**
- * @description Type definition for authentication service state
- */
 export interface AuthState {
   isLoggedIn: boolean;
   is2FactorAuthActive?: boolean;
   isInitialState?: boolean;
-  user: IAppUser | Authorizable | NotifiableUserDetails;
-  token: string;
+  user?: IAppUser | Authorizable | NotifiableUserDetails;
+  token?: string;
   authenticating?: boolean;
   rememberToken?: IUserRememberTokenParam;
+  signingOut?: boolean;
 }
 
 export interface AuthStorageValues {

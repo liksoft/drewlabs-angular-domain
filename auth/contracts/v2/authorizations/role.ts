@@ -1,14 +1,14 @@
 import { Authorization } from './authorization';
 
 export class RoleV2 {
-  id: number;
-  label: string;
-  displayLabel: string;
-  description: string;
-  permissions: string[] | Authorization[];
+  id!: number;
+  label!: string;
+  displayLabel!: string;
+  description!: string;
+  authorizations!: string[] | Authorization[];
 
   // tslint:disable-next-line: variable-name
-  private _isAdminRole: number;
+  private _isAdminRole!: number;
   get isAdminRole(): number {
     return Number(this._isAdminRole);
   }
@@ -23,7 +23,7 @@ export class RoleV2 {
       display_label: 'displayLabel',
       description: 'description',
       is_admin_user_role: 'isAdminRole',
-      permissions: { name: 'permissions', type: Authorization },
+      authorizations: { name: 'authorizations', type: Authorization },
     };
   }
 }
@@ -33,5 +33,5 @@ export const roleFormViewBindings = () => ({
   display_label: 'displayLabel',
   description: 'description',
   is_admin_user_role: 'isAdminRole',
-  permissions: 'permissions'
+  authorizations: 'authorizations'
 });

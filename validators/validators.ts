@@ -1,43 +1,13 @@
 import { AbstractControl, FormGroup, FormControl, ValidatorFn } from '@angular/forms';
-import { Injectable } from '@angular/core';
-import { HttpRequestService } from '../http/core/http-request.service';
+import { JSDate } from '../utils';
 import { isDefined } from '../utils/types/type-utils';
-import { MomentUtils } from '../utils/datetime/moment-utils';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class UniqueValueService {
-
-  public readonly path: string;
-
-  constructor(private client: HttpRequestService) {
-    this.path = 'is_unique';
-  }
-
-  /**
-   * @description Checks if a control value is unique on the ressources server
-   * @param property [[string]]
-   * @param value [[string|any]]
-   * @param entity [[entity]]
-   */
-  async verify(entity: string, property: string, value: string | number) {
-    const query = isDefined(entity) ? `?property=${property}&value=${value}&entity=${entity}` : `?property=${property}&value=${value}`;
-    try {
-      // TODO Implements unique value validation method
-      // const result = await loadThroughHttpRequest(this.client, `${this.path}${query}`);
-      // return isDefined(result) ? true : false;
-    } catch (error) {
-      return true;
-    }
-  }
-}
 
 export class CustomValidators {
   static Match(control: string, otherControl: string) {
     return (controlGroup: AbstractControl) => {
-      const firstControlValue = controlGroup.get(control).value === '' ? undefined : controlGroup.get(control).value;
-      const otherControlValue = controlGroup.get(otherControl).value === '' ? undefined : controlGroup.get(otherControl).value;
+      const firstControlValue = controlGroup.get(control)?.value === '' ? undefined : controlGroup.get(control)?.value;
+      const otherControlValue = controlGroup.get(otherControl)?.value === '' ? undefined : controlGroup.get(otherControl)?.value;
       if ((!isDefined(firstControlValue) && !isDefined(otherControlValue))) {
         return null;
       }
@@ -65,7 +35,7 @@ export class CustomValidators {
   static minDate(minDate: string | Date): ValidatorFn {
     return (control: AbstractControl) => {
       if (control.validator) {
-        if (control.value && MomentUtils.isAfter(minDate, control.value)) {
+        if (control.value && JSDate.isAfter(minDate, control.value)) {
           return { minDate };
         }
       }
@@ -76,7 +46,7 @@ export class CustomValidators {
   static maxDate(maxDate: string | Date): ValidatorFn {
     return (control: AbstractControl) => {
       if (control.validator) {
-        if (control.value && MomentUtils.isBefore(maxDate, control.value)) {
+        if (control.value && JSDate.isBefore(maxDate, control.value)) {
           return { maxDate };
         }
       }
@@ -157,22 +127,5 @@ export class CustomValidators {
         this.validateAllFormFields(control);
       }
     });
-  }
-
-  /**
-   * @description Checks if the value of the current control already exists in the database.
-   * @param service [[UniqueValueService]]
-   * @param entity [[string]]
-   * @param column [[string]]
-   */
-  static createAsycUniqueValidator(service: UniqueValueService, entity: string, column: string) {
-    return async (control: AbstractControl) => {
-      if (!isDefined(control.value) || control.value === '') {
-        return null;
-      }
-      const res = await service.verify(entity, column, control.value);
-      const errors = res ? null : { notUnique: {value: control.value} };
-      return errors;
-    };
   }
 }

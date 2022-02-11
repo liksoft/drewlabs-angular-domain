@@ -1,3 +1,5 @@
+import { JSObject } from "./object";
+
 export type Callable = () => any;
 export type Fn = (value?: any) => void;
 
@@ -29,7 +31,7 @@ export function equals(o1: any, o2: any): boolean {
   let length: number;
   let key: any;
   let keySet: any;
-  if (t1 === t2 && t1 === 'object') {
+  if (t1 === t2 && t1 === "object") {
     if (Array.isArray(o1)) {
       if (!Array.isArray(o2)) {
         return false;
@@ -48,14 +50,14 @@ export function equals(o1: any, o2: any): boolean {
         return false;
       }
       keySet = Object.create(null);
-      Object.keys(o1).forEach(k => {
+      Object.keys(o1).forEach((k) => {
         if (!equals(o1[k], o2[k])) {
-          return false;
+          return;
         }
         keySet[k] = true;
       });
       for (key in o2) {
-        if (!(key in keySet) && typeof o2[key] !== 'undefined') {
+        if (!(key in keySet) && typeof o2[key] !== "undefined") {
           return false;
         }
       }
@@ -65,51 +67,67 @@ export function equals(o1: any, o2: any): boolean {
   return false;
 }
 
-export function isDefined(value: any): boolean {
-  return typeof value !== 'undefined' && value !== null && value !== undefined;
-}
+/**
+ * Check if the value of the object is not equals to null or undefined
+ *
+ * @param value
+ * @returns
+ */
+export const isDefined = (value: any) => JSObject.isDefined(value);
 
-export function isObject(item: any): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item);
-}
+/**
+ * Check if a given value is a JS object
+ * @param item
+ * @returns
+ */
+export const isObject = (item: any) => JSObject.isJsObject(item);
 
 /**
  * @description Checks if a variable is of primitive type aka string|number|boolean
  * @param param [[any]]
  */
-export function isPrimitive(param: any): boolean {
+export const isPrimitive = (param: any) => {
   switch (typeof param) {
-    case 'string':
-    case 'number':
-    case 'boolean':
+    case "string":
+    case "number":
+    case "boolean":
       return true;
   }
-  return !!(param instanceof String || param === String ||
-    param instanceof Number || param === Number ||
-    param instanceof Boolean || param === Boolean);
+  return !!(
+    param instanceof String ||
+    param === String ||
+    param instanceof Number ||
+    param === Number ||
+    param instanceof Boolean ||
+    param === Boolean
+  );
 }
 
 /**
  * @description Checks if the provided function parameter is of type number
  */
-export function isNumber(value: any): boolean {
-  return typeof value === 'number' || value instanceof Number || value === Number;
+export const isNumber = (value: any) => {
+  value = isNaN(value as any) ? value : +value;
+  return (
+    typeof value === "number" || value instanceof Number || value === Number
+  );
 }
+
+export const isNullOrNaN = (value: any) => {
+  if (isObject(value) || isArray(value)) {
+    return true;
+  }
+  if (!isDefined(value)) {
+    return true;
+  }
+  return isNaN(value);
+};
 
 /**
  * @description Checks if a variable is of Array type
- * @param param [[any]]
+ * @value value [[any]]
  */
-export function isArray(param: any): boolean {
-  if (param === Array) {
-    return true;
-  } else if (typeof Array.isArray === 'function') {
-    return Array.isArray(param);
-  } else {
-    return !!(param instanceof Array);
-  }
-}
-
+export const isArray = (value: any) => Array.isArray(value);
 
 /**
  * @description Get property from a JS obecjt. The function dynamically load property that are inner property
@@ -117,10 +135,16 @@ export function isArray(param: any): boolean {
  * @param item [[object]]
  * @param field [[string]]
  */
-export function getJSObjectPropertyValue(item: any, field: string) {
-  if (!isDefined(field)) { return field; }
-  if (field.indexOf('.') !== -1) {
-    const innerFields: Array<string> = field.split('.');
+export function getJSObjectPropertyValue(
+  item: any,
+  key: string,
+  deepPropertySeperator: string = "."
+) {
+  if (!isDefined(key)) {
+    return key;
+  }
+  if (key.indexOf(deepPropertySeperator || ".") !== -1) {
+    const innerFields: Array<string> = key.split(deepPropertySeperator || ".");
     let currentObj = item;
     for (const v of innerFields) {
       if (isObject(currentObj) && currentObj[v]) {
@@ -132,7 +156,7 @@ export function getJSObjectPropertyValue(item: any, field: string) {
     }
     return currentObj;
   } else {
-    return item[field];
+    return item[key];
   }
 }
 
@@ -140,20 +164,27 @@ export function getJSObjectPropertyValue(item: any, field: string) {
  * @description Helper function for flattening an object properties
  * @param ob [[object]]
  */
-export function flattenObject(ob: object, prefixInnerKeys: boolean = true) {
+export function flattenObject(
+  ob: { [index: string]: any },
+  prefixInnerKeys: boolean = true
+) {
   if (isPrimitive(ob)) {
     return ob;
   }
-  const returnedObj = {};
+  const returnedObj: { [index: string]: any } = {};
   for (const i in ob) {
-    if (!ob.hasOwnProperty(i)) { continue; }
+    if (!ob.hasOwnProperty(i)) {
+      continue;
+    }
     if (isPrimitive(ob[i]) || isArray(ob[i])) {
       returnedObj[i] = ob[i];
     } else {
       const flatObject = flattenObject(ob[i], prefixInnerKeys);
       for (const x in flatObject) {
-        if (!flatObject.hasOwnProperty(x)) { continue; }
-        const obKey = prefixInnerKeys ? i + '.' + x : x;
+        if (!flatObject.hasOwnProperty(x)) {
+          continue;
+        }
+        const obKey = prefixInnerKeys ? i + "." + x : x;
         returnedObj[obKey] = flatObject[x];
       }
     }
@@ -169,19 +200,21 @@ export function objectHashCode(s: string) {
   let h = 0;
   for (let i = 0; i < s.length; i++) {
     // tslint:disable-next-line: no-bitwise
-    h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+    h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
   }
   return h;
 }
 
-export const check = fn => (params: string[] = []) => {
-  const { required } = fn;
-  const missing = required.filter(param => !(param in params));
+export const check =
+  (fn: { (arg0: string[]): any; name?: any; required?: any }) =>
+  (params: string[] = []) => {
+    const { required } = fn;
+    const missing = required.filter((param: string) => !(param in params));
 
-  if (missing.length) {
-    throw new Error(`${ fn.name }() Missing required parameter(s):
-    ${ missing.join(', ') }`);
-  }
+    if (missing.length) {
+      throw new Error(`${fn.name}() Missing required parameter(s):
+    ${missing.join(", ")}`);
+    }
 
-  return fn(params);
-};
+    return fn(params);
+  };

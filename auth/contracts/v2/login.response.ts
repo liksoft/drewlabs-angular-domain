@@ -1,14 +1,14 @@
+import { IHttpResponseData } from '../../../http/contracts';
 import { AppUser, IAppUser } from './user/user';
 
-export interface ILoginResponse {
-  success: boolean;
-  body: ILoginResponseBody;
+export interface ILoginResponse extends IHttpResponseData {
+  body?: ILoginResponseBody;
   statusCode: number;
 }
 
 export interface ILoginResponseBody {
   errorMessage: string;
-  responseData: ILoginResponseData;
+  responseData?: ILoginResponseData;
   errors: any[];
 }
 
@@ -24,24 +24,49 @@ export interface ILoginState {
 }
 
 export class LoginResponse implements ILoginResponse {
-  success: boolean = undefined;
-  body: LoginResponseBody = undefined;
-  statusCode: number = undefined;
+  body!: LoginResponseBody;
+  statusCode!: number;
+
+  getContent() {
+    return this.body?.responseData;
+  }
 
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {
     return {
-      success: 'success',
       body: { name: 'body', type: LoginResponseBody },
       code: 'statusCode'
     } as { [index: string]: keyof LoginResponse } | { [index: string]: any };
   }
 }
 
+// Added to Add support for new structure of the http response
+export class LoginV2_1Response implements ILoginResponse, ILoginResponseBody {
+
+  statusCode!: number;
+  errorMessage!: string;
+  responseData!: LoginResponseData;
+  errors!: any[];
+
+  getContent() {
+    return this.responseData;
+  }
+
+  // Static method definition for attribute parsing
+  static getJsonableProperties = () => {
+    return {
+      code: 'statusCode',
+      error_message: 'errorMessage',
+      response_data: { name: 'responseData', type: LoginResponseData },
+      errors: 'errors'
+    } as { [index: string]: keyof ILoginResponse & ILoginResponseBody } | { [index: string]: any };
+  }
+}
+
 export class LoginResponseBody implements ILoginResponseBody {
-  errorMessage: string = undefined;
-  responseData: LoginResponseData = undefined;
-  errors: any[] = undefined;
+  errorMessage!: string;
+  responseData!: LoginResponseData;
+  errors!: any[];
 
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {
@@ -54,8 +79,8 @@ export class LoginResponseBody implements ILoginResponseBody {
 }
 
 export class LoginResponseData implements ILoginResponseData {
-  loginState: ILoginState = undefined;
-  user: IAppUser = undefined;
+  loginState!: ILoginState;
+  user!: IAppUser;
 
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {
@@ -67,9 +92,9 @@ export class LoginResponseData implements ILoginResponseData {
 }
 
 export class LoginState implements ILoginState {
-  authenticated: boolean;
-  is2FactorAuthenticationEnabled: boolean;
-  token: string;
+  authenticated!: boolean;
+  is2FactorAuthenticationEnabled!: boolean;
+  token!: string;
 
   // Static method definition for attribute parsing
   static getJsonableProperties = () => {

@@ -1,0 +1,121 @@
+<div [class]="controlDivContainerClass">
+  <label
+    [for]="inputConfig.formControlName"
+    class="clr-control-label"
+    *ngIf="showLabelAndDescription"
+  >
+    {{ inputType.asTextInput(inputConfig).label }}
+    <small
+      class="required-text"
+      *ngIf="inputType.asTextInput(inputConfig).rules?.isRequired"
+    >
+      (*)
+    </small>
+  </label>
+  <div class="clr-control-container">
+    <div class="clr-input-wrapper">
+      <input
+        [tabIndex]="inputConfig.formControlIndex"
+        (keyup)="
+          keyup.emit({
+            name: inputConfig.formControlName,
+            value: $event
+          })
+        "
+        (keydown)="
+          keydown.emit({
+            name: inputConfig.formControlName,
+            value: $event
+          })
+        "
+        (keypress)="
+          keypress.emit({
+            name: inputConfig.formControlName,
+            value: $event
+          })
+        "
+        (blur)="
+          blur.emit({
+            name: inputConfig.formControlName,
+            value: $event
+          })
+        "
+        [type]="
+          inputType.asTextInput(inputConfig).type === inputTypes.EMAIL_INPUT
+            ? 'email'
+            : 'text'
+        "
+        [maxLength]="
+          inputType.asTextInput(inputConfig).maxLength
+            ? inputType.asTextInput(inputConfig).maxLength
+            : maxNumberSize()
+        "
+        [minLength]="
+          inputType.asTextInput(inputConfig).minLength
+            ? inputType.asTextInput(inputConfig).minLength
+            : 0
+        "
+        [class]="inputType.asTextInput(inputConfig).classes"
+        [formControl]="control"
+        [placeholder]="
+          inputType.asTextInput(inputConfig).placeholder
+            ? inputType.asTextInput(inputConfig).placeholder
+            : ''
+        "
+      />
+    </div>
+    <clr-control-error
+      class="field-has-error"
+      *ngIf="control.hasError('required') && control.touched"
+    >
+      <span [translate]="'validation.required'"></span>
+    </clr-control-error>
+    <clr-control-error
+      class="field-has-error"
+      *ngIf="control.hasError('maxLength') && control.touched"
+    >
+      <span
+        [translate]="'validation.maxValue'"
+        [translateParams]="{
+          value: inputType.asTextInput(inputConfig).maxLength
+        }"
+      ></span>
+    </clr-control-error>
+    <clr-control-error
+      class="field-has-error"
+      *ngIf="control.hasError('minLength') && control.touched"
+    >
+      <span
+        [translate]="'validation.minValue'"
+        [translateParams]="{
+          value: inputType.asTextInput(inputConfig).minLength
+            ? inputType.asTextInput(inputConfig).minLength
+            : getErrorAsNumber(control.errors?.minLength, 'minLength')
+        }"
+      ></span>
+    </clr-control-error>
+    <clr-control-error
+      class="field-has-error"
+      *ngIf="control.hasError('pattern') && control.touched"
+    >
+      <span [translate]="'validation.pattern'"></span>
+    </clr-control-error>
+    <clr-control-error
+      class="field-has-error"
+      *ngIf="control.hasError('email') && control.touched"
+    >
+      <span [translate]="'validation.email'"></span>
+    </clr-control-error>
+    <clr-control-error
+      class="field-has-error"
+      *ngIf="control.hasError('notUnique') && control.touched"
+    >
+      <span [translate]="'validation.unique'"></span>
+    </clr-control-error>
+    <clr-control-helper
+      *ngIf="inputConfig.descriptionText && showLabelAndDescription"
+    >
+      <span [innerHTML]="inputConfig.descriptionText | safeHtml"></span>
+    </clr-control-helper>
+  </div>
+</div>

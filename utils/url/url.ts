@@ -1,3 +1,5 @@
+import { isDefined } from "../types/type-utils";
+
 export class URLUtils {
 
   /**
@@ -5,7 +7,7 @@ export class URLUtils {
    * @param url [[string]] url value
    * @param needle [[string]] search
    */
-  public static findInQueryString(url: string, needle: string): string {
+  public static findInQueryString = (url: string, needle: string) => {
     const a = new URL(url);
     const arr = a.search.split('&');
     const match = arr.filter(item => {
@@ -14,7 +16,7 @@ export class URLUtils {
     if (match.length > 0) {
       return match[0].replace(needle, '').replace('#', '');
     }
-    return null;
+    return undefined;
   }
 
   /**
@@ -25,4 +27,17 @@ export class URLUtils {
     const pattern = /^((http|https|ftp):\/\/)/;
     return pattern.test(url);
   }
+}
+
+/**
+ * 
+ * @param url Url from which to generate the base path from
+ */
+ export const httpServerHost = (url: string) => {
+  if (!isDefined(url)) {
+      return '';
+  }
+  const jsUrl = new URL(url);
+  url = `${jsUrl.protocol}//${jsUrl.host}`;
+  return `${(`${url.endsWith('/') ? url.slice(0, -1) : url}`)}`;
 }

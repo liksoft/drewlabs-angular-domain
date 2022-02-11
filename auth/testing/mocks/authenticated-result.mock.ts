@@ -1,7 +1,6 @@
 import { of } from 'rxjs';
 
 export const authenticatedResponse = of({
-  success: true,
   body: {
     error_message: null,
     response_data: {
@@ -20,7 +19,7 @@ export const authenticatedResponse = of({
         roles: [
           'DEFAULT AUTHORIZATION GROUP'
         ],
-        permissions: [
+        authorizations: [
           'list-permissions',
           'list-roles',
           'list-departments',

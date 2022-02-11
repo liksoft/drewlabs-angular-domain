@@ -7,7 +7,8 @@ import { storageEntry } from '../../utils';
  */
 @Injectable()
 export class InMemoryStoreService implements IAppStorage {
-  private appStore: object;
+
+  private appStore: {[index: string]: any};
 
 
   constructor(@Inject('APP_SECRET') private secret: string) {
@@ -18,7 +19,7 @@ export class InMemoryStoreService implements IAppStorage {
    * @description Getter du in memory store
    * @return Return store container [[object]]
    */
-  get store(): object {
+  get store(): {[index: string]: any} {
     return this.appStore;
   }
 

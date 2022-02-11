@@ -1,6 +1,5 @@
 export const SERVER_RESPONSE = {
   data: {
-    success: true,
     body: {
       error_message: null,
       response_data: [

@@ -1,0 +1,41 @@
+export const formViewModelBindings = () => ({
+  title: 'title',
+  description: 'description',
+  parent_id: 'parentId',
+  endpoint_url: 'url',
+  appcontext: 'appcontext'
+});
+
+export const formControlViewModelBindings = (): { [index: string]: any } => ({
+  label: 'label',
+  placeholder: 'placeholder',
+  type: 'type',
+  classes: 'classes',
+  required: 'required',
+  disabled: 'disabled',
+  read_only: 'readonly',
+  unique: 'unique',
+  pattern: 'pattern',
+  description: 'description',
+  max_length: 'maxLength',
+  min_length: 'minLength',
+  min: 'min',
+  max: 'max',
+  min_date: 'minDate',
+  max_date: 'maxDate',
+  selectable_values: 'selectableValues',
+  selectable_model: 'selectableModel',
+  multiple: 'multiple',
+  columns: 'columns',
+  rows: 'rows',
+  index: 'controlIndex',
+  control_name: 'controlName',
+  value: 'value',
+  required_if: 'requiredIf',
+  form_id: 'formId',
+  form_control_id: 'id',
+  upload_url: 'uploadURL',
+  unique_on: 'uniqueOn',
+  is_repeatable: 'isRepeatable',
+  container_class: 'dynamicControlContainerClass'
+});

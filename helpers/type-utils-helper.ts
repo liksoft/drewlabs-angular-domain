@@ -1,30 +1,29 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { AbstractControl, FormGroup, FormArray } from '@angular/forms';
-import { FileFormControl } from '../components/dynamic-inputs/dynamic-form-control/dynamic-form-control.component';
-import { IDynamicForm } from '../components/dynamic-inputs/core';
-import { isGroupOfIDynamicForm } from './component-reactive-form-helpers';
-import { isArray, isDefined } from '../utils';
-import { Collection } from '../collections/collection';
-
+import { Injectable } from "@angular/core";
+import { AbstractControl, FormGroup, FormArray } from "@angular/forms";
+import { collect } from "../collections/collection";
+import { FileFormControl } from "../components/dynamic-inputs/angular/types";
+import { ICollection } from "../collections";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class TypeUtilHelper {
-
   /**
    * @description Checks if the value of the parameter is defined or not
    * @param value [[any]]
    */
   isDefined(value: any): boolean {
-    return isDefined(value);
+    return typeof value !== "undefined" && value !== null;
   }
   /**
    * Return any value as collection of items
    * @param value [[any]]
    */
-  asCollection<T extends any>(value: any): Collection<T> {
-    return value as Collection<any>;
+  asCollection<T extends any>(value: any): ICollection<T> {
+    if (Array.isArray(value)) {
+      return collect(value as T[]);
+    }
+    return value as ICollection<any>;
   }
 
   /**
@@ -32,7 +31,7 @@ export class TypeUtilHelper {
    * @param value [[any]]
    */
   isArray(value: any): boolean {
-    return isArray(value);
+    return Array.isArray(value);
   }
 
   /**
@@ -51,15 +50,20 @@ export class TypeUtilHelper {
     return control as FormArray;
   }
 
-  transformIFileFormControl(value: FileFormControl): { content: string, extension: string } {
-    return Object.assign({}, { content: value.dataURL, extension: value.extension });
+  /**
+   * @deprecated
+   */
+  transformIFileFormControl(value: FileFormControl): {
+    content: string;
+    extension?: string;
+  } {
+    return { ...{ content: value.dataURL, extension: value.extension } };
   }
 
-  /**
-   * @description Checks if the param is a FormGroup
-   * @param f [[IDynamicForm]]
-   */
-  isFormGroup(f: IDynamicForm): boolean {
-    return isGroupOfIDynamicForm(f);
+  asServerFileRequesBody(value: FileFormControl): {
+    content: string;
+    extension?: string;
+  } {
+    return { ...{ content: value?.dataURL, extension: value?.extension } };
   }
 }
