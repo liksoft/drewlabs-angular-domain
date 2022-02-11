@@ -10,7 +10,6 @@ import {
   tap,
   takeUntil,
 } from "rxjs/operators";
-import { doLog } from "../operators";
 
 export interface StoreAction {
   type: string;
@@ -93,23 +92,23 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
 
   public bindActionCreator =
     <K>(handler: ActionCreatorHandlerFn<AType>) =>
-    (...args: any) => {
-      const action = handler.call(null, ...args) as AType;
-      this._actions$.next(action);
-      if (isObservable(action.payload)) {
-        // Simulate a wait before calling the next method
-        action.payload
-          .pipe(
-            first(),
-            delay(10),
-            tap((state) => {
-              this._actions$.next(state[0]);
-            })
-          )
-          .subscribe();
-      }
-      return action;
-    };
+      (...args: any) => {
+        const action = handler.call(null, ...args) as AType;
+        this._actions$.next(action);
+        if (isObservable(action.payload)) {
+          // Simulate a wait before calling the next method
+          action.payload
+            .pipe(
+              first(),
+              delay(10),
+              tap((state: any) => {
+                this._actions$.next(state);
+              })
+            )
+            .subscribe();
+        }
+        return action;
+      };
 
   /**
    * @description Connect to the store data stream
