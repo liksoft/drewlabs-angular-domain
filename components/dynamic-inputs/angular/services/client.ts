@@ -26,7 +26,7 @@ export class JSONFormsClient implements FormsClient {
       take(1)
     );
   }
-  getAll(list: string[] | number[]): Observable<FormInterface[]> {
+  getAll(list: any[]): Observable<FormInterface[]> {
     return this.provider.state$.pipe(
       selectall(list.map((value: string | number) => String(value))),
       filter((state) => (state ? true : false)),

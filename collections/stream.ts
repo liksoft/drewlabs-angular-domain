@@ -25,13 +25,12 @@ export interface StreamInterface<T> {
 }
 
 export class Stream<T> implements StreamInterface<T> {
-
   private pipe: Function_[] = [];
 
   private constructor(
     private _source: Generator<T> | Iterable<T>,
     private infinite: boolean = false
-  ) { }
+  ) {}
 
   static of<T>(source: Generator<T> | Iterable<T>) {
     return new Stream(source);
@@ -50,7 +49,9 @@ export class Stream<T> implements StreamInterface<T> {
 
   private _throwIfUnsafe() {
     if (this.infinite) {
-      throw new Error('Stream source is unsafe, stream is infinite call take(n) to process finite number of source items');
+      throw new Error(
+        "Stream source is unsafe, stream is infinite call take(n) to process finite number of source items"
+      );
     }
   }
 
@@ -61,13 +62,13 @@ export class Stream<T> implements StreamInterface<T> {
   ) {
     this._throwIfUnsafe();
     let result = initialValue;
-    const composedFunc = compose<T, ReducerRType>(
-      ...this.pipe,
-      (source) =>
-        typeof source !== "undefined" ? compose(
-          (source: T) => mapFunc(source),
-          (source: R) => reducerFunc(result, source)
-        )(source) : undefined,
+    const composedFunc = compose<T, ReducerRType>(...this.pipe, (source) =>
+      typeof source !== "undefined"
+        ? compose(
+            (source: T) => mapFunc(source),
+            (source: R) => reducerFunc(result, source)
+          )(source)
+        : undefined
     );
     for (let value of this._source) {
       result = composedFunc(value);
@@ -112,12 +113,14 @@ export class Stream<T> implements StreamInterface<T> {
     const result = (function* (source: Generator<T> | Iterable<T>) {
       for (let value of source) {
         const _value = composedFunc(value);
-        if (typeof _value !== 'undefined') {
+        if (typeof _value !== "undefined") {
           yield _value;
+          return;
         }
       }
-    })(this._source)
-    return result.next().value ?? _default;
+      yield undefined;
+    })(this._source);
+    return (result.next().value as T | DType) ?? _default;
   }
 
   take(n: number): StreamInterface<T> {
@@ -126,8 +129,7 @@ export class Stream<T> implements StreamInterface<T> {
       let index = 0;
       for (const value of source) {
         index++;
-        if (index > length)
-          break;
+        if (index > length) break;
         yield value;
       }
     })(this._source, n);
@@ -139,8 +141,7 @@ export class Stream<T> implements StreamInterface<T> {
       let index = 0;
       for (const value of source) {
         index++;
-        if (index <= length)
-          continue;
+        if (index <= length) continue;
         yield value;
       }
     })(this._source, n);
@@ -152,8 +153,8 @@ export class Stream<T> implements StreamInterface<T> {
     function* gen(source: Iterable<T>, pipe: Function_[]) {
       const composedFunc = compose<T, any>(...pipe);
       for (let value of source) {
-        const result = composedFunc(value)
-        if (typeof result !== 'undefined') {
+        const result = composedFunc(value);
+        if (typeof result !== "undefined") {
           yield result;
         }
       }

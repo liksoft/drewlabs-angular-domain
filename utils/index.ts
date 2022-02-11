@@ -62,6 +62,7 @@ export {
   Month,
   MonthProvider,
   MONTHS,
+  TimeAgo
 } from "./datetime";
 
 export {
