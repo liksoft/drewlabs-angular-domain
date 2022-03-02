@@ -13,7 +13,7 @@ export class SelectInput
   extends AbstractHTMLFormControl
   implements Partial<BindingControlInterface>
 {
-  override items: any[];
+  items: any[];
   optionsLabel?: string;
   optionsValueIndex?: string | number;
   multiple?: boolean;

@@ -19,7 +19,7 @@ export class PasswordInput extends TextInput {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static override fromFormControlModel = (model: Partial<ControlInterface>) =>
+  static fromFormControlModel = (model: Partial<ControlInterface>) =>
     new PasswordInput({
       label: model.label,
       type: model.type,

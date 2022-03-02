@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { filter, take } from "rxjs/operators";
+import { filter, map, take } from "rxjs/operators";
 import { ActionHandler } from "../../../../rxjs/handlers";
 import { FormsClient } from "../../core";
 import { FormInterface } from "../../core/compact";
@@ -28,7 +28,7 @@ export class JSONFormsClient implements FormsClient {
   }
   getAll(list: string[] | number[]): Observable<FormInterface[]> {
     return this.provider.state$.pipe(
-      selectall(list.map((value: string | number) => String(value))),
+      selectall((list as string[]).map((value: string) => String(value))),
       filter((state) => (state ? true : false)),
       take(1)
     );

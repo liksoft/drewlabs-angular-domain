@@ -15,7 +15,7 @@ import { AbstractHTMLFormControl } from "./dynamic-input";
  */
 export class RadioInput extends AbstractHTMLFormControl {
   //
-  override items: RadioItem[];
+  items: RadioItem[];
   /**
    * @description Instance initializer
    * @param value Required input configuration object

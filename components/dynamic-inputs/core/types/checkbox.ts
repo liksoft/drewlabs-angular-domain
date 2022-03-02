@@ -8,7 +8,7 @@ import { buildCheckboxItems, buildRequiredIfConfig } from "../helpers/builders";
 import { AbstractHTMLFormControl } from "./dynamic-input";
 
 export class CheckBoxInput extends AbstractHTMLFormControl {
-  override items: CheckboxItem[] = [];
+  items: CheckboxItem[] = [];
   /**
    * @description Instance initializer
    * @param value Required input configuration object

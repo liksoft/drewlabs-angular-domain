@@ -24,7 +24,7 @@ export class TextAreaInput extends TextInput {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static override fromFormControlModel = (model: Partial<ControlInterface>) =>
+  static fromFormControlModel = (model: Partial<ControlInterface>) =>
     new TextAreaInput({
       label: model.label,
       type: model.type,

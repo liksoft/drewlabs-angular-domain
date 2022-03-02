@@ -44,7 +44,7 @@ import { DropzoneConfig } from "./types";
           <span>{{ dragFileText }}</span>
           <span class="dz-text">
             <a href="javascript:undefined;">{{
-              defaults?.dictDefaultMessage ?? defaultMessage
+              defaults?.dictDefaultMessage || defaultMessage
             }}</a>
           </span>
           <span> {{ uploadFileText }}</span>
