@@ -10,7 +10,7 @@ import {
   IHttpResponse,
   ErrorHandler,
 } from "../contracts";
-import { UIStateStatusCode } from "../../ui-state";
+import { UIStateStatusCode } from "../../ui-state/types";
 import { isServerErrorResponse, isServerBadRequest } from "../helpers/response";
 import { mapToHttpResponse } from "../rx";
 import { HTTP_CLIENT } from "../tokens";

@@ -1,5 +1,3 @@
-import { JSObject } from "./object";
-
 export type Callable = () => any;
 export type Fn = (value?: any) => void;
 
@@ -73,14 +71,16 @@ export function equals(o1: any, o2: any): boolean {
  * @param value
  * @returns
  */
-export const isDefined = (value: any) => JSObject.isDefined(value);
+export const isDefined = (value: any) =>
+  typeof value !== "undefined" && value !== null && value !== undefined;
 
 /**
  * Check if a given value is a JS object
  * @param item
  * @returns
  */
-export const isObject = (item: any) => JSObject.isJsObject(item);
+export const isObject = (item: any) =>
+  item && typeof item === "object" && !Array.isArray(item);
 
 /**
  * @description Checks if a variable is of primitive type aka string|number|boolean
@@ -101,7 +101,7 @@ export const isPrimitive = (param: any) => {
     param instanceof Boolean ||
     param === Boolean
   );
-}
+};
 
 /**
  * @description Checks if the provided function parameter is of type number
@@ -111,7 +111,7 @@ export const isNumber = (value: any) => {
   return (
     typeof value === "number" || value instanceof Number || value === Number
   );
-}
+};
 
 export const isNullOrNaN = (value: any) => {
   if (isObject(value) || isArray(value)) {

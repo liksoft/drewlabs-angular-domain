@@ -14,7 +14,7 @@ import { OptionInterface } from "../../compact/types";
 import { isDefined, isObject } from "../../../../../utils";
 import { emptyObservable } from "../../../../../rxjs/helpers";
 import { defaultHttpErrorHandler } from "../../../../../http/helpers/response";
-import { createOptionElement } from "..";
+import { createOptionElement } from "../models";
 
 export const deserializeOption = (serialized: { [index: string]: any }) => createOptionElement(serialized);
 
