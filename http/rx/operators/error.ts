@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { emptyObservable } from "../../../rxjs/helpers";
 import { DrewlabsFluxStore, onErrorAction } from "../../../rxjs/state/rx-state";
@@ -27,7 +27,7 @@ export const handleError =
             onErrorAction(store)(err);
           }
         }
-        return emptyObservable();
+        return throwError(err);
       })
     );
   };
