@@ -3,7 +3,6 @@ export {
   formControlViewModelBindings
 } from './bindings';
 export {
-  FormInterface,
-  ControlInterface,
-  OptionInterface
+  DynamicFormInterface,
+  DynamicFormControlInterface
 } from './types';

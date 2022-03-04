@@ -1,6 +1,5 @@
-import { getObjectProperty } from '../utils';
+import { ICollection } from '../contracts/collection-interface';
 import { isDefined } from '../utils/types/type-utils';
-import { ICollection } from './types';
 
 export class Collection<T> implements ICollection<T> {
   protected items: { [index: string]: T } = {};
@@ -79,7 +78,7 @@ export class Collection<T> implements ICollection<T> {
 
   private deleteKey(key: string): void {
     if (!this.contains(key)) {
-      return;
+      return null;
     }
     const val = this.items[key];
     delete this.items[key];
@@ -99,7 +98,7 @@ export class Collection<T> implements ICollection<T> {
     return values;
   }
 
-  *[Symbol.iterator] () {
+  [Symbol.iterator]() {
     return this.values()[Symbol.iterator]();
   }
 
@@ -117,10 +116,10 @@ export class Collection<T> implements ICollection<T> {
  * @description Convert a list of [T] items into a collection of [T] items
  * @param controls [[T]]
  */
-export function collect<T>(controls: T[], using?: string): ICollection<T>  {
+export function collect<T>(controls: T[], using: string = null): ICollection<T>  {
   const collection = new Collection<T>();
   controls.forEach((v: T, index: number) => {
-    collection.add(isDefined(using) ? getObjectProperty(v, using || '') : index.toString(), v);
+    collection.add(isDefined(using) ? v[using] : index.toString(), v);
   });
   return collection;
 }

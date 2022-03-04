@@ -1,10 +1,7 @@
-import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
-import { Log } from "../../utils/logger";
-
-// This will be provided through Terser global definitions by Angular CLI. This will
-// help to tree-shake away the code unneeded for production bundles.
-declare const ngDevMode: boolean;
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { getEnv } from '../../utils';
+import { Log } from '../../utils/logger';
 
 // Helper rxjs operator for logging emitted stream while running in development mode
 /**
@@ -18,13 +15,15 @@ declare const ngDevMode: boolean;
  * ```
  */
 export const doLog = <T>(prefix?: string) => {
-  return (source$: Observable<T>) =>
-    source$.pipe(
-      tap((source) => {
-        // tslint:disable-next-line: no-unused-expression
-        ngDevMode ? (prefix ? Log(prefix, source) : Log(source)) : undefined;
-      })
-    );
+  return (source$: Observable<T>) => source$.pipe(
+    tap(source => {
+      // tslint:disable-next-line: no-unused-expression
+      getEnv('production') ? null : (prefix ? Log( prefix, source) : Log(source));
+    })
+  );
 };
 
-export { untilDestroyed } from "./until-destroyed";
+export { mapToHttpResponse } from './map-to-response-type';
+export { onAuthenticationResultEffect } from './login-response';
+export { DrewlabsV2LoginResultHandlerFunc } from './auth/v2/login-response';
+export { DrewlabsV1LoginResultHandlerFunc } from './auth/v1/login-response';

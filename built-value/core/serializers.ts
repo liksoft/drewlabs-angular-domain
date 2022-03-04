@@ -1,7 +1,7 @@
-// import 'reflect-metadata';
-import { getObjectProperty } from '../../utils/types';
+import 'reflect-metadata';
 import { isArray, isPrimitive, isDefined } from '../../utils/types/type-utils';
 import { IJsonMetaData, ISerializer } from '../contracts/serializers';
+import { Log } from '../../utils/logger';
 
 /**
  * @description A key use to retrieve json metadata from Reflect package
@@ -14,8 +14,7 @@ const jsonMetadataKey = 'jsonProperty';
  * @param propertyKey [[string]]
  */
 export function getValueDesignType(target: any, propertyKey: string): any {
-  throw new Error('Not support is provided for decorated JsonProperty, Use Undecorated implementation instead');
-  // return Reflect.getMetadata('design:type', target, propertyKey);
+  return Reflect.getMetadata('design:type', target, propertyKey);
 }
 
 /**
@@ -24,8 +23,7 @@ export function getValueDesignType(target: any, propertyKey: string): any {
  * @param propertyKey [[string]]
  */
 export function getJsonProperty<T>(target: any, propertyKey: string): IJsonMetaData<T> {
-  throw new Error('Not support is provided for decorated JsonProperty, Use Undecorated implementation instead');
-  // return Reflect.getMetadata(jsonMetadataKey, target, propertyKey);
+  return Reflect.getMetadata(jsonMetadataKey, target, propertyKey);
 }
 
 /**
@@ -33,36 +31,32 @@ export function getJsonProperty<T>(target: any, propertyKey: string): IJsonMetaD
  * @param metadata [[IJsonMetaData<T> | string]]
  */
 export function JsonProperty<T>(metadata?: IJsonMetaData<T> | string): any {
-  throw new Error('Not support is provided for decorated JsonProperty, Use Undecorated implementation instead');
-  // if (metadata instanceof String || typeof metadata === 'string') {
-  //   return Reflect.metadata(jsonMetadataKey, {
-  //     name: metadata,
-  //     valueType: undefined
-  //   });
-  // } else {
-  //   const metadataObj = metadata as IJsonMetaData<T>;
-  //   return Reflect.metadata(jsonMetadataKey, {
-  //     name: metadataObj ? metadataObj.name : undefined,
-  //     valueType: metadataObj ? metadataObj.valueType : undefined
-  //   });
-  // }
+  if (metadata instanceof String || typeof metadata === 'string') {
+    return Reflect.metadata(jsonMetadataKey, {
+      name: metadata,
+      valueType: undefined
+    });
+  } else {
+    const metadataObj = metadata as IJsonMetaData<T>;
+    return Reflect.metadata(jsonMetadataKey, {
+      name: metadataObj ? metadataObj.name : undefined,
+      valueType: metadataObj ? metadataObj.valueType : undefined
+    });
+  }
 }
 
-/**
- * @deprecated Will be removed in next major release
- */
 export class ObjectSerializer implements ISerializer {
 
   /**
    * @inheritdoc
    */
-  deserialize = <T>(bluePrint?: new () => T, jsonObject?: any) => {
+  deserialize = <T>(bluePrint: new () => T, jsonObject: any) => {
     // Checks if the Class blueprint is undefined
     if ((bluePrint === undefined) || (jsonObject === undefined)) {
       return undefined;
     }
     // Creates an instance of the bluprint
-    const obj = new bluePrint() as {[index: string]: any};
+    const obj = new bluePrint();
     // Loop through the property of the object instance
     Object.keys(obj).forEach((key) => {
       const propertyMetaDataFn: (v: IJsonMetaData<T>) => any = (metadata) => {
@@ -77,7 +71,7 @@ export class ObjectSerializer implements ISerializer {
             // If it has an inner json and the innerJson is an array apply the deserialisation on the innerJson
             if (innerJson && isArray(innerJson)) {
               return innerJson.map(
-                (item: any) => this.deserialize(jsonMetaData.valueType, item)
+                (item) => this.deserialize(jsonMetaData.valueType, item)
               );
               // Else the type is incorrectly formed
             } else {
@@ -104,19 +98,20 @@ export class ObjectSerializer implements ISerializer {
         }
       }
     });
-    return obj as T;
+    return obj;
   }
 
   /**
    * @inheritdoc
    */
-  serialize<T extends Object>(bluePrint: new () => T, value: T) {
+  serialize<T>(bluePrint: new () => T, value: T): object {
     // Checks if the Class blueprint is undefined
     if ((value === undefined)) {
       return undefined;
     }
     // Creates an instance of the bluprint
-    const $serialized: {[index: string]: any} = {};
+    const $serialized: object = {};
+    // const obj = value.constructor || new bluePrint();
     bluePrint = bluePrint ? bluePrint : value.constructor as any;
     const obj = new bluePrint();
     Object.keys(value).forEach((key) => {
@@ -126,19 +121,19 @@ export class ObjectSerializer implements ISerializer {
         const designType = getValueDesignType(obj, key);
         if (isArray(designType)) {
           // tslint:disable-next-line: max-line-length
-          $serialized[entryKey] = isDefined(getObjectProperty(value, key)) ? (getObjectProperty(value, key) as Array<any>).map((k) => {
+          $serialized[entryKey] = isDefined(value[key]) ? (value[key] as Array<any>).map((k) => {
             if (typeof metadata.valueType === 'undefined') {
               return k;
             }
             return this.serialize(metadata.valueType, k);
           }) : null;
         } else if (!isPrimitive(designType)) {
-          $serialized[entryKey] = this.serialize(designType, getObjectProperty(value, key));
+          $serialized[entryKey] = this.serialize(designType, value[key]);
         } else {
-          $serialized[entryKey] = getObjectProperty(value, key);
+          $serialized[entryKey] = value[key];
         }
       } else {
-        $serialized[key] = value && isDefined(getObjectProperty(value, key)) ? getObjectProperty(value, key) : null;
+        $serialized[key] = value && isDefined(value[key]) ? value[key] : null;
       }
     });
     return $serialized;

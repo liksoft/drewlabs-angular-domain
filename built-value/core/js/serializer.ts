@@ -17,7 +17,7 @@ export class UndecoratedSerializer implements ISerializer {
 
 }
 
-export class GenericUndecoratedSerializaleSerializer<T extends Object> extends GenericTypeBuilder<T> implements IGenericSerializableBuilder<T> {
+export class GenericUndecoratedSerializaleSerializer<T> extends GenericTypeBuilder<T> implements IGenericSerializableBuilder<T> {
   serializer: ISerializer;
 
   constructor(serializer?: ISerializer) {
@@ -28,7 +28,7 @@ export class GenericUndecoratedSerializaleSerializer<T extends Object> extends G
   /**
    * @inheritdoc
    */
-  fromSerialized(type: new () => T, serialized: any) {
+  fromSerialized(type: new () => T, serialized: any): T {
     if (!isDefined(serialized)) {
       return serialized;
     }
@@ -43,7 +43,7 @@ export class GenericUndecoratedSerializaleSerializer<T extends Object> extends G
   }
 }
 
-export class GenericSerializaleSerializer<T extends Object> extends GenericTypeBuilder<T> implements ISerializableBuilder<T> {
+export class GenericSerializaleSerializer<T> extends GenericTypeBuilder<T> implements ISerializableBuilder<T> {
   serializer: ISerializer;
 
   constructor(private type: new () => T, serializer?: ISerializer) {
@@ -55,7 +55,10 @@ export class GenericSerializaleSerializer<T extends Object> extends GenericTypeB
    * @inheritdoc
    */
   fromSerialized(serialized: object|string|any): T {
-    return serialized ? this.serializer.deserialize(this.type, serialized) : serialized;
+    if (!isDefined(serialized)) {
+      return serialized;
+    }
+    return this.serializer.deserialize(this.type, serialized);
   }
 
   /**

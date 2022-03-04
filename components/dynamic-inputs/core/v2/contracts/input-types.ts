@@ -1,12 +1,8 @@
-import { IHTMLFormControl } from "../../contracts";
+import { IHTMLFormControl } from '../../contracts';
 
-type MultiControlItem = { id: string; label: string; template?: string };
+type MultiControlItem = {id: string; label: string, template?: string};
 
-type ServerSideControlItemConfig = {
-  collection: string;
-  columns?: string[];
-  model?: string;
-};
+type ServerSideControlItemConfig = { collection: string, columns?: string[], model?: string };
 
 /**
  * @description Type definition for a control item that provide a select or combobox
@@ -26,9 +22,4 @@ export interface SelectableControl extends IHTMLFormControl {
  */
 export interface ServerSideSelectableControl extends SelectableControl {
   serverCollectionConfigs: ServerSideControlItemConfig;
-}
-
-export enum SelectableControlDataSource {
-  MODEL = 2,
-  LIST = 1,
 }

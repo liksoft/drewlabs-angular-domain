@@ -1,22 +1,23 @@
 import { RoleV2 } from '../../contracts/v2/authorizations/role';
 import { PaginationData } from '../../../pagination/types';
 import { createAction, DefaultStoreAction, DrewlabsFluxStore, onErrorAction, StoreAction } from '../../../rxjs/state/rx-state';
+import { DrewlabsRessourceServerClient } from '../../../http/core/ressource-server-client';
 import { catchError, map } from 'rxjs/operators';
 import { isArray, isDefined, isObject } from '../../../utils';
 import { GenericUndecoratedSerializaleSerializer } from '../../../built-value/core/js/serializer';
 import { emptyObservable } from '../../../rxjs/helpers';
 import { HttpErrorResponse } from '@angular/common/http';
-import { getResponseDataFromHttpResponse } from '../../../http/helpers/response';
-import { IResourcesServerClient } from '../../../http';
+import { getResponseDataFromHttpResponse } from '../../../http/helpers/http-response';
+import { Log } from '../../../utils/logger';
 
 export interface RolesState {
   performingAction: boolean;
   items: { [prop: string]: RoleV2 };
   pagination: PaginationData<RoleV2>;
-  createdRole?: RoleV2;
-  updateResult?: boolean;
-  deleteResult?: boolean;
-  error?: any;
+  createdRole: RoleV2;
+  updateResult: boolean;
+  deleteResult: boolean;
+  error: any;
 }
 
 const deserializeSerializedRole = (serialized: any) => {
@@ -36,7 +37,7 @@ export enum RoleStoreActions {
 
 export const paginateRolesAction = (store: DrewlabsFluxStore<RolesState, Partial<StoreAction>>) =>
   createAction(store, (
-    client: IResourcesServerClient<any>,
+    client: DrewlabsRessourceServerClient,
     path: string,
     params: { [index: string]: any } = {}
   ) => {
@@ -75,7 +76,7 @@ export const onRolePaginationDataLoaded = (store: DrewlabsFluxStore<RolesState, 
 
 export const createRoleAction = (
   store: DrewlabsFluxStore<RolesState, Partial<StoreAction>>) =>
-  createAction(store, (client: IResourcesServerClient<any>, path: string, body: { [index: string]: any }) =>
+  createAction(store, (client: DrewlabsRessourceServerClient, path: string, body: { [index: string]: any }) =>
     ({
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.create(path, body)
@@ -86,7 +87,6 @@ export const createRoleAction = (
             if (isDefined(data)) {
               return roleCreatedAction(store)(deserializeSerializedRole(data));
             }
-            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -107,7 +107,7 @@ export const roleCreatedAction = (
 
 export const updateRoleAction = (
   store: DrewlabsFluxStore<RolesState, Partial<StoreAction>>) =>
-  createAction(store, (client: IResourcesServerClient<any>, path: string, id: string | number, body: { [index: string]: any }) =>
+  createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: string | number, body: { [index: string]: any }) =>
     ({
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.updateUsingID(path, id, body)
@@ -125,7 +125,6 @@ export const updateRoleAction = (
                 return roleUpdatedAction(store)({ updateResult: true });
               }
             }
-            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -148,7 +147,7 @@ export const roleUpdatedAction = (
 
 export const deleteRoleAction = (
   store: DrewlabsFluxStore<RolesState, Partial<StoreAction>>) =>
-  createAction(store, (client: IResourcesServerClient<any>, path: string, id: number | string) =>
+  createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: number | string) =>
     ({
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.deleteUsingID(path, id)
@@ -166,7 +165,6 @@ export const deleteRoleAction = (
                 return roleDeletedAction(store)({ deleteResult: true });
               }
             }
-            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
@@ -188,8 +186,11 @@ export const roleDeletedAction = (
 export const initialRolesState: RolesState = {
   items: {},
   pagination: {} as PaginationData<RoleV2>,
+  createdRole: null,
   performingAction: false,
   error: null,
+  updateResult: null,
+  deleteResult: null
 };
 
 export const resetRolesStore = (store: DrewlabsFluxStore<RolesState, Partial<StoreAction>>) =>
@@ -202,7 +203,7 @@ export const resetRolesStore = (store: DrewlabsFluxStore<RolesState, Partial<Sto
 
 export const getRoleUsingID = (
   store: DrewlabsFluxStore<RolesState, Partial<StoreAction>>) => {
-  return createAction(store, (client: IResourcesServerClient<any>, path: string, id: string | number) => {
+  return createAction(store, (client: DrewlabsRessourceServerClient, path: string, id: string | number) => {
     return {
       type: DefaultStoreAction.ASYNC_UI_ACTION,
       payload: client.getUsingID(path, id)
@@ -213,7 +214,6 @@ export const getRoleUsingID = (
             if (isDefined(data)) {
               return addToList(store)(deserializeSerializedRole(data));
             }
-            return emptyObservable();
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {

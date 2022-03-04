@@ -1,58 +1,46 @@
 .required-text,
 .field-has-error {
-  color: rgb(241, 50, 50);
-  line-height: 1rem;
+    color: rgb(241, 50, 50);
+    line-height: 1rem;
 }
 
 small.field-has-error {
-  display: block;
+    display: block;
 }
 
 li.country:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .dropdown-toggle::after {
-  display: none;
+    display: none;
 }
 
 .intl-tel-input {
-  width: 100%;
+    width: 100%;
 }
 
-.intl-tel-input button.btn {
-    background: var(--light-clouds);
-    border: none;
+.clr-input {
+    width: 80% !important;
+    /* max-width: 100%; */
 }
 
-/* #phone {
-  width: 75%;
-} */
+#phone {
+    width: 75%;
+}
 
 .clr-dropdown-menu {
-  max-height: 300px;
-  width: 250px;
-  border: none;
-}
-
-span.dial-code {
-  color: #bfbfbf;
+    max-height: 280px;
+    width: 100%;
 }
 
 .countries-viewport {
-  height: 200px;
-  width: auto;
-  overflow-x: hidden;
+    height: 200px;
+    width: auto;
+    overflow-x: hidden;
 }
 
 
 /* .dropdown-menu .btn, .dropdown-menu .dropdown-item {
   padding: .1rem 1rem 1rem 1rem !important;
 } */
-
-
-:focus {
-  outline: none;
-}
-
-/* necessary to give position: relative to parent. */

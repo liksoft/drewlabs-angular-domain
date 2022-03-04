@@ -1,5 +1,7 @@
-import { SelectableControl } from "../v2";
-import { IHTMLFormControlValidationRule } from "./input-rules";
+import { RadioItem } from '../input-types';
+import { CheckboxItem, ISelectItem } from './control-item';
+import { IHTMLFormControlValidationRule } from './input-rules';
+
 export interface HTMLFormControlRequireIfConfig {
   formControlName: string;
   values: any[];
@@ -14,10 +16,10 @@ export interface IHTMLFormControl {
   formControlName: string;
   classes: string;
   requiredIf?: HTMLFormControlRequireIfConfig;
-  items?: any[];
+  items?: Array<any>;
   rules?: IHTMLFormControlValidationRule;
   placeholder?: string;
-  value?: string | any;
+  value?: string|any;
   disabled?: boolean;
   readOnly?: boolean;
   descriptionText?: string;
@@ -35,5 +37,5 @@ export interface BindingControlInterface {
   groupfield: string;
   valuefield: string;
   keyfield: string;
-  items: SelectableControl[];
+  items: CheckboxItem[]|ISelectItem[]|RadioItem[];
 }

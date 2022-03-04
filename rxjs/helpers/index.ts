@@ -1,3 +1,4 @@
+
 export {
   createSubject,
   createStateful,
@@ -6,16 +7,12 @@ export {
   observableFrom,
   isObservable,
   emptyObservable,
-  timeout,
-  rxTimeout
-} from "./creator-functions";
+} from './creator-functions';
 
 export {
   updatePaginationData,
   insertOrUpdateValuesUsingID,
   listItemToIdMaps,
   addItemToCache,
-  removeItemFromCache,
-  deleteFromListUsingID,
-  updateListUsingID,
-} from "./entity-handlers";
+  removeItemFromCache
+} from './entity-handlers';

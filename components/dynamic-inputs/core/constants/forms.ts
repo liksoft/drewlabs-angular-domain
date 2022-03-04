@@ -1,4 +1,3 @@
-import { FormInterface } from "../compact/types";
 import { CONTROL_OPTIONS_STATIC_FORM } from "./control-options-form";
 
 export const STATIC_FORMS = {
@@ -7,7 +6,7 @@ export const STATIC_FORMS = {
     title: 'Créer un nouveau formulaire',
     description: 'Ajouter un nouveau formulaire à votre système. Les formulaires vous permet de collecter des données saisies depuis les interfaces utiliteurs.',
     children: [],
-    controls: [
+    formControls: [
       {
         label: 'Intitulé',
         placeholder: 'Intitulé du formulaire',
@@ -133,7 +132,7 @@ export const STATIC_FORMS = {
     children: [
       {
         title: '',
-        controls: [
+        formControls: [
           {
             label: 'Libellé',
             placeholder: 'Intituié du champ',
@@ -687,7 +686,7 @@ export const STATIC_FORMS = {
       {
         title: 'Configuration du champ du formulaire',
         description: '',
-        controls: [
+        formControls: [
           {
             label: 'Attribut',
             placeholder: 'Saisir le nom de l\'attribut  name du champ',
@@ -714,8 +713,7 @@ export const STATIC_FORMS = {
             controlIndex: 1,
             columns: null,
             rows: null,
-            value: null,
-            requiredIf:  null
+            value: null
           },
           {
             label: 'Index',
@@ -1116,7 +1114,7 @@ export const STATIC_FORMS = {
         ]
       }
     ],
-    controls: []
+    formControls: []
   },
-  createControlOptions: CONTROL_OPTIONS_STATIC_FORM as FormInterface
+  createControlOptions: CONTROL_OPTIONS_STATIC_FORM
 };

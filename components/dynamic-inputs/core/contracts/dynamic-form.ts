@@ -1,6 +1,6 @@
 import { IHTMLFormControl } from './dynamic-input';
+import { ICollection } from '../../../../contracts/collection-interface';
 import { isDefined } from '../../../../utils';
-import {  ICollection } from '../../../../collections';
 /**
  * @description Interface definition for model that are bind to the dynamic form instance
  */
@@ -15,12 +15,12 @@ export interface FormViewModel {
  * @description Definitions for entities used as dynamic forms groups
  */
 export interface IDynamicForm {
-  id: number | string;
+  id: number|string;
   title: string;
-  description?: string;
-  forms?: IDynamicForm[];
-  controlConfigs?: IHTMLFormControl[];
-  endpointURL?: string;
+  description: string;
+  forms: IDynamicForm[];
+  controlConfigs?: IHTMLFormControl[] | ICollection<IHTMLFormControl>;
+  endpointURL: string;
   appcontext?: string;
 }
 
@@ -34,13 +34,12 @@ export type ModelToFormViewModelBindings = (model: object | any) => { [index: st
 /**
  * @description Create a copy of the IDynamic form object
  * @param value [[IDynamicForm]]
- * @deprecated
  */
 export function clone(value: IDynamicForm): IDynamicForm {
   return {
     ...value,
     // tslint:disable-next-line: max-line-length
-    controlConfigs: isDefined(value.controlConfigs) ? [...(value.controlConfigs as IHTMLFormControl[]).map(i => Object.assign({}, i))] : [],
-    forms: isDefined(value.forms) ? (value.forms as IDynamicForm[]).map(i => clone(i)) : undefined
+    controlConfigs: isDefined(value.controlConfigs) ? [...(value.controlConfigs as IHTMLFormControl[]).map(i => Object.assign({}, i))] : null,
+    forms: isDefined(value.forms) ? (value.forms as IDynamicForm[]).map(i => clone(i)) : null
   };
 }

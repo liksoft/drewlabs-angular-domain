@@ -1,31 +1,37 @@
-import { Inject, Injectable, Optional } from "@angular/core";
-import { WINDOW } from "../ng/common";
+import { Injectable } from '@angular/core';
+
+class WrapperUtils {
+  public static getWindow() {
+    return window;
+  }
+}
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root'
 })
 export class WindowRef {
 
   get nativeWindow() {
-    return this.window;
+    return WrapperUtils.getWindow();
   }
-
-  constructor(@Inject(WINDOW) @Optional() private window: Window) {}
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root'
 })
 export class Dialog {
 
-  constructor(@Inject(WINDOW) @Optional() private window: Window) {}
+  /**
+   * @param windowRef [[WindowRef]] Reference to the window object
+   */
+  constructor(private windowRef: WindowRef) { }
 
   /**
    * @description Prompt application user for an action
    * @param message [[string]] prompt text
    */
-  public prompt(message: string): string | null {
-    return this.window?.prompt(message);
+  public prompt(message: string): string {
+    return this.windowRef.nativeWindow.prompt(message);
   }
 
   /**
@@ -33,6 +39,6 @@ export class Dialog {
    * @param message [[string]]
    */
   public confirm(message: string): boolean {
-    return this.window?.confirm(message);
+    return this.windowRef.nativeWindow.confirm(message);
   }
 }

@@ -1,11 +1,11 @@
 import { createSubject } from '../rxjs/helpers';
+import { HTTPErrorState, HttpRequestService } from '../http/core';
 import { observableOf } from '../rxjs/helpers';
 import { isObservable } from '../rxjs/helpers/index';
 import { HttpErrorResponse } from '@angular/common/http';
 import { asyncError } from './testing';
-import { Client, HTTPErrorState } from '../http/contracts';
 
-export class HttpClientStub implements Partial<Client>
+export class HttpClientStub implements Partial<HttpRequestService>
 {
   // tslint:disable-next-line: variable-name
   private _errorState$ = createSubject<HTTPErrorState>();

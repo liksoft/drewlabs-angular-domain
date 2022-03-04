@@ -12,14 +12,14 @@ export interface IAppWorkspace {
 
 
 export class AppWorkspace implements IAppWorkspace {
-  id!: number;
-  label!: string;
-  description!: string;
-  status!: number|boolean;
-  bannerURL!: string;
-  profileURL!: string;
-  type!: string;
-  workspaceTypeID!: number;
+  id: number;
+  label: string;
+  description: string;
+  status: number|boolean;
+  bannerURL: string;
+  profileURL: string;
+  type: string;
+  workspaceTypeID: number;
 
   get isActive(): boolean {
     return isNumber(this.status) ? (+this.status === 1) : Boolean(this.status);

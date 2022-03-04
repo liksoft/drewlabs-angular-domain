@@ -9,18 +9,11 @@ export {
   onNewFormAction as onAddFormToStackAction,
   updateFormAction,
   deleteFormAction,
-  selectFormAction,
-  createFormAction,
-  createFormControlAction,
-  deleteFormFormControl,
-  updateFormControlAction,
-  formControlCreatedAction,
-  formControlRemovedAction,
-  formControlUpdatedAction,
-} from "./form";
+  selectFormAction
+} from './form';
 
 export {
-  OptionsState,
+  ControlOptionsState,
   deleteControlOptionAction,
   selectControlOptionAction,
   createControlOptionAction,
@@ -28,6 +21,5 @@ export {
   deleteControlOptionResultAction,
   updateControlOptionAction,
   updateControlOptionResultAction,
-  deserializeOption,
-  OptionsInitialState,
-} from "./control-options";
+  deserializeControlOption
+} from './control-options';

@@ -1,16 +1,18 @@
-import { IUserRememberTokenParam } from '../../token/contracts';
+import { IUserRememberTokenParam } from '../../../auth-token/contracts';
 import { createAction, DrewlabsFluxStore, StoreAction } from '../../../rxjs/state/rx-state';
 import { Authorizable, IAppUser, NotifiableUserDetails } from '../../contracts/v2';
 
+/**
+ * @description Type definition for authentication service state
+ */
 export interface AuthState {
   isLoggedIn: boolean;
   is2FactorAuthActive?: boolean;
   isInitialState?: boolean;
-  user?: IAppUser | Authorizable | NotifiableUserDetails;
-  token?: string;
+  user: IAppUser | Authorizable | NotifiableUserDetails;
+  token: string;
   authenticating?: boolean;
   rememberToken?: IUserRememberTokenParam;
-  signingOut?: boolean;
 }
 
 export interface AuthStorageValues {
@@ -36,14 +38,18 @@ export const authenticatingAction = (store: DrewlabsFluxStore<Partial<AuthState>
     };
   });
 
-export const authenticationRequestCompletedAction = (store: DrewlabsFluxStore<Partial<AuthState>, Partial<AuthStateAction>>) =>
-  createAction(store, (payload: boolean) => {
+export const authenticationRequestCompletedAction = (store: DrewlabsFluxStore<Partial<AuthState>, Partial<AuthStateAction>>) =>{
+
+  
+  console.log(store);
+  console.log('benji');
+  return createAction(store, (payload: boolean) => {
     return {
       type: AuthStoreActions.AUTHENTICATION_REQUEST_COMPLETED,
       payload
     };
   });
-
+}
 export const intitAuthStateAction = (store: DrewlabsFluxStore<Partial<AuthState>, Partial<AuthStateAction>>) =>
   createAction(store, (payload: Partial<AuthState>) => {
     return {

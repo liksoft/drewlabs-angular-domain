@@ -1,6 +1,6 @@
 import { TypeBuilder, buildJSObjectType, rebuildJSObjectType } from '../contracts/type';
 
-export class GenericTypeBuilder<T extends object> implements TypeBuilder<T> {
+export class GenericTypeBuilder<T> implements TypeBuilder<T> {
 
   /**
    * @inheritdoc
@@ -12,7 +12,7 @@ export class GenericTypeBuilder<T extends object> implements TypeBuilder<T> {
   /**
    * @inheritdoc
    */
-  rebuild(instance: T, params: object | T): T | any {
+  rebuild(instance: T, params: object | T): T {
     return rebuildJSObjectType(instance, params);
   }
 }

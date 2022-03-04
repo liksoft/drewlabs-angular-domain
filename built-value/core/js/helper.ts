@@ -1,17 +1,15 @@
-import { isPrimitive, isDefined, JSArray } from "../../../utils";
+import * as lodash from 'lodash';
+import { isPrimitive, isDefined, isArray } from '../../../utils/types/type-utils';
 
 /**
  * @description Create an instance of a given class from a mappings definition using only the first level definitions of the object
  */
 
-export const deserializeJsObject = <T extends any>(
-  bluePrint: new (...params: any[]) => T,
-  value: any
-) => {
-  if (typeof bluePrint !== "function") {
-    throw new Error("Undefined object type");
+export const deserializeJsObject = <T extends any>(bluePrint: new (...params: any[]) => T, value: any) => {
+  if (typeof bluePrint !== 'function') {
+    throw new Error('Undefined object type');
   }
-  if (!bluePrint.hasOwnProperty("getJsonableProperties")) {
+  if (!bluePrint.hasOwnProperty('getJsonableProperties')) {
     return null;
   }
   const mappings = (bluePrint as any).getJsonableProperties() || {};
@@ -22,15 +20,15 @@ export const deserializeJsObject = <T extends any>(
     const innerObj = value[prop];
     const designType = mappings[prop];
     if (
-      (designType && typeof designType === "string" && isPrimitive(innerObj)) ||
-      (typeof designType === "string" && Array.isArray(innerObj))
+      (designType && typeof designType === 'string' && isPrimitive(innerObj)) ||
+      (typeof designType === 'string' && isArray(innerObj))
     ) {
       index = designType;
       parsedValue = innerObj;
     } else if (
       isDefined(designType) &&
-      typeof designType === "object" &&
-      Array.isArray(innerObj)
+      typeof designType === 'object' &&
+      isArray(innerObj)
     ) {
       if (!isDefined(designType.type)) {
         index = designType.name || index;
@@ -43,11 +41,7 @@ export const deserializeJsObject = <T extends any>(
         }
         parsedValue = [...values];
       }
-    } else if (
-      isDefined(designType) &&
-      typeof designType === "object" &&
-      isDefined(innerObj)
-    ) {
+    } else if (isDefined(designType) && typeof designType === 'object' && isDefined(innerObj)) {
       if (!isDefined(designType.type)) {
         index = designType.name || index;
         parsedValue = innerObj;
@@ -68,35 +62,33 @@ export const deserializeJsObject = <T extends any>(
  * parameter and return there serialized values matching properties
  * of the mappings
  */
-export const serializeJsObject = <T extends { [index: string]: any }>(
-  param: T
-) => {
+export const serializeJsObject = <T extends { [index: string]: any }>(param: T) => {
   const obj = {} as { [index: string]: any };
   if (!isDefined(param)) {
     return null;
   }
-  if (!(param as any).constructor.hasOwnProperty("getJsonableProperties")) {
+  if (!(param as any).constructor.hasOwnProperty('getJsonableProperties')) {
     return null;
   }
   const mappings = (param as any).constructor.getJsonableProperties() || {};
   const objPropertyNames = Object.getOwnPropertyNames(param);
-  const parsedProperties: any[] = [];
+  const parsedProperties = [];
   Object.keys(mappings).forEach((k) => {
     let value = null;
     let key = null;
-    if (typeof mappings[k] === "string") {
+    if (typeof mappings[k] === 'string') {
       key = mappings[k] || k;
       value = param[key];
-    } else if (typeof mappings[k] === "object") {
+    } else if (typeof mappings[k] === 'object') {
       key = mappings[k].name || mappings[k] || k;
       const currentObject = param[key];
-      if (isDefined(currentObject) && Array.isArray(currentObject)) {
+      if (isDefined(currentObject) && isArray(currentObject)) {
         const values = [];
         for (const item of currentObject) {
           values.push(isDefined(item) ? serializeJsObject(item) : item);
         }
         value = [...values];
-      } else if (isDefined(currentObject) && !Array.isArray(currentObject)) {
+      } else if (isDefined(currentObject) && !isArray(currentObject)) {
         value = serializeJsObject(currentObject);
       } else {
         value = currentObject;
@@ -105,12 +97,12 @@ export const serializeJsObject = <T extends { [index: string]: any }>(
       key = k;
       value = param[k];
     } else {
-      throw new Error("Invalid object builder configurations");
+      throw new Error('Invalid object builder configurations');
     }
     obj[k] = value;
     parsedProperties.push(key);
   });
-  const unparsedProperties = JSArray.diff(objPropertyNames, parsedProperties);
+  const unparsedProperties = lodash.difference(objPropertyNames, parsedProperties);
   unparsedProperties.forEach((k) => {
     obj[k] = param[k];
   });

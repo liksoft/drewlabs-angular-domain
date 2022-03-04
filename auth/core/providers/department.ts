@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { departmentsReducer } from '../reducers';
 import { createStore } from '../../../rxjs/state/rx-state';
-import { initialDepartmentsState, DepartmentV2sState } from '../actions/department';
+import { initialDepartmentsState, resetDepartmentsStore, DepartmentV2sState } from '../actions/department';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,6 @@ export class DepartmentsProvider implements OnDestroy {
   }
 
   destroy() {
-    // resetDepartmentsStore(this.store$)();
-    this.store$.destroy();
+    resetDepartmentsStore(this.store$)();
   }
 }

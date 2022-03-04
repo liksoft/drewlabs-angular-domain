@@ -21,21 +21,21 @@ export class IntlTelInputService {
 
   public getCountryCode(input: string): number | undefined {
     if (this.parse(input)) {
-      return this.parse(input)?.getCountryCode();
+      return this.parse(input).getCountryCode();
     }
-    return undefined;
+    return null;
   }
 
   // tslint:disable-next-line: typedef
   public parse(input: string) {
     if (!isDefined(input)) {
-      return undefined;
+      return null;
     }
     try {
       const tmpInput = input.toString().startsWith('+') || input.toString().startsWith('00') ? input : `+${input}`;
       return this.googlePhoneUtilInstance.parseAndKeepRawInput(tmpInput);
     } catch (e) {
-      return undefined;
+      return null;
     }
   }
   public isValidPhoneNumber(n: PhoneNumber): boolean {
@@ -46,5 +46,5 @@ export class IntlTelInputService {
 
   public isSafeValidPhoneNumber = (_phoneNumber: string): boolean => safeValidatePhoneNumber(_phoneNumber);
 
-  protected getPhoneNumberPlaceHolder = (countryCode: string) => getPhoneNumberPlaceHolder(countryCode, PhoneNumberFormat.NATIONAL);
+  protected getPhoneNumberPlaceHolder = (countryCode: string): string => getPhoneNumberPlaceHolder(countryCode, PhoneNumberFormat.NATIONAL);
 }

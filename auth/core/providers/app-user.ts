@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
-import { AppUsersState, initialUsersState } from '../actions/app-users';
+import { AppUsersState, initialUsersState, resetUserStore } from '../actions/app-users';
 import { usersReducer } from '../reducers';
 import { createStore } from '../../../rxjs/state/rx-state';
 
@@ -20,7 +20,6 @@ export class UsersProvider implements OnDestroy {
   }
 
   destroy = () => {
-    // resetUserStore(this.store$)();
-    this.store$.destroy();
+    resetUserStore(this.store$)();
   }
 }

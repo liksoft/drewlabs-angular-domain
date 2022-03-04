@@ -1,55 +1,52 @@
 import { Injectable } from "@angular/core";
-import { Observable, ReplaySubject } from "rxjs";
+import { Observable } from "rxjs";
 import { startWith } from "rxjs/operators";
-import { isServerErrorResponse } from "../http";
-import { HTTPErrorState } from "../http/contracts";
-import { UIState, UIStateProvider, UIStateStatusCode } from "./types";
+import { UIState, UIStateProvider, UIStateStatusCode } from "../contracts/ui-state";
+import { createSubject } from "../rxjs/helpers";
 
 const initialUIState: UIState = {
-  performingAction: false,
-  uiMessage: undefined,
-  hasError: false,
-  status: undefined,
+    performingAction: false,
+    uiMessage: null,
+    hasError: false,
+    status: null
 };
 
-/**
- * @description UIstate status code helper for getting state from http response error status
- */
-export const uiStatusUsingHttpErrorResponse = (
-  httpErrorState: HTTPErrorState
-) =>
-  isServerErrorResponse(httpErrorState.status)
-    ? UIStateStatusCode.ERROR
-    : UIStateStatusCode.BAD;
-
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class AppUIStateProvider implements UIStateProvider {
+    private store$ = createSubject<UIState>();
 
-  store$ = new ReplaySubject<UIState>(1);
+    // tslint:disable-next-line: typedef
+    intialize() {
+        this.store$.next(initialUIState);
+    }
 
-  get uiState(): Observable<UIState> {
-    return this.store$.pipe(startWith(initialUIState));
-  }
+    get uiState(): Observable<UIState> {
+        return this.store$.pipe(
+            startWith(initialUIState)
+        );
+    }
 
-  startAction(message?: string): void {
-    this.store$.next({
-      performingAction: true,
-      uiMessage: message,
-      hasError: false,
-      status: undefined,
-    });
-  }
+    startAction(message?: string): void {
+        this.store$.next({
+            performingAction: true,
+            uiMessage: message,
+            hasError: false,
+            status: null
+        });
+    }
 
-  endAction(message?: string, status?: UIStateStatusCode): void {
-    this.store$.next({
-      performingAction: false,
-      uiMessage: message,
-      hasError: status === UIStateStatusCode.ERROR ? true : false,
-      status,
-    });
-  }
+    endAction(message?: string, status?: UIStateStatusCode): void {
+        this.store$.next({
+            performingAction: false,
+            uiMessage: message,
+            hasError: status === UIStateStatusCode.ERROR ? true : false,
+            status
+        });
+    }
 
-  resetState(): void {
-    this.store$.next(initialUIState);
-  }
+    resetState(): void {
+        this.store$.next(initialUIState);
+    }
 }

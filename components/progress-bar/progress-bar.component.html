@@ -1,0 +1,6 @@
+<ng-container>
+  <div [ngClass]="{'loader' : true, 'loader-overlay' : overlay, 'loader-hidden': !performingAction}">
+    <div [class]="indeterminate ? 'indeterminate' : 'determinate'">
+    </div>
+  </div>
+</ng-container>

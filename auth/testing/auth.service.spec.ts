@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { AuthTokenService, AuthRememberTokenService } from '../token';
+import { HttpRequestService } from '../../http/core';
+import { AuthTokenService, AuthRememberTokenService } from '../../auth-token/core';
 import { SpyObj } from '../../testing';
 import { UserStorageProvider } from '../core/services/user-storage';
 import { authenticatedResponse, unauthenticatedResponse } from '../testing';
@@ -11,10 +12,9 @@ import { ILoginResponse } from '../contracts/v2/login.response';
 import { Router } from '@angular/router';
 import { HttpClientStub } from '../../testing/http-client';
 import { InMemoryStoreService } from '../../storage/core';
+import { Log } from '../../utils/logger';
 import { filter } from 'rxjs/operators';
 import { isDefined } from '../../utils/types';
-import { drewlabsIsAuthenticationSuccessful } from '../rxjs/operators';
-import { HTTP_CLIENT } from '../../http';
 
 const testSetup = () => {
   const routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']) as SpyObj<Router>;
@@ -24,7 +24,7 @@ const testSetup = () => {
 
   TestBed.configureTestingModule({
     providers: [
-      { provide: HTTP_CLIENT, useValue: httpClientServiceSpy },
+      { provide: HttpRequestService, useValue: httpClientServiceSpy },
       AuthTokenService,
       UserStorageProvider,
       {
@@ -60,7 +60,7 @@ describe('Authentication Service provider tests', () => {
 
     // Assert
     result$.subscribe((source: ILoginResponse) => {
-      expect(drewlabsIsAuthenticationSuccessful(source)).toBe(true);
+      expect(source.success).toBe(true);
     });
   });
 
@@ -110,6 +110,14 @@ describe('Authentication Service provider tests', () => {
     // Act
     const authProvider = TestBed.inject<AuthService>(AuthService);
     const result$ = authProvider.authenticate({ username: 'Drewlabs', password: 'HomeStead' });
+    // Assert
+    // result$.subscribe({
+    //   next: (source) => {
+    //     expect(source.statusCode).toBe(500);
+    //     done();
+    //   },
+    //   error: (err) => Log('Error happened: ', err)
+    // });
     done();
   });
 });

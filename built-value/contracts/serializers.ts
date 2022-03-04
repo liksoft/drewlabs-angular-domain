@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 
 /**
  * @description Contract|Interface that holds informations about the object property that is decorate
@@ -14,7 +15,7 @@ interface IDeserializer {
    * @param bluePrint [[T]] Type definition of the object to return from the deserialization operation
    * @param jsonObject [[any]] JSON formatted Object to be deserialize
    */
-  deserialize<T>(bluePrint?: new () => T, jsonObject?: any): T|null|undefined;
+  deserialize<T>(bluePrint: new () => T, jsonObject: any): T;
 }
 
 export interface ISerializer extends IDeserializer{
@@ -24,7 +25,7 @@ export interface ISerializer extends IDeserializer{
    * @param bluePrint [[T]] Type definition of the serializable object
    * @param value [[any]] Instance to be serialize
    */
-  serialize<T>(bluePrint: new () => T, value: T): object|any|undefined;
+  serialize<T>(bluePrint: new () => T, value: T): object|any;
 }
 
 export interface UnDecoratedObjectSerializer extends IDeserializer {

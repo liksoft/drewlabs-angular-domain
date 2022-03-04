@@ -20,7 +20,6 @@ export class AuthorizationsProvider implements OnDestroy {
   }
 
   destroy() {
-    // resetAuthorizationsStore(this.store$)();
-    this.store$.destroy();
+    resetAuthorizationsStore(this.store$)();
   }
 }
