@@ -8,6 +8,7 @@ import { buildCheckboxItems, buildRequiredIfConfig } from "../helpers/builders";
 import { AbstractHTMLFormControl } from "./dynamic-input";
 
 export class CheckBoxInput extends AbstractHTMLFormControl {
+  override items: CheckboxItem[] = [];
   /**
    * @description Instance initializer
    * @param value Required input configuration object
@@ -17,16 +18,13 @@ export class CheckBoxInput extends AbstractHTMLFormControl {
     // this.checked = value.checked ? value.checked : false;
     this.items = value.items ? value.items : [];
   }
-  items: CheckboxItem[];
 
   /**
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(
-    model: Partial<ControlInterface>
-  ): IHTMLFormControl {
-    return new CheckBoxInput({
+  static fromFormControlModel = (model: Partial<ControlInterface>) =>
+    new CheckBoxInput({
       label: model.label,
       type: model.type,
       formControlName: model.controlName,
@@ -50,5 +48,4 @@ export class CheckBoxInput extends AbstractHTMLFormControl {
       // Date input parts
       items: buildCheckboxItems(model),
     } as CheckBoxInput);
-  }
 }

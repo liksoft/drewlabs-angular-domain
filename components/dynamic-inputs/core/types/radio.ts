@@ -14,7 +14,8 @@ import { AbstractHTMLFormControl } from "./dynamic-input";
  * @description Radio button control configuration definition class
  */
 export class RadioInput extends AbstractHTMLFormControl {
-  items: RadioItem[];
+  //
+  override items: RadioItem[];
   /**
    * @description Instance initializer
    * @param value Required input configuration object
@@ -28,10 +29,8 @@ export class RadioInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(
-    model: Partial<ControlInterface>
-  ): IHTMLFormControl {
-    return new RadioInput({
+  static fromFormControlModel = (model: Partial<ControlInterface>) =>
+    new RadioInput({
       label: model.label,
       type: model.type,
       formControlName: model.controlName,
@@ -55,5 +54,4 @@ export class RadioInput extends AbstractHTMLFormControl {
       // Date input parts
       items: buildRadioInputItems(model),
     } as RadioInput);
-  }
 }

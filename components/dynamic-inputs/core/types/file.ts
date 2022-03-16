@@ -1,5 +1,5 @@
 import { ControlInterface } from "../compact/types";
-import { IHTMLFormControl, IHTMLFormControlValidationRule } from "../contracts";
+import { IHTMLFormControlValidationRule } from "../contracts";
 import { buildRequiredIfConfig } from "../helpers/builders";
 import { AbstractHTMLFormControl } from "./dynamic-input";
 
@@ -25,10 +25,8 @@ export class FileInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel(
-    model: Partial<ControlInterface>
-  ): IHTMLFormControl {
-    return new FileInput({
+  static fromFormControlModel = (model: Partial<ControlInterface>) =>
+    new FileInput({
       label: model.label,
       type: model.type,
       formControlName: model.controlName,
@@ -54,5 +52,4 @@ export class FileInput extends AbstractHTMLFormControl {
       multiple: Boolean(model.multiple),
       maxFileSize: model.max ? model.max : null,
     } as FileInput);
-  }
 }

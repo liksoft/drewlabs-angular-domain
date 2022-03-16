@@ -19,7 +19,7 @@ export class PhoneInput extends TextInput {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model [[FormControlModel]]
    */
-  static fromFormControlModel = (model: Partial<ControlInterface>) =>
+  static override fromFormControlModel = (model: Partial<ControlInterface>) =>
     new PhoneInput({
       label: model.label,
       type: model.type,

@@ -196,13 +196,27 @@ export function flattenObject(
  * @description Generate the hascode of a given string
  * @param s [[string]] s as name of the class or object
  */
-export function objectHashCode(s: string) {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) {
-    // tslint:disable-next-line: no-bitwise
-    h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+
+/**
+ * Compute the hash value of a given stringeable has javascript
+ * object
+ *
+ * @param s Value for which the hash value is computed
+ * @returns
+ */
+export function objectHashCode(s: any) {
+  const typeofs = typeof s;
+  if (typeofs === 'number') {
+      return s;
   }
-  return h;
+  s = typeofs === 'string' ? s : JSON.stringify(s);
+  var hash = 0;
+  if (s.length === 0) return hash;
+  for (let i = 0; i < s.length; i++) {
+      hash = ((hash << 5) - hash) + s.charCodeAt(i);
+      hash = hash & hash;
+  }
+  return hash;
 }
 
 export const check =

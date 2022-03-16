@@ -10,7 +10,6 @@ import {
   tap,
   takeUntil,
 } from "rxjs/operators";
-import { doLog } from "../operators";
 
 export interface StoreAction {
   type: string;
@@ -23,7 +22,7 @@ export enum DefaultStoreAction {
   INITIALIZE_STORE_STATE = "[RESET_STORE_STATE]",
 }
 
-export type StateReducerFn<T, A> = (state: T, action: A) => T;
+export type StateReducerFn<T, A> = (state: T | any, action: A) => T;
 
 export type ActionCreatorHandlerFn<A> = (...params: any[]) => A;
 
@@ -102,8 +101,8 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
           .pipe(
             first(),
             delay(10),
-            tap((state) => {
-              this._actions$.next(state[0]);
+            tap((state: any) => {
+              this._actions$.next(state);
             })
           )
           .subscribe();

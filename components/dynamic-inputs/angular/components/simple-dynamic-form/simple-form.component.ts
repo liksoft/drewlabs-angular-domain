@@ -108,18 +108,18 @@ export class SimpleDynamicFormComponent implements OnDestroy {
   }
 
   getControlConfig = (name: string) =>
-    [...this._form.controlConfigs].find(
+    [...(this._form.controlConfigs ?? [])].find(
       (control) => control.formControlName === name
     );
 
   setControlConfig(config?: IHTMLFormControl, name?: string) {
     if (config) {
       name = name ?? config.formControlName;
-      const controls = [...this._form.controlConfigs];
+      const controls = [...(this._form.controlConfigs ?? [])];
       const index = controls.findIndex(
         (control) => control.formControlName === name
       );
-      controls.splice(1, 1, config);
+      controls.splice(index, 1, config);
       this._form = createform({
         ...this._form,
         controlConfigs: controls,
@@ -134,7 +134,7 @@ export class SimpleDynamicFormComponent implements OnDestroy {
 
   public reset() {
     this.formgroup.reset();
-    this._form.controlConfigs.forEach((control) => {
+    this._form.controlConfigs?.forEach((control) => {
       this.formgroup.get(control.formControlName)?.setValue(control.value);
     });
   }

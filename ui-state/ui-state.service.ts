@@ -24,6 +24,7 @@ export const uiStatusUsingHttpErrorResponse = (
 
 @Injectable()
 export class AppUIStateProvider implements UIStateProvider {
+
   store$ = new ReplaySubject<UIState>(1);
 
   get uiState(): Observable<UIState> {

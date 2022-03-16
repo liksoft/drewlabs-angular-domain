@@ -15,7 +15,6 @@ import { Client } from "../contracts";
 import { writeStream } from "../../utils/io";
 import { SERVER_URL } from "../tokens";
 
-
 const getNameFromResponseHeaders = (res: any) => {
   if (res instanceof Blob) {
     return Math.random().toString(36).substring(2, 15);
@@ -35,7 +34,7 @@ export class HttpClient implements Client, ErrorHandler {
   constructor(
     public http: BaseHttpClient,
     @Inject(SERVER_URL) private host: string
-  ) { }
+  ) {}
 
   private wrapURL = (path: string) =>
     URLUtils.isWebURL(path) ? `${path}` : `${this.host}${path}`;
@@ -44,10 +43,9 @@ export class HttpClient implements Client, ErrorHandler {
     return this.http
       .post(this.wrapURL(path), body, options)
       .pipe(catchError((err) => this.handleError(err)));
-
   }
 
-  public get(path: string, options?: any){
+  public get(path: string, options?: any) {
     return this.http
       .get(this.wrapURL(path), options)
       .pipe(catchError((err) => this.handleError(err)));
@@ -56,11 +54,8 @@ export class HttpClient implements Client, ErrorHandler {
   public put(path: string, body: any, options?: any) {
     return this.http
       .put(this.wrapURL(path), body, options)
-      .pipe(
-        catchError((err) => this.handleError(err))
-      );
+      .pipe(catchError((err) => this.handleError(err)));
   }
-
 
   public delete(path: string, options?: any) {
     return this.http
@@ -68,23 +63,26 @@ export class HttpClient implements Client, ErrorHandler {
       .pipe(catchError((err) => this.handleError(err)));
   }
 
-
   public download = async (
     url: string,
     name?: string,
     extension?: string,
     options?: { [prop: string]: any }
-  ) => (async (response: Blob) => {
-    if (!isDefined(name)) {
-      name = isDefined(extension)
-        ? `${getNameFromResponseHeaders(response)}.${extension}`
-        : `${getNameFromResponseHeaders(response)}`;
-    }
-    await writeStream(
-      response,
-      isDefined(extension) ? `${name}.${extension}` : `${name}`
-    );
-  })(await this.readBinaryStream(this.wrapURL(url), options));
+  ) =>
+    (async (response: Blob | undefined) => {
+      if (typeof response === "undefined") {
+        return;
+      }
+      if (!isDefined(name)) {
+        name = isDefined(extension)
+          ? `${getNameFromResponseHeaders(response)}.${extension}`
+          : `${getNameFromResponseHeaders(response)}`;
+      }
+      await writeStream(
+        response,
+        isDefined(extension) ? `${name}.${extension}` : `${name}`
+      );
+    })(await this.readBinaryStream(this.wrapURL(url), options));
 
   public readBinaryStream = (url: string, params?: { [prop: string]: any }) =>
     (async () => {
@@ -96,13 +94,18 @@ export class HttpClient implements Client, ErrorHandler {
         .toPromise();
     })();
 
-
   public handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       Err("An error occurred:", error.error.message);
     } else {
-      this._errorState$.next({ status: +error.status, error: error.error, url: error.url ?? undefined });
-      Err(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+      this._errorState$.next({
+        status: +error.status,
+        error: error.error,
+        url: error.url ?? undefined,
+      });
+      Err(
+        `Backend returned code ${error.status}, ` + `body was: ${error.error}`
+      );
     }
     return throwError(error);
   }

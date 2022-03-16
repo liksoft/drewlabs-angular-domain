@@ -1,5 +1,5 @@
 import { ControlInterface } from "../compact/types";
-import { IHTMLFormControl, IHTMLFormControlValidationRule } from "../contracts";
+import { IHTMLFormControlValidationRule } from "../contracts";
 import { buildRequiredIfConfig } from "../helpers/builders";
 import { AbstractHTMLFormControl } from "./dynamic-input";
 
@@ -16,10 +16,8 @@ export class HMTLInput extends AbstractHTMLFormControl {
    * Build a dynamic HTMLFormControl from a form control model
    * @param model
    */
-  static fromFormControlModel(
-    model: Partial<ControlInterface>
-  ): IHTMLFormControl {
-    return new HMTLInput({
+  static fromFormControlModel = (model: Partial<ControlInterface>) =>
+    new HMTLInput({
       label: model.label,
       type: model.type,
       formControlName: model.controlName,
@@ -41,5 +39,4 @@ export class HMTLInput extends AbstractHTMLFormControl {
       readOnly: Boolean(model.readonly),
       descriptionText: model.description,
     } as HMTLInput);
-  }
 }

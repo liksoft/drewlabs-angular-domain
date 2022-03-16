@@ -417,7 +417,7 @@ export const deleteFormFormControl = (
               deleteControlResult: UIStateStatusCode.OK,
               control: {
                 id: id,
-                formId: params?.form_id,
+                formId: params ? params['form_id'] : undefined,
               } as Partial<ControlInterface>,
             });
           }

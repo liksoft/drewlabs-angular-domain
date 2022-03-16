@@ -35,7 +35,9 @@
 >
   <span
     [translate]="'validation.minDate'"
-    [translateParams]="{ date: control.errors?.minDate }"
+    [translateParams]="{
+      date: control.errors ? control.errors['minDate'] : ''
+    }"
   ></span>
 </clr-control-error>
 <clr-control-error
@@ -44,7 +46,9 @@
 >
   <span
     [translate]="'validation.maxDate'"
-    [translateParams]="{ date: control.errors?.maxDate }"
+    [translateParams]="{
+      date: control.errors ? control.errors['maxDate'] : ''
+    }"
   ></span>
 </clr-control-error>
 <clr-control-helper

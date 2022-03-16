@@ -1,4 +1,3 @@
-import { ControlInterface } from '../compact/types';
 import { IHTMLFormControl, HTMLFormControlRequireIfConfig } from '../contracts/dynamic-input';
 import { IHTMLFormControlValidationRule } from '../contracts/input-rules';
 
@@ -10,7 +9,7 @@ export abstract class AbstractHTMLFormControl implements IHTMLFormControl {
   requiredIf?: HTMLFormControlRequireIfConfig;
   rules: IHTMLFormControlValidationRule;
   placeholder?: string;
-  items?: Array<any>;
+  items?: any[];
   value?: any;
   descriptionText?: string;
   disabled?: boolean;

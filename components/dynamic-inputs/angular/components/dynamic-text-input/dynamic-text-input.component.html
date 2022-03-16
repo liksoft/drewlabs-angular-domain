@@ -90,7 +90,10 @@
         [translateParams]="{
           value: inputType.asTextInput(inputConfig).minLength
             ? inputType.asTextInput(inputConfig).minLength
-            : getErrorAsNumber(control.errors?.minLength, 'minLength')
+            : getErrorAsNumber(
+                control.errors ? control.errors['minLength'] : '',
+                'minLength'
+              )
         }"
       ></span>
     </clr-control-error>

@@ -19,7 +19,6 @@ export enum UIStateStatusCode {
    */
   WARNING = 422,
 
-
   UNAUTHORIZED = 401,
   AUTHENTICATED = 202,
   UNAUTHENTICATED = 403,

@@ -22,7 +22,7 @@ export class CustomValidators {
   static ValidateUrl(control: AbstractControl) {
     if (control.validator) {
       const validator = control.validator({} as AbstractControl);
-      if (validator && !validator.required) {
+      if (validator && !validator['required']) {
         return null;
       }
     }
@@ -57,7 +57,7 @@ export class CustomValidators {
   static numeric(control: AbstractControl) {
     if (control.validator) {
       const validator = control.validator({} as AbstractControl);
-      if (validator && !validator.required) {
+      if (validator && !validator['required']) {
         return null;
       }
       const value = parseInt(control.value, 10);
@@ -74,7 +74,7 @@ export class CustomValidators {
     return (control: AbstractControl) => {
       if (control.validator && control.value) {
         const validator = control.validator({} as AbstractControl);
-        if (validator && !validator.required) {
+        if (validator && !validator['required']) {
           return null;
         }
         if (+control.value >= min && +control.value <= max) {
@@ -90,7 +90,7 @@ export class CustomValidators {
     return (control: AbstractControl) => {
       if (control.validator && control.value) {
         const validator = control.validator({} as AbstractControl);
-        if (validator && !validator.required) {
+        if (validator && !validator['required']) {
           return null;
         }
         if (+control.value >= min) {
@@ -106,7 +106,7 @@ export class CustomValidators {
     return (control: AbstractControl) => {
       if (control.validator && control.value) {
         const validator = control.validator({} as AbstractControl);
-        if (validator && !validator.required) {
+        if (validator && !validator['required']) {
           return null;
         }
         if (+control.value <= max) {
