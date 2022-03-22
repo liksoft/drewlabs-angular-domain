@@ -1,25 +1,24 @@
 import {
   Component,
-  Directive,
   EventEmitter,
   Inject,
   OnDestroy,
   OnInit,
   Output,
-} from "@angular/core";
-import { combineLatest } from "rxjs";
-import { tap } from "rxjs/operators";
-import { doLog } from "../../rxjs/operators";
-import { createSubject } from "../../rxjs/helpers";
-import { GEOLOCATION_MANAGER } from "../service/geolocation.service";
-import { GeolocationManager } from "../types/geolocation";
+} from '@angular/core';
+import { combineLatest } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { doLog } from '../../rxjs/operators';
+import { createSubject } from '../../rxjs/helpers';
+import { GEOLOCATION_MANAGER } from '../service/geolocation.service';
+import { GeolocationManager } from '../types/geolocation';
 
 @Component({
-  selector: "drewlabs-geolocation",
+  selector: 'drewlabs-geolocation',
   template: ` <ng-container *ngIf="location$ | async"> </ng-container> `,
 })
 export class GeolocationComponent implements OnInit, OnDestroy {
-  private _destroy$ = createSubject();
+  private _destroy$ = createSubject<void>();
 
   @Output() locationErrorEvent = new EventEmitter<
     GeolocationPositionError | Error | undefined
@@ -28,7 +27,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
   public location$ = combineLatest([
     this.geoService.state$,
     this.geoService.error$.pipe(
-      doLog("Geolocation position Error: "),
+      doLog('Geolocation position Error: '),
       tap((state) => {
         this.locationErrorEvent.emit(state);
       })

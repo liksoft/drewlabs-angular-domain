@@ -1,12 +1,35 @@
-import { ClrDatagridStateInterface } from "@clr/angular";
-import { Paginable } from ".";
-import { JSArray } from "../utils";
-import { isArray } from "../utils/types/type-utils";
-import { PaginableValue } from "./types";
+import { Paginable } from '.';
+import { JSArray } from '../utils';
+import { isArray } from '../utils/types/type-utils';
+import {
+  MapToPaginationQueryInputType,
+  MapToPaginationQueryOutputType,
+  PaginableValue,
+  QueryFiltersType,
+} from './types';
 
-export const mapPaginatorStateWith =
-  (params: { [index: string]: any }[] | { [index: string]: any } = []) =>
-  (state: ClrDatagridStateInterface) => {
+
+/**
+ * Transformation function that takes in frameworks specific pagination
+ * configuration and attempts to build a server query object.
+ *
+ * It was build taking into account Clarity datagrid paginator output during
+ * refresh events
+ *
+ * @example
+ * const state = mapPaginatorStateWith([{name: 'John', lastname: 'Doe'}])({
+ *    page: {
+ *      from: 1,
+ *      to: 10,
+ *      size: 15
+ *    },
+ *    filters: [
+ *        { age: 15}
+ *    ]
+ * })
+ */
+export function mapToPaginationQuery<T = any>(filters: QueryFiltersType = []) {
+  return (state: Partial<MapToPaginationQueryInputType<T>>) => {
     // 'order' => 'desc', 'by' => 'updated_at'
     let query: { [prop: string]: any } = {};
     if (state.filters) {
@@ -23,8 +46,8 @@ export const mapPaginatorStateWith =
       query = {
         _query: JSON.stringify({
           orderBy: {
-            order: state?.sort?.reverse ? "DESC" : "ASC",
-            by: state?.sort?.by || "updated_at",
+            order: state?.sort?.reverse ? 'DESC' : 'ASC',
+            by: state?.sort?.by || 'updated_at',
           },
         }),
       };
@@ -32,8 +55,8 @@ export const mapPaginatorStateWith =
       query = {
         _query: JSON.stringify({
           orderBy: {
-            order: "DESC",
-            by: "updated_at",
+            order: 'DESC',
+            by: 'updated_at',
           },
         }),
       };
@@ -44,14 +67,14 @@ export const mapPaginatorStateWith =
       page: state?.page?.current ?? 1,
       per_page: state?.page?.size ?? 20,
     };
-    if (isArray(params)) {
-      params.map((p: object) => {
+    if (isArray(filters)) {
+      filters.map((p: object) => {
         currenState = { ...currenState, ...p };
       });
     }
-    const value = {...currenState };
-    return {...currenState } as any;
+    return currenState as MapToPaginationQueryOutputType;
   };
+}
 
 export const mapPaginableTo =
   <T extends PaginableValue>(payload: Partial<Paginable<T>>) =>
@@ -70,13 +93,13 @@ export const mapPaginableTo =
       });
       _values = {
         ..._values,
-        data: JSArray.uniqBy(payload.data ?? _values.data, "id"),
+        data: JSArray.uniqBy(payload.data ?? _values.data, 'id'),
         total: payload.total || _values.total,
         items: _items,
         page: payload.page || _values.page,
         lastPage: payload.lastPage || _values.lastPage,
         nextPageURL:
-          typeof payload.nextPageURL === "object"
+          typeof payload.nextPageURL === 'object'
             ? payload.nextPageURL
             : payload.nextPageURL || _values.nextPageURL,
         lastPageURL: payload.lastPageURL || _values.lastPageURL,
@@ -98,7 +121,7 @@ export const addPaginableValue =
         ..._values,
         data: JSArray.uniqBy(
           _values.data ? [..._payload, ..._values.data] : [..._payload],
-          "id"
+          'id'
         ),
         total: _values.total ? _values.total + 1 : 1,
         items: _payload.reduce((carry, current) => {
@@ -133,7 +156,7 @@ export const updatePaginableValue =
             ...[_payload],
             ..._values.data?.filter((value) => value.id !== _payload.id),
           ],
-          "id"
+          'id'
         ),
         items: _items,
       };
@@ -154,10 +177,28 @@ export const deletePaginableValue =
         ..._values,
         data: JSArray.uniqBy(
           [..._values.data?.filter((value) => value.id !== payload.id)],
-          "id"
+          'id'
         ),
         items: _items,
       };
     }
     return _values;
   };
+
+/**
+ * @deprecated Use {@see mapToPaginationQuery} implementation
+ * instead
+ *
+ * @example
+ * const state = mapPaginatorStateWith([{name: 'John', lastname: 'Doe'}])({
+ *    page: {
+ *      from: 1,
+ *      to: 10,
+ *      size: 15
+ *    },
+ *    filters: [
+ *        { age: 15}
+ *    ]
+ * })
+ */
+export const mapPaginatorStateWith = mapToPaginationQuery;

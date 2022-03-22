@@ -10,7 +10,27 @@ export type Paginable<T> = {
 
 export type PaginationData<T> = Partial<Paginable<T>>;
 
-/**
- * @description Type definition for an item in the paginable source
- */
 export type PaginableValue = { id: string | number };
+
+export type QueryFiltersType = { [index: string]: any }[];
+
+export type MapToPaginationQueryInputType<T = any> = {
+  page?: {
+    from?: number;
+    to?: number;
+    size?: number;
+    current?: number;
+  };
+  sort?: {
+    by: string | { compare: (a: T, b: T) => number };
+    reverse: boolean;
+  };
+  filters?: any[];
+};
+
+export type MapToPaginationQueryOutputType = {
+  page: number;
+  per_page: number | undefined;
+  _query: string | object;
+  [index: string]: any;
+};
