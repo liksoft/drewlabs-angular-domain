@@ -1,53 +1,52 @@
-import { Form } from "../models/form";
+import { Form } from '../models/form';
 import {
   createAction,
   DefaultStoreAction,
   DrewlabsFluxStore,
   onErrorAction,
   StoreAction,
-} from "../../../../../rxjs/state/rx-state";
-import { catchError, map } from "rxjs/operators";
-import { getResponseDataFromHttpResponse } from "../../../../../http/helpers/response";
-import { emptyObservable } from "../../../../../rxjs/helpers";
-import { GenericUndecoratedSerializaleSerializer } from "../../../../../built-value/core/js/serializer";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ControlInterface, FormInterface } from "../../compact";
-import { Control } from "../models";
-import { UIStateStatusCode } from "../../../../../contracts/ui-state";
-import { IResourcesServerClient } from "../../../../../http";
-import { Paginable } from "../../../../../pagination";
-import { isObject } from "../../../../../utils";
+} from '../../../../../rxjs/state/rx-state';
+import { catchError, map } from 'rxjs/operators';
+import { getResponseDataFromHttpResponse } from '../../../../../http/helpers/response';
+import { emptyObservable } from '../../../../../rxjs/helpers';
+import { GenericUndecoratedSerializaleSerializer } from '../../../../../built-value/core/js/serializer';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ControlInterface, FormInterface } from '../../compact';
+import { Control } from '../models';
+import { IResourcesServerClient } from '../../../../../http';
+import { Paginable } from '../../../../../pagination';
+import { isObject } from '../../../../../utils';
 
 export interface FormState {
   performingAction: boolean;
   collections: Paginable<FormInterface>;
   selectedFormId?: number;
   currentForm?: FormInterface;
-  createResult?: UIStateStatusCode;
-  updateResult?: UIStateStatusCode;
-  deleteResult?: UIStateStatusCode;
-  createControlResult?: UIStateStatusCode;
-  updateControlResult?: UIStateStatusCode;
-  deleteControlResult?: UIStateStatusCode;
+  createResult?: number;
+  updateResult?: number;
+  deleteResult?: number;
+  createControlResult?: number;
+  updateControlResult?: number;
+  deleteControlResult?: number;
   error?: any;
 }
 
 export enum FormStoreActions {
-  FORM_SELECTED_ACTION = "[FORM_SELECTED]",
-  CREATE_ACTION = "[CREATE]",
-  UPDATE_ACTION = "[UPDATE]",
-  FORM_PAGINATION_DATA_ACTION = "[FORM_PAGINATION_DATA]",
-  CREATE_RESULT_ACTION = "[CREATED_FORM]",
-  NEW_VALUE_ACTION = "[ADD_TO_FORMS_STACK]",
-  UPDATE_RESULT_ACTION = "[FORM_UPDATED]",
-  DELETE_RESULT_ACTION = "[FORM_DELETED]",
-  CREATE_CONTROL_ACTION = "[CREATE_CONTROL]",
-  UPDATE_CONTROL_ACTION = "[UPDATE_CONTROL]",
-  DELETE_CONTROL_ACTION = "[DELETE_CONTROL]",
-  DELETE_FORM_CONTROL_ACTION = "[DELETE_FORM_CONTROL]",
-  CONTROL_CREATE_RESULT_ACTION = "[FORM_CONTROL_CREATED]",
-  CONTROL_UPDATE_RESULT_ACTION = "[FORM_CONTROL_UPDATED]",
-  CONTROL_DELETE_RESULT_ACTION = "[FORM_CONTROL_REMOVED]",
+  FORM_SELECTED_ACTION = '[FORM_SELECTED]',
+  CREATE_ACTION = '[CREATE]',
+  UPDATE_ACTION = '[UPDATE]',
+  FORM_PAGINATION_DATA_ACTION = '[FORM_PAGINATION_DATA]',
+  CREATE_RESULT_ACTION = '[CREATED_FORM]',
+  NEW_VALUE_ACTION = '[ADD_TO_FORMS_STACK]',
+  UPDATE_RESULT_ACTION = '[FORM_UPDATED]',
+  DELETE_RESULT_ACTION = '[FORM_DELETED]',
+  CREATE_CONTROL_ACTION = '[CREATE_CONTROL]',
+  UPDATE_CONTROL_ACTION = '[UPDATE_CONTROL]',
+  DELETE_CONTROL_ACTION = '[DELETE_CONTROL]',
+  DELETE_FORM_CONTROL_ACTION = '[DELETE_FORM_CONTROL]',
+  CONTROL_CREATE_RESULT_ACTION = '[FORM_CONTROL_CREATED]',
+  CONTROL_UPDATE_RESULT_ACTION = '[FORM_CONTROL_UPDATED]',
+  CONTROL_DELETE_RESULT_ACTION = '[FORM_CONTROL_REMOVED]',
 }
 
 export const onPaginateFormsAction = (
@@ -122,7 +121,7 @@ export const createFormAction = (
                   Form,
                   data
                 ) as Form,
-              createResult: UIStateStatusCode.OK,
+              createResult: 201,
             });
           }
           return emptyObservable();
@@ -213,18 +212,18 @@ export const updateFormAction = (
         map((state) => {
           // tslint:disable-next-line: one-variable-per-declaration
           const data = getResponseDataFromHttpResponse(state);
-          if (data && typeof data === "object" && !Array.isArray(data)) {
+          if (data && typeof data === 'object' && !Array.isArray(data)) {
             return formUpdatedAction(store)({
               value:
                 new GenericUndecoratedSerializaleSerializer().fromSerialized(
                   Form,
                   data
                 ) as Form,
-              updateResult: UIStateStatusCode.OK,
+              updateResult: 201,
             });
           } else {
             return formUpdatedAction(store)({
-              updateResult: UIStateStatusCode.OK,
+              updateResult: 201,
             });
           }
         }),
@@ -266,7 +265,7 @@ export const deleteFormAction = (
           const data = getResponseDataFromHttpResponse(state);
           return formDeletedAction(store)({
             item: isObject(data) ? data : { id },
-            deleteResult: UIStateStatusCode.OK,
+            deleteResult: 200,
           });
         }),
         catchError((err) => {
@@ -320,7 +319,7 @@ export const createFormControlAction = (
                   Control,
                   data
                 ) as Control,
-              createControlResult: UIStateStatusCode.OK,
+              createControlResult: 201,
             });
           }
           return emptyObservable();
@@ -361,18 +360,18 @@ export const updateFormControlAction = (
         map((state) => {
           // tslint:disable-next-line: one-variable-per-declaration
           const data = getResponseDataFromHttpResponse(state);
-          if (data && typeof data === "object" && !Array.isArray(data)) {
+          if (data && typeof data === 'object' && !Array.isArray(data)) {
             return formControlUpdatedAction(store)({
               control:
                 new GenericUndecoratedSerializaleSerializer().fromSerialized(
                   Control,
                   data
                 ) as Control,
-              updateControlResult: UIStateStatusCode.OK,
+              updateControlResult: 201,
             });
           } else {
             return formControlUpdatedAction(store)({
-              updateControlResult: UIStateStatusCode.OK,
+              updateControlResult: 201,
             });
           }
         }),
@@ -414,7 +413,7 @@ export const deleteFormFormControl = (
           // tslint:disable-next-line: one-variable-per-declaration
           if (id) {
             formControlRemovedAction(store)({
-              deleteControlResult: UIStateStatusCode.OK,
+              deleteControlResult: 200,
               control: {
                 id: id,
                 formId: params ? params['form_id'] : undefined,

@@ -3,12 +3,9 @@ export {
   TransformResponseHandlerFn,
   TransformManyResponseHandlerFn,
   IResourcesServerClient,
-} from "./resource";
+} from './resource';
 
-export {
-  Client,
-  BinaryHttpClient,
-} from "./client";
+export { Client, BinaryHttpClient } from './client';
 
 export {
   IHttpResponse,
@@ -17,14 +14,15 @@ export {
   statusCode,
   statusMessage,
   MapToIHttpResponse,
-} from "./types";
+  ResponseStatusCode,
+} from './types';
 
 export {
   CreateRequest,
   UpdateRequest,
   DeleteRequest,
   GetRequest,
-} from "./request";
+} from './request';
 
 export {
   IHttpResponseData,
@@ -32,6 +30,6 @@ export {
   IHttpResourceResponseBody,
   IV1HttpResourceResponse,
   HttpResponseStatusCode,
-} from "./response";
+} from './response';
 
-export { ErrorHandler, HTTPErrorState } from "./error-handler";
+export { ErrorHandler, HTTPErrorState } from './error-handler';

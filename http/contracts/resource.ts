@@ -1,9 +1,7 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { InjectionToken } from "@angular/core";
-import { Observable } from "rxjs";
-import { UIStateStatusCode } from "../../ui-state";
-import { ErrorHandler } from "./error-handler";
-import { IHttpResponse } from "./types";
+import { HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ErrorHandler } from './error-handler';
+import { IHttpResponse, ResponseStatusCode } from './types';
 
 /**
  * @description Provides a unified defining the structure of an object that can be used for creating a given entity
@@ -104,5 +102,5 @@ export interface IResourcesServerClient<T extends IHttpResponse<any>>
     error: HttpErrorResponse
   ):
     | HttpErrorResponse
-    | { status: UIStateStatusCode; validationErrors: { [prop: string]: any } };
+    | { status: ResponseStatusCode; validationErrors: { [prop: string]: any } };
 }

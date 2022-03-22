@@ -1,22 +1,22 @@
-import { catchError, map } from "rxjs/operators";
-import { getResponseDataFromHttpResponse } from "../../../../../http/helpers";
-import { UIStateStatusCode } from "../../../../../contracts/ui-state";
-import { DrewlabsRessourceServerClient } from "../../../../../http/core";
+import { catchError, map } from 'rxjs/operators';
+import { getResponseDataFromHttpResponse } from '../../../../../http/helpers';
+import { DrewlabsRessourceServerClient } from '../../../../../http/core';
 import {
   createAction,
   DefaultStoreAction,
   DrewlabsFluxStore,
   onErrorAction,
   StoreAction,
-} from "../../../../../rxjs/state/rx-state";
-import { PaginationDataState } from "../../../../../rxjs/types";
-import { OptionInterface } from "../../compact/types";
-import { isDefined, isObject } from "../../../../../utils";
-import { emptyObservable } from "../../../../../rxjs/helpers";
-import { defaultHttpErrorHandler } from "../../../../../http/helpers/response";
-import { createOptionElement } from "..";
+} from '../../../../../rxjs/state/rx-state';
+import { PaginationDataState } from '../../../../../rxjs/types';
+import { OptionInterface } from '../../compact/types';
+import { isDefined, isObject } from '../../../../../utils';
+import { emptyObservable } from '../../../../../rxjs/helpers';
+import { defaultHttpErrorHandler } from '../../../../../http/helpers/response';
+import { createOptionElement } from '..';
 
-export const deserializeOption = (serialized: { [index: string]: any }) => createOptionElement(serialized);
+export const deserializeOption = (serialized: { [index: string]: any }) =>
+  createOptionElement(serialized);
 
 export const initialState: OptionsState = {
   collections: {
@@ -43,17 +43,17 @@ export interface OptionsState {
   performingAction: boolean;
   collections: PaginationDataState<OptionInterface>;
   selected?: OptionInterface;
-  createResult?: UIStateStatusCode;
-  updateResult?: UIStateStatusCode;
-  deleteResult?: UIStateStatusCode;
+  createResult?: number;
+  updateResult?: number;
+  deleteResult?: number;
   error: any;
 }
 
 export enum Actions {
-  SELECTED = "[CONTROL_OPTION_SELECTED]",
-  CREATE_RESULT = "[CREATE_RESULT_ACTION]",
-  UPDATE_RESULT = "[UPDATE_RESULT_ACTION]",
-  DELETE_RESULT = "[DELETE_RESULT_ACTION]",
+  SELECTED = '[CONTROL_OPTION_SELECTED]',
+  CREATE_RESULT = '[CREATE_RESULT_ACTION]',
+  UPDATE_RESULT = '[UPDATE_RESULT_ACTION]',
+  DELETE_RESULT = '[DELETE_RESULT_ACTION]',
 }
 
 export const createControlOptionAction = (
@@ -73,7 +73,7 @@ export const createControlOptionAction = (
           const data = getResponseDataFromHttpResponse(state);
           if (isDefined(data)) {
             return createControlResultAction(store)({
-              createResult: UIStateStatusCode.STATUS_CREATED,
+              createResult: 201,
               value: deserializeOption(data),
             });
           }
@@ -92,10 +92,7 @@ export const createControlResultAction = (
 ) =>
   createAction(
     store,
-    (payload: {
-      createResult: UIStateStatusCode;
-      value: OptionInterface;
-    }) => ({
+    (payload: { createResult: number; value: OptionInterface }) => ({
       type: Actions.CREATE_RESULT,
       payload,
     })
@@ -119,7 +116,7 @@ export const updateControlOptionAction = (
           const data = getResponseDataFromHttpResponse(state);
           if (isDefined(data)) {
             return updateControlOptionResultAction(store)({
-              updateResult: UIStateStatusCode.STATUS_OK,
+              updateResult: 201,
               value: isObject(data) ? deserializeOption(data) : { id },
             });
           }
@@ -138,7 +135,7 @@ export const updateControlOptionResultAction = (
   createAction(
     store,
     (payload: {
-      updateResult: UIStateStatusCode;
+      updateResult: number;
       value: OptionInterface | { id: string | number };
     }) => ({
       type: Actions.UPDATE_RESULT,
@@ -171,7 +168,7 @@ export const deleteControlOptionAction = (
           const data = getResponseDataFromHttpResponse(state);
           if (isDefined(data)) {
             return updateControlOptionResultAction(store)({
-              deleteResult: UIStateStatusCode.STATUS_OK,
+              deleteResult: 200,
               value: id,
             });
           }
@@ -190,7 +187,7 @@ export const deleteControlOptionResultAction = (
 ) =>
   createAction(
     store,
-    (payload: { deleteResult: UIStateStatusCode; value: string | number }) => ({
+    (payload: { deleteResult: number; value: string | number }) => ({
       type: Actions.DELETE_RESULT,
       payload,
     })

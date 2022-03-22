@@ -1,5 +1,6 @@
 import { HandlerResult } from "../../rxjs/types";
 
+export type ResponseStatusCode = number;
 export interface IHttpResponse<T extends any> extends HandlerResult<T> {
   statusCode: number;
   statusMessage?: string;

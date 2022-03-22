@@ -1,7 +1,7 @@
-import { Observable } from "rxjs";
-import { Injectable, Inject } from "@angular/core";
-import { HttpErrorResponse } from "@angular/common/http";
-import { doLog } from "../../rxjs/operators";
+import { Observable } from 'rxjs';
+import { Injectable, Inject } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { doLog } from '../../rxjs/operators';
 import {
   Client,
   RequestBody,
@@ -9,11 +9,11 @@ import {
   IResourcesServerClient,
   IHttpResponse,
   ErrorHandler,
-} from "../contracts";
-import { UIStateStatusCode } from "../../ui-state";
-import { isServerErrorResponse, isServerBadRequest } from "../helpers/response";
-import { mapToHttpResponse } from "../rx";
-import { HTTP_CLIENT } from "../tokens";
+  ResponseStatusCode,
+} from '../contracts';
+import { isServerErrorResponse, isServerBadRequest } from '../helpers/response';
+import { mapToHttpResponse } from '../rx';
+import { HTTP_CLIENT } from '../tokens';
 
 @Injectable()
 export class DrewlabsRessourceServerClient
@@ -28,7 +28,7 @@ export class DrewlabsRessourceServerClient
 
   constructor(
     @Inject(HTTP_CLIENT) private _httpClient: Client & ErrorHandler,
-    @Inject("ResponseTransformHandlerFn")
+    @Inject('ResponseTransformHandlerFn')
     private responseTransformHandler: TransformResponseHandlerFn
   ) {}
 
@@ -150,7 +150,10 @@ export class DrewlabsRessourceServerClient
     error: HttpErrorResponse
   ):
     | HttpErrorResponse
-    | { status: UIStateStatusCode; validationErrors: { [prop: string]: any } } {
+    | {
+        status: ResponseStatusCode;
+        validationErrors: { [prop: string]: any };
+      } {
     const errorResponse = this.responseTransformHandler(error.error) as any;
     if (isServerBadRequest(error.status)) {
       const validationErrors: { [index: string]: any } = {};
@@ -158,13 +161,13 @@ export class DrewlabsRessourceServerClient
         validationErrors[key] = errorResponse.errors[key][0];
       });
       return {
-        status: UIStateStatusCode.BAD,
+        status: 400 | 422,
         validationErrors,
       };
     }
     if (isServerErrorResponse(error.status)) {
       return {
-        status: UIStateStatusCode.ERROR,
+        status: 500,
         validationErrors: {},
       };
     }
