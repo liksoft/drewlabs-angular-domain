@@ -46,11 +46,11 @@ export const createTestComponent = <T>(type: Type<T>) => {
 
 export class TestingComponentContainer<T, QueryElementType> {
 
-  gotoListSpy: jasmine.Spy;
+  gotoListSpy!: jasmine.Spy;
   navigateSpy: jasmine.Spy;
 
-  spyMethods: { [index: number]: jasmine.Spy } = {};
-  methodIndexes: { [index: number]: (keyof T) } = {};
+  spyMethods: { [index: string]: jasmine.Spy } = {};
+  methodIndexes: { [index: string]: (keyof T) } = {};
 
   constructor(private fixture: ComponentFixture<T>, methodsToSpy?: (keyof T)[]) {
     // get the navigate spy from the injected router spy object
@@ -59,7 +59,7 @@ export class TestingComponentContainer<T, QueryElementType> {
 
     // spy on component's methods
     const component = fixture.componentInstance;
-    methodsToSpy.forEach((method, index) => {
+    methodsToSpy?.forEach((method, index) => {
       this.methodIndexes[index] = method;
       this.spyMethods[index] = spyOn<T>(component, method as any).and.callThrough();
     });
