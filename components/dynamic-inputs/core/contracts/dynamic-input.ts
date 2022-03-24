@@ -1,5 +1,5 @@
-import { SelectableControl } from "../v2";
 import { IHTMLFormControlValidationRule } from "./input-rules";
+import { SelectableControl } from "./selectable-control";
 export interface HTMLFormControlRequireIfConfig {
   formControlName: string;
   values: any[];

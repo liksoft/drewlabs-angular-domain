@@ -19,5 +19,3 @@ export { buildControl } from "../types/builder";
 
 export { parseControlItemsConfigs } from "./parsers";
 export { controlBindingsSetter } from "./control-bindings";
-
-//

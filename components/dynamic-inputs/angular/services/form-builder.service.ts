@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { isDefined } from "../../../../utils";
 import { IDynamicForm, IHTMLFormControl } from "../../core/contracts";
 import { ComponentReactiveFormHelpers } from "../helpers";
 
@@ -17,9 +16,9 @@ export class DynamicFormBuilder {
   public readonly formBuilder = this.builder;
 
   /**
-   * @description Provides a wrapper arround static method for parsing dynamic controls into an angular formgoup
-   * @param inputs [[Array<IHTMLFormControl>]]
-   * @param applyUniqueValidations [[boolean]]
+   * @description Provides a wrapper arround static method for
+   * parsing dynamic controls into an angular formgoup
+   * @param inputs
    */
   public buildFormGroupFromInputConfig(inputs: IHTMLFormControl[]) {
     return ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
@@ -33,11 +32,10 @@ export class DynamicFormBuilder {
    * the method returns an Angular form [[FormGroup]] instance
    *
    * @param form
-   * @param editing
    */
   buildFormGroupFromDynamicForm(form: IDynamicForm) {
-    if (!isDefined(form)) {
-      return null;
+    if (typeof form === "undefined" || form === null) {
+      return undefined;
     }
     const configs = [...(form.controlConfigs as IHTMLFormControl[])];
     return this.buildFormGroupFromInputConfig(configs) as FormGroup;

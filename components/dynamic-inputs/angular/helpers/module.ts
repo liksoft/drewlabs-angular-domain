@@ -1,7 +1,7 @@
-import { FormsProvider } from "../../core";
+import { CacheProvider } from "../../core";
 
 export const initializeDynamicFormContainer = (
-  service: FormsProvider,
+  service: CacheProvider,
   assetsURL: string
 ) => {
   return async () => {

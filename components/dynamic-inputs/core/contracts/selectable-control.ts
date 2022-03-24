@@ -1,4 +1,4 @@
-import { IHTMLFormControl } from "../../contracts";
+import { IHTMLFormControl } from "./dynamic-input";
 
 type MultiControlItem = { id: string; label: string; template?: string };
 

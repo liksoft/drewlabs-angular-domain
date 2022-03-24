@@ -9,6 +9,11 @@ export {
 } from "./control-item";
 export { IHTMLFormControl } from "./dynamic-input";
 
-export { FormsProvider } from "./provider";
 export { FormsClient } from "./client";
-export { FormsLoader } from "./forms-loader";
+export { FormsLoader, CacheProvider } from "./forms-loader";
+
+export {
+  SelectableControl,
+  ServerSideSelectableControl,
+  SelectableControlDataSource,
+} from "./selectable-control";

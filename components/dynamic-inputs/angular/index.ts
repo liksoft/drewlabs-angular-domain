@@ -18,5 +18,11 @@ export { DynamicInputTypeHelper } from "./services/input-type.service";
 // Components export
 export { SimpleDynamicFormComponent as DynamicFormView } from "./components/simple-dynamic-form/simple-form.component";
 // CLIENT and PROVIDERS export
-export { FORMS_PROVIDER, FORM_CLIENT, ANGULAR_REACTIVE_FORM_BRIDGE } from "./types";
+export { FORM_CLIENT, ANGULAR_REACTIVE_FORM_BRIDGE } from "./types";
 export { AngularReactiveFormBuilderBridge } from './contracts';
+
+
+export {
+  DYNAMIC_FORM_LOADER,
+  FormHttpLoader
+} from './services';

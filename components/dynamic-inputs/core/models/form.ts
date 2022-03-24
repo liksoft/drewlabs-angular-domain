@@ -3,21 +3,17 @@ import {
   OptionInterface,
   ControlInterface,
   FormInterface,
-} from "../../compact/types";
+} from "../compact/types";
 import {
   GenericSerializaleSerializer,
   UndecoratedSerializer,
-} from "../../../../../built-value/core/js/serializer";
+} from "../../../../built-value/core/js/serializer";
 
 export class Form implements FormInterface {
   id!: number;
   title!: string;
   parentId!: string;
   description!: string;
-  /**
-   * @deprecated
-   */
-  children!: FormInterface[];
   controls: ControlInterface[] = [];
   url!: string;
   status!: number;

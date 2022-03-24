@@ -1,4 +1,3 @@
-import { ControlInterface } from '../compact/types';
 import { IHTMLFormControl, HTMLFormControlRequireIfConfig } from '../contracts/dynamic-input';
 import { IHTMLFormControlValidationRule } from '../contracts/input-rules';
 

@@ -22,22 +22,18 @@ import { SimpleDynamicFormComponent } from "./components/simple-dynamic-form/sim
 import { DropzoneModule } from "../../dropzone";
 import { IntlTelInputModule } from "../../intl-tel-input";
 import {
-  DynamicFormService,
+  CACHE_PROVIDER,
   DYNAMIC_FORM_LOADER,
   FormHttpLoader,
+  FormsCacheProvider,
   ReactiveFormBuilderBrige,
 } from "./services";
 import { SafeHTMLPipe } from "./pipes/safe-html.pipe";
 import { HttpModule } from "../../../http";
-import {
-  FORMS_PROVIDER,
-  FORM_CLIENT,
-  ModuleConfigs,
-  ANGULAR_REACTIVE_FORM_BRIDGE,
-} from "./types";
+import { FORM_CLIENT, ANGULAR_REACTIVE_FORM_BRIDGE } from "./types";
 import { JSONFormsClient } from "./services/client";
 import { initializeDynamicFormContainer } from "./helpers/module";
-import { FormsProvider } from "../core";
+import { CacheProvider, FormsLoader } from "../core";
 
 export const DECLARATIONS = [
   DynamicFormControlComponent,
@@ -56,6 +52,19 @@ export const DECLARATIONS = [
   DynamicRadioInputComponent,
   SimpleDynamicFormComponent,
 ];
+
+export type ModuleConfigs = {
+  serverConfigs: {
+    host?: string;
+    controlOptionsPath?: string;
+    controlsPath?: string;
+    formsPath?: string;
+    controlBindingsPath?: string;
+  };
+  formsAssets?: string;
+  clientFactory?: Function;
+  uploadedFilesServerURL?: string;
+};
 
 @NgModule({
   imports: [
@@ -80,6 +89,10 @@ export class DynamicFormControlModule {
     return {
       ngModule: DynamicFormControlModule,
       providers: [
+        // Provides the JSON Client implementation
+        FormsCacheProvider,
+        JSONFormsClient,
+        ReactiveFormBuilderBrige,
         {
           provide: "FORM_SERVER_HOST",
           useValue: configs?.serverConfigs?.host || null,
@@ -112,35 +125,32 @@ export class DynamicFormControlModule {
           provide: DYNAMIC_FORM_LOADER,
           useClass: FormHttpLoader,
         },
-        // Provides the JSON Client implementation
-        JSONFormsClient,
-        ReactiveFormBuilderBrige,
+        {
+          provide: CACHE_PROVIDER,
+          useClass: FormsCacheProvider,
+        },
         {
           provide: FORM_CLIENT,
           useClass: JSONFormsClient,
         },
         {
-          provide: FORMS_PROVIDER,
-          useClass: DynamicFormService,
-        },
-        {
           provide: APP_INITIALIZER,
-          useFactory: (service: FormsProvider) =>
+          useFactory: (service: CacheProvider) =>
             initializeDynamicFormContainer(
               service,
               configs?.formsAssets || "/assets/resources/app-forms.json"
             ),
           multi: true,
-          deps: [FORMS_PROVIDER],
+          deps: [CACHE_PROVIDER],
         },
         {
           provide: ANGULAR_REACTIVE_FORM_BRIDGE,
           useClass: ReactiveFormBuilderBrige,
         },
         {
-          provide: 'FILE_STORE_PATH',
-          useValue: configs?.uploadedFilesServerURL ?? 'http://localhost'
-        }
+          provide: "FILE_STORE_PATH",
+          useValue: configs?.uploadedFilesServerURL ?? "http://localhost",
+        },
       ],
     };
   }
