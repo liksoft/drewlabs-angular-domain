@@ -1,10 +1,16 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, InjectionToken } from "@angular/core";
 import { map } from "rxjs/operators";
-import { createFormElement, FormsLoader } from "../../../core";
+import { createFormElement, FormsLoader } from "../../core";
+
+export const DYNAMIC_FORM_LOADER = new InjectionToken<FormsLoader>(
+  "PROVIDE DYNAMIC FORM LOADER"
+);
 
 @Injectable()
 export class FormHttpLoader implements FormsLoader {
+
+  // @constructor
   public constructor(private _http: HttpClient) {}
 
   public load = (endpoint: string, options?: { [index: string]: any }) => {

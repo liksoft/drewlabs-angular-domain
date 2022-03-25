@@ -1,44 +1,44 @@
 export type JsDateParamType = string | number | Date | undefined;
 
 type UnitOfTime =
-  | "year"
-  | "years"
-  | "y"
-  | "month"
-  | "months"
-  | "M"
-  | "week"
-  | "weeks"
-  | "w"
-  | "day"
-  | "days"
-  | "d"
-  | "hour"
-  | "hours"
-  | "h"
-  | "minute"
-  | "minutes"
-  | "m"
-  | "second"
-  | "seconds"
-  | "s"
-  | "millisecond"
-  | "milliseconds"
-  | "ms";
+  | 'year'
+  | 'years'
+  | 'y'
+  | 'month'
+  | 'months'
+  | 'M'
+  | 'week'
+  | 'weeks'
+  | 'w'
+  | 'day'
+  | 'days'
+  | 'd'
+  | 'hour'
+  | 'hours'
+  | 'h'
+  | 'minute'
+  | 'minutes'
+  | 'm'
+  | 'second'
+  | 'seconds'
+  | 's'
+  | 'millisecond'
+  | 'milliseconds'
+  | 'ms';
 
 type DateTimeFormat =
-  | "L"
-  | "LT"
-  | "LTS"
-  | "l"
-  | "LL"
-  | "ll"
-  | "LLL"
-  | "lll"
-  | "M"
-  | "MM"
-  | "MMM"
-  | "MMMM";
+  | 'L'
+  | 'LT'
+  | 'LTS'
+  | 'l'
+  | 'LL'
+  | 'll'
+  | 'LLL'
+  | 'lll'
+  | 'M'
+  | 'MM'
+  | 'MMM'
+  | 'MMMM';
 
 export class JSDate {
   private static readonly MS_PER_WEEKS_ = 1000 * 60 * 60 * 24 * 7;
@@ -47,52 +47,52 @@ export class JSDate {
   private static readonly MS_PER_MINUTES_ = 1000 * 60;
   private static readonly MS_PER_SECONDS_ = 1000;
 
-  private static LOCALE_: string = "en-US";
+  private static LOCALE_: string = 'en-US';
 
   private static readonly FORMAT_MAP: {
     [prop: string]: Intl.DateTimeFormatOptions;
   } = {
-    L: { year: "numeric", month: "2-digit", day: "2-digit" },
-    l: { year: "numeric", month: "numeric", day: "numeric" },
-    LL: { year: "numeric", month: "long", day: "numeric" },
-    ll: { year: "numeric", month: "short", day: "numeric" },
+    L: { year: 'numeric', month: '2-digit', day: '2-digit' },
+    l: { year: 'numeric', month: 'numeric', day: 'numeric' },
+    LL: { year: 'numeric', month: 'long', day: 'numeric' },
+    ll: { year: 'numeric', month: 'short', day: 'numeric' },
     LLL: {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     },
     lll: {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     },
-    LT: { hour: "numeric", minute: "numeric" },
-    LTS: { hour: "numeric", minute: "numeric", second: "numeric" },
-    M: { month: "numeric" },
-    MM: { month: "2-digit" },
-    MMM: { month: "short" },
-    MMMM: { month: "long" },
-    Y: { year: "2-digit" },
-    YYYY: { year: "numeric" },
-    D: { day: "numeric" },
-    DD: { day: "2-digit" },
-    HH: { hour: "2-digit" },
-    H: { hour: "numeric" },
-    II: { minute: "2-digit" },
-    I: { minute: "numeric" },
-    SS: { second: "2-digit" },
-    S: { second: "numeric" },
+    LT: { hour: 'numeric', minute: 'numeric' },
+    LTS: { hour: 'numeric', minute: 'numeric', second: 'numeric' },
+    M: { month: 'numeric' },
+    MM: { month: '2-digit' },
+    MMM: { month: 'short' },
+    MMMM: { month: 'long' },
+    Y: { year: '2-digit' },
+    YYYY: { year: 'numeric' },
+    D: { day: 'numeric' },
+    DD: { day: '2-digit' },
+    HH: { hour: '2-digit' },
+    H: { hour: 'numeric' },
+    II: { minute: '2-digit' },
+    I: { minute: 'numeric' },
+    SS: { second: '2-digit' },
+    S: { second: 'numeric' },
   };
 
   /**
    * @description Set the global local to use when formating dates
    * @param locale_
    */
-  static locale = (locale_: string = "en-US") => (JSDate.LOCALE_ = locale_);
+  static locale = (locale_: string = 'en-US') => (JSDate.LOCALE_ = locale_);
 
   /**
    * @description Creates a javascript date object
@@ -101,13 +101,13 @@ export class JSDate {
   static create = <T extends JsDateParamType>(value?: T) => {
     // #region ensureDate()
     const ensureDate = (value_: any) =>
-      typeof value_ === "undefined" || value_ === null
+      typeof value_ === 'undefined' || value_ === null
         ? new Date()
-        : typeof value_ === "number"
+        : typeof value_ === 'number'
         ? new Date(value_)
         : (value_ as Date);
     // #endregion ensureDate()
-    return typeof value === "string" ? new Date(value) : ensureDate(value);
+    return typeof value === 'string' ? new Date(value) : ensureDate(value);
   };
 
   /**
@@ -182,9 +182,9 @@ export class JSDate {
     try {
       const value = JSDate.create(date);
       return (
-        typeof value !== "undefined" &&
+        typeof value !== 'undefined' &&
         value !== null &&
-        value?.toDateString() !== "Invalid Date"
+        value?.toDateString() !== 'Invalid Date'
       );
     } catch (e) {
       return false;
@@ -257,42 +257,42 @@ export class JSDate {
   static diff = <T extends JsDateParamType>(
     date1: T,
     date2: T,
-    unit: UnitOfTime = "ms"
+    unit: UnitOfTime = 'ms'
   ) => {
     const date1_ = JSDate.create(date1);
     const date2_ = JSDate.create(date2);
     switch (unit) {
-      case "year":
-      case "years":
-      case "y":
+      case 'year':
+      case 'years':
+      case 'y':
         return date1_.getFullYear() - date2_.getFullYear();
-      case "month":
-      case "months":
-      case "M":
+      case 'month':
+      case 'months':
+      case 'M':
         return JSDate.monthDiff(date1_, date2_);
-      case "week":
-      case "weeks":
-      case "w":
+      case 'week':
+      case 'weeks':
+      case 'w':
         return JSDate.computeTimeDiff(date1_, date2_, JSDate.MS_PER_WEEKS_);
-      case "day":
-      case "days":
-      case "d":
+      case 'day':
+      case 'days':
+      case 'd':
         return JSDate.computeTimeDiff(date1_, date2_, JSDate.MS_PER_DAYS_);
-      case "hour":
-      case "hours":
-      case "h":
+      case 'hour':
+      case 'hours':
+      case 'h':
         return JSDate.computeTimeDiff(date1_, date2_, JSDate.MS_PER_HOURS_);
-      case "minute":
-      case "minutes":
-      case "m":
+      case 'minute':
+      case 'minutes':
+      case 'm':
         return JSDate.computeTimeDiff(date1_, date2_, JSDate.MS_PER_MINUTES_);
-      case "second":
-      case "seconds":
-      case "s":
+      case 'second':
+      case 'seconds':
+      case 's':
         return JSDate.computeTimeDiff(date1_, date2_, JSDate.MS_PER_SECONDS_);
-      case "millisecond":
-      case "milliseconds":
-      case "ms":
+      case 'millisecond':
+      case 'milliseconds':
+      case 'ms':
         return JSDate.computeTimeDiff(date1_, date2_);
       default:
         return JSDate.computeTimeDiff(date1_, date2_);
@@ -309,15 +309,15 @@ export class JSDate {
    */
   static format = <T extends JsDateParamType>(
     date?: T,
-    format_: DateTimeFormat | string = "L"
+    format_: DateTimeFormat | string = 'L'
   ) => {
-    if (["LT", "LTS"].includes(format_)) {
+    if (['LT', 'LTS'].includes(format_)) {
       return JSDate.create(date).toLocaleTimeString(
         JSDate.LOCALE_,
         JSDate.FORMAT_MAP[format_]
       );
     }
-    if (["l", "LL", "ll", "LLL", "lll", "L"].includes(format_)) {
+    if (['l', 'LL', 'll', 'LLL', 'lll', 'L'].includes(format_)) {
       return JSDate.create(date).toLocaleString(
         JSDate.LOCALE_,
         JSDate.FORMAT_MAP[format_]
@@ -328,9 +328,7 @@ export class JSDate {
 
   static timeSince<T extends JsDateParamType>(date: T) {
     return Math.floor(
-      JSDate.computeTimeDiff(
-        JSDate.now(),
-        JSDate.create(date))
+      JSDate.computeTimeDiff(JSDate.now(), JSDate.create(date))
     );
   }
 
@@ -342,7 +340,7 @@ export class JSDate {
     ) => {
       for (let current of list) {
         if (value.includes(current)) {
-          value = value.replace(new RegExp(current, "gi"), (match) => {
+          value = value.replace(new RegExp(current, 'gi'), (match) => {
             match = match.toUpperCase();
             const inputFormat_ = JSDate.FORMAT_MAP[match];
             return `${func(date, inputFormat_)}`;
@@ -354,32 +352,32 @@ export class JSDate {
     };
     return [
       {
-        format: ["YYYY", "Y"],
+        format: ['YYYY', 'Y'],
         fn: (date: Date, options: Intl.DateTimeFormatOptions) =>
           date.toLocaleDateString(JSDate.LOCALE_, options),
       },
       {
-        format: ["MMMM", "MMM", "MM", "M"],
+        format: ['MMMM', 'MMM', 'MM', 'M'],
         fn: (date: Date, options: Intl.DateTimeFormatOptions) =>
           date.toLocaleDateString(JSDate.LOCALE_, options),
       },
       {
-        format: ["DD", "D"],
+        format: ['DD', 'D'],
         fn: (date: Date, options: Intl.DateTimeFormatOptions) =>
           date.toLocaleDateString(JSDate.LOCALE_, options),
       },
       {
-        format: ["HH", "H"],
+        format: ['HH', 'H'],
         fn: (date: Date, options: Intl.DateTimeFormatOptions) =>
           date.toLocaleTimeString(JSDate.LOCALE_, options),
       },
       {
-        format: ["II", "I"],
+        format: ['II', 'I'],
         fn: (date: Date, options: Intl.DateTimeFormatOptions) =>
           date.toLocaleTimeString(JSDate.LOCALE_, options),
       },
       {
-        format: ["SS", "S"],
+        format: ['SS', 'S'],
         fn: (date: Date, options: Intl.DateTimeFormatOptions) =>
           date.toLocaleTimeString(JSDate.LOCALE_, options),
       },
@@ -388,9 +386,9 @@ export class JSDate {
         carry = matchReplaceFirst(carry, current.format, current.fn);
         return carry;
       }, format_.toUpperCase())
-      .replace(" h", "")
-      .replace(" PM", "PM")
-      .replace(" AM", "AM");
+      .replace(' h', '')
+      .replace(' PM', 'PM')
+      .replace(' AM', 'AM');
   };
 
   private static computeInterval_ = (
@@ -400,58 +398,58 @@ export class JSDate {
     incr: boolean = true
   ) => {
     switch (unit) {
-      case "year":
-      case "years":
-      case "y":
+      case 'year':
+      case 'years':
+      case 'y':
         incr
           ? today.setFullYear(today.getFullYear() + value)
           : today.setFullYear(today.getFullYear() - value);
         break;
-      case "month":
-      case "months":
-      case "M":
+      case 'month':
+      case 'months':
+      case 'M':
         incr
           ? today.setMonth(today.getMonth() + value)
           : today.setMonth(today.getMonth() - value);
         break;
-      case "week":
-      case "weeks":
-      case "w":
+      case 'week':
+      case 'weeks':
+      case 'w':
         incr
           ? today.setDate(new Date().getDate() + value * 7)
           : today.setDate(new Date().getDate() - value * 7);
         break;
-      case "day":
-      case "days":
-      case "d":
+      case 'day':
+      case 'days':
+      case 'd':
         incr
           ? today.setDate(new Date().getDate() + value)
           : today.setDate(new Date().getDate() - value);
         break;
-      case "hour":
-      case "hours":
-      case "h":
+      case 'hour':
+      case 'hours':
+      case 'h':
         incr
           ? today.setHours(new Date().getHours() + value)
           : today.setHours(new Date().getHours() - value);
         break;
-      case "minute":
-      case "minutes":
-      case "m":
+      case 'minute':
+      case 'minutes':
+      case 'm':
         incr
           ? today.setMinutes(new Date().getMinutes() + value)
           : today.setMinutes(new Date().getMinutes() - value);
         break;
-      case "second":
-      case "seconds":
-      case "s":
+      case 'second':
+      case 'seconds':
+      case 's':
         incr
           ? today.setSeconds(new Date().getSeconds() + value)
           : today.setSeconds(new Date().getSeconds() - value);
         break;
-      case "millisecond":
-      case "milliseconds":
-      case "ms":
+      case 'millisecond':
+      case 'milliseconds':
+      case 'ms':
         incr
           ? today.setMilliseconds(new Date().getMilliseconds() + value)
           : today.setMilliseconds(new Date().getMilliseconds() - value);

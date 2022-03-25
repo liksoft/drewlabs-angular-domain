@@ -5,24 +5,25 @@ import {
   EventEmitter,
   Inject,
   OnDestroy,
-} from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { createStateful, createSubject } from "../../../../../rxjs/helpers";
-import { DrewlabsRessourceServerClient } from "../../../../../http/core";
-import { map, switchMap, takeUntil, tap } from "rxjs/operators";
+} from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { createStateful, createSubject } from '../../../../../rxjs/helpers';
+import { DrewlabsRessourceServerClient } from '../../../../../http/core';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import {
   getResponseDataFromHttpResponse,
   httpHost,
-} from "../../../../../http/helpers";
-import { controlBindingsSetter } from "../../../core/helpers";
-import { doLog } from "../../../../../rxjs/operators";
-import { DynamicInputTypeHelper } from "../../services/input-type.service";
-import { SelectInput } from "../../../core/types/select";
-import { InputEventArgs } from "../../types/dynamic-inputs";
-import { JSObject } from "../../../../../utils";
+} from '../../../../../http/helpers';
+import { controlBindingsSetter } from '../../../core/helpers';
+import { doLog } from '../../../../../rxjs/operators';
+import { DynamicInputTypeHelper } from '../../services/input-type.service';
+import { SelectInput } from '../../../core/types/select';
+import { InputEventArgs } from '../../types/dynamic-inputs';
+import { JSObject } from '../../../../../utils';
+import { API_BINDINGS_ENDPOINT, API_HOST } from '../../tokens';
 @Component({
-  selector: "app-dynamic-select-input",
-  templateUrl: "./dynamic-select-input.component.html",
+  selector: 'app-dynamic-select-input',
+  templateUrl: './dynamic-select-input.component.html',
   styles: [
     `
       .ng-select,
@@ -60,7 +61,7 @@ import { JSObject } from "../../../../../utils";
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicSelectInputComponent implements OnDestroy {
-  @Input() controlDivContainerClass: string = "clr-form-control";
+  @Input() controlDivContainerClass: string = 'clr-form-control';
   private _control!: FormControl;
   @Input() set control(value: FormControl) {
     this._control = value;
@@ -105,8 +106,8 @@ export class DynamicSelectInputComponent implements OnDestroy {
   constructor(
     public readonly inputType: DynamicInputTypeHelper,
     private client: DrewlabsRessourceServerClient,
-    @Inject("CONTROL_BINDINGS_RESOURCES_PATH") path: string,
-    @Inject("FORM_SERVER_HOST") host: string
+    @Inject(API_BINDINGS_ENDPOINT) path: string,
+    @Inject(API_HOST) host: string
   ) {
     this._controlFocusEvent$
       .pipe(
@@ -122,7 +123,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
               },
             })
             .pipe(
-              doLog("Load binding result: "),
+              doLog('Load binding result: '),
               map((state) => {
                 const data = getResponseDataFromHttpResponse(state);
                 if (data && Array.isArray(data)) {
@@ -145,7 +146,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
   onFocus(): void {
     const { state } = this._inputItems$.getValue();
     if (
-      !(typeof state !== "undefined" && state !== null) ||
+      !(typeof state !== 'undefined' && state !== null) ||
       (JSObject.isEmpty(state) && this._inputConfig.serverBindings)
     ) {
       // Load the data from the remote server

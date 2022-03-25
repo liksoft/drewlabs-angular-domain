@@ -7,6 +7,7 @@ import {
   Output,
   EventEmitter,
   OnDestroy,
+  Optional,
 } from "@angular/core";
 import { isDefined, readFileAsDataURI } from "../../../../../utils";
 import { DynamicInputTypeHelper } from "../../services";
@@ -56,7 +57,7 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly inputType: DynamicInputTypeHelper,
-    @Inject("FILE_STORE_PATH") private path: string
+    @Inject("FILE_STORE_PATH") @Optional() private path: string
   ) {}
 
   ngOnInit(): void {
@@ -69,7 +70,7 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
         isDefined(this.inputType.asFileInput(this.inputConfig).uploadUrl) &&
         this.inputConfig.uploadUrl !== ""
           ? this.inputConfig.uploadUrl
-          : this.path,
+          : this.path ?? "",
       uploadMultiple: this.inputConfig.multiple
         ? this.inputConfig.multiple
         : false,

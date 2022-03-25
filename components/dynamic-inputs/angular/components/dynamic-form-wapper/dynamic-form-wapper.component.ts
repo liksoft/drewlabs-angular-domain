@@ -34,7 +34,6 @@ export class DynamicFormWapperComponent {
   get form() {
     return this._form;
   }
-
   // tslint:disable-next-line: variable-name
   @Input() set form(value: any) {
     const { form, formgroup } = this.setComponentForm(value, this._formgroup);

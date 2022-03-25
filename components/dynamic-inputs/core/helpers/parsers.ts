@@ -1,4 +1,4 @@
-import { ControlInterface } from "../compact/types";
+import { ControlInterface } from "../compact";
 
 export const parseControlItemsConfigs = (
   model: Partial<ControlInterface>

@@ -145,7 +145,7 @@ export class AuthService implements OnDestroy {
   public authenticate = (body: ILoginRequest) => {
     authenticatingAction(this._authStore$)();
     return this.httpClient
-      .post(`${httpHost(this.host)}/${this.loginPath}`, {
+      .post(`${httpHost(this.host)}${this.loginPath}`, {
         ...body,
         remember_me: body.remember || false,
       })
@@ -236,7 +236,7 @@ export class AuthService implements OnDestroy {
 
   public logout = () => {
     return this.httpClient
-      .get(`${httpHost(this.host)}/${this.logoutPath}`)
+      .get(`${httpHost(this.host)}${this.logoutPath}`)
       .pipe(
         tap(() => {
           this._logoutSubject$.next(true);

@@ -6,5 +6,4 @@ export {
   ApplyAttributeChangesToControlsCallback,
   MultiSelectItemRemoveEvent,
 } from "./bindings";
-export { FORMS_PROVIDER, FORM_CLIENT, ANGULAR_REACTIVE_FORM_BRIDGE } from "./tokens";
-export { ModuleConfigs } from "./module";
+export { FORM_CLIENT, ANGULAR_REACTIVE_FORM_BRIDGE } from "./tokens";

@@ -14,3 +14,29 @@ export interface FormsLoader {
     options?: { [index: string]: any }
   ): Observable<FormInterface[]>;
 }
+
+export interface CacheProvider {
+
+  /**
+   *
+   * @param id
+   */
+  get(id: string|number): Observable<FormInterface>;
+
+  /**
+   *
+   * @param values
+   */
+  getList(values: string[]|number[]): Observable<FormInterface[]>;
+
+  /**
+   * Provides predefined dynamic forms loader implementation
+   *
+   * @param endpoint
+   * @param options
+   */
+  cache(
+    endpoint: string,
+    options?: { [index: string]: any }
+  ): Observable<never> | Observable<FormInterface[]>;
+}

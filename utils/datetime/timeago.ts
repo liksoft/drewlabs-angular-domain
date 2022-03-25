@@ -1,11 +1,11 @@
-import { JSDate } from "./js-datetime";
+import { JSDate } from './js-datetime';
 
-type ShortTimeUnit_ = "y" | "m" | "w" | "d" | "h" | "i" | "s";
+type ShortTimeUnit_ = 'y' | 'm' | 'w' | 'd' | 'h' | 'i' | 's';
 
-type Locale_ = "en-US" | "fr-FR" | string;
+type Locale_ = 'en-US' | 'fr-FR' | string;
 
 type TimeSinceLocaleConfig = {
-  [index: string]: {
+  [index in Locale_]: {
     timeUnit: {
       [ShortTimeUnit_: string]: any;
     };
@@ -15,29 +15,29 @@ type TimeSinceLocaleConfig = {
 };
 
 const DEFAULT_LOCALES: TimeSinceLocaleConfig = {
-  "en-US": {
+  'en-US': {
     timeUnit: {
-      d: "days",
-      m: "months",
-      y: "years",
-      i: "minutes",
-      s: "seconds",
-      h: "hours",
+      d: 'days',
+      m: 'months',
+      y: 'years',
+      i: 'minutes',
+      s: 'seconds',
+      h: 'hours',
     },
-    ago: "ago",
-    later: "later",
+    ago: 'ago',
+    later: 'later',
   },
-  "fr-FR": {
+  'fr-FR': {
     timeUnit: {
-      d: "jours",
-      m: "mois",
-      y: "années",
-      i: "minutes",
-      s: "seconds",
-      h: "heures",
+      d: 'jours',
+      m: 'mois',
+      y: 'années',
+      i: 'minutes',
+      s: 'seconds',
+      h: 'heures',
     },
-    ago: "de cela",
-    later: "après",
+    ago: 'de cela',
+    later: 'après',
   },
 };
 
@@ -47,25 +47,25 @@ const formatTimeSince = (ms: number) => {
   seconds = Math.abs(seconds);
   let interval = seconds / 31536000;
   if (interval > 1) {
-    return timeSinceOutput(Math.floor(interval), "y", isBeforeNow);
+    return timeSinceOutput(Math.floor(interval), 'y', isBeforeNow);
   }
   interval = seconds / 2592000;
   if (interval > 1) {
-    return timeSinceOutput(Math.floor(interval), "m", isBeforeNow);
+    return timeSinceOutput(Math.floor(interval), 'm', isBeforeNow);
   }
   interval = seconds / 86400;
   if (interval > 1) {
-    return timeSinceOutput(Math.floor(interval), "d", isBeforeNow);
+    return timeSinceOutput(Math.floor(interval), 'd', isBeforeNow);
   }
   interval = seconds / 3600;
   if (interval > 1) {
-    return timeSinceOutput(Math.floor(interval), "h", isBeforeNow);
+    return timeSinceOutput(Math.floor(interval), 'h', isBeforeNow);
   }
   interval = seconds / 60;
   if (interval > 1) {
-    return timeSinceOutput(Math.floor(interval), "i", isBeforeNow);
+    return timeSinceOutput(Math.floor(interval), 'i', isBeforeNow);
   }
-  return timeSinceOutput(Math.floor(interval), "s", isBeforeNow);
+  return timeSinceOutput(Math.floor(interval), 's', isBeforeNow);
 };
 
 const timeSinceOutput = (
@@ -75,8 +75,8 @@ const timeSinceOutput = (
 ) => {
   return (locales: TimeSinceLocaleConfig, locale: Locale_) => {
     return isBeforeNow
-      ? `${result} ${locales[locale]["timeUnit"][unit]} ${locales[locale]["ago"]}`
-      : `${result} ${locales[locale]["timeUnit"][unit]} ${locales[locale]["later"]}`;
+      ? `${result} ${locales[locale]['timeUnit'][unit]} ${locales[locale]['ago']}`
+      : `${result} ${locales[locale]['timeUnit'][unit]} ${locales[locale]['later']}`;
   };
 };
 
@@ -87,7 +87,7 @@ export class TimeAgo {
   format(date: string | Date, locale?: Locale_) {
     return formatTimeSince(JSDate.timeSince(JSDate.create(date)))(
       this.locales ?? DEFAULT_LOCALES,
-      locale ?? "en-US"
+      locale ?? 'en-US'
     );
   }
 }

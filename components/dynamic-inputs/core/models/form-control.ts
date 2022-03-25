@@ -1,9 +1,8 @@
 import {
   GenericSerializaleSerializer,
-  GenericUndecoratedSerializaleSerializer,
   UndecoratedSerializer,
-} from "../../../../../built-value/core/js/serializer";
-import { ControlInterface } from "../../compact/types";
+} from "../../../../built-value/core/js/serializer";
+import { ControlInterface } from "../compact";
 
 export class Control implements ControlInterface {
   id!: number;
@@ -45,12 +44,8 @@ export class Control implements ControlInterface {
   groupfield!: string;
   keyfield!: string;
 
-  static builder() {
-    return new GenericSerializaleSerializer(
-      Control,
-      new UndecoratedSerializer()
-    );
-  }
+  static builder = () =>
+    new GenericSerializaleSerializer(Control, new UndecoratedSerializer());
 
   public static getJsonableProperties(): {
     [index: string]: keyof Control | { name: string; type: any };
@@ -218,20 +213,12 @@ export class FormControlRequest {
   }
 }
 
-export const createSerializedControlRequest = (value: any) => {
-  return (
-    new GenericUndecoratedSerializaleSerializer().fromSerialized(
-      ControlRequest,
-      value
-    ) as ControlRequest
-  ).toSerialize() as { [index: string]: any };
-};
+export const createSerializedControlRequest = (value: any) =>
+  new GenericSerializaleSerializer(ControlRequest)
+    .fromSerialized(value)
+    .toSerialize() as { [index: string]: any };
 
-export const createSerializedFormControlRequest = (value: any) => {
-  return (
-    new GenericUndecoratedSerializaleSerializer().fromSerialized(
-      FormControlRequest,
-      value
-    ) as FormControlRequest
-  ).toSerialize() as { [index: string]: any };
-};
+export const createSerializedFormControlRequest = (value: any) =>
+  new GenericSerializaleSerializer(FormControlRequest)
+    .fromSerialized(value)
+    .toSerialize() as { [index: string]: any };

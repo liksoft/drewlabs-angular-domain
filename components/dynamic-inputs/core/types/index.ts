@@ -12,3 +12,4 @@ export { SelectInput } from "./select";
 export { TextInput } from "./text";
 export { TextAreaInput } from "./textarea";
 export { InputGroup } from "./control-group";
+export { AbstractHTMLFormControl } from "./dynamic-input";
