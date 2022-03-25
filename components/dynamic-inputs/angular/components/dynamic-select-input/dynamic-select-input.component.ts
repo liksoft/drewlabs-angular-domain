@@ -16,7 +16,7 @@ import {
 } from '../../../../../http/helpers';
 import { controlBindingsSetter } from '../../../core/helpers';
 import { doLog } from '../../../../../rxjs/operators';
-import { DynamicInputTypeHelper } from '../../services/input-type.service';
+import { DynamicInputTypeHelper } from '../../services/input-type';
 import { SelectInput } from '../../../core/types/select';
 import { InputEventArgs } from '../../types/dynamic-inputs';
 import { JSObject } from '../../../../../utils';

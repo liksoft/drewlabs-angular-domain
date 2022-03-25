@@ -6,7 +6,7 @@ import {
   getObjectProperty,
   maxNumberSize as utilsMaxNumberSize,
 } from "../../../../../utils";
-import { DynamicInputTypeHelper } from "../../services/input-type.service";
+import { DynamicInputTypeHelper } from "../../services/input-type";
 import { InputEventArgs } from "../../types/dynamic-inputs";
 
 @Component({

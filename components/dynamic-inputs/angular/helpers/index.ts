@@ -1,14 +1,14 @@
-export { cloneAbstractControl } from "./abstract-controls";
+export { cloneAbstractControl } from './abstract-controls';
 
 // Reactive forms helpers
 export {
   ComponentReactiveFormHelpers,
   createAngularAbstractControl,
-} from "./reactive-form-helpers";
+} from './reactive-form';
 
 // Controls wrapper helpers
 export {
   applyHiddenAttributeCallback,
   applyAttribute,
   getControlBinding,
-} from "./control-wrapper";
+} from './control-wrapper';

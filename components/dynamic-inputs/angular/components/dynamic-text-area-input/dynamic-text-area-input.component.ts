@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { AbstractControl, FormControl } from "@angular/forms";
 import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
-import { DynamicInputTypeHelper } from "../../services/input-type.service";
+import { DynamicInputTypeHelper } from "../../services/input-type";
 import { InputEventArgs } from "../../types/dynamic-inputs";
 
 @Component({

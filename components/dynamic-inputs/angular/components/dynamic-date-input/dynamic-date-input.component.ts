@@ -2,7 +2,7 @@ import { Component, Inject, Input, LOCALE_ID } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { JSDate } from "../../../../../utils";
 import { IHTMLFormControl } from "../../../core/contracts";
-import { DynamicInputTypeHelper } from "../../services/input-type.service";
+import { DynamicInputTypeHelper } from "../../services/input-type";
 
 @Component({
   selector: "app-dynamic-date-input",

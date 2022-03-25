@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { AbstractControl, FormBuilder } from "@angular/forms";
 import { isArray } from "../../../../utils";
 import { IDynamicForm, IHTMLFormControl } from "../../core";
-import { AngularReactiveFormBuilderBridge } from "../contracts";
 import { ComponentReactiveFormHelpers } from "../helpers";
+import { AngularReactiveFormBuilderBridge } from "../types";
 
 @Injectable()
 export class ReactiveFormBuilderBrige

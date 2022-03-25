@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { IHTMLFormControl } from '../../../core/contracts/dynamic-input';
 import { InputTypes } from '../../../core/contracts/input-types';
-import { DynamicInputTypeHelper } from '../../services/input-type.service';
+import { DynamicInputTypeHelper } from '../../services/input-type';
 
 @Component({
   selector: 'app-dynamic-radio-input',

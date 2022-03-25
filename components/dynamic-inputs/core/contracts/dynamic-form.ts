@@ -1,6 +1,4 @@
 import { IHTMLFormControl } from './dynamic-input';
-import { isDefined } from '../../../../utils';
-import {  ICollection } from '../../../../collections';
 /**
  * @description Interface definition for model that are bind to the dynamic form instance
  */
@@ -28,8 +26,9 @@ export interface IDynamicForm {
  * @description Type definition for function for mapping models to form view bindings
  * @param model Parameter can be any JS object with properties that can be bind to a dynamic form values
  */
-export type ModelToFormViewModelBindings = (model: object | any) => { [index: string]: any };
-
+export type ModelToFormViewModelBindings = (model: object | any) => {
+  [index: string]: any;
+};
 
 /**
  * @description Create a copy of the IDynamic form object
@@ -40,7 +39,18 @@ export function clone(value: IDynamicForm): IDynamicForm {
   return {
     ...value,
     // tslint:disable-next-line: max-line-length
-    controlConfigs: isDefined(value.controlConfigs) ? [...(value.controlConfigs as IHTMLFormControl[]).map(i => Object.assign({}, i))] : [],
-    forms: isDefined(value.forms) ? (value.forms as IDynamicForm[]).map(i => clone(i)) : undefined
+    controlConfigs:
+      typeof value.controlConfigs !== 'undefined' &&
+      value.controlConfigs !== null
+        ? [
+            ...(value.controlConfigs as IHTMLFormControl[]).map((i) =>
+              Object.assign({}, i)
+            ),
+          ]
+        : [],
+    forms:
+      typeof value.forms !== 'undefined' && value.forms !== null
+        ? (value.forms as IDynamicForm[]).map((i) => clone(i))
+        : undefined,
   };
 }

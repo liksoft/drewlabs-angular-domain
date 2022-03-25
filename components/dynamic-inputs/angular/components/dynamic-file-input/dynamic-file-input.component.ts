@@ -8,20 +8,19 @@ import {
   EventEmitter,
   OnDestroy,
   Optional,
-} from "@angular/core";
-import { isDefined, readFileAsDataURI } from "../../../../../utils";
-import { DynamicInputTypeHelper } from "../../services";
-import { map } from "rxjs/operators";
-import { DropzoneComponent } from "../../../../dropzone/dropzone.component";
-import { createSubject } from "../../../../../rxjs/helpers";
-import { FileInput } from "../../../core/types";
-import { DropzoneConfig } from "../../../../dropzone";
-import { FileFormControl } from "../../types";
-import { FormControl } from "@angular/forms";
+} from '@angular/core';
+import { isDefined, readFileAsDataURI } from '../../../../../utils';
+import { DynamicInputTypeHelper } from '../../services';
+import { map } from 'rxjs/operators';
+import { DropzoneComponent } from '../../../../dropzone/dropzone.component';
+import { createSubject } from '../../../../../rxjs/helpers';
+import { FileInput } from '../../../core/types';
+import { DropzoneConfig } from '../../../../dropzone';
+import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: "app-dynamic-file-input",
-  templateUrl: "./dynamic-file-input.component.html",
+  selector: 'app-dynamic-file-input',
+  templateUrl: './dynamic-file-input.component.html',
   styles: [
     `
       .required-text,
@@ -38,14 +37,14 @@ import { FormControl } from "@angular/forms";
   ],
 })
 export class DynamicFileInputComponent implements OnInit, OnDestroy {
-  @Input() controlDivContainerClass: string = "clr-form-control";
+  @Input() controlDivContainerClass: string = 'clr-form-control';
   @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
 
   // Property for handling File Input types
   public dropzoneConfigs!: DropzoneConfig;
   // public dropzoneConfig!: DropzoneConfig;
-  @ViewChild("dropzoneContainer")
+  @ViewChild('dropzoneContainer')
   dropzoneContainer!: DropzoneComponent;
   // Configuration parameters of the input
   @Input() inputConfig!: FileInput;
@@ -57,7 +56,7 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly inputType: DynamicInputTypeHelper,
-    @Inject("FILE_STORE_PATH") @Optional() private path: string
+    @Inject('FILE_STORE_PATH') @Optional() private path: string
   ) {}
 
   ngOnInit(): void {
@@ -68,9 +67,9 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
         : 10,
       url:
         isDefined(this.inputType.asFileInput(this.inputConfig).uploadUrl) &&
-        this.inputConfig.uploadUrl !== ""
+        this.inputConfig.uploadUrl !== ''
           ? this.inputConfig.uploadUrl
-          : this.path ?? "",
+          : this.path ?? '',
       uploadMultiple: this.inputConfig.multiple
         ? this.inputConfig.multiple
         : false,
@@ -78,7 +77,7 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
     };
     this.control.valueChanges.pipe(
       map((state) => {
-        if (this.control.status.toLowerCase() === "disabled") {
+        if (this.control.status.toLowerCase() === 'disabled') {
           this.dropzoneContainer.disabled = true;
         } else {
           this.dropzoneContainer.disabled = false;
@@ -102,10 +101,10 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
               return {
                 uuid: v.upload.uuid,
                 dataURL: await readFileAsDataURI(v),
-                extension: (v.name as string).split(".")[
-                  (v.name as string).split(".").length - 1
+                extension: (v.name as string).split('.')[
+                  (v.name as string).split('.').length - 1
                 ],
-              } as FileFormControl;
+              };
             })
           )
         );
@@ -115,10 +114,10 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
           this.control.setValue({
             uuid: files[0].upload.uuid,
             dataURL: await readFileAsDataURI(files[0]),
-            extension: (files[0].name as string).split(".")[
-              (files[0].name as string).split(".").length - 1
+            extension: (files[0].name as string).split('.')[
+              (files[0].name as string).split('.').length - 1
             ],
-          } as FileFormControl);
+          });
           this.dropzoneContainer.disabled = true;
         }
       }
@@ -131,8 +130,8 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
     if ((this.inputConfig as FileInput).multiple) {
       if (isDefined(this.control.value)) {
         this.control.setValue(
-          (this.control.value as FileFormControl[]).filter((v) => {
-            return v.uuid !== event.upload.uuid;
+          (this.control.value as { [prop: string]: any }[]).filter((v) => {
+            return v['uuid'] !== event.upload.uuid;
           })
         );
       }

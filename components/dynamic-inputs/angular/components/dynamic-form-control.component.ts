@@ -7,6 +7,7 @@ import {
   EventEmitter,
   OnDestroy,
   OnInit,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { InputEventArgs, SelectableControlItems } from "../types";
 import { takeUntil, tap } from "rxjs/operators";
@@ -17,7 +18,7 @@ import { DynamicInputTypeHelper } from "../services";
   selector: "app-dynamic-inputs",
   templateUrl: "./dynamic-form-control.component.html",
   styleUrls: ["./dynamic-form-control.component.css"],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicFormControlComponent implements OnDestroy, OnInit {
   // tslint:disable-next-line: variable-name
@@ -86,6 +87,3 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
     this._destroy$.next();
   }
 }
-
-// For compatibility issues
-export { FileFormControl } from "../types";

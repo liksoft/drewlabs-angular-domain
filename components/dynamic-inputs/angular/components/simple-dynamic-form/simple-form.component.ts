@@ -11,9 +11,9 @@ import { AbstractControl, FormGroup } from "@angular/forms";
 import { createSubject, timeout } from "../../../../../rxjs/helpers";
 import { IDynamicForm, IHTMLFormControl } from "../../../core/contracts";
 import { createform } from "../../../core/helpers";
-import { AngularReactiveFormBuilderBridge } from "../../contracts";
 import { ComponentReactiveFormHelpers } from "../../helpers";
-import { ANGULAR_REACTIVE_FORM_BRIDGE } from "../../types";
+import { ANGULAR_REACTIVE_FORM_BRIDGE } from "../../tokens";
+import { AngularReactiveFormBuilderBridge } from "../../types";
 
 @Component({
   selector: "app-simple-dynamic-form",

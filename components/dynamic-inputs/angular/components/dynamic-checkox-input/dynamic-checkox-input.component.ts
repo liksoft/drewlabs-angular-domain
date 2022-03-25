@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, FormControl } from "@angular/forms";
 import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
 import { InputTypes } from "../../../core/contracts/input-types";
 import { CheckBoxInput } from "../../../core";
-import { DynamicInputTypeHelper } from "../../services/input-type.service";
+import { DynamicInputTypeHelper } from "../../services/input-type";
 
 @Component({
   selector: "app-dynamic-checkox-input",
