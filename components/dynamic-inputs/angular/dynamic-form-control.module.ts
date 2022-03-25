@@ -37,7 +37,7 @@ import { HttpModule } from '../../../http';
 import { FORM_CLIENT, ANGULAR_REACTIVE_FORM_BRIDGE } from './types';
 import { JSONFormsClient } from './services/client';
 import { initializeDynamicFormContainer } from './helpers/module';
-import { CacheProvider, FormsLoader } from '../core';
+import { CacheProvider } from '../core';
 import { API_BINDINGS_ENDPOINT, API_HOST } from './tokens';
 
 export const DECLARATIONS = [
@@ -58,18 +58,19 @@ export const DECLARATIONS = [
   SimpleDynamicFormComponent,
 ];
 
-export type ModuleConfigs = {
-  serverConfigs: {
+type FormApiServerConfigs = {
+  api: {
     host?: string;
-    controlOptionsPath?: string;
-    controlsPath?: string;
-    formsPath?: string;
-    controlBindingsPath?: string;
+    bindings?: string;
+    uploadURL: string;
   };
+};
+
+export type ModuleConfigs = {
+  dropzoneConfigs?: DropzoneConfig;
+  serverConfigs: FormApiServerConfigs;
   formsAssets?: string;
   clientFactory?: Function;
-  uploadedFilesServerURL?: string;
-  dropzoneConfigs: DropzoneConfig;
 };
 
 @NgModule({
@@ -111,19 +112,18 @@ export class DynamicFormControlModule {
         ReactiveFormBuilderBrige,
         {
           provide: API_HOST,
-          useValue: configs?.serverConfigs?.host || null,
+          useValue: configs!.serverConfigs!.api.host || undefined,
         },
         {
           provide: API_BINDINGS_ENDPOINT,
-          useValue:
-            configs?.serverConfigs?.controlBindingsPath || 'control-bindings',
+          useValue: configs!.serverConfigs!.api.bindings || 'control-bindings',
         },
         {
           provide: APP_INITIALIZER,
           useFactory: (service: CacheProvider) =>
             initializeDynamicFormContainer(
               service,
-              configs?.formsAssets || '/assets/resources/app-forms.json'
+              configs!.formsAssets || '/assets/resources/app-forms.json'
             ),
           multi: true,
           deps: [CACHE_PROVIDER],
@@ -134,8 +134,8 @@ export class DynamicFormControlModule {
         },
         {
           provide: DROPZONE_CONFIG,
-          useValue: configs?.dropzoneConfigs ?? {
-            url: configs?.serverConfigs?.host ?? 'http://localhost',
+          useValue: configs!.dropzoneConfigs ?? {
+            url: configs!.serverConfigs!.api.host ?? 'http://localhost',
             maxFilesize: 10,
             acceptedFiles: 'image/*',
             autoProcessQueue: false,
@@ -146,7 +146,7 @@ export class DynamicFormControlModule {
         },
         {
           provide: 'FILE_STORE_PATH',
-          useValue: configs?.uploadedFilesServerURL ?? 'http://localhost',
+          useValue: configs!.serverConfigs.api.uploadURL ?? 'http://localhost',
         },
       ],
     };
