@@ -1,0 +1,28 @@
+<ng-container *ngIf="bindings$ | async as bindings">
+  <div class="clr-row" *ngIf="formgroup">
+    <ng-container *ngIf="hasInputs(form)">
+      <!-- [class]="getContainerClass(value?.containerClass)" -->
+      <div *ngFor="let value of form?.controlConfigs">
+        <!-- <ng-container *ngIf="value?.children?.length !== 0"> </ng-container> -->
+        <ng-container *ngIf="formgroup.get(value.formControlName) as control">
+          <ng-container *ngIf="formgroup">
+            <ng-container
+              *ngTemplateOutlet="
+                smartInputRef;
+                context: { control: control, config: value }
+              "
+            ></ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+<button
+  [disabled]="performingAction || disabled"
+  [class]="submitClass"
+  (click)="onSubmit($event)"
+>
+  <clr-icon shape="circle-arrow" dir="up"></clr-icon>
+  {{ submitText }}
+</button>

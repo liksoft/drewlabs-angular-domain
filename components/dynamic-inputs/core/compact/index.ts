@@ -1,13 +1,13 @@
-
 // Bindings helpers
 export {
   formViewModelBindings,
-  formControlViewModelBindings
-} from './bindings';
+  formControlViewModelBindings,
+} from "./bindings";
 
 // Compatibility Interfaces
 export {
   FormInterface,
   ControlInterface,
-  OptionInterface
-} from './types';
+  OptionInterface,
+  ControlGroupInterface,
+} from "./types";
