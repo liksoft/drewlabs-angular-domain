@@ -10,9 +10,8 @@ import {
   TemplateRef,
 } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { takeUntil, tap } from "rxjs/operators";
-import { JSObject } from "../../../../../utils";
 import { timeout } from "../../../../../rxjs/helpers";
 import { IDynamicForm, sortformbyindex } from "../../../core";
 import { AngularReactiveFormBuilderBridge } from "../../contracts";
