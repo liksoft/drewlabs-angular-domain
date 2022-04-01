@@ -19,9 +19,8 @@ export class Form implements FormInterface {
   status!: number;
   appcontext!: string;
 
-  static builder = () => {
-    return new GenericSerializaleSerializer(Form, new UndecoratedSerializer());
-  };
+  static builder = () =>
+    new GenericSerializaleSerializer(Form, new UndecoratedSerializer());
 
   public static getJsonableProperties(): {
     [index: string]: keyof Form | { name: string; type: any };
