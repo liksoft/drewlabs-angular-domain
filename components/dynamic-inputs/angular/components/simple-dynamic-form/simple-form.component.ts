@@ -13,6 +13,10 @@ import { IDynamicForm } from "../../../core/contracts";
 import { AngularReactiveFormBuilderBridge } from "../../contracts";
 import { ComponentReactiveFormHelpers } from "../../helpers";
 import { ANGULAR_REACTIVE_FORM_BRIDGE, ControlsStateMap } from "../../types";
+
+/**
+ * @deprecated
+ */
 @Component({
   selector: "app-simple-dynamic-form",
   templateUrl: "./simple-form.component.html",

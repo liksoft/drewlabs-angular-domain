@@ -1,14 +1,22 @@
-import { IHTMLFormControl } from "../../core/contracts/dynamic-input";
-import { IDynamicForm } from "../../core/contracts/dynamic-form";
-import { AbstractControl } from "@angular/forms";
+import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
+import { IDynamicForm } from '../../core/contracts/dynamic-form';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import {
   ApplyAttributeChangesToControlsCallback,
   BindingInterface,
   ControlBindings,
-} from "../types";
-import { ComponentReactiveFormHelpers } from "./reactive-form-helpers";
-import { isNumber } from "../../../../utils";
+} from '../types';
+import { ComponentReactiveFormHelpers } from './reactive-form-helpers';
+import { isNumber } from '../../../../utils';
 
+/**
+ * @deprecated
+ *
+ * @param form
+ * @param bidings
+ * @param value
+ * @returns
+ */
 export const applyHiddenAttributeCallback =
   (form: IDynamicForm, bidings: BindingInterface, value: string | number) =>
   (formgroup: AbstractControl) => {
@@ -28,7 +36,10 @@ export const applyHiddenAttributeCallback =
               : _control.requiredIf?.values || [];
             _control.hidden = !requiredIfValues.includes(value) ? true : false;
             if (_control.hidden) {
-              formgroup.get(bidings.key)?.setValue(null);
+              const current = formgroup.get(bidings.key);
+              current instanceof FormGroup
+                ? current.reset()
+                : current.setValue(undefined);
               ComponentReactiveFormHelpers.clearControlValidators(
                 formgroup.get(bidings.key) || undefined
               );
@@ -51,7 +62,11 @@ export const applyHiddenAttributeCallback =
     return { control: formgroup, form };
   };
 
-// tslint:disable-next-line: typedef
+/**
+ * @deprecated
+ * @param form
+ * @returns
+ */
 export const getControlBinding =
   (form: IDynamicForm) => (formgroup: AbstractControl) => {
     const bindings = {} as ControlBindings;
@@ -95,7 +110,15 @@ export const getControlBinding =
     return { bindings, formgroup, form };
   };
 
-// tslint:disable-next-line: typedef
+/**
+ * @deprecated
+ *
+ * @param param
+ * @param bindings
+ * @param value
+ * @param callback
+ * @returns
+ */
 export const applyAttribute =
   (
     param: IDynamicForm,

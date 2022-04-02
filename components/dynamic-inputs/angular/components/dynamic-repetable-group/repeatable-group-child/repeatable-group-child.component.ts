@@ -3,6 +3,9 @@ import { FormGroup } from "@angular/forms";
 import { IDynamicForm } from "../../../../core/contracts";
 import { ChildComponent } from "../types";
 
+/**
+ * @deprecated
+ */
 @Component({
   selector: "app-repetable-group-child",
   templateUrl: "repeatable-group-child.component.html",

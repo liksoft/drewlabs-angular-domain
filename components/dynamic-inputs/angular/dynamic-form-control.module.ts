@@ -36,6 +36,9 @@ import { initializeDynamicFormContainer } from "./helpers/module";
 import { CacheProvider } from "../core";
 import { API_BINDINGS_ENDPOINT, API_HOST } from "./tokens";
 import { NgxSmartFormComponent } from "./components/ngx-smart-form/ngx-smart-form.component";
+import { NgxSmartFormGroupComponent } from "./components/ngx-smart-form-group/ngx-smart-form-group.component";
+import { NgxSmartFormArrayComponent } from "./components/ngx-smart-form-array/ngx-smart-form-array.component";
+import { NgxSmartFormArrayChildComponent } from "./components/ngx-smart-form-array/ngx-smart-form-array-child.component";
 
 export const DECLARATIONS = [
   DynamicFormControlComponent,
@@ -53,7 +56,12 @@ export const DECLARATIONS = [
   DynamicCheckoxInputComponent,
   DynamicRadioInputComponent,
   SimpleDynamicFormComponent,
+
+  // Smart form related components
   NgxSmartFormComponent,
+  NgxSmartFormGroupComponent,
+  NgxSmartFormArrayComponent,
+  NgxSmartFormArrayChildComponent,
 ];
 
 export type ModuleConfigs = {
