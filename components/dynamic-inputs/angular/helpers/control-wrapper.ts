@@ -6,7 +6,7 @@ import {
   BindingInterface,
   ControlBindings,
 } from '../types';
-import { ComponentReactiveFormHelpers } from './reactive-form-helpers';
+import { ComponentReactiveFormHelpers } from './reactive-form';
 import { isNumber } from '../../../../utils';
 
 /**
