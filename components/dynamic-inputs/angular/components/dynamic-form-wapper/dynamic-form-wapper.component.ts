@@ -24,6 +24,9 @@ import { JSObject } from "../../../../../utils";
 type UndefinedDynamicForm = IDynamicForm | undefined;
 type UndefinedFormGroup = AbstractControl | undefined;
 
+/**
+ * @deprecated
+ */
 @Component({
   selector: "app-dynamic-form-wapper",
   templateUrl: "./dynamic-form-wapper.component.html",

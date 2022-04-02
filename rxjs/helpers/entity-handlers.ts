@@ -1,8 +1,8 @@
 // This file contains methods for working with entity object with
 // a unique field / property named [[id]]
 
-import { JSObject } from "../../utils";
-import { PaginationDataState } from "../types";
+import { JSObject } from '../../utils';
+import { PaginationDataState } from '../types';
 
 export const updatePaginationData = <T extends { id: string | number }>(
   values: PaginationDataState<T>,
@@ -28,7 +28,7 @@ export const updatePaginationData = <T extends { id: string | number }>(
       page: payload.page || _values.page,
       lastPage: payload.lastPage || _values.lastPage,
       nextPageURL:
-        typeof payload.nextPageURL === "object"
+        typeof payload.nextPageURL === 'object'
           ? payload.nextPageURL
           : payload.nextPageURL || _values.nextPageURL,
       lastPageURL: payload.lastPageURL || _values.lastPageURL,
@@ -144,14 +144,17 @@ export const removeFromCacheUsingID = <T extends { id: string | number }>(
 
 export const updateListUsingID = <T extends { id: string | number }>(
   list: T[],
-  value: T
+  value: T[] | T
 ) => {
   const listCopy = [...list];
-  listCopy.splice(
-    listCopy.findIndex((c) => c.id === value.id),
-    1,
-    value
-  );
+  value = (Array.isArray(value) ? value : [value]) as T[];
+  for (const iterator of value) {
+    listCopy.splice(
+      listCopy.findIndex((c) => c.id === iterator.id),
+      1,
+      iterator
+    );
+  }
   return listCopy;
 };
 

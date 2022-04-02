@@ -9,12 +9,14 @@ import {
 } from "@angular/core";
 import { AbstractControl, FormGroup } from "@angular/forms";
 import { createSubject, timeout } from "../../../../../rxjs/helpers";
-import { IDynamicForm, IHTMLFormControl } from "../../../core/contracts";
-import { createform } from "../../../core/helpers";
+import { IDynamicForm } from "../../../core/contracts";
+import { AngularReactiveFormBuilderBridge } from "../../contracts";
 import { ComponentReactiveFormHelpers } from "../../helpers";
-import { ANGULAR_REACTIVE_FORM_BRIDGE } from "../../tokens";
-import { AngularReactiveFormBuilderBridge } from "../../types";
+import { ANGULAR_REACTIVE_FORM_BRIDGE, ControlsStateMap } from "../../types";
 
+/**
+ * @deprecated
+ */
 @Component({
   selector: "app-simple-dynamic-form",
   templateUrl: "./simple-form.component.html",
@@ -62,68 +64,52 @@ export class SimpleDynamicFormComponent implements OnDestroy {
     private builder: AngularReactiveFormBuilderBridge
   ) {}
 
-  listenFormControlChanges = (control: string) =>
+  listenFormControlChanges(control: string) {
     this._formgroup?.get(control)?.valueChanges;
+  }
 
   getControlValue = (control: string, _default?: any) =>
     this._formgroup.get(control)?.value ?? _default ?? undefined;
 
-  setControlValue = (control: string, value: any) =>
+  setControlValue(control: string, value: any) {
     this._formgroup.get(control)?.setValue(value);
+  }
 
-  disableControls = (controls: {
-    [index: string]: { onlySelf: boolean; emitEvent: boolean } | undefined;
-  }) =>
-    Object.entries(controls || {}).forEach(([key, entry]) =>
-      this.formgroup.get(key)?.disable(entry)
-    );
+  disableControls(controls: ControlsStateMap) {
+    for (const [key, entry] of Object.entries(controls)) {
+      this.formgroup.get(key)?.disable(entry);
+    }
+  }
 
-  enableControls = (controls: {
-    [index: string]: { onlySelf: boolean; emitEvent: boolean } | undefined;
-  }) =>
-    Object.entries(controls ?? {}).forEach(([key, entry]) =>
-      this.formgroup.get(key)?.enable(entry)
-    );
+  enableControls(controls: ControlsStateMap) {
+    for (const [key, entry] of Object.entries(controls)) {
+      this.formgroup.get(key)?.enable(entry);
+    }
+  }
 
-  addControl = (name: string, control: AbstractControl) =>
-    this._formgroup.get(name)
-      ? this._formgroup.get(name)?.setValue(control.value)
-      : this._formgroup.addControl(name, control);
+  addControl(name: string, control: AbstractControl) {
+    if (this._formgroup.get(name)) {
+      return this._formgroup.get(name)?.setValue(control.value);
+    }
+    this._formgroup.addControl(name, control);
+  }
 
-  getControl = (name: string) => this.formgroup.get(name);
+  getControl(name: string) {
+    return this.formgroup.get(name);
+  }
 
   onFormSubmitted(event: Event) {
-    this.validateForm();
+    ComponentReactiveFormHelpers.validateFormGroupFields(this._formgroup);
     if (this._formgroup.valid) {
       this.formEvent.emit(this._formgroup.getRawValue());
     }
     event.preventDefault();
   }
 
-  setComponentForm(value: IDynamicForm) {
+  public setComponentForm(value: IDynamicForm) {
+    this._form = value;
     if (value) {
-      this._form = value;
       this._formgroup = this.builder.group(value) as FormGroup;
-    }
-  }
-
-  getControlConfig = (name: string) =>
-    [...(this._form.controlConfigs ?? [])].find(
-      (control) => control.formControlName === name
-    );
-
-  setControlConfig(config?: IHTMLFormControl, name?: string) {
-    if (config) {
-      name = name ?? config.formControlName;
-      const controls = [...(this._form.controlConfigs ?? [])];
-      const index = controls.findIndex(
-        (control) => control.formControlName === name
-      );
-      controls.splice(index, 1, config);
-      this._form = createform({
-        ...this._form,
-        controlConfigs: controls,
-      });
     }
   }
 
@@ -134,9 +120,9 @@ export class SimpleDynamicFormComponent implements OnDestroy {
 
   public reset() {
     this.formgroup.reset();
-    this._form.controlConfigs?.forEach((control) => {
+    for (const control of this._form.controlConfigs) {
       this.formgroup.get(control.formControlName)?.setValue(control.value);
-    });
+    }
   }
 
   ngOnDestroy(): void {

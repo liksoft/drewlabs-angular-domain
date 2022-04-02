@@ -83,6 +83,7 @@ export class DrewlabsFluxStore<T, AType extends Partial<StoreAction>> {
             : (observableOf<AType>(action) as Observable<AType>)
         ),
         filter((state) => typeof state !== "undefined" && state !== null),
+
         startWith(initial as any),
         scan(reducer),
         tap((state) => this._store$.next(state as any))

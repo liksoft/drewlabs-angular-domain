@@ -22,6 +22,9 @@ import { takeUntil } from "rxjs/operators";
 import { sortformbyindex, copyform } from "../../../core/helpers";
 import { ChildComponent } from "./types";
 
+/**
+ * @deprecated
+ */
 @Component({
   selector: "app-dynamic-repetable-group",
   templateUrl: "./dynamic-repetable-group.component.html",

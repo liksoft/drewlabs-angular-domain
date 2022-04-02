@@ -32,7 +32,7 @@ export type ModelToFormViewModelBindings = (model: object | any) => {
 
 /**
  * @description Create a copy of the IDynamic form object
- * @param value [[IDynamicForm]]
+ * @param value
  * @deprecated
  */
 export function clone(value: IDynamicForm): IDynamicForm {

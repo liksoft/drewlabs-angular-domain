@@ -12,11 +12,8 @@ export const buildRequiredIfConfig = (stringifiedConfig: string) => {
     // split the string into the two parts
     const parts = stringifiedConfig.split(":");
     let values: any[] = [];
-    // Split by '|' Character
     const result =
       parts[1].indexOf("|") !== -1 ? parts[1].split("|") : [parts[1]];
-    // Split by ',' character
-    // @deprecated
     result.forEach((part) => {
       const split = part.indexOf(",") !== -1 ? part.split(",") : part;
       values = [...values, ...split];

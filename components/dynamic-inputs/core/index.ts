@@ -41,6 +41,9 @@ export {
   sortRawFormControls,
   buildControl,
   DynamicFormHelpers,
+  createform,
+  copyform,
+  sortformbyindex,
 } from "./helpers";
 
 // Models

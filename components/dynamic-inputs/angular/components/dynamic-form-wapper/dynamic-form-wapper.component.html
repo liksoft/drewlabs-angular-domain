@@ -6,6 +6,10 @@
           [class]="getContainerClass(value?.containerClass)"
           *ngFor="let value of form?.controlConfigs"
         >
+
+          <ng-container *ngIf="value?.children?.length !== 0">
+
+          </ng-container>
           <ng-container *ngIf="formgroup.get(value.formControlName) as control">
             <app-dynamic-inputs
               [listenForChanges]="

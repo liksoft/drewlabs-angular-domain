@@ -1,15 +1,24 @@
+
+/**
+ * // @internal
+ * Type definition of API forms structure
+ */
 export interface FormInterface {
   id: number;
   title: string;
   parentId?: string;
   description?: string;
-  children?: FormInterface[];
-  controls: ControlInterface[];
+  controls: (ControlInterface|ControlGroupInterface)[];
   url?: string;
   status?: number;
   appcontext?: string;
   cached?: boolean;
 }
+
+/**
+ * // @internal
+ * Type definition of API forms inputs/controls structure
+ */
 export interface ControlInterface {
   id: number;
   label: string;
@@ -58,4 +67,8 @@ export interface OptionInterface {
   groupfield?: string;
   description: string;
   displayLabel: string;
+}
+
+export interface ControlGroupInterface extends ControlInterface {
+  children: ControlInterface[];
 }
