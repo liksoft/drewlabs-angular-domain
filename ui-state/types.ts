@@ -1,31 +1,30 @@
-import { InjectionToken } from "@angular/core";
-import { Observable } from "rxjs";
+import { InjectionToken } from '@angular/core';
+import { Observable } from 'rxjs';
 
-export enum UIStateStatusCode {
+export class UIStateStatusCode {
   /**
    * @deprecated
    */
-  STATUS_OK = 200,
+  static readonly STATUS_OK = 200;
   /**
    * @deprecated
    */
-  STATUS_CREATED = 201,
+  static readonly STATUS_CREATED = 201;
   /**
    * @deprecated
    */
-  BAD_REQUEST = 422,
+  static readonly BAD_REQUEST = 422;
   /**
    * @deprecated
    */
-  WARNING = 422,
+  static readonly WARNING = 422;
 
-
-  UNAUTHORIZED = 401,
-  AUTHENTICATED = 202,
-  UNAUTHENTICATED = 403,
-  BAD = 422 || 400,
-  OK = 200 || 201,
-  ERROR = 500,
+  static readonly UNAUTHORIZED = 401;
+  static readonly AUTHENTICATED = 202;
+  static readonly UNAUTHENTICATED = 403;
+  static readonly BAD = 422 || 400;
+  static readonly OK = 200 || 201;
+  static readonly ERROR = 500;
 }
 
 export interface UIState {
@@ -36,7 +35,6 @@ export interface UIState {
 }
 
 export interface UIStateProvider {
-
   uiState: Observable<UIState>;
 
   startAction(message?: string): void;
@@ -53,4 +51,3 @@ export interface UIStateProvider {
 export const UI_STATE_PROVIDER = new InjectionToken<UIStateProvider>(
   'UI State Provider'
 );
-

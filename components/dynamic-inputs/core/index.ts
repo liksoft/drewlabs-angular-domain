@@ -44,6 +44,8 @@ export {
   createform,
   copyform,
   sortformbyindex,
+  groupControlsBy,
+  setControlChildren
 } from "./helpers";
 
 // Models

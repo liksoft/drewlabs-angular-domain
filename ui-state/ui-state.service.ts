@@ -39,7 +39,7 @@ export class AppUIStateProvider implements UIStateProvider {
     });
   }
 
-  endAction(message?: string, status?: UIStateStatusCode): void {
+  endAction(message?: string, status?: number): void {
     this.store$.next({
       performingAction: false,
       uiMessage: message,

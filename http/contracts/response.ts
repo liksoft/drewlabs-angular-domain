@@ -21,11 +21,11 @@ export interface IHttpResponseData {
   getContent(): any;
 }
 
-export enum HttpResponseStatusCode {
-  STATUS_OK = 200 || 201,
-  STATUS_CREATED = 201,
-  BAD_REQUEST = 422 || 400,
-  SERVER_ERROR = 500,
-  UNKNOWN = 0,
-  UNAUTHORIZED = 401
+export class HttpResponseStatusCode {
+  static readonly STATUS_OK = 200 || 201;
+  static readonly STATUS_CREATED = 201;
+  static readonly BAD_REQUEST = 422 || 400;
+  static readonly SERVER_ERROR = 500;
+  static readonly UNKNOWN = 0;
+  static readonly UNAUTHORIZED = 401;
 }

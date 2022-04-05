@@ -1,9 +1,10 @@
-import { ArrayUtils, JSObject } from "../../../../utils";
-import { ControlInterface, FormInterface } from "../compact/types";
-import { IDynamicForm } from "../contracts/dynamic-form";
-import { IHTMLFormControl } from "../contracts/dynamic-input";
-import { DynamicForm } from "../types/dynamic-form";
-import { buildControl } from "../types/builder";
+import { ArrayUtils, JSObject } from '../../../../utils';
+import { ControlInterface, FormInterface } from '../compact/types';
+import { IDynamicForm } from '../contracts/dynamic-form';
+import { IHTMLFormControl } from '../contracts/dynamic-input';
+import { DynamicForm } from '../types/dynamic-form';
+import { buildControl } from '../types/builder';
+import { Control } from '../models';
 
 export class DynamicFormHelpers {
   /**
@@ -87,7 +88,7 @@ export const sortformbyindex = (form: IDynamicForm) => {
     if (hasControls) {
       form_.controlConfigs = ArrayUtils.sort(
         form_.controlConfigs as Array<IHTMLFormControl>,
-        "formControlIndex",
+        'formControlIndex',
         order
       ) as IHTMLFormControl[];
     }
@@ -100,15 +101,8 @@ export const sortformbyindex = (form: IDynamicForm) => {
  * @description Sort form loaded from backend server by control index
  */
 export const sortRawFormControls = (value: FormInterface) => {
-  if (
-    Array.isArray(value.controls) &&
-    (value.controls as ControlInterface[]).length !== 0
-  ) {
-    value.controls = ArrayUtils.sort(
-      value.controls as ControlInterface[],
-      "controlIndex",
-      1
-    ) as ControlInterface[];
+  if (Array.isArray(value.controls) && value.controls.length !== 0) {
+    value.controls = ArrayUtils.sort(value.controls, 'controlIndex', 1);
   }
   return value;
 };
@@ -129,3 +123,49 @@ export const rebuildFormControlConfigs = (
     })
   );
 };
+
+export function groupControlsBy(
+  controls: ControlInterface[],
+  property: keyof ControlInterface
+) {
+  return controls.reduce((carry, current) => {
+    const key = (current[property] ?? 'root') as string;
+    if (!carry[key]) {
+      carry[key] = [];
+    }
+    carry[key].push(current);
+    return carry;
+  }, {});
+}
+
+export function setControlChildren(value: FormInterface) {
+  return function (
+    groupBy: (
+      values: ControlInterface[],
+      property: keyof ControlInterface
+    ) => { [index: string]: ControlInterface[] }
+  ) {
+    const controls = groupBy(value.controls, 'controlGroupKey');
+    const values = sortControlsBy(controls['root'] ?? [], 'controlIndex').map(
+      (current) => {
+        return {
+          ...current,
+          children: sortControlsBy(
+            controls[current['id']] ?? [],
+            'controlIndex'
+          ),
+        };
+      }
+    );
+
+    return { ...value, controls: values };
+  };
+}
+
+export function sortControlsBy(
+  controls: ControlInterface[],
+  property: keyof ControlInterface,
+  order = 1
+) {
+  return ArrayUtils.sort(controls, property, order);
+}

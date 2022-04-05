@@ -1,7 +1,5 @@
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { InjectionToken } from "@angular/core";
+import { HttpErrorResponse } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { ErrorHandler } from "./error-handler";
 
 export interface Client {
   /**
