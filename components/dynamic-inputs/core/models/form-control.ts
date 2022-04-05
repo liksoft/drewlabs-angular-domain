@@ -158,7 +158,7 @@ export class FormControlRequest {
   formId!: number;
   formControlId!: number;
   controlName!: string;
-  formControlGroupId!: number | string;
+  groupID!: number | string;
   index!: number;
   value!: string | number;
   required!: boolean;
@@ -186,7 +186,7 @@ export class FormControlRequest {
       form_id: "formId",
       form_control_id: "formControlId",
       control_name: "controlName",
-      form_control_group_id: "formControlGroupId",
+      group_id: "groupID",
       index: "index",
       value: "value",
       required: "required",

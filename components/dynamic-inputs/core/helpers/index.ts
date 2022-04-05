@@ -6,6 +6,8 @@ export {
   sortRawFormControls,
   copyform,
   rebuildFormControlConfigs,
+  groupControlsBy,
+  setControlChildren
 } from "./form";
 
 export {
