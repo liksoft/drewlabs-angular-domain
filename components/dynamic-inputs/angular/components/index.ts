@@ -9,6 +9,10 @@ import { PasswordInputComponent } from './password-input/password-input.componen
 import { CheckoxInputComponent } from './checkox-input/checkox-input.component';
 import { RadioInputComponent } from './radio-input/radio-input.component';
 import { DynamicFormControlComponent } from './dynamic-form-control.component';
+import { NgxSmartFormComponent } from './ngx-smart-form/ngx-smart-form.component';
+import { NgxSmartFormGroupComponent } from './ngx-smart-form-group/ngx-smart-form-group.component';
+import { NgxSmartFormArrayComponent } from './ngx-smart-form-array/ngx-smart-form-array.component';
+import { NgxSmartFormArrayChildComponent } from './ngx-smart-form-array/ngx-smart-form-array-child.component';
 
 export const DECLARATIONS = [
   DynamicFormControlComponent,
@@ -22,6 +26,12 @@ export const DECLARATIONS = [
   PasswordInputComponent,
   CheckoxInputComponent,
   RadioInputComponent,
+
+  // Smart form related components
+  NgxSmartFormComponent,
+  NgxSmartFormGroupComponent,
+  NgxSmartFormArrayComponent,
+  NgxSmartFormArrayChildComponent,
 ];
 
 // Exports
