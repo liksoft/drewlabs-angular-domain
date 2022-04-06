@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { IHTMLFormControl } from '../../../core/contracts/dynamic-input';
-import { InputTypes } from '../../../core/contracts/input-types';
+import { InputInterface, InputTypes } from '../../../core';
 import { DynamicInputTypeHelper } from '../../services/input-type';
 
 @Component({
@@ -9,19 +8,18 @@ import { DynamicInputTypeHelper } from '../../services/input-type';
   templateUrl: './dynamic-radio-input.component.html',
   styles: [
     `
-    .required-text,
-    .field-has-error {
-      color: rgb(241, 50, 50);
-    }
+      .required-text,
+      .field-has-error {
+        color: rgb(241, 50, 50);
+      }
 
-    .clr-input-wrapper .clr-input:disabled {
-      background: rgba(244, 244, 244, .3);
-    }
-    `
-  ]
+      .clr-input-wrapper .clr-input:disabled {
+        background: rgba(244, 244, 244, 0.3);
+      }
+    `,
+  ],
 })
 export class DynamicRadioInputComponent {
-
   @Input() inline: boolean = true;
 
   // tslint:disable-next-line: variable-name
@@ -33,8 +31,8 @@ export class DynamicRadioInputComponent {
     return this._control;
   }
   // tslint:disable-next-line: variable-name
-  private _inputConfig!: IHTMLFormControl;
-  @Input() set inputConfig(value: IHTMLFormControl) {
+  private _inputConfig!: InputInterface;
+  @Input() set inputConfig(value: InputInterface) {
     this._inputConfig = value;
   }
   get inputConfig() {
@@ -44,17 +42,13 @@ export class DynamicRadioInputComponent {
 
   public inputTypes = InputTypes;
 
-  constructor(
-    public readonly inputType: DynamicInputTypeHelper
-  ) {}
+  constructor(public readonly inputType: DynamicInputTypeHelper) {}
 
   onValueChanges(event: any) {
     this.control.setValue(event);
   }
 
-
   inputValue(name: string, value: string) {
     return `${name}_${value}`;
   }
-
 }

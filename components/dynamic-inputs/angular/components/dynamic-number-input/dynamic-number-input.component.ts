@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { getObjectProperty } from "../../../../../../core/utils";
-import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
+import { InputInterface } from "../../../core";
 import { DynamicInputTypeHelper } from "../../services/input-type";
-import { InputEventArgs } from "../../types/dynamic-inputs";
+import { InputEventArgs } from "../../types/input";
 
 @Component({
   selector: "app-dynamic-number-input",
@@ -26,7 +26,7 @@ export class DynamicNumberInputComponent {
   @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
-  @Input() inputConfig!: IHTMLFormControl;
+  @Input() inputConfig!: InputInterface;
   @Output() keyup = new EventEmitter<InputEventArgs>();
   @Output() keydown = new EventEmitter<InputEventArgs>();
   @Output() keypress = new EventEmitter<InputEventArgs>();

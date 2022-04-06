@@ -1,7 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { FormGroup, FormBuilder, FormControl } from "@angular/forms";
-import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
-import { InputTypes } from "../../../core/contracts/input-types";
+import { InputInterface, InputTypes } from "../../../core";
 import { CheckBoxInput } from "../../../core";
 import { DynamicInputTypeHelper } from "../../services/input-type";
 
@@ -34,8 +33,8 @@ export class DynamicCheckoxInputComponent {
   }
 
   // tslint:disable-next-line: variable-name
-  private _inputConfig!: IHTMLFormControl;
-  @Input() set inputConfig(value: IHTMLFormControl) {
+  private _inputConfig!: InputInterface;
+  @Input() set inputConfig(value: InputInterface) {
     this._inputConfig = value;
     if (
       this.inputConfig &&

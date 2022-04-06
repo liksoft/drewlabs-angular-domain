@@ -1,12 +1,15 @@
-import { IDynamicForm } from "../contracts/dynamic-form";
-import { IHTMLFormControl } from "../contracts/dynamic-input";
+import { IDynamicForm } from '../types/form';
+import { InputInterface } from '../types/input';
 
+/**
+ * @deprecated
+ */
 export class DynamicForm implements IDynamicForm {
   id!: number | string;
+  controlConfigs: InputInterface[] = [];
   forms?: IDynamicForm[];
   title!: string;
   description?: string;
-  controlConfigs!: IHTMLFormControl[] | any;
   endpointURL?: string;
   appcontext?: string;
 
@@ -19,7 +22,6 @@ export class DynamicForm implements IDynamicForm {
     description,
     controlConfigs,
     endpointURL,
-    forms,
     appcontext,
   }: IDynamicForm) {
     this.id = id;
@@ -27,7 +29,6 @@ export class DynamicForm implements IDynamicForm {
     this.controlConfigs = controlConfigs ? [...controlConfigs] : [];
     this.description = description;
     this.endpointURL = endpointURL;
-    this.forms = forms;
     this.appcontext = appcontext;
   }
 }

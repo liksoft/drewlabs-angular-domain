@@ -1,5 +1,5 @@
 import { AbstractControl, FormBuilder } from "@angular/forms";
-import { IDynamicForm, IHTMLFormControl } from "../../core";
+import { IDynamicForm, InputInterface } from "../../core";
 
 export type Builder = FormBuilder;
 
@@ -14,5 +14,5 @@ export interface AngularReactiveFormBuilderBridge {
    * from dynamic form or list of dynamic inputs
    * @param source
    */
-  group(source: IDynamicForm | IHTMLFormControl[]): AbstractControl;
+  group(source: IDynamicForm | InputInterface[]): AbstractControl;
 }

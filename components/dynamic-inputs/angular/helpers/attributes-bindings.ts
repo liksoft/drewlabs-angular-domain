@@ -1,21 +1,21 @@
-import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { BindingInterface } from '../types';
 import { ComponentReactiveFormHelpers } from './reactive-form';
 import { isNumber } from '../../../../utils';
+import { InputInterface } from '../../core';
 
 type CreateControlAttributeSetterReturnType = (
   formgroup: AbstractControl
-) => [AbstractControl, IHTMLFormControl[]];
+) => [AbstractControl, InputInterface[]];
 
 type CreateControlAttributeSetterType = (
-  controls: IHTMLFormControl[],
+  controls: InputInterface[],
   bindings: BindingInterface,
   value: any
 ) => CreateControlAttributeSetterReturnType;
 
 export function createHiddenAttributeSetter(
-  controls: IHTMLFormControl[],
+  controls: InputInterface[],
   bidings: BindingInterface,
   value: string | number
 ): CreateControlAttributeSetterReturnType {
@@ -35,10 +35,9 @@ export function createHiddenAttributeSetter(
           _control.hidden = !requiredIfValues.includes(value) ? true : false;
           if (_control.hidden) {
             const current = formgroup.get(bidings.key);
-            // current instanceof FormGroup || current instanceof FormArray
-            //   ? current.reset()
-            //   : current.reset();
-            current.reset();
+            if (current) {
+              current.reset();
+            }
             ComponentReactiveFormHelpers.clearControlValidators(
               formgroup.get(bidings.key) || undefined
             );
@@ -62,7 +61,7 @@ export function createHiddenAttributeSetter(
 }
 
 // tslint:disable-next-line: typedef
-export function controlAttributesDataBindings(controls: IHTMLFormControl[]) {
+export function controlAttributesDataBindings(controls: InputInterface[]) {
   return (formgroup: AbstractControl) => {
     const bindings: Map<string, BindingInterface> = new Map();
     if (Array.isArray(controls) && controls.length !== 0 && formgroup) {
@@ -107,7 +106,7 @@ export function controlAttributesDataBindings(controls: IHTMLFormControl[]) {
 
 // tslint:disable-next-line: typedef
 export function setControlsAttributes(
-  controls: IHTMLFormControl[],
+  controls: InputInterface[],
   bindings: BindingInterface,
   value: any,
   callback: CreateControlAttributeSetterType

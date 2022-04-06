@@ -1,1 +1,0 @@
-export { ChildComponent } from './child';

@@ -1,13 +1,12 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { AbstractControl, FormControl } from "@angular/forms";
-import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
-import { InputTypes } from "../../../core/contracts/input-types";
+import { InputInterface, InputTypes } from "../../../core";
 import {
   getObjectProperty,
   maxNumberSize as utilsMaxNumberSize,
 } from "../../../../../utils";
 import { DynamicInputTypeHelper } from "../../services/input-type";
-import { InputEventArgs } from "../../types/dynamic-inputs";
+import { InputEventArgs } from "../../types/input";
 
 @Component({
   selector: "app-dynamic-text-input",
@@ -33,7 +32,7 @@ export class DynamicTextInputComponent {
   @Input() control!: AbstractControl & FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
-  @Input() inputConfig!: IHTMLFormControl;
+  @Input() inputConfig!: InputInterface;
 
   @Output() keyup = new EventEmitter<InputEventArgs>();
   @Output() keydown = new EventEmitter<InputEventArgs>();

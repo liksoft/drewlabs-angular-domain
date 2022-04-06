@@ -11,9 +11,9 @@ import { CustomValidators } from '../../../../validators/validators';
 import {
   CheckboxItem,
   IDynamicForm,
-  IHTMLFormControl,
+  InputInterface,
   InputTypes,
-} from '../../core/contracts';
+} from '../../core';
 import {
   CheckBoxInput,
   DateInput,
@@ -37,7 +37,7 @@ export class ComponentReactiveFormHelpers {
    */
   static buildFormGroupFromInputConfig(
     builder: FormBuilder,
-    inputs: (IHTMLFormControl | InputGroup)[]
+    inputs: (InputInterface | InputGroup)[]
   ) {
     // Build the outer form group
     const group = builder.group({});
@@ -77,7 +77,7 @@ export class ComponentReactiveFormHelpers {
     return group;
   }
 
-  public static buildGroup(builder: FormBuilder, inputs: IHTMLFormControl[]) {
+  public static buildGroup(builder: FormBuilder, inputs: InputInterface[]) {
     const group = builder.group({});
     for (const config of inputs) {
       if (config.type !== InputTypes.CHECKBOX_INPUT) {
@@ -95,7 +95,7 @@ export class ComponentReactiveFormHelpers {
     return group;
   }
 
-  public static buildControl(builder: FormBuilder, config: IHTMLFormControl) {
+  public static buildControl(builder: FormBuilder, config: InputInterface) {
     const validators = [
       config.rules && config.rules.isRequired
         ? Validators.required
@@ -211,7 +211,7 @@ export class ComponentReactiveFormHelpers {
     return control;
   }
 
-  public static buildArray(builder: FormBuilder, config: IHTMLFormControl) {
+  public static buildArray(builder: FormBuilder, config: InputInterface) {
     const array: FormArray = new FormArray([]);
     observableOf((config as CheckBoxInput).items)
       .pipe(
@@ -230,7 +230,6 @@ export class ComponentReactiveFormHelpers {
     return array;
   }
 
-
   public static validateFormGroupFields(control: FormGroup | FormArray): void {
     for (const value of Object.values(control.controls)) {
       if (value instanceof FormGroup || value instanceof FormArray) {
@@ -240,7 +239,6 @@ export class ComponentReactiveFormHelpers {
       }
     }
   }
-
 
   public static markControlAsTouched(
     control?: AbstractControl,
@@ -278,7 +276,6 @@ export class ComponentReactiveFormHelpers {
     }
   }
 }
-
 
 export const createAngularAbstractControl = (
   builder: FormBuilder,

@@ -11,11 +11,11 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { Observable, Subject } from 'rxjs';
+import { EMPTY, Observable, Subject } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
 import { timeout } from '../../../../../rxjs/helpers';
-import { IDynamicForm, IHTMLFormControl, sortformbyindex } from '../../../core';
-import { AngularReactiveFormBuilderBridge } from '../../contracts';
+import { IDynamicForm, InputInterface } from '../../../core';
+import { AngularReactiveFormBuilderBridge } from '../../types';
 import {
   ComponentReactiveFormHelpers,
   controlAttributesDataBindings,
@@ -43,8 +43,8 @@ export class NgxSmartFormComponent
   //#endregion Local properties
 
   //#region Component inputs
-  @Input() template: TemplateRef<Node>;
-  @Input() addTemplate: TemplateRef<Node>;
+  @Input() template!: TemplateRef<Node>;
+  @Input() addTemplate!: TemplateRef<Node>;
   @Input() performingAction = false;
   @Input() disabled = false;
   @Input() submitable = true;
@@ -73,7 +73,7 @@ export class NgxSmartFormComponent
   }
 
   //#region Content
-  @ContentChild('submitButton') submitButtonRef: TemplateRef<Node>;
+  @ContentChild('submitButton') submitButtonRef!: TemplateRef<Node>;
   //#endregion Component Injected Templates
 
   public constructor(
@@ -83,7 +83,11 @@ export class NgxSmartFormComponent
 
   //#region FormComponent interface Methods definitions
   controlValueChanges(control: string): Observable<unknown> {
-    return this.formGroup?.get(control)?.valueChanges;
+    const control_ = this.formGroup?.get(control);
+    if (control_) {
+      return control_.valueChanges;
+    }
+    return EMPTY;
   }
 
   getControlValue(control: string, _default?: any): unknown {
@@ -109,8 +113,8 @@ export class NgxSmartFormComponent
     }
     this.formGroup.addControl(name, control);
   }
-  getControl(name: string): AbstractControl {
-    return this.formGroup.get(name);
+  getControl(name: string): AbstractControl | undefined {
+    return this.formGroup.get(name) ?? undefined;
   }
   onSubmit(event: Event): void | Observable<unknown> {
     ComponentReactiveFormHelpers.validateFormGroupFields(this.formGroup);
@@ -123,7 +127,7 @@ export class NgxSmartFormComponent
   setComponentForm(value: IDynamicForm): void {
     if (value) {
       // We set the controls container class
-      const controls = value.controlConfigs.map((current) => ({
+      const controls = (value.controlConfigs ?? []).map((current) => ({
         ...current,
         containerClass: false
           ? 'clr-col-md-12'
@@ -131,7 +135,7 @@ export class NgxSmartFormComponent
         isRepeatable: current.isRepeatable ?? false,
       }));
       //
-      this.internal = sortformbyindex({ ...value, controlConfigs: controls });
+      this.internal = { ...value, controlConfigs: controls };
       // We unregister from previous event each time we set the
       // form value
       this._destroy$.next();
@@ -160,7 +164,7 @@ export class NgxSmartFormComponent
   }
   reset(): void {
     this.formGroup.reset();
-    for (const control of this.internal.controlConfigs) {
+    for (const control of this.internal.controlConfigs ?? []) {
       this.formGroup.get(control.formControlName)?.setValue(control.value);
     }
   }
@@ -169,11 +173,11 @@ export class NgxSmartFormComponent
   setBindings() {
     if (this.internal && this.formGroup) {
       const [bindings, formgroup, controls] = controlAttributesDataBindings(
-        this.internal.controlConfigs
+        this.internal.controlConfigs ?? []
       )(this.formGroup);
       this.internal = {
         ...this.internal,
-        controlConfigs: controls as IHTMLFormControl[],
+        controlConfigs: controls as InputInterface[],
       };
       this.formGroup = formgroup as FormGroup;
       // Get control entries from the formgroup
@@ -205,7 +209,7 @@ export class NgxSmartFormComponent
     for (const current of bindings.values()) {
       if (current.binding?.formControlName.toString() === name.toString()) {
         const [control, controls] = setControlsAttributes(
-          this.internal.controlConfigs,
+          this.internal.controlConfigs ?? [],
           current,
           event,
           createHiddenAttributeSetter

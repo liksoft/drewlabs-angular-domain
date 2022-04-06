@@ -17,7 +17,7 @@ import {
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
-import { IHTMLFormControl } from '../../../core';
+import { InputInterface } from '../../../core';
 import { AngularReactiveFormBuilderBridge } from '../../contracts';
 import { cloneAbstractControl } from '../../helpers';
 import { ANGULAR_REACTIVE_FORM_BRIDGE } from '../../types';
@@ -56,8 +56,8 @@ import { NgxSmartFormArrayChildComponent } from './ngx-smart-form-array-child.co
 export class NgxSmartFormArrayComponent implements OnInit, OnDestroy {
   //#region Component inputs definitions
   @Input() formArray!: FormArray;
-  private _controls!: IHTMLFormControl[];
-  @Input() set controls(value: IHTMLFormControl | IHTMLFormControl[]) {
+  private _controls!: InputInterface[];
+  @Input() set controls(value: InputInterface | InputInterface[]) {
     this._controls = Array.isArray(value)
       ? value
       : [value].filter(

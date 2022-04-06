@@ -1,21 +1,17 @@
-import { getObjectProperty } from "../../../../utils";
-import { ControlInterface } from "../compact/types";
-import {
-  CheckboxItem,
-  ISelectItem,
-  RadioItem,
-} from "../contracts/control-item";
-import { parseControlItemsConfigs } from "./parsers";
+import { getObjectProperty } from '../../../../utils';
+import { ControlInterface } from '../compact';
+import { CheckboxItem, RadioItem, SelectSourceInterface } from '../types';
+import { parseControlItemsConfigs } from './parsers';
 
-export const buildRequiredIfConfig = (stringifiedConfig: string) => {
-  if (stringifiedConfig?.indexOf(":") !== -1) {
+export const buildRequiredIfConfig = (str: string) => {
+  if (str?.indexOf(':') !== -1) {
     // split the string into the two parts
-    const parts = stringifiedConfig.split(":");
+    const parts = str.split(':');
     let values: any[] = [];
     const result =
-      parts[1].indexOf("|") !== -1 ? parts[1].split("|") : [parts[1]];
+      parts[1].indexOf('|') !== -1 ? parts[1].split('|') : [parts[1]];
     result.forEach((part) => {
-      const split = part.indexOf(",") !== -1 ? part.split(",") : part;
+      const split = part.indexOf(',') !== -1 ? part.split(',') : part;
       values = [...values, ...split];
     });
     return {
@@ -26,14 +22,12 @@ export const buildRequiredIfConfig = (stringifiedConfig: string) => {
   return undefined;
 };
 
-export const buildCheckboxItems = (
-  model: Partial<ControlInterface>
-) => {
+export const buildCheckboxItems = (model: Partial<ControlInterface>) => {
   if (model.selectableValues) {
-    const items = model.selectableValues?.split("|") || [];
+    const items = model.selectableValues?.split('|') || [];
     return items?.map((v, i) => {
-      if (v.indexOf(":") !== -1) {
-        const idValueFields = v.split(":");
+      if (v.indexOf(':') !== -1) {
+        const idValueFields = v.split(':');
         return {
           value: idValueFields[0].trim(),
           checked: i === 0,
@@ -55,9 +49,9 @@ export const buildCheckboxItems = (
     return model.options
       ? model.options.map((v, index) => {
           return {
-            value: getObjectProperty(v, keyfield || ""),
+            value: getObjectProperty(v, keyfield || ''),
             checked: index === 0,
-            description: getObjectProperty(v, valuefield || ""),
+            description: getObjectProperty(v, valuefield || ''),
           } as CheckboxItem;
         })
       : [];
@@ -69,25 +63,23 @@ export const buildCheckboxItems = (
 /**
  * @deprecated
  */
-export const buildSelectItems = (
-  model: Partial<ControlInterface>
-) => {
+export const buildSelectItems = (model: Partial<ControlInterface>) => {
   if (model.selectableValues) {
-    const items = model.selectableValues?.split("|") || [];
+    const items = model.selectableValues?.split('|') || [];
     return items.map((v, i) => {
-      if (v.indexOf(":") !== -1) {
-        const idValueFields = v.split(":");
+      if (v.indexOf(':') !== -1) {
+        const idValueFields = v.split(':');
         return {
           value: idValueFields[0].trim(),
           name: idValueFields[1].trim(),
           description: idValueFields[1].trim(),
-        } as ISelectItem;
+        } as SelectSourceInterface;
       } else {
         return {
           value: isNaN(+v.trim()) ? v.trim() : +v.trim(),
           name: v.trim(),
           description: v.trim(),
-        } as ISelectItem;
+        } as SelectSourceInterface;
       }
     });
   } else if (model.selectableModel) {
@@ -98,14 +90,14 @@ export const buildSelectItems = (
     return model.options
       ? model.options.map((v) => {
           return {
-            value: getObjectProperty(v, keyfield || ""),
-            description: getObjectProperty(v, valuefield || ""),
-            name: getObjectProperty(v, valuefield || ""),
+            value: getObjectProperty(v, keyfield || ''),
+            description: getObjectProperty(v, valuefield || ''),
+            name: getObjectProperty(v, valuefield || ''),
             type:
               groupfield && keyfield !== groupfield && valuefield !== groupfield
-                ? getObjectProperty(v, groupfield || "")
+                ? getObjectProperty(v, groupfield || '')
                 : undefined,
-          } as ISelectItem;
+          } as SelectSourceInterface;
         })
       : [];
   } else {
@@ -113,14 +105,12 @@ export const buildSelectItems = (
   }
 };
 
-export const buildRadioInputItems = (
-  model: Partial<ControlInterface>
-) => {
+export const buildRadioInputItems = (model: Partial<ControlInterface>) => {
   if (model.selectableValues) {
-    const items = model.selectableValues?.split("|") || [];
+    const items = model.selectableValues?.split('|') || [];
     return items.map((v, i) => {
-      if (v.indexOf(":") !== -1) {
-        const idValueFields = v.split(":");
+      if (v.indexOf(':') !== -1) {
+        const idValueFields = v.split(':');
         return {
           value: idValueFields[0].trim(),
           checked: i === 0,
@@ -142,8 +132,8 @@ export const buildRadioInputItems = (
     return model.options
       ? model.options.map((v, index) => {
           return {
-            value: getObjectProperty(v, keyfield || ""),
-            description: getObjectProperty(v, valuefield || ""),
+            value: getObjectProperty(v, keyfield || ''),
+            description: getObjectProperty(v, valuefield || ''),
             checked: index === 0,
           } as RadioItem;
         })

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { IDynamicForm, IHTMLFormControl } from "../../core/contracts";
+import { IDynamicForm, InputInterface } from "../../core";
 import { ComponentReactiveFormHelpers } from "../helpers";
 
 /**
@@ -20,7 +20,7 @@ export class DynamicFormBuilder {
    * parsing dynamic controls into an angular formgoup
    * @param inputs
    */
-  public buildFormGroupFromInputConfig(inputs: IHTMLFormControl[]) {
+  public buildFormGroupFromInputConfig(inputs: InputInterface[]) {
     return ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(
       this.builder,
       inputs
@@ -37,7 +37,7 @@ export class DynamicFormBuilder {
     if (typeof form === "undefined" || form === null) {
       return undefined;
     }
-    const configs = [...(form.controlConfigs as IHTMLFormControl[])];
+    const configs = [...(form.controlConfigs as InputInterface[])];
     return this.buildFormGroupFromInputConfig(configs) as FormGroup;
   }
 }

@@ -1,11 +1,10 @@
-// Contracts
+// Type definitions
 export {
   IDynamicForm,
   IHTMLFormControlValidationRule,
   InputTypes,
   IHTMLFormControl,
   CheckboxItem,
-  ISelectItem,
   RadioItem,
   SelectSourceInterface,
   FormsClient,
@@ -14,39 +13,37 @@ export {
   ServerSideSelectableControl,
   SelectableControlDataSource,
   CacheProvider,
-} from "./contracts";
+  InputValidationRule,
+  InputInterface,
+  InputRequireIfConfig
+} from './types';
 
-// Control Types
+// Input types defintions
 export {
   TextInput,
   DateInput,
   CheckBoxInput,
-  HiddenInput,
   NumberInput,
-  PasswordInput,
-  PhoneInput,
   RadioInput,
   SelectInput,
   TextAreaInput,
   FileInput,
-  HMTLInput,
+  HTMLInput,
   InputGroup,
   DynamicForm,
   AbstractHTMLFormControl,
-} from "./types";
+} from './input-types';
 
 // Helpers
 export {
-  rebuildFormControlConfigs,
   sortRawFormControls,
   buildControl,
   DynamicFormHelpers,
   createform,
   copyform,
-  sortformbyindex,
   groupControlsBy,
-  setControlChildren
-} from "./helpers";
+  setControlChildren,
+} from './helpers';
 
 // Models
 export {
@@ -60,4 +57,4 @@ export {
   createFormElement,
   createOptionElement,
   serializedOptionElement,
-} from "./models";
+} from './models';

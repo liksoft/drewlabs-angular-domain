@@ -1,5 +1,3 @@
-import { IHTMLFormControl } from '../../core/contracts/dynamic-input';
-import { IDynamicForm } from '../../core/contracts/dynamic-form';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import {
   ApplyAttributeChangesToControlsCallback,
@@ -8,6 +6,7 @@ import {
 } from '../types';
 import { ComponentReactiveFormHelpers } from './reactive-form';
 import { isNumber } from '../../../../utils';
+import { IDynamicForm, InputInterface } from '../../core';
 
 /**
  * @deprecated
@@ -23,7 +22,7 @@ export const applyHiddenAttributeCallback =
     const hasControls =
       Array.isArray(form.controlConfigs) && form.controlConfigs.length !== 0;
     if (hasControls) {
-      form.controlConfigs = (form.controlConfigs as IHTMLFormControl[]).map(
+      form.controlConfigs = (form.controlConfigs as InputInterface[]).map(
         (_control) => {
           if (_control.formControlName === bidings.key) {
             value = isNaN(value as any) ? value : +value;
@@ -75,7 +74,7 @@ export const getControlBinding =
       form.controlConfigs.length !== 0 &&
       formgroup;
     if (canApplyBindings) {
-      (form.controlConfigs as IHTMLFormControl[]).forEach((config) => {
+      (form.controlConfigs as InputInterface[]).forEach((config) => {
         const { requiredIf, formControlName } = config;
         const control_ = formgroup.get(formControlName);
         if (requiredIf) {

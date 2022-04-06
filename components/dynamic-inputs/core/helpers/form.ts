@@ -1,10 +1,7 @@
 import { ArrayUtils, JSObject } from '../../../../utils';
 import { ControlInterface, FormInterface } from '../compact/types';
-import { IDynamicForm } from '../contracts/dynamic-form';
-import { IHTMLFormControl } from '../contracts/dynamic-input';
-import { DynamicForm } from '../types/dynamic-form';
-import { buildControl } from '../types/builder';
-import { Control } from '../models';
+import { IDynamicForm, InputInterface } from '../types';
+import { buildControl } from './input-types';
 
 export class DynamicFormHelpers {
   /**
@@ -34,13 +31,17 @@ export class DynamicFormHelpers {
             description: instance.description,
             endpointURL: instance.url,
             controlConfigs: hasControls
-              ? instance.controls
-                  ?.map((control) => {
-                    const config = buildControl(control);
-                    // tslint:disable-next-line: max-line-length
-                    return { ...config } as IHTMLFormControl;
-                  })
-                  .filter((value) => value ?? false)
+              ? (ArrayUtils.sort(
+                  instance.controls
+                    ?.map((control) => {
+                      const config = buildControl(control);
+                      // tslint:disable-next-line: max-line-length
+                      return { ...config } as InputInterface;
+                    })
+                    .filter((value) => value ?? false),
+                  'formControlIndex',
+                  1
+                ) as InputInterface[])
               : [],
           })
         : undefined;
@@ -62,8 +63,7 @@ export const cloneform = (form: IDynamicForm) =>
  * @description Helper method for creating a new dynmaic form
  * @param form Object with the shape of the IDynamicForm interface
  */
-export const createform = (form: IDynamicForm) =>
-  new DynamicForm(form) as IDynamicForm;
+export const createform = (form: IDynamicForm) => ({ ...form } as IDynamicForm);
 
 /**
  * Create a new dynamic form from a copy of the user provided parameter
@@ -77,53 +77,14 @@ export const copyform = (form: IDynamicForm) =>
 // #Forms Soring function
 
 /**
- * @description Sort a dynamic form control configs by their index
- * @param form
- */
-export const sortformbyindex = (form: IDynamicForm) => {
-  const loopThroughFormsFn = (form_: IDynamicForm, order = 1) => {
-    const hasControls =
-      Array.isArray(form_.controlConfigs) &&
-      (form_.controlConfigs as Array<IHTMLFormControl>).length !== 0;
-    if (hasControls) {
-      form_.controlConfigs = ArrayUtils.sort(
-        form_.controlConfigs as Array<IHTMLFormControl>,
-        'formControlIndex',
-        order
-      ) as IHTMLFormControl[];
-    }
-    return form_;
-  };
-  return loopThroughFormsFn(form);
-};
-
-/**
  * @description Sort form loaded from backend server by control index
  */
 export const sortRawFormControls = (value: FormInterface) => {
-  if (Array.isArray(value.controls) && value.controls.length !== 0) {
-    value.controls = ArrayUtils.sort(value.controls, 'controlIndex', 1);
-  }
-  return value;
+  return {
+    ...value,
+    controls: sortControlsBy(value.controls ?? [], 'controlIndex', 1),
+  } as FormInterface;
 };
-
-// # Form control builder
-export const rebuildFormControlConfigs = (
-  form: IDynamicForm,
-  controlConfigs: Array<IHTMLFormControl>
-) => {
-  return sortformbyindex(
-    new DynamicForm({
-      id: form.id,
-      title: form.title,
-      endpointURL: form.endpointURL,
-      description: form.description,
-      controlConfigs: [...controlConfigs],
-      forms: form.forms,
-    })
-  );
-};
-
 export function groupControlsBy(
   controls: ControlInterface[],
   property: keyof ControlInterface
@@ -135,7 +96,7 @@ export function groupControlsBy(
     }
     carry[key].push(current);
     return carry;
-  }, {});
+  }, {} as { [index: string]: any });
 }
 
 export function setControlChildren(value: FormInterface) {

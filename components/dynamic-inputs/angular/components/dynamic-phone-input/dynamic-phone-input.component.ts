@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { AbstractControl, FormControl } from "@angular/forms";
-import { IHTMLFormControl } from "../../../core/contracts/dynamic-input";
+import { InputInterface } from "../../../core";
 import { DynamicInputTypeHelper } from "../../services/input-type";
 
 @Component({
@@ -32,7 +32,7 @@ export class DynamicPhoneInputComponent {
   @Input() control!: AbstractControl & FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
-  @Input() inputConfig!: IHTMLFormControl;
+  @Input() inputConfig!: InputInterface;
 
   constructor(public readonly inputType: DynamicInputTypeHelper) {}
 }

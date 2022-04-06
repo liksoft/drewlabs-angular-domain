@@ -6,20 +6,20 @@ import {
   Input,
   OnDestroy,
   Output,
-} from "@angular/core";
-import { AbstractControl, FormGroup } from "@angular/forms";
-import { createSubject, timeout } from "../../../../../rxjs/helpers";
-import { IDynamicForm } from "../../../core/contracts";
-import { AngularReactiveFormBuilderBridge } from "../../contracts";
-import { ComponentReactiveFormHelpers } from "../../helpers";
-import { ANGULAR_REACTIVE_FORM_BRIDGE, ControlsStateMap } from "../../types";
+} from '@angular/core';
+import { AbstractControl, FormGroup } from '@angular/forms';
+import { createSubject, timeout } from '../../../../../rxjs/helpers';
+import { IDynamicForm } from '../../../core';
+import { AngularReactiveFormBuilderBridge } from '../../types';
+import { ComponentReactiveFormHelpers } from '../../helpers';
+import { ANGULAR_REACTIVE_FORM_BRIDGE, ControlsStateMap } from '../../types';
 
 /**
  * @deprecated
  */
 @Component({
-  selector: "app-simple-dynamic-form",
-  templateUrl: "./simple-form.component.html",
+  selector: 'app-simple-dynamic-form',
+  templateUrl: './simple-form.component.html',
   styles: [],
 })
 export class SimpleDynamicFormComponent implements OnDestroy {
@@ -52,7 +52,7 @@ export class SimpleDynamicFormComponent implements OnDestroy {
   @Output() public componentReadyStateChanges = new EventEmitter();
   public readonly destroy$ = createSubject<void>();
 
-  @HostListener("keyup.enter", ["$event"])
+  @HostListener('keyup.enter', ['$event'])
   onEnterButtonCliked(event: KeyboardEvent) {
     if (!this.performingAction) {
       this.onFormSubmitted(event);
@@ -120,7 +120,7 @@ export class SimpleDynamicFormComponent implements OnDestroy {
 
   public reset() {
     this.formgroup.reset();
-    for (const control of this._form.controlConfigs) {
+    for (const control of this._form.controlConfigs ?? []) {
       this.formgroup.get(control.formControlName)?.setValue(control.value);
     }
   }

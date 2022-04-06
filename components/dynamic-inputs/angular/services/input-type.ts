@@ -1,22 +1,20 @@
-import { Injectable } from "@angular/core";
-import { AbstractControl, FormArray } from "@angular/forms";
+import { Injectable } from '@angular/core';
+import { AbstractControl, FormArray } from '@angular/forms';
 import {
-  IHTMLFormControl,
   SelectInput,
-  PasswordInput,
   CheckBoxInput,
   DateInput,
   TextInput,
   RadioInput,
   TextAreaInput,
   NumberInput,
-  PhoneInput,
   FileInput,
-  HMTLInput,
-} from "../../core";
+  HTMLInput,
+  InputInterface,
+} from '../../core';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class DynamicInputTypeHelper {
   /**
@@ -29,87 +27,87 @@ export class DynamicInputTypeHelper {
 
   /**
    * @description Returns a dynamic input configuration as a [[SelectInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asSelectInput(input?: IHTMLFormControl): SelectInput {
+  public asSelectInput(input?: InputInterface): SelectInput {
     return input as SelectInput;
   }
   /**
    * @description Returns a dynamic input configuration as a [[DateInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asDateInput(input?: IHTMLFormControl): DateInput {
+  public asDateInput(input?: InputInterface): DateInput {
     return input as DateInput;
   }
   /**
    * @description Returns a dynamic input configuration as a [[CheckBoxInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asCheckBoxInput(input?: IHTMLFormControl): CheckBoxInput {
+  public asCheckBoxInput(input?: InputInterface): CheckBoxInput {
     return input as CheckBoxInput;
   }
 
   /**
    * @description Returns a dynamic input configuration as a [[RadioInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asRadioInput(input?: IHTMLFormControl): RadioInput {
+  public asRadioInput(input?: InputInterface): RadioInput {
     return input as RadioInput;
   }
   /**
-   * @description Returns a dynamic input configuration as a [[PasswordInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @description Returns a dynamic input configuration as a [[TextInput]]
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asPasswordInput(input?: IHTMLFormControl): PasswordInput {
-    return input as PasswordInput;
+  public asPasswordInput(input?: InputInterface): TextInput {
+    return input as TextInput;
   }
   /**
    * @description Returns a dynamic input configuration as a [[TextInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asTextInput(input?: IHTMLFormControl): TextInput {
+  public asTextInput(input?: InputInterface): TextInput {
     return input as TextInput;
   }
   /**
    * @description Returns a dynamic input configuration as a [[TextAreaInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asTextAreaInput(input?: IHTMLFormControl): TextAreaInput {
+  public asTextAreaInput(input?: InputInterface): TextAreaInput {
     return input as TextAreaInput;
   }
   /**
    * @description Returns a dynamic input configuration as a [[NumberInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asNumberInput(input?: IHTMLFormControl): NumberInput {
+  public asNumberInput(input?: InputInterface): NumberInput {
     return input as NumberInput;
   }
   /**
    * @description Returns a dynamic input configuration as a [[TextInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asEmailInput(input?: IHTMLFormControl): TextInput {
+  public asEmailInput(input?: InputInterface): TextInput {
     return input as TextInput;
   }
   /**
    * @description Returns a dynamic input configuration as a [[FileInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asFileInput(input?: IHTMLFormControl): FileInput {
+  public asFileInput(input?: InputInterface): FileInput {
     return input as FileInput;
   }
   /**
    * @description Returns a dynamic input configuration as a [[HTMLInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asHtmlInput(input?: IHTMLFormControl): HMTLInput {
-    return input as HMTLInput;
+  public asHtmlInput(input?: InputInterface): HTMLInput {
+    return input as HTMLInput;
   }
   /**
-   * @description Returns a dynamic input configuration as a [[PhoneInput]]
-   * @param input [[IHTMLFormControl]] Dynamic input configurations instance
+   * @description Returns a dynamic input configuration as a [[TextInput]]
+   * @param input InputInterface Dynamic input configurations instance
    */
-  public asPhoneInput(input?: IHTMLFormControl): PhoneInput {
-    return input as PhoneInput;
+  public asPhoneInput(input?: InputInterface): TextInput {
+    return input as TextInput;
   }
 }

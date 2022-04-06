@@ -1,4 +1,4 @@
-export { InputEventArgs, SelectableControlItems } from './dynamic-inputs';
+export { InputEventArgs, SelectableControlItems } from './input';
 
 // Bindings
 export {

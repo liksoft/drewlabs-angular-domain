@@ -1,13 +1,16 @@
-import { IHTMLFormControl, HTMLFormControlRequireIfConfig } from '../contracts/dynamic-input';
-import { IHTMLFormControlValidationRule } from '../contracts/input-rules';
+import { InputInterface, InputRequireIfConfig } from '../types';
+import { InputValidationRule } from '../types/input-rules';
 
-export abstract class AbstractHTMLFormControl implements IHTMLFormControl {
+/**
+ * @deprecated
+ */
+export abstract class AbstractHTMLFormControl implements InputInterface {
   label: string;
   type: string;
   formControlName: string;
   classes: string;
-  requiredIf?: HTMLFormControlRequireIfConfig;
-  rules: IHTMLFormControlValidationRule;
+  requiredIf?: InputRequireIfConfig;
+  rules: InputValidationRule;
   placeholder?: string;
   items?: any[];
   value?: any;
@@ -25,12 +28,12 @@ export abstract class AbstractHTMLFormControl implements IHTMLFormControl {
    * @description Instance initializer
    * @param param Required input configuration object
    */
-  constructor(param: IHTMLFormControl) {
+  constructor(param: InputInterface) {
     this.label = param.label;
     this.type = param.type;
     this.formControlName = param.formControlName;
     this.classes = param.classes;
-    this.rules = param.rules ? param.rules : {} as IHTMLFormControlValidationRule;
+    this.rules = param.rules ? param.rules : {} as InputValidationRule;
     this.placeholder = param.placeholder;
     this.descriptionText = param.descriptionText;
     this.items = param.items;

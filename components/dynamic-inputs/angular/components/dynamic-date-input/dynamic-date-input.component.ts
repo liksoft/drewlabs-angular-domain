@@ -1,12 +1,12 @@
-import { Component, Inject, Input, LOCALE_ID } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { JSDate } from "../../../../../utils";
-import { IHTMLFormControl } from "../../../core/contracts";
-import { DynamicInputTypeHelper } from "../../services/input-type";
+import { Component, Inject, Input, LOCALE_ID } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { JSDate } from '../../../../../utils';
+import { InputInterface } from '../../../core';
+import { DynamicInputTypeHelper } from '../../services/input-type';
 
 @Component({
-  selector: "app-dynamic-date-input",
-  templateUrl: "./dynamic-date-input.component.html",
+  selector: 'app-dynamic-date-input',
+  templateUrl: './dynamic-date-input.component.html',
   styles: [
     `
       .required-text,
@@ -30,7 +30,7 @@ export class DynamicDateInputComponent {
   @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
-  @Input() inputConfig!: IHTMLFormControl;
+  @Input() inputConfig!: InputInterface;
 
   today = JSDate.format();
 
@@ -44,7 +44,7 @@ export class DynamicDateInputComponent {
     const locale = this.appLocalID;
     if (this.control.value) {
       const value: string = this.control.value as string;
-      if (value === "" || value.length === 0) {
+      if (value === '' || value.length === 0) {
         this.control.setValue(null);
         return;
       }

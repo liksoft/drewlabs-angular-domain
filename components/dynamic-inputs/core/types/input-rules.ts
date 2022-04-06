@@ -1,8 +1,10 @@
-
 /**
+ * @deprecated use {@see InputValidationRule}
  * @description Interface definition of input controles validation rules
  */
-export interface IHTMLFormControlValidationRule {
+export interface IHTMLFormControlValidationRule extends InputValidationRule {}
+
+export interface InputValidationRule {
   isRequired: boolean;
   maxLength?: boolean;
   minLength?: boolean;

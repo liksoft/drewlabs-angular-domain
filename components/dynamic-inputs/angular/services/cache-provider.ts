@@ -1,7 +1,13 @@
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { CacheProvider, FormsLoader } from '../../core';
+import {
+  CacheProvider,
+  FormsLoader,
+  groupControlsBy,
+  setControlChildren,
+  sortRawFormControls,
+} from '../../core';
 import { FormInterface } from '../../core/compact';
 import { DYNAMIC_FORM_LOADER } from './forms-loader';
 
@@ -48,7 +54,15 @@ export class FormsCacheProvider implements CacheProvider {
     return this.loader.load(endpoint, options).pipe(
       tap((state) => {
         // TODO : Add the list of
-        this._cache.next(state);
+        this._cache.next(
+          state
+            ? state.map((current) =>
+                sortRawFormControls(
+                  setControlChildren(current)(groupControlsBy)
+                )
+              )
+            : state
+        );
       })
     );
   };

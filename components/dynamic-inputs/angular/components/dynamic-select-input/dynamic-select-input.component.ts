@@ -17,10 +17,10 @@ import {
 import { controlBindingsSetter } from '../../../core/helpers';
 import { doLog } from '../../../../../rxjs/operators';
 import { DynamicInputTypeHelper } from '../../services/input-type';
-import { SelectInput } from '../../../core/types/select';
-import { InputEventArgs } from '../../types/dynamic-inputs';
+import { InputEventArgs } from '../../types/input';
 import { JSObject } from '../../../../../utils';
 import { API_BINDINGS_ENDPOINT, API_HOST } from '../../tokens';
+import { SelectInput } from '../../../core';
 @Component({
   selector: 'app-dynamic-select-input',
   templateUrl: './dynamic-select-input.component.html',

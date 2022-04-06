@@ -1,13 +1,9 @@
-import { AbstractControl, AsyncValidatorFn, ValidatorFn } from "@angular/forms";
-import { IDynamicForm } from "../../core/contracts/dynamic-form";
-import {
-  HTMLFormControlRequireIfConfig,
-  IHTMLFormControl,
-} from "../../core/contracts/dynamic-input";
+import { AbstractControl, AsyncValidatorFn, ValidatorFn } from '@angular/forms';
+import { IDynamicForm, InputInterface, InputRequireIfConfig } from '../../core';
 
 export interface BindingInterface {
   key: string;
-  binding: HTMLFormControlRequireIfConfig | undefined;
+  binding: InputRequireIfConfig | undefined;
   validators: ValidatorFn | ValidatorFn[] | undefined;
   asyncValidators: AsyncValidatorFn | AsyncValidatorFn[] | undefined;
 }
@@ -27,5 +23,5 @@ export type ApplyAttributeChangesToControlsCallback = (
 
 export interface MultiSelectItemRemoveEvent {
   event: any;
-  control: IHTMLFormControl;
+  control: InputInterface;
 }

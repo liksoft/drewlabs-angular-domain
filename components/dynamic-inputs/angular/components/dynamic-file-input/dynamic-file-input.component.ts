@@ -14,7 +14,7 @@ import { DynamicInputTypeHelper } from '../../services';
 import { map } from 'rxjs/operators';
 import { DropzoneComponent } from '../../../../dropzone/dropzone.component';
 import { createSubject } from '../../../../../rxjs/helpers';
-import { FileInput } from '../../../core/types';
+import { FileInput } from '../../../core';
 import { DropzoneConfig } from '../../../../dropzone';
 import { FormControl } from '@angular/forms';
 

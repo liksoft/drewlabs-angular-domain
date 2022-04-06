@@ -1,23 +1,21 @@
 export {
   DynamicFormHelpers,
-  sortformbyindex,
   cloneform,
   createform,
   sortRawFormControls,
   copyform,
-  rebuildFormControlConfigs,
   groupControlsBy,
-  setControlChildren
-} from "./form";
+  setControlChildren,
+} from './form';
 
 export {
   buildRequiredIfConfig,
   buildCheckboxItems,
   buildSelectItems,
   buildRadioInputItems,
-} from "./builders";
+} from './builders';
 
-export { buildControl } from "../types/builder";
+export { buildControl } from './input-types';
 
-export { parseControlItemsConfigs } from "./parsers";
-export { controlBindingsSetter } from "./control-bindings";
+export { parseControlItemsConfigs } from './parsers';
+export { controlBindingsSetter } from './bindings';
