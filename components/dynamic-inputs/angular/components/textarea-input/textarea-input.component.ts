@@ -12,17 +12,6 @@ import { InputEventArgs } from "../../types/input";
       .clr-control-container textarea {
         min-width: 100% !important;
       }
-      .required-text,
-      .field-has-error {
-        color: rgb(241, 50, 50);
-      }
-
-      .clr-input-wrapper .clr-input:disabled {
-        background: rgba(244, 244, 244, 0.3);
-      }
-      /* .clr-subtext {
-        margin-top: 1rem !important;
-    } */
     `,
   ],
 })

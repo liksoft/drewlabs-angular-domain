@@ -27,7 +27,7 @@ export interface CacheProvider {
    *
    * @param values
    */
-  getList(values: string[]|number[]): Observable<FormInterface[]>;
+  getList(values: (string|number)[]): Observable<FormInterface[]>;
 
   /**
    * Provides predefined dynamic forms loader implementation

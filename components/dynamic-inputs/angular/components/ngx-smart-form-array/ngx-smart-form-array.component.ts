@@ -35,8 +35,8 @@ import { NgxSmartFormArrayChildComponent } from './ngx-smart-form-array-child.co
       .ngx__smart_form_array__button {
         margin: 16px 0 auto 0;
         cursor: pointer;
-        width: 50px;
-        height: 50px;
+        width: 32px;
+        height: 32px;
         background: #0072a3;
         box-shadow: 1px 1px 1px rgb(114, 110, 110);
         display: flex;

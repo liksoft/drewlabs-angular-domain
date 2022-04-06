@@ -13,6 +13,7 @@ import { NgxSmartFormGroupComponent } from './ngx-smart-form-group/ngx-smart-for
 import { NgxSmartFormArrayComponent } from './ngx-smart-form-array/ngx-smart-form-array.component';
 import { NgxSmartFormArrayChildComponent } from './ngx-smart-form-array/ngx-smart-form-array-child.component';
 import { NgxSmartFormControlComponent } from './ngx-smart-form-control/ngx-smart-form-control.component';
+import { NgxSmartFormGroupHeaderPipe } from './ngx-smart-form-group/ngx-smart-form-group-header.pipe';
 
 export const DECLARATIONS = [
   FileInputComponent,
@@ -32,6 +33,9 @@ export const DECLARATIONS = [
   NgxSmartFormArrayComponent,
   NgxSmartFormArrayChildComponent,
   NgxSmartFormControlComponent,
+
+  // Pipes
+  NgxSmartFormGroupHeaderPipe
 ];
 
 // Exports

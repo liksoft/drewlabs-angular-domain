@@ -9,15 +9,6 @@ import { InputTypeHelper } from '../../services/input-type';
   templateUrl: './date-input.component.html',
   styles: [
     `
-      .required-text,
-      .field-has-error {
-        color: rgb(241, 50, 50);
-      }
-
-      .clr-input-wrapper .clr-input:disabled {
-        background: rgba(244, 244, 244, 0.3);
-      }
-
       :host ::ng-deep .clr-validate-icon.ng-star-inserted {
         display: none;
       }

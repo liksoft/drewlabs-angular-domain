@@ -17,7 +17,7 @@ import { InputTypeHelper } from '../../services';
 @Component({
   selector: 'ngx-smart-form-control',
   templateUrl: './ngx-smart-form-control.component.html',
-  styleUrls: ['./ngx-smart-form-control.component.css'],
+  styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NgxSmartFormControlComponent implements OnDestroy, OnInit {

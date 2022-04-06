@@ -20,8 +20,8 @@ import { InputInterface } from '../../../core';
       >
         <svg
           version="1.1"
-          width="32"
-          height="32"
+          width="24"
+          height="24"
           viewBox="0 0 36 36"
           preserveAspectRatio="xMidYMid meet"
           xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +50,7 @@ import { InputInterface } from '../../../core';
       .ngx__form_array__card {
         position: relative;
         border: 1px solid #e6e6e6;
-        border-radius: 8px;
+        border-radius: 2px;
         display: inline-block;
         margin-top: 0.8rem;
         display: block;
@@ -71,8 +71,8 @@ import { InputInterface } from '../../../core';
 
       .ngx__form_array__card__close_btn {
         position: absolute;
-        top: 8px;
-        right: 8px;
+        top: 4px;
+        right: 4px;
       }
       .ngx__form_array__card__close_btn svg path {
         fill: #707070;

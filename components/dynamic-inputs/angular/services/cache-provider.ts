@@ -42,7 +42,7 @@ export class FormsCacheProvider implements CacheProvider {
    *
    * @param values
    */
-  getList(values: string[] | number[]): Observable<FormInterface[]> {
+  getList(values: (string | number)[]): Observable<FormInterface[]> {
     const values_ = values.map((value: number | string) => value.toString());
     return this._cache.pipe(
       map((state) => state.filter((x) => values_.includes(x.id.toString())))

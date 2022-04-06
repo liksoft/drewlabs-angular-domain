@@ -1,10 +1,7 @@
-<clr-radio-container clrInline="inline">
+<clr-radio-container [clrInline]="inline">
   <label>
-    {{ inputType.asRadioInput(inputConfig).label }}
-    <span
-      class="required-text"
-      *ngIf="inputType.asRadioInput(inputConfig).rules?.isRequired"
-    >
+    {{ inputConfig.label }}
+    <span class="required-text" *ngIf="inputConfig.rules?.isRequired">
       (*)
     </span>
   </label>
@@ -17,7 +14,6 @@
     <input
       [tabIndex]="inputConfig?.formControlIndex"
       type="radio"
-      clrRadio
       required
       [checked]="control.value == item.value"
       [value]="inputValue(inputConfig.formControlName, item?.value)"

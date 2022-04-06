@@ -1,24 +1,35 @@
-import { Inject, Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { CacheProvider, FormsClient } from "../../core";
-import { FormInterface } from "../../core/compact";
-import { CACHE_PROVIDER } from "./cache-provider";
+import { Inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import {
+  CacheProvider,
+  DynamicFormHelpers,
+  FormsClient,
+  IDynamicForm,
+} from '../../core';
+import { CACHE_PROVIDER } from './cache-provider';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class JSONFormsClient implements FormsClient {
-  // Creates an instance of the FormClient class
+  // Class constructor
   constructor(
     @Inject(CACHE_PROVIDER)
     private provider: CacheProvider
   ) {}
 
-  // Get a form configuration using id
-  get(id: string | number): Observable<FormInterface> {
-    return this.provider.get(id);
+  get(id: string | number): Observable<IDynamicForm> {
+    return this.provider
+      .get(id)
+      .pipe(map((state) => DynamicFormHelpers.buildFormSync(state)));
   }
 
-  // Get List of form configurations
-  getAll(list: any[]): Observable<FormInterface[]> {
-    return this.provider.getList(list);
+  getAll(list: (string | number)[]): Observable<IDynamicForm[]> {
+    return this.provider
+      .getList(list)
+      .pipe(
+        map((state) =>
+          state.map((current) => DynamicFormHelpers.buildFormSync(current))
+        )
+      );
   }
 }

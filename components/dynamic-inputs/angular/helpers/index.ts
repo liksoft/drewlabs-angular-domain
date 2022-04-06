@@ -6,12 +6,6 @@ export {
   createAngularAbstractControl,
 } from './reactive-form';
 
-// Controls wrapper helpers
-export {
-  applyHiddenAttributeCallback,
-  applyAttribute,
-  getControlBinding,
-} from './control-wrapper';
 
 export {
   controlAttributesDataBindings,

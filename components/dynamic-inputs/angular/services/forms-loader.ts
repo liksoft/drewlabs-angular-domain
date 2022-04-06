@@ -1,15 +1,14 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable, InjectionToken } from "@angular/core";
-import { map } from "rxjs/operators";
-import { createFormElement, FormsLoader } from "../../core";
+import { HttpClient } from '@angular/common/http';
+import { Injectable, InjectionToken } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { createFormElement, FormsLoader } from '../../core';
 
 export const DYNAMIC_FORM_LOADER = new InjectionToken<FormsLoader>(
-  "PROVIDE DYNAMIC FORM LOADER"
+  'PROVIDE DYNAMIC FORM LOADER'
 );
 
 @Injectable()
 export class FormHttpLoader implements FormsLoader {
-
   // @constructor
   public constructor(private _http: HttpClient) {}
 
@@ -18,9 +17,9 @@ export class FormHttpLoader implements FormsLoader {
       map((state) => {
         if (state && Array.isArray(state)) {
           return (state as any[]).map((value: { [index: string]: any }) => {
-            let controls = value ? (value["formControls"] as any[]) ?? [] : [];
+            let controls = value ? (value['formControls'] as any[]) ?? [] : [];
             if (controls.length === 0) {
-              controls = value ? (value["controls"] as any[]) ?? [] : [];
+              controls = value ? (value['controls'] as any[]) ?? [] : [];
             }
             if (controls.length !== 0) {
               value = {

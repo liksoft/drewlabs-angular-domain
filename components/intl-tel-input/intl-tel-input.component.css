@@ -17,12 +17,14 @@ li.country:hover {
 }
 
 .intl-tel-input {
+  display: flex;
+  justify-content: flex-start;
   width: 100%;
 }
 
 .intl-tel-input button.btn {
-    background: var(--light-clouds);
-    border: none;
+  background: var(--light-clouds);
+  border: none;
 }
 
 /* #phone {

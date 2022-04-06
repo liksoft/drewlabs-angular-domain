@@ -34,21 +34,11 @@ import { SelectInput } from '../../../core';
         width: 100%;
         border-bottom-color: var(--clr-forms-border-color, #b3b3b3);
       }
-
       .ng-select.flat {
         border-radius: 0 !important;
       }
-
       .ng-select.flat .ng-select-container {
         border-radius: 0 !important;
-      }
-      .required-text,
-      .field-has-error {
-        color: rgb(241, 50, 50);
-      }
-
-      .clr-input-wrapper .clr-input:disabled {
-        background: rgba(244, 244, 244, 0.3);
       }
       :host ::ng-deep .ng-select .ng-select-container,
       :host ::ng-deep .ng-select.ng-select-single .ng-select-container {
@@ -59,7 +49,7 @@ import { SelectInput } from '../../../core';
       }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectInputComponent implements OnDestroy {
   private _control!: FormControl;

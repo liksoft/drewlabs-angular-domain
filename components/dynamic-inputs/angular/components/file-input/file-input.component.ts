@@ -21,20 +21,7 @@ import { FormControl } from '@angular/forms';
 @Component({
   selector: 'ngx-smart-file-input',
   templateUrl: './file-input.component.html',
-  styles: [
-    `
-      .required-text,
-      .field-has-error {
-        color: rgb(241, 50, 50);
-      }
-      .clr-input-wrapper .clr-input:disabled {
-        background: rgba(244, 244, 244, 0.3);
-      }
-      .clr-control-label {
-        margin-bottom: 0.5rem;
-      }
-    `,
-  ],
+  styles: [],
 })
 export class FileInputComponent implements OnInit, OnDestroy {
   @Input() control!: FormControl;

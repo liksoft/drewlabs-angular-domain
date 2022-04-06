@@ -21,20 +21,11 @@ import { InputEventArgs } from '../../types/input';
       .password-clr-input-wrapper {
         position: relative;
       }
-
       .password-trigger {
         position: absolute;
         top: 10px;
         right: 13px;
         cursor: pointer;
-      }
-      .required-text,
-      .field-has-error {
-        color: rgb(241, 50, 50);
-      }
-
-      .clr-input-wrapper .clr-input:disabled {
-        background: rgba(244, 244, 244, 0.3);
       }
     `,
   ],

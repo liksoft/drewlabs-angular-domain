@@ -7,18 +7,7 @@ import { InputTypeHelper } from '../../services/input-type';
 @Component({
   selector: 'ngx-smart-checkox-input',
   templateUrl: './checkox-input.component.html',
-  styles: [
-    `
-      .required-text,
-      .field-has-error {
-        color: rgb(241, 50, 50);
-      }
-
-      .clr-input-wrapper .clr-input:disabled {
-        background: rgba(244, 244, 244, 0.3);
-      }
-    `,
-  ],
+  styles: [],
 })
 export class CheckoxInputComponent {
   // tslint:disable-next-line: variable-name

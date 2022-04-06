@@ -6,45 +6,33 @@ import { buildControl } from './input-types';
 export class DynamicFormHelpers {
   /**
    * @description Create an instance of IDynamic interface
-   * @deprecated
-   * @param form
-   */
-  static buildDynamicForm = (form: FormInterface) => {
-    return new Promise<IDynamicForm | undefined>((resolve, _) => {
-      resolve(DynamicFormHelpers.buildFormSync(form));
-    });
-  };
-
-  /**
-   * @description Create an instance of IDynamic interface
    *
    * @param form
    */
   static buildFormSync(form: FormInterface) {
+    console.log(form);
     const generatorFn = function (instance: FormInterface) {
       const hasControls =
         Array.isArray(instance?.controls) && instance?.controls?.length !== 0;
-      return form
-        ? createform({
-            id: instance.id,
-            title: instance.title,
-            description: instance.description,
-            endpointURL: instance.url,
-            controlConfigs: hasControls
-              ? (ArrayUtils.sort(
-                  instance.controls
-                    ?.map((control) => {
-                      const config = buildControl(control);
-                      // tslint:disable-next-line: max-line-length
-                      return { ...config } as InputInterface;
-                    })
-                    .filter((value) => value ?? false),
-                  'formControlIndex',
-                  1
-                ) as InputInterface[])
-              : [],
-          })
-        : undefined;
+      return createform({
+        id: instance.id,
+        title: instance.title,
+        description: instance.description,
+        endpointURL: instance.url,
+        controlConfigs: hasControls
+          ? (ArrayUtils.sort(
+              instance.controls
+                ?.map((control) => {
+                  const config = buildControl(control);
+                  // tslint:disable-next-line: max-line-length
+                  return { ...config } as InputInterface;
+                })
+                .filter((value) => value ?? false),
+              'formControlIndex',
+              1
+            ) as InputInterface[])
+          : [],
+      });
     };
     return generatorFn(form);
   }
@@ -112,13 +100,14 @@ export function setControlChildren(value: FormInterface) {
         return {
           ...current,
           children: sortControlsBy(
-            controls[current['id']] ?? [],
+            Array.from(
+              new Set([...current.children, ...(controls[current['id']] ?? [])])
+            ),
             'controlIndex'
           ),
         };
       }
     );
-
     return { ...value, controls: values };
   };
 }

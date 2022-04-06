@@ -29,14 +29,6 @@
       [initialCountry]="'tg'"
     ></app-intl-tel-input>
   </div>
-  <input
-    [tabIndex]="inputConfig?.formControlIndex"
-    [class]="inputType.asPhoneInput(inputConfig).classes"
-    [formControl]="control"
-    type="hidden"
-  />
-</div>
-<div>
   <clr-control-helper
     *ngIf="inputConfig.descriptionText && showLabelAndDescription"
   >

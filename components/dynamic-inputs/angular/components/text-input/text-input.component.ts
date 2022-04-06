@@ -8,18 +8,7 @@ import { InputEventArgs } from '../../types/input';
 @Component({
   selector: 'ngx-smart-text-input',
   templateUrl: './text-input.component.html',
-  styles: [
-    `
-      .required-text,
-      .field-has-error {
-        color: rgb(241, 50, 50);
-      }
-
-      .clr-input-wrapper .clr-input:disabled {
-        background: rgba(244, 244, 244, 0.3);
-      }
-    `,
-  ],
+  styles: [],
 })
 export class TextInputComponent {
   @Input() control!: AbstractControl & FormControl;

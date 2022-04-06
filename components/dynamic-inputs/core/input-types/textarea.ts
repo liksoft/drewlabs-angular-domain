@@ -6,6 +6,7 @@ import { buildRequiredIfConfig } from "../helpers/builders";
 export interface TextAreaInput extends InputInterface {
   cols: number;
   rows: number;
+  maxLength: number;
 }
 
 /**
@@ -37,5 +38,6 @@ export function buildTextAreaInput(source: Partial<ControlInterface>) {
     descriptionText: source.description,
     rows: source.rows,
     cols: source.columns,
+    maxLength: source.maxLength,
   } as TextAreaInput;
 }
