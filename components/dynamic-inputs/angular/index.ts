@@ -4,7 +4,7 @@ export {
   createAngularAbstractControl,
 } from './helpers';
 // Module & component & services exports
-export { DynamicFormControlModule } from './forms.module';
+export { NgxSmartFormModule } from './forms.module';
 // Type helper export
 export { InputTypeHelper } from './services/input-type';
 export {
@@ -15,10 +15,10 @@ export {
   ANGULAR_REACTIVE_FORM_BRIDGE,
   InputEventArgs,
   API_BINDINGS_ENDPOINT,
-  API_HOST
+  API_HOST,
 } from './types';
 // Ng Services
 export { DYNAMIC_FORM_LOADER, FormHttpLoader } from './services';
 
 // Validators
-export { CustomValidators, EmailValidator} from './validators';
+export { CustomValidators, EmailValidator } from './validators';

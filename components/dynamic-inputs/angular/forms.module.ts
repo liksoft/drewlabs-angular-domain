@@ -67,10 +67,10 @@ export const initializeDynamicFormContainer = (
   exports: [...DECLARATIONS],
   providers: [],
 })
-export class DynamicFormControlModule {
+export class NgxSmartFormModule {
   static forRoot(configs: ModuleConfigs) {
     return {
-      ngModule: DynamicFormControlModule,
+      ngModule: NgxSmartFormModule,
       providers: [
         FormHttpLoader,
         {
