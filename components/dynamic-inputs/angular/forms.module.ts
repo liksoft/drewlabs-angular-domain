@@ -19,10 +19,10 @@ import {
 } from './services';
 import { SafeHTMLPipe } from './pipes/safe-html.pipe';
 import { HttpModule } from '../../../http';
-import { FORM_CLIENT, ANGULAR_REACTIVE_FORM_BRIDGE } from './tokens';
+import { FORM_CLIENT, ANGULAR_REACTIVE_FORM_BRIDGE } from './types/tokens';
 import { JSONFormsClient } from './services/client';
 import { CacheProvider } from '../core';
-import { API_BINDINGS_ENDPOINT, API_HOST } from './tokens';
+import { API_BINDINGS_ENDPOINT, API_HOST } from './types/tokens';
 import { DECLARATIONS } from './components';
 
 

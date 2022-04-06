@@ -10,7 +10,7 @@ import {
   Optional,
 } from '@angular/core';
 import { isDefined, readFileAsDataURI } from '../../../../../utils';
-import { DynamicInputTypeHelper } from '../../services';
+import { InputTypeHelper } from '../../services';
 import { map } from 'rxjs/operators';
 import { DropzoneComponent } from '../../../../dropzone/dropzone.component';
 import { createSubject } from '../../../../../rxjs/helpers';
@@ -19,8 +19,8 @@ import { DropzoneConfig } from '../../../../dropzone';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-dynamic-file-input',
-  templateUrl: './dynamic-file-input.component.html',
+  selector: 'ngx-smart-file-input',
+  templateUrl: './file-input.component.html',
   styles: [
     `
       .required-text,
@@ -36,8 +36,7 @@ import { FormControl } from '@angular/forms';
     `,
   ],
 })
-export class DynamicFileInputComponent implements OnInit, OnDestroy {
-  @Input() controlDivContainerClass: string = 'clr-form-control';
+export class FileInputComponent implements OnInit, OnDestroy {
   @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
 
@@ -55,7 +54,7 @@ export class DynamicFileInputComponent implements OnInit, OnDestroy {
   private _destroy$ = createSubject<void>();
 
   constructor(
-    public readonly inputType: DynamicInputTypeHelper,
+    public readonly inputType: InputTypeHelper,
     @Inject('FILE_STORE_PATH') @Optional() private path: string
   ) {}
 

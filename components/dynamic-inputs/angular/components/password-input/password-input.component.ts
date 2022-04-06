@@ -1,15 +1,21 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { AbstractControl, FormControl } from "@angular/forms";
-import { InputInterface, InputTypes } from "../../../core";
-import { map } from "rxjs/operators";
-import { createStateful } from "../../../../../rxjs/helpers";
-import { getObjectProperty } from "../../../../../../core/utils";
-import { DynamicInputTypeHelper } from "../../services/input-type";
-import { InputEventArgs } from "../../types/input";
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { AbstractControl, FormControl } from '@angular/forms';
+import { InputInterface, InputTypes } from '../../../core';
+import { map } from 'rxjs/operators';
+import { createStateful } from '../../../../../rxjs/helpers';
+import { getObjectProperty } from '../../../../../utils';
+import { InputTypeHelper } from '../../services/input-type';
+import { InputEventArgs } from '../../types/input';
 
 @Component({
-  selector: "app-dynamic-password-input",
-  templateUrl: "./dynamic-password-input.component.html",
+  selector: 'ngx-smart-password-input',
+  templateUrl: './password-input.component.html',
   styles: [
     `
       .password-clr-input-wrapper {
@@ -32,10 +38,9 @@ import { InputEventArgs } from "../../types/input";
       }
     `,
   ],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DynamicPasswordInputComponent {
-  @Input() controlDivContainerClass: string = "clr-form-control";
+export class PasswordInputComponent {
   @Input() control!: AbstractControl & FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
@@ -56,7 +61,7 @@ export class DynamicPasswordInputComponent {
       .pipe(map((state) => ({ showPassword: state })));
   }
 
-  constructor(public readonly inputType: DynamicInputTypeHelper) {}
+  constructor(public readonly inputType: InputTypeHelper) {}
 
   public togglePassWordInput() {
     this._showPassword.next(!this._showPassword.getValue());
@@ -67,8 +72,8 @@ export class DynamicPasswordInputComponent {
   }
 
   getErrorAsNumber(value: object | number, key?: string) {
-    return typeof value === "number"
+    return typeof value === 'number'
       ? value
-      : getObjectProperty(value, key || "");
+      : getObjectProperty(value, key || '');
   }
 }

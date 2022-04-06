@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { InputInterface, InputTypes } from '../../../core';
-import { DynamicInputTypeHelper } from '../../services/input-type';
+import { InputTypeHelper } from '../../services/input-type';
 
 @Component({
-  selector: 'app-dynamic-radio-input',
-  templateUrl: './dynamic-radio-input.component.html',
+  selector: 'ngx-smart-radio-input',
+  templateUrl: './radio-input.component.html',
   styles: [
     `
       .required-text,
@@ -19,7 +19,7 @@ import { DynamicInputTypeHelper } from '../../services/input-type';
     `,
   ],
 })
-export class DynamicRadioInputComponent {
+export class RadioInputComponent {
   @Input() inline: boolean = true;
 
   // tslint:disable-next-line: variable-name
@@ -42,7 +42,7 @@ export class DynamicRadioInputComponent {
 
   public inputTypes = InputTypes;
 
-  constructor(public readonly inputType: DynamicInputTypeHelper) {}
+  constructor(public readonly inputType: InputTypeHelper) {}
 
   onValueChanges(event: any) {
     this.control.setValue(event);

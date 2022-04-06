@@ -12,7 +12,7 @@ import {
 import { InputEventArgs, SelectableControlItems } from '../types';
 import { takeUntil, tap } from 'rxjs/operators';
 import { createSubject } from '../../../../rxjs/helpers';
-import { DynamicInputTypeHelper } from '../services';
+import { InputTypeHelper } from '../services';
 
 @Component({
   selector: 'app-dynamic-inputs',
@@ -58,7 +58,7 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
   // Value changes emitters
   @Output() valueChange = new EventEmitter<any>();
 
-  constructor(public readonly inputType: DynamicInputTypeHelper) {}
+  constructor(public readonly inputType: InputTypeHelper) {}
 
   ngOnInit() {
     this._control?.valueChanges

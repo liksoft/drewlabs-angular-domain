@@ -1,13 +1,13 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { getObjectProperty } from "../../../../../../core/utils";
+import { getObjectProperty } from "../../../../../utils";
 import { InputInterface } from "../../../core";
-import { DynamicInputTypeHelper } from "../../services/input-type";
+import { InputTypeHelper } from "../../services/input-type";
 import { InputEventArgs } from "../../types/input";
 
 @Component({
-  selector: "app-dynamic-number-input",
-  templateUrl: "./dynamic-number-input.component.html",
+  selector: "ngx-smart-number-input",
+  templateUrl: "./number-input.component.html",
   styles: [
     `
       .required-text,
@@ -21,8 +21,7 @@ import { InputEventArgs } from "../../types/input";
     `,
   ],
 })
-export class DynamicNumberInputComponent {
-  @Input() controlDivContainerClass: string = "clr-form-control";
+export class NumberInputComponent {
   @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
@@ -32,7 +31,7 @@ export class DynamicNumberInputComponent {
   @Output() keypress = new EventEmitter<InputEventArgs>();
   @Output() blur = new EventEmitter<InputEventArgs>();
 
-  constructor(public readonly inputType: DynamicInputTypeHelper) {}
+  constructor(public readonly inputType: InputTypeHelper) {}
 
   maxNumberSize(): number {
     return Math.pow(2, 31) - 1;

@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Inject,
   OnDestroy,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { createStateful, createSubject } from '../../../../../rxjs/helpers';
@@ -16,14 +17,14 @@ import {
 } from '../../../../../http/helpers';
 import { controlBindingsSetter } from '../../../core/helpers';
 import { doLog } from '../../../../../rxjs/operators';
-import { DynamicInputTypeHelper } from '../../services/input-type';
+import { InputTypeHelper } from '../../services/input-type';
 import { InputEventArgs } from '../../types/input';
 import { JSObject } from '../../../../../utils';
-import { API_BINDINGS_ENDPOINT, API_HOST } from '../../tokens';
+import { API_BINDINGS_ENDPOINT, API_HOST } from '../../types/tokens';
 import { SelectInput } from '../../../core';
 @Component({
-  selector: 'app-dynamic-select-input',
-  templateUrl: './dynamic-select-input.component.html',
+  selector: 'ngx-smart-select-input',
+  templateUrl: './select-input.component.html',
   styles: [
     `
       .ng-select,
@@ -58,10 +59,9 @@ import { SelectInput } from '../../../core';
       }
     `,
   ],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DynamicSelectInputComponent implements OnDestroy {
-  @Input() controlDivContainerClass: string = 'clr-form-control';
+export class SelectInputComponent implements OnDestroy {
   private _control!: FormControl;
   @Input() set control(value: FormControl) {
     this._control = value;
@@ -104,7 +104,7 @@ export class DynamicSelectInputComponent implements OnDestroy {
   private _destroy$ = createSubject();
 
   constructor(
-    public readonly inputType: DynamicInputTypeHelper,
+    public readonly inputType: InputTypeHelper,
     private client: DrewlabsRessourceServerClient,
     @Inject(API_BINDINGS_ENDPOINT) path: string,
     @Inject(API_HOST) host: string

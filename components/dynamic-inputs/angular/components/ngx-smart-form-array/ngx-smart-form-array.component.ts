@@ -1,8 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
   ComponentRef,
   EventEmitter,
   Inject,
@@ -18,9 +16,11 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
 import { InputInterface } from '../../../core';
-import { AngularReactiveFormBuilderBridge } from '../../contracts';
 import { cloneAbstractControl } from '../../helpers';
-import { ANGULAR_REACTIVE_FORM_BRIDGE } from '../../types';
+import {
+  AngularReactiveFormBuilderBridge,
+  ANGULAR_REACTIVE_FORM_BRIDGE,
+} from '../../types';
 import { NgxSmartFormArrayChildComponent } from './ngx-smart-form-array-child.component';
 
 @Component({
@@ -88,9 +88,7 @@ export class NgxSmartFormArrayComponent implements OnInit, OnDestroy {
   // Component instance initializer
   constructor(
     @Inject(ANGULAR_REACTIVE_FORM_BRIDGE)
-    private builder: AngularReactiveFormBuilderBridge,
-    @Inject(ComponentFactoryResolver)
-    private resolver: ComponentFactoryResolver
+    private builder: AngularReactiveFormBuilderBridge
   ) {}
 
   ngOnInit(): void {
@@ -113,9 +111,9 @@ export class NgxSmartFormArrayComponent implements OnInit, OnDestroy {
 
   // tslint:disable-next-line: typedef
   addNewComponent(index: number) {
-    const factory: ComponentFactory<NgxSmartFormArrayChildComponent> =
-      this.resolver.resolveComponentFactory(NgxSmartFormArrayChildComponent);
-    const componentRef = this.viewContainerRef.createComponent(factory);
+    const componentRef = this.viewContainerRef.createComponent(
+      NgxSmartFormArrayChildComponent
+    );
     const formGroup = cloneAbstractControl(this.formGroup) as FormGroup;
     formGroup.addControl('__FORM_ARRAY__INDEX__', new FormControl(index));
     // Initialize child component input properties

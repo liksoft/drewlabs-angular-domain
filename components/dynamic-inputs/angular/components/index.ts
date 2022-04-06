@@ -1,38 +1,29 @@
-import { DynamicFormWapperComponent } from './dynamic-form-wapper/dynamic-form-wapper.component';
-import { DynamicRepetableGroupComponent } from './dynamic-repetable-group/dynamic-repetable-group.component';
-import { RepeatableGroupChildComponent } from './dynamic-repetable-group/repeatable-group-child/repeatable-group-child.component';
-import { DynamicFileInputComponent } from './dynamic-file-input/dynamic-file-input.component';
-import { DynamicSelectInputComponent } from './dynamic-select-input/dynamic-select-input.component';
-import { DynamicPhoneInputComponent } from './dynamic-phone-input/dynamic-phone-input.component';
-import { DynamicDateInputComponent } from './dynamic-date-input/dynamic-date-input.component';
-import { DynamicTextAreaInputComponent } from './dynamic-text-area-input/dynamic-text-area-input.component';
-import { DynamicNumberInputComponent } from './dynamic-number-input/dynamic-number-input.component';
-import { DynamicTextInputComponent } from './dynamic-text-input/dynamic-text-input.component';
-import { DynamicPasswordInputComponent } from './dynamic-password-input/dynamic-password-input.component';
-import { DynamicCheckoxInputComponent } from './dynamic-checkox-input/dynamic-checkox-input.component';
-import { DynamicRadioInputComponent } from './dynamic-radio-input/dynamic-radio-input.component';
-import { SimpleDynamicFormComponent } from './simple-dynamic-form/simple-form.component';
+import { FileInputComponent } from './file-input/file-input.component';
+import { SelectInputComponent } from './select-input/select-input.component';
+import { PhoneInputComponent } from './phone-input/phone-input.component';
+import { DateInputComponent } from './date-input/date-input.component';
+import { DynamicTextAreaInputComponent } from './textarea-input/textarea-input.component';
+import { NumberInputComponent } from './number-input/number-input.component';
+import { TextInputComponent } from './text-input/text-input.component';
+import { PasswordInputComponent } from './password-input/password-input.component';
+import { CheckoxInputComponent } from './checkox-input/checkox-input.component';
+import { RadioInputComponent } from './radio-input/radio-input.component';
 import { DynamicFormControlComponent } from './dynamic-form-control.component';
 
 export const DECLARATIONS = [
   DynamicFormControlComponent,
-  DynamicFormWapperComponent,
-  DynamicRepetableGroupComponent,
-  RepeatableGroupChildComponent,
-  DynamicFileInputComponent,
-  DynamicSelectInputComponent,
-  DynamicPhoneInputComponent,
-  DynamicDateInputComponent,
+  FileInputComponent,
+  SelectInputComponent,
+  PhoneInputComponent,
+  DateInputComponent,
   DynamicTextAreaInputComponent,
-  DynamicNumberInputComponent,
-  DynamicTextInputComponent,
-  DynamicPasswordInputComponent,
-  DynamicCheckoxInputComponent,
-  DynamicRadioInputComponent,
-  SimpleDynamicFormComponent,
+  NumberInputComponent,
+  TextInputComponent,
+  PasswordInputComponent,
+  CheckoxInputComponent,
+  RadioInputComponent,
 ];
 
 // Exports
-export { DynamicCheckoxInputComponent } from './dynamic-checkox-input/dynamic-checkox-input.component';
-export { DynamicDateInputComponent } from './dynamic-date-input/dynamic-date-input.component';
-export { DynamicFormWapperComponent } from './dynamic-form-wapper/dynamic-form-wapper.component';
+export { CheckoxInputComponent as DynamicCheckoxInputComponent } from './checkox-input/checkox-input.component';
+export { DateInputComponent as DynamicDateInputComponent } from './date-input/date-input.component';

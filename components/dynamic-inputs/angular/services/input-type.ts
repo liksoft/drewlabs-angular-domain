@@ -16,10 +16,10 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class DynamicInputTypeHelper {
+export class InputTypeHelper {
   /**
-   * @description Return an abstract control as a [[FormArray]]
-   * @param control [[AbstractControl]]
+   * @description Return an abstract control as angular {@see FormArray}
+   * @param control
    */
   public asFormArray(control?: AbstractControl): FormArray {
     return control as FormArray;

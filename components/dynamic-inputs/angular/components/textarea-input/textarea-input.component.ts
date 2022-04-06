@@ -1,18 +1,17 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { AbstractControl, FormControl } from "@angular/forms";
-import { InputInterface, InputTypes } from "../../../core";
-import {
-  getObjectProperty,
-  maxNumberSize as utilsMaxNumberSize,
-} from "../../../../../utils";
-import { DynamicInputTypeHelper } from "../../services/input-type";
+import { InputInterface } from "../../../core";
+import { InputTypeHelper } from "../../services/input-type";
 import { InputEventArgs } from "../../types/input";
 
 @Component({
-  selector: "app-dynamic-text-input",
-  templateUrl: "./dynamic-text-input.component.html",
+  selector: "ngx-smart-textarea-input",
+  templateUrl: "./textarea-input.component.html",
   styles: [
     `
+      .clr-control-container textarea {
+        min-width: 100% !important;
+      }
       .required-text,
       .field-has-error {
         color: rgb(241, 50, 50);
@@ -27,7 +26,7 @@ import { InputEventArgs } from "../../types/input";
     `,
   ],
 })
-export class DynamicTextInputComponent {
+export class DynamicTextAreaInputComponent {
   @Input() controlDivContainerClass: string = "clr-form-control";
   @Input() control!: AbstractControl & FormControl;
   @Input() showLabelAndDescription = true;
@@ -39,15 +38,5 @@ export class DynamicTextInputComponent {
   @Output() keypress = new EventEmitter<InputEventArgs>();
   @Output() blur = new EventEmitter<InputEventArgs>();
 
-  public inputTypes = InputTypes;
-
-  constructor(public readonly inputType: DynamicInputTypeHelper) {}
-
-  maxNumberSize = () => utilsMaxNumberSize();
-
-  getErrorAsNumber(value: { [index: string]: any } | number, key?: string) {
-    return typeof value === "number"
-      ? value
-      : getObjectProperty(value, key || "");
-  }
+  constructor(public readonly inputType: InputTypeHelper) {}
 }

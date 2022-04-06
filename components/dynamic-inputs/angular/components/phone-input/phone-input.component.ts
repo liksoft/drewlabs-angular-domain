@@ -1,11 +1,11 @@
 import { Component, Input } from "@angular/core";
 import { AbstractControl, FormControl } from "@angular/forms";
 import { InputInterface } from "../../../core";
-import { DynamicInputTypeHelper } from "../../services/input-type";
+import { InputTypeHelper } from "../../services/input-type";
 
 @Component({
-  selector: "app-dynamic-phone-input",
-  templateUrl: "./dynamic-phone-input.component.html",
+  selector: "ngx-smart-phone-input",
+  templateUrl: "./phone-input.component.html",
   styles: [
     `
       .required-text,
@@ -27,12 +27,11 @@ import { DynamicInputTypeHelper } from "../../services/input-type";
     `,
   ],
 })
-export class DynamicPhoneInputComponent {
-  @Input() controlDivContainerClass: string = "clr-form-control";
+export class PhoneInputComponent {
   @Input() control!: AbstractControl & FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
   @Input() inputConfig!: InputInterface;
 
-  constructor(public readonly inputType: DynamicInputTypeHelper) {}
+  constructor(public readonly inputType: InputTypeHelper) {}
 }

@@ -2,11 +2,11 @@ import { Component, Inject, Input, LOCALE_ID } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { JSDate } from '../../../../../utils';
 import { InputInterface } from '../../../core';
-import { DynamicInputTypeHelper } from '../../services/input-type';
+import { InputTypeHelper } from '../../services/input-type';
 
 @Component({
-  selector: 'app-dynamic-date-input',
-  templateUrl: './dynamic-date-input.component.html',
+  selector: 'ngx-smart-date-input',
+  templateUrl: './date-input.component.html',
   styles: [
     `
       .required-text,
@@ -17,16 +17,14 @@ import { DynamicInputTypeHelper } from '../../services/input-type';
       .clr-input-wrapper .clr-input:disabled {
         background: rgba(244, 244, 244, 0.3);
       }
-      /* .clr-subtext {
-        margin-top: 1rem !important;
-    } */
+
       :host ::ng-deep .clr-validate-icon.ng-star-inserted {
         display: none;
       }
     `,
   ],
 })
-export class DynamicDateInputComponent {
+export class DateInputComponent {
   @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input
@@ -35,7 +33,7 @@ export class DynamicDateInputComponent {
   today = JSDate.format();
 
   constructor(
-    public readonly inputType: DynamicInputTypeHelper,
+    public readonly inputType: InputTypeHelper,
     @Inject(LOCALE_ID) private appLocalID: string
   ) {}
 

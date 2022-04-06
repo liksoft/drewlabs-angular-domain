@@ -1,12 +1,12 @@
-import { Component, Input } from "@angular/core";
-import { FormGroup, FormBuilder, FormControl } from "@angular/forms";
-import { InputInterface, InputTypes } from "../../../core";
-import { CheckBoxInput } from "../../../core";
-import { DynamicInputTypeHelper } from "../../services/input-type";
+import { Component, Input } from '@angular/core';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { InputInterface, InputTypes } from '../../../core';
+import { CheckBoxInput } from '../../../core';
+import { InputTypeHelper } from '../../services/input-type';
 
 @Component({
-  selector: "app-dynamic-checkox-input",
-  templateUrl: "./dynamic-checkox-input.component.html",
+  selector: 'ngx-smart-checkox-input',
+  templateUrl: './checkox-input.component.html',
   styles: [
     `
       .required-text,
@@ -20,8 +20,7 @@ import { DynamicInputTypeHelper } from "../../services/input-type";
     `,
   ],
 })
-export class DynamicCheckoxInputComponent {
-  // @Input() controlDivContainerClass: string = 'clr-form-control';
+export class CheckoxInputComponent {
   // tslint:disable-next-line: variable-name
   private _control!: FormControl;
   @Input() set control(value: FormControl) {
@@ -58,6 +57,6 @@ export class DynamicCheckoxInputComponent {
 
   constructor(
     private builder: FormBuilder,
-    public readonly inputType: DynamicInputTypeHelper
+    public readonly inputType: InputTypeHelper
   ) {}
 }
