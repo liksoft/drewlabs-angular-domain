@@ -1,8 +1,4 @@
-export {
-  InputEventArgs,
-  SelectableControlItems,
-  MultiSelectItemRemoveEvent,
-} from './input';
+export { InputEventArgs, MultiSelectItemRemoveEvent } from './input';
 
 // Bindings
 export { BindingInterface } from './bindings';
@@ -15,6 +11,7 @@ export {
   ANGULAR_REACTIVE_FORM_BRIDGE,
   API_HOST,
   API_BINDINGS_ENDPOINT,
+  SELECT_CONTROL_OPTIONS_CLIENT,
 } from './tokens';
 
 // Smart component interface

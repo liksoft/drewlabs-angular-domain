@@ -15,7 +15,9 @@ export {
   CacheProvider,
   InputValidationRule,
   InputInterface,
-  InputRequireIfConfig
+  InputRequireIfConfig,
+  SelectableControlItems,
+  SelectOptionsClient
 } from './types';
 
 // Input types defintions

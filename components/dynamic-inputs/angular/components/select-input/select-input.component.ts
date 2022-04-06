@@ -3,25 +3,15 @@ import {
   Input,
   Output,
   EventEmitter,
-  Inject,
   OnDestroy,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { createStateful, createSubject } from '../../../../../rxjs/helpers';
-import { DrewlabsRessourceServerClient } from '../../../../../http/core';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import {
-  getResponseDataFromHttpResponse,
-  httpHost,
-} from '../../../../../http/helpers';
-import { controlBindingsSetter } from '../../../core/helpers';
-import { doLog } from '../../../../../rxjs/operators';
 import { InputTypeHelper } from '../../services/input-type';
 import { InputEventArgs } from '../../types/input';
 import { JSObject } from '../../../../../utils';
-import { API_BINDINGS_ENDPOINT, API_HOST } from '../../types/tokens';
-import { SelectInput } from '../../../core';
+import { SelectableControlItems, SelectInput } from '../../../core';
+import { BehaviorSubject, Subject } from 'rxjs';
 @Component({
   selector: 'ngx-smart-select-input',
   templateUrl: './select-input.component.html',
@@ -61,14 +51,21 @@ export class SelectInputComponent implements OnDestroy {
   }
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name
-  _performingAction$ = createStateful(false);
-  // tslint:disable-next-line: variable-name
-  _inputItems$ = createStateful<{ performingAction: boolean; state: any[] }>({
+  _inputItems$ = new BehaviorSubject<{
+    performingAction: boolean;
+    state: any[];
+    loaded: boolean;
+  }>({
     performingAction: false,
     state: [],
+    loaded: false,
   });
   @Input() set inputItems(value: { [index: string]: any }[]) {
-    this._inputItems$.next({ performingAction: false, state: value });
+    this._inputItems$.next({
+      performingAction: false,
+      state: value,
+      loaded: value.length !== 0,
+    });
   }
   inputItems$ = this._inputItems$.asObservable();
 
@@ -85,52 +82,43 @@ export class SelectInputComponent implements OnDestroy {
   @Output() selected = new EventEmitter<InputEventArgs>();
 
   // tslint:disable-next-line: variable-name
-  _controlFocusEvent$ = createSubject<{ state: any[] }>();
-
-  private _actionSubject$ = createStateful(false);
-  performingAction$ = this._actionSubject$.asObservable();
+  _controlFocusEvent$ = new Subject<{ state: any[] }>();
 
   // tslint:disable-next-line: variable-name
-  private _destroy$ = createSubject();
+  private _destroy$ = new Subject<void>();
 
-  constructor(
-    public readonly inputType: InputTypeHelper,
-    private client: DrewlabsRessourceServerClient,
-    @Inject(API_BINDINGS_ENDPOINT) path: string,
-    @Inject(API_HOST) host: string
-  ) {
-    this._controlFocusEvent$
-      .pipe(
-        tap((state) => {
-          this._inputItems$.next({ ...state, performingAction: true });
-          this._actionSubject$.next(true);
-        }),
-        switchMap(() =>
-          this.client
-            .get(`${httpHost(host)}/${path}`, {
-              params: {
-                table_config: this._inputConfig.serverBindings,
-              },
-            })
-            .pipe(
-              doLog('Load binding result: '),
-              map((state) => {
-                const data = getResponseDataFromHttpResponse(state);
-                if (data && Array.isArray(data)) {
-                  return controlBindingsSetter(data)(this._inputConfig)
-                    .items as any[];
-                }
-                return [];
-              }),
-              takeUntil(this._destroy$),
-              tap((state) => {
-                this._inputItems$.next({ performingAction: false, state });
-                this._actionSubject$.next(false);
-              })
-            )
-        )
-      )
-      .subscribe();
+  constructor(public readonly inputType: InputTypeHelper) {
+    // this._controlFocusEvent$
+    //   .pipe(
+    //     tap((state) => {
+    //       this._inputItems$.next({ ...state, performingAction: true });
+    //       this._actionSubject$.next(true);
+    //     }),
+    //     switchMap(() =>
+    //       this.client
+    //         .get(`${httpHost(host)}/${path}`, {
+    //           params: {
+    //             table_config: this._inputConfig.serverBindings,
+    //           },
+    //         })
+    //         .pipe(
+    //           doLog('Load binding result: '),
+    //           map((state) => {
+    //             const data = getResponseDataFromHttpResponse(state);
+    //             if (data && Array.isArray(data)) {
+    //               return controlBindingsSetter(data)(this._inputConfig)
+    //                 .items as any[];
+    //             }
+    //             return [];
+    //           }),
+    //           takeUntil(this._destroy$),
+    //           tap((state) => {
+    //             this._inputItems$.next({ performingAction: false, state });
+    //           })
+    //         )
+    //     )
+    //   )
+    //   .subscribe();
   }
 
   onFocus(): void {
@@ -144,7 +132,17 @@ export class SelectInputComponent implements OnDestroy {
     }
   }
 
+  onLoadedChange(loaded: boolean) {
+    const value = this._inputItems$.getValue();
+    this._inputItems$.next({ ...value, loaded });
+  }
+
+  onItemsChange(state: SelectableControlItems[]) {
+    const value = this._inputItems$.getValue();
+    this._inputItems$.next({ ...value, state });
+  }
+
   ngOnDestroy(): void {
-    this._destroy$.next({});
+    this._destroy$.next();
   }
 }

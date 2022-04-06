@@ -1,5 +1,5 @@
-import { InjectionToken } from '@angular/core';
-import { FormsClient } from '../../core';
+import { Inject, InjectionToken } from '@angular/core';
+import { FormsClient, SelectOptionsClient } from '../../core';
 import { AngularReactiveFormBuilderBridge } from '.';
 
 export const FORM_CLIENT = new InjectionToken<FormsClient>(
@@ -17,4 +17,8 @@ export const API_BINDINGS_ENDPOINT = new InjectionToken<string>(
 
 export const API_HOST = new InjectionToken<string>(
   'API HOST FOR FORM MANAGEMENT'
+);
+
+export const SELECT_CONTROL_OPTIONS_CLIENT = new InjectionToken<SelectOptionsClient>(
+  'CLIENT PROVIDER FOR SELETION OPTIONS'
 );

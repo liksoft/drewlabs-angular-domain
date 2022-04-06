@@ -1,4 +1,8 @@
-import { InputInterface, InputTypes } from '../../../core';
+import {
+  InputInterface,
+  InputTypes,
+  SelectableControlItems,
+} from '../../../core';
 import { AbstractControl, FormControl } from '@angular/forms';
 import {
   Component,
@@ -9,7 +13,7 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { InputEventArgs, SelectableControlItems } from '../../types';
+import { InputEventArgs } from '../../types';
 import { takeUntil, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { InputTypeHelper } from '../../services';

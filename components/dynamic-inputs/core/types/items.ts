@@ -1,4 +1,4 @@
-
+import { Observable } from 'rxjs';
 
 /**
  * Abstract representation of item in option element, Radio
@@ -13,7 +13,7 @@ export interface SelectSourceInterface {
 }
 
 // @internal
-export interface CheckboxItem  extends SelectSourceInterface {
+export interface CheckboxItem extends SelectSourceInterface {
   checked?: boolean;
 }
 
@@ -21,3 +21,12 @@ export interface CheckboxItem  extends SelectSourceInterface {
 export interface RadioItem extends SelectSourceInterface {
   checked?: boolean;
 }
+
+/**
+ * Union abstraction arround item in option element, Radio
+ * element or Checkbox element on the platform native form
+ * element
+ */
+export type SelectableControlItems = Array<
+  SelectSourceInterface | CheckboxItem | RadioItem
+>;

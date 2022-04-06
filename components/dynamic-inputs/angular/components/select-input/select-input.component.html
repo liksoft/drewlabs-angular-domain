@@ -12,41 +12,49 @@
   </small>
 </label>
 <ng-container *ngIf="inputItems$ | async as vm">
-  <ng-select
-    [class]="inputConfig?.multiple ? '' : 'not-multiple'"
-    [virtualScroll]="true"
-    [items]="vm?.state ?? []"
-    [bindLabel]="'name'"
-    [bindValue]="'value'"
-    (focus)="onFocus()"
-    [loading]="vm?.performingAction ?? false"
-    [loadingText]="'loadingText' | translate"
-    [multiple]="inputConfig.multiple ?? false"
-    [placeholder]="inputConfig.placeholder ?? ''"
-    [formControl]="control"
-    [groupBy]="'type'"
-    [clearable]="true"
-    (remove)="multiSelectItemRemove.emit($event)"
-    (change)="
-      selected.emit({
-        name: inputConfig.formControlName,
-        value: $event
-      })
-    "
+  <div
+    prefetchOptions
+    [params]="inputType.asSelectInput(inputConfig).serverBindings"
+    [loaded]="vm.loaded"
+    (loadedChange)="onLoadedChange($event)"
+    (itemsChange)="onItemsChange($event)"
   >
-    <ng-template
-      ng-option-tmp
-      let-item="item"
-      let-index="index"
-      let-item$="item$"
+    <ng-select
+      [class]="inputConfig?.multiple ? '' : 'not-multiple'"
+      [virtualScroll]="true"
+      [items]="vm?.state ?? []"
+      [bindLabel]="'name'"
+      [bindValue]="'value'"
+      (focus)="onFocus()"
+      [loading]="vm?.performingAction ?? false"
+      [loadingText]="'loadingText' | translate"
+      [multiple]="inputConfig.multiple ?? false"
+      [placeholder]="inputConfig.placeholder ?? ''"
+      [formControl]="control"
+      [groupBy]="'type'"
+      [clearable]="true"
+      (remove)="multiSelectItemRemove.emit($event)"
+      (change)="
+        selected.emit({
+          name: inputConfig.formControlName,
+          value: $event
+        })
+      "
     >
-      <div>
-        <label class="form-check-label ml-2">
-          {{ item?.name | uppercase }}
-        </label>
-      </div>
-    </ng-template>
-  </ng-select>
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-index="index"
+        let-item$="item$"
+      >
+        <div>
+          <label class="form-check-label ml-2">
+            {{ item?.name | uppercase }}
+          </label>
+        </div>
+      </ng-template>
+    </ng-select>
+  </div>
 </ng-container>
 <clr-control-error
   class="field-has-error"

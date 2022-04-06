@@ -6,9 +6,10 @@ export {
   createAngularAbstractControl,
 } from './reactive-form';
 
-
 export {
   controlAttributesDataBindings,
   createHiddenAttributeSetter,
   setControlsAttributes,
 } from './attributes-bindings';
+
+export { createIntersectionObserver } from './native';
