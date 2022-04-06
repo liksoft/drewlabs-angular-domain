@@ -22,7 +22,6 @@ import { InputEventArgs } from '../../types/input';
   ],
 })
 export class TextInputComponent {
-  @Input() controlDivContainerClass: string = 'clr-form-control';
   @Input() control!: AbstractControl & FormControl;
   @Input() showLabelAndDescription = true;
   // Configuration parameters of the input

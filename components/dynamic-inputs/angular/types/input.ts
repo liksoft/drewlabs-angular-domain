@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { CheckboxItem, SelectSourceInterface, RadioItem } from '../../core';
+import { CheckboxItem, SelectSourceInterface, RadioItem, InputInterface } from '../../core';
 
 /**
  * Union abstraction arround item in option element, Radio
@@ -17,4 +17,9 @@ export type SelectableControlItems =
 export interface InputEventArgs {
   name: string;
   value: any;
+}
+
+export interface MultiSelectItemRemoveEvent {
+  event: any;
+  control: InputInterface;
 }

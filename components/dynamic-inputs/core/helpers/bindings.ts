@@ -1,4 +1,4 @@
-import { getObjectProperty } from '../../../../utils/types';
+import { getObjectProperty } from '../../../../utils';
 import { SelectSourceInterface } from '../types';
 import { BindingControlInterface } from '../types/input';
 

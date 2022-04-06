@@ -1,25 +1,33 @@
-import { AbstractControl, FormGroup, FormControl, ValidatorFn } from '@angular/forms';
-import { JSDate } from '../utils';
-import { isDefined } from '../utils/types/type-utils';
-
+import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { JSDate } from '../../../../utils';
+import { EmailValidator } from './email';
 
 export class CustomValidators {
-  static Match(control: string, otherControl: string) {
+  static match(control: string, other: string) {
     return (controlGroup: AbstractControl) => {
-      const firstControlValue = controlGroup.get(control)?.value === '' ? undefined : controlGroup.get(control)?.value;
-      const otherControlValue = controlGroup.get(otherControl)?.value === '' ? undefined : controlGroup.get(otherControl)?.value;
-      if ((!isDefined(firstControlValue) && !isDefined(otherControlValue))) {
+      const first =
+        controlGroup.get(control)?.value === ''
+          ? undefined
+          : controlGroup.get(control)?.value;
+      const second =
+        controlGroup.get(other)?.value === ''
+          ? undefined
+          : controlGroup.get(other)?.value;
+      if (
+        (typeof first === 'undefined' || first === null) &&
+        (typeof second === 'undefined' || second === null)
+      ) {
         return null;
       }
-      if (firstControlValue !== otherControlValue) {
-        return { Match: true };
+      if (first !== second) {
+        return { match: true };
       } else {
         return null;
       }
     };
   }
 
-  static ValidateUrl(control: AbstractControl) {
+  static url(control: AbstractControl) {
     if (control.validator) {
       const validator = control.validator({} as AbstractControl);
       if (validator && !validator['required']) {
@@ -27,7 +35,7 @@ export class CustomValidators {
       }
     }
     if (!control.value.startsWith('https') || !control.value.includes('.io')) {
-      return { validUrl: true };
+      return { url: true };
     }
     return null;
   }
@@ -70,7 +78,7 @@ export class CustomValidators {
     return null;
   }
 
-  static ValidateBetween(min: number, max: number) {
+  static between(min: number, max: number) {
     return (control: AbstractControl) => {
       if (control.validator && control.value) {
         const validator = control.validator({} as AbstractControl);
@@ -86,7 +94,7 @@ export class CustomValidators {
     };
   }
 
-  static ValidateMin(min: number) {
+  static min(min: number) {
     return (control: AbstractControl) => {
       if (control.validator && control.value) {
         const validator = control.validator({} as AbstractControl);
@@ -102,7 +110,7 @@ export class CustomValidators {
     };
   }
 
-  static ValidateMax(max: number) {
+  static max(max: number) {
     return (control: AbstractControl) => {
       if (control.validator && control.value) {
         const validator = control.validator({} as AbstractControl);
@@ -118,14 +126,17 @@ export class CustomValidators {
     };
   }
 
-  static validateAllFormFields(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      if (control instanceof FormControl) {
-        control.markAsTouched({ onlySelf: true });
-      } else if (control instanceof FormGroup) {
-        this.validateAllFormFields(control);
+  static validateEmail(control: AbstractControl) {
+    if (control.validator && control.value) {
+      const validator = control.validator({} as AbstractControl);
+      if (validator && !validator['required']) {
+        return null;
       }
-    });
+      if (EmailValidator.validate(control.value)) {
+        return null;
+      }
+      return { email: true };
+    }
+    return null;
   }
 }

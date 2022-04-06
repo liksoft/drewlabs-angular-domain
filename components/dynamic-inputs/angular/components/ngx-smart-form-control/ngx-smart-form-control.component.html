@@ -1,12 +1,12 @@
 <ng-container [ngSwitch]="inputConfig.type">
   <ng-container *ngSwitchCase="inputTypes.FILE_INPUT">
-    <app-dynamic-file-input
+    <ngx-smart-file-input
       (addedEvent)="fileAdded.emit($event)"
       (removedEvent)="fileRemoved.emit($event)"
       [control]="control"
       [inputConfig]="inputType.asFileInput(inputConfig)"
       [showLabelAndDescription]="showLabelAndDescription"
-    ></app-dynamic-file-input>
+    ></ngx-smart-file-input>
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.HTML_INPUT">
     <div [innerHTML]="inputConfig.value | safeHtml"></div>
@@ -21,35 +21,32 @@
     />
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.SELECT_INPUT">
-    <app-dynamic-select-input
-      [controlDivContainerClass]="getControlContainerClass()"
+    <ngx-smart-select-input
       [control]="control"
       [inputConfig]="inputType.asSelectInput(inputConfig)"
       [showLabelAndDescription]="showLabelAndDescription"
-      (multiSelectItemRemove)="multiSelectItemRemove.emit($event)"
+      (multiSelectItemRemove)="selectItemRemoved.emit($event)"
       (selected)="selected?.emit($event)"
       [inputItems]="inputConfig.items || []"
-    ></app-dynamic-select-input>
+    ></ngx-smart-select-input>
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.PHONE_INPUT">
-    <app-dynamic-phone-input
-      [controlDivContainerClass]="getControlContainerClass()"
+    <ngx-smart-phone-input
       [control]="control"
       [inputConfig]="inputConfig"
       [showLabelAndDescription]="showLabelAndDescription"
-    ></app-dynamic-phone-input>
+    ></ngx-smart-phone-input>
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.DATE_INPUT">
-    <app-dynamic-date-input
+    <ngx-smart-date-input
       [control]="control"
       [inputConfig]="inputConfig"
       [showLabelAndDescription]="showLabelAndDescription"
-    ></app-dynamic-date-input>
+    ></ngx-smart-date-input>
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.TEXTAREA_INPUT">
-    <app-dynamic-text-area-input
+    <ngx-smart-textarea-input
       *ngIf="!inline"
-      [controlDivContainerClass]="getControlContainerClass()"
       [control]="control"
       [inputConfig]="inputConfig"
       [showLabelAndDescription]="showLabelAndDescription"
@@ -77,10 +74,9 @@
           value: $event
         })
       "
-    ></app-dynamic-text-area-input>
-    <app-dynamic-text-input
+    ></ngx-smart-textarea-input>
+    <ngx-smart-text-input
       *ngIf="inline"
-      [controlDivContainerClass]="getControlContainerClass()"
       [control]="control"
       [inputConfig]="getInlineTextAreaInput(inputConfig)"
       [showLabelAndDescription]="showLabelAndDescription"
@@ -108,11 +104,10 @@
           value: $event
         })
       "
-    ></app-dynamic-text-input>
+    ></ngx-smart-text-input>
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.NUMBER_INPUT">
-    <app-dynamic-number-input
-      [controlDivContainerClass]="getControlContainerClass()"
+    <ngx-smart-number-input
       [control]="control"
       [showLabelAndDescription]="showLabelAndDescription"
       [inputConfig]="inputConfig"
@@ -140,26 +135,25 @@
           value: $event
         })
       "
-    ></app-dynamic-number-input>
+    ></ngx-smart-number-input>
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.RADIO_INPUT">
-    <app-dynamic-radio-input
+    <ngx-smart-radio-input
       [inline]="inline"
       [control]="control"
       [inputConfig]="inputConfig"
       [showLabelAndDescription]="showLabelAndDescription"
-    ></app-dynamic-radio-input>
+    ></ngx-smart-radio-input>
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.CHECKBOX_INPUT">
-    <app-dynamic-checkox-input
+    <ngx-smart-checkox-input
       [control]="control"
       [inputConfig]="inputConfig"
       [showLabelAndDescription]="showLabelAndDescription"
-    ></app-dynamic-checkox-input>
+    ></ngx-smart-checkox-input>
   </ng-container>
   <ng-container *ngSwitchCase="inputTypes.PASSWORD_INPUT">
-    <app-dynamic-password-input
-      [controlDivContainerClass]="getControlContainerClass()"
+    <ngx-smart-password-input
       [control]="control"
       [inputConfig]="inputConfig"
       [showLabelAndDescription]="showLabelAndDescription"
@@ -187,11 +181,10 @@
           value: $event
         })
       "
-    ></app-dynamic-password-input>
+    ></ngx-smart-password-input>
   </ng-container>
   <ng-container *ngSwitchDefault>
-    <app-dynamic-text-input
-      [controlDivContainerClass]="getControlContainerClass()"
+    <ngx-smart-text-input
       [control]="control"
       [inputConfig]="inputConfig"
       [showLabelAndDescription]="showLabelAndDescription"
@@ -219,7 +212,7 @@
           value: $event
         })
       "
-    ></app-dynamic-text-input>
+    ></ngx-smart-text-input>
   </ng-container>
   <!-- Add controls for check boxes and radio -->
 </ng-container>

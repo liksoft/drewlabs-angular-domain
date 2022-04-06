@@ -8,14 +8,13 @@ import { TextInputComponent } from './text-input/text-input.component';
 import { PasswordInputComponent } from './password-input/password-input.component';
 import { CheckoxInputComponent } from './checkox-input/checkox-input.component';
 import { RadioInputComponent } from './radio-input/radio-input.component';
-import { DynamicFormControlComponent } from './dynamic-form-control.component';
 import { NgxSmartFormComponent } from './ngx-smart-form/ngx-smart-form.component';
 import { NgxSmartFormGroupComponent } from './ngx-smart-form-group/ngx-smart-form-group.component';
 import { NgxSmartFormArrayComponent } from './ngx-smart-form-array/ngx-smart-form-array.component';
 import { NgxSmartFormArrayChildComponent } from './ngx-smart-form-array/ngx-smart-form-array-child.component';
+import { NgxSmartFormControlComponent } from './ngx-smart-form-control/ngx-smart-form-control.component';
 
 export const DECLARATIONS = [
-  DynamicFormControlComponent,
   FileInputComponent,
   SelectInputComponent,
   PhoneInputComponent,
@@ -32,8 +31,9 @@ export const DECLARATIONS = [
   NgxSmartFormGroupComponent,
   NgxSmartFormArrayComponent,
   NgxSmartFormArrayChildComponent,
+  NgxSmartFormControlComponent,
 ];
 
 // Exports
-export { CheckoxInputComponent as DynamicCheckoxInputComponent } from './checkox-input/checkox-input.component';
-export { DateInputComponent as DynamicDateInputComponent } from './date-input/date-input.component';
+export { CheckoxInputComponent } from './checkox-input/checkox-input.component';
+export { DateInputComponent } from './date-input/date-input.component';

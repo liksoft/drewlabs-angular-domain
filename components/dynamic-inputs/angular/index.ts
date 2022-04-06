@@ -6,14 +6,19 @@ export {
 // Module & component & services exports
 export { DynamicFormControlModule } from './forms.module';
 // Type helper export
-export { InputTypeHelper as DynamicInputTypeHelper } from './services/input-type';
-// Components export
-export { SimpleDynamicFormComponent as DynamicFormView } from './components/simple-dynamic-form/simple-form.component';
-// CLIENT and PROVIDERS export
-export { FORM_CLIENT, ANGULAR_REACTIVE_FORM_BRIDGE } from './types/tokens';
-export { AngularReactiveFormBuilderBridge } from './types';
+export { InputTypeHelper } from './services/input-type';
+export {
+  AngularReactiveFormBuilderBridge,
+  FormComponentInterface,
+  Builder,
+  FORM_CLIENT,
+  ANGULAR_REACTIVE_FORM_BRIDGE,
+  InputEventArgs,
+  API_BINDINGS_ENDPOINT,
+  API_HOST
+} from './types';
 // Ng Services
 export { DYNAMIC_FORM_LOADER, FormHttpLoader } from './services';
 
-// Host Configurations
-export { API_HOST } from './types/tokens';
+// Validators
+export { CustomValidators, EmailValidator} from './validators';

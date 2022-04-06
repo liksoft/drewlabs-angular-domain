@@ -1,5 +1,5 @@
-import { InputInterface, InputTypes } from '../../core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { InputInterface, InputTypes } from '../../../core';
+import { AbstractControl, FormControl } from '@angular/forms';
 import {
   Component,
   Input,
@@ -9,26 +9,28 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { InputEventArgs, SelectableControlItems } from '../types';
+import { InputEventArgs, SelectableControlItems } from '../../types';
 import { takeUntil, tap } from 'rxjs/operators';
-import { createSubject } from '../../../../rxjs/helpers';
-import { InputTypeHelper } from '../services';
+import { Subject } from 'rxjs';
+import { InputTypeHelper } from '../../services';
 
 @Component({
-  selector: 'app-dynamic-inputs',
-  templateUrl: './dynamic-form-control.component.html',
-  styleUrls: ['./dynamic-form-control.component.css'],
+  selector: 'ngx-smart-form-control',
+  templateUrl: './ngx-smart-form-control.component.html',
+  styleUrls: ['./ngx-smart-form-control.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DynamicFormControlComponent implements OnDestroy, OnInit {
-  // tslint:disable-next-line: variable-name
+export class NgxSmartFormControlComponent implements OnDestroy, OnInit {
+  // Component properties
+  public inputTypes = InputTypes;
+  private _destroy$ = new Subject<void>();
+
+  //#region Component inputs
   @Input() class: string = 'clr-form-control';
   @Input() inline: boolean = false;
   @Input() showLabelAndDescription = true;
-  // tslint:disable-next-line: variable-name
   @Input() inputConfig!: InputInterface;
   @Input() listItems!: SelectableControlItems;
-  @Input() listenForChanges!: boolean;
   private _control!: AbstractControl & FormControl;
   @Input() set control(value: AbstractControl & FormControl) {
     this._control = value;
@@ -37,14 +39,11 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
     return this._control as AbstractControl & FormControl;
   }
   @Input() name!: string;
+  //#endregion Component inputs
 
-  @Output() multiSelectItemRemove = new EventEmitter<any>();
+  //#region Component outputs
+  @Output() selectItemRemoved = new EventEmitter<any>();
   @Output() selected = new EventEmitter<InputEventArgs>();
-
-  public inputTypes = InputTypes;
-  // String representation of today
-  public formArrayGroup!: FormGroup;
-
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();
   @Output('focus') focus = new EventEmitter<InputEventArgs>();
@@ -52,11 +51,9 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
   @Output('keyup') keyup = new EventEmitter<InputEventArgs>();
   @Output('keypress') keypress = new EventEmitter<InputEventArgs>();
   @Output('blur') blur = new EventEmitter<InputEventArgs>();
-
-  private _destroy$ = createSubject<void>();
-
   // Value changes emitters
-  @Output() valueChange = new EventEmitter<any>();
+  @Output() valueChange = new EventEmitter<InputEventArgs>();
+  //#endregion Component outputs
 
   constructor(public readonly inputType: InputTypeHelper) {}
 
@@ -64,7 +61,12 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
     this._control?.valueChanges
       .pipe(
         takeUntil(this._destroy$),
-        tap((source) => this.valueChange.emit(source))
+        tap((source) =>
+          this.valueChange.emit({
+            name: this.inputConfig.formControlName,
+            value: source,
+          })
+        )
       )
       .subscribe();
   }
@@ -77,9 +79,6 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
         : `${input?.classes} clr-input`,
     };
   }
-
-  getControlContainerClass = () =>
-    this.inline ? `clr-form-control inline` : `clr-form-control`;
 
   ngOnDestroy() {
     this._destroy$.next();

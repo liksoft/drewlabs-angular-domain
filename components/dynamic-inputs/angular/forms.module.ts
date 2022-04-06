@@ -25,8 +25,6 @@ import { CacheProvider } from '../core';
 import { API_BINDINGS_ENDPOINT, API_HOST } from './types/tokens';
 import { DECLARATIONS } from './components';
 
-
-
 type FormApiServerConfigs = {
   api: {
     host?: string;
@@ -48,7 +46,7 @@ export const initializeDynamicFormContainer = (
 ) => {
   return async () => {
     return await service
-      .cache(assetsURL || "/assets/resources/app-forms.json")
+      .cache(assetsURL || '/assets/resources/app-forms.json')
       .toPromise();
   };
 };

@@ -14,7 +14,7 @@ import {
 } from '../../core';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class InputTypeHelper {
   /**
