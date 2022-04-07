@@ -7,5 +7,5 @@ export interface SelectOptionsClient {
    * @description Query list of select options from forms provider database
    *
    */
-  getOptions(params: string | any[]): Observable<SelectableControlItems[]>;
+  request(params: string | any[]): Observable<SelectableControlItems[]>;
 }

@@ -12,6 +12,7 @@ export {
   API_HOST,
   API_BINDINGS_ENDPOINT,
   SELECT_CONTROL_OPTIONS_CLIENT,
+  HTTP_REQUEST_CLIENT
 } from './tokens';
 
 // Smart component interface

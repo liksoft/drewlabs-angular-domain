@@ -1,4 +1,4 @@
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,12 +19,18 @@ import {
 } from './services';
 import { SafeHTMLPipe } from './pipes/safe-html.pipe';
 import { HttpModule } from '../../../http';
-import { FORM_CLIENT, ANGULAR_REACTIVE_FORM_BRIDGE } from './types/tokens';
+import {
+  FORM_CLIENT,
+  ANGULAR_REACTIVE_FORM_BRIDGE,
+  SELECT_CONTROL_OPTIONS_CLIENT,
+  HTTP_REQUEST_CLIENT,
+} from './types/tokens';
 import { JSONFormsClient } from './services/client';
 import { CacheProvider } from '../core';
 import { API_BINDINGS_ENDPOINT, API_HOST } from './types/tokens';
 import { DECLARATIONS } from './components';
 import { FetchOptionsDirective } from './directives';
+import { createSelectOptionsQuery, createSubmitHttpHandler } from '../http';
 
 type FormApiServerConfigs = {
   api: {
@@ -69,7 +75,9 @@ export const initializeDynamicFormContainer = (
   providers: [],
 })
 export class NgxSmartFormModule {
-  static forRoot(configs: ModuleConfigs) {
+  static forRoot(
+    configs: ModuleConfigs
+  ): ModuleWithProviders<NgxSmartFormModule> {
     return {
       ngModule: NgxSmartFormModule,
       providers: [
@@ -126,6 +134,21 @@ export class NgxSmartFormModule {
         {
           provide: 'FILE_STORE_PATH',
           useValue: configs!.serverConfigs.api.uploadURL ?? 'http://localhost',
+        },
+        {
+          provide: SELECT_CONTROL_OPTIONS_CLIENT,
+          useFactory: () => {
+            return createSelectOptionsQuery(
+              configs!.serverConfigs!.api.host,
+              configs!.serverConfigs!.api.bindings
+            );
+          },
+        },
+        {
+          provide: HTTP_REQUEST_CLIENT,
+          useFactory: () => {
+            return createSubmitHttpHandler(configs!.serverConfigs!.api.host);
+          },
         },
       ],
     };

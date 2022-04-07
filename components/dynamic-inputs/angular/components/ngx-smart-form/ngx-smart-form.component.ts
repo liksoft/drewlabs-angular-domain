@@ -7,15 +7,19 @@ import {
   Inject,
   Input,
   OnDestroy,
+  Optional,
   Output,
   TemplateRef,
 } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { EMPTY, Observable, Subject } from 'rxjs';
+import { EMPTY, from, Observable, Subject } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
 import { timeout } from '../../../../../rxjs/helpers';
 import { IDynamicForm, InputInterface } from '../../../core';
-import { AngularReactiveFormBuilderBridge } from '../../types';
+import {
+  AngularReactiveFormBuilderBridge,
+  HTTP_REQUEST_CLIENT,
+} from '../../types';
 import {
   ComponentReactiveFormHelpers,
   controlAttributesDataBindings,
@@ -28,6 +32,7 @@ import {
   ControlsStateMap,
   FormComponentInterface,
 } from '../../types';
+import { RequestClient } from '../../../http';
 
 @Component({
   selector: 'ngx-smart-form',
@@ -73,6 +78,7 @@ export class NgxSmartFormComponent
   //#region Local properties
   formGroup!: FormGroup;
   internal!: IDynamicForm;
+  _state!: { [index: string]: any };
   //#endregion Local properties
 
   //#region Component inputs
@@ -87,12 +93,21 @@ export class NgxSmartFormComponent
   get form() {
     return this.internal;
   }
+  @Input() autoSubmit: boolean = false;
+  @Input() path!: string;
+  @Input() set state(value: { [index: string]: any }) {
+    this._state = value;
+  }
+  get state() {
+    return this._state;
+  }
   //#endregion Component inputs
 
   //#region Component outputs
   @Output() submit = new EventEmitter<{ [index: string]: any }>();
   @Output() readyState = new EventEmitter();
   @Output() formGroupChange = new EventEmitter<FormGroup>();
+  @Output() complete = new EventEmitter<unknown>();
   //#endregion Component outputs
 
   // @internal
@@ -111,7 +126,8 @@ export class NgxSmartFormComponent
 
   public constructor(
     @Inject(ANGULAR_REACTIVE_FORM_BRIDGE)
-    private builder: AngularReactiveFormBuilderBridge
+    private builder: AngularReactiveFormBuilderBridge,
+    @Inject(HTTP_REQUEST_CLIENT) @Optional() private client?: RequestClient
   ) {}
 
   //#region FormComponent interface Methods definitions
@@ -150,8 +166,42 @@ export class NgxSmartFormComponent
     return this.formGroup.get(name) ?? undefined;
   }
   onSubmit(event: Event): void | Observable<unknown> {
-    ComponentReactiveFormHelpers.validateFormGroupFields(this.formGroup);
-    if (this.formGroup.valid) {
+    // Validate the formgroup object to ensure it passes
+    // validation before submitting
+    this.validateForm();
+
+    // We simply return without performing any further action
+    // if the validation fails
+    if (!this.formGroup.valid) {
+      return;
+    }
+    const path = this.path || this.form.endpointURL;
+    if (
+      this.autoSubmit &&
+      typeof this.client !== 'undefined' &&
+      this.client !== null &&
+      path !== null &&
+      path !== 'undefined'
+    ) {
+      from(
+        this.client.request(
+          path || 'http://127.0.0.1', // The path will never be equal to 'http://127.0.0.1' because of the if branch on this.form.endpointURL
+          'POST',
+          this.formGroup.getRawValue()
+        )
+      )
+        // Here we notify parent component of completed state
+        .subscribe((response) => this.complete.emit(response));
+    } else if (
+      (this.autoSubmit &&
+        (typeof this.client === 'undefined' || this.client === null)) ||
+      (this.autoSubmit && (path !== null || path !== 'undefined'))
+    ) {
+      // We throw an error if developper misconfigured the smart form component
+      throw new Error(
+        'autoSubmit input property must only be true if the form endpointURL is configured or an Http Client has been registered!'
+      );
+    } else {
       this.submit.emit(this.formGroup.getRawValue());
     }
     event.preventDefault();
@@ -176,17 +226,21 @@ export class NgxSmartFormComponent
       this.formGroup = this.builder.group(value) as FormGroup;
       // Set input bindings
       this.setBindings();
-      // Subscribe to formgroup changes
-      this.formGroup.valueChanges
-        .pipe(
-          tap((state) => this.formGroupChange.emit(state)),
-          takeUntil(this._destroy$)
-        )
-        .subscribe();
 
       // Timeout and notify parent component
       // of ready state
       timeout(() => {
+        // If the state input is set, we set the value of the formGroupElement
+        if (this._state) {
+          this.formGroup.setValue(this._state);
+        }
+        // Subscribe to formgroup changes
+        this.formGroup.valueChanges
+          .pipe(
+            tap((state) => this.formGroupChange.emit(state)),
+            takeUntil(this._destroy$)
+          )
+          .subscribe();
         this.readyState.emit();
       }, 20);
     }
