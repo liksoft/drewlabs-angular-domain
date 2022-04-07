@@ -29,7 +29,7 @@ import { JSONFormsClient } from './services/client';
 import { CacheProvider } from '../core';
 import { API_BINDINGS_ENDPOINT, API_HOST } from './types/tokens';
 import { DECLARATIONS } from './components';
-import { FetchOptionsDirective } from './directives';
+import { FetchOptionsDirective, HTMLFileInputDirective } from './directives';
 import { createSelectOptionsQuery, createSubmitHttpHandler } from '../http';
 
 type FormApiServerConfigs = {
@@ -70,8 +70,18 @@ export const initializeDynamicFormContainer = (
     DropzoneModule,
     HttpModule,
   ],
-  declarations: [...DECLARATIONS, SafeHTMLPipe, FetchOptionsDirective],
-  exports: [...DECLARATIONS, FetchOptionsDirective],
+  declarations: [
+    ...DECLARATIONS,
+    SafeHTMLPipe,
+    FetchOptionsDirective,
+    HTMLFileInputDirective,
+  ],
+  exports: [
+    ...DECLARATIONS,
+    SafeHTMLPipe,
+    FetchOptionsDirective,
+    HTMLFileInputDirective,
+  ],
   providers: [],
 })
 export class NgxSmartFormModule {

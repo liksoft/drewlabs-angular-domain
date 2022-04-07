@@ -5,6 +5,8 @@ import {
   EventEmitter,
   OnDestroy,
   ChangeDetectionStrategy,
+  Inject,
+  ViewChild,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { InputTypeHelper } from '../../services/input-type';
@@ -12,6 +14,8 @@ import { InputEventArgs } from '../../types/input';
 import { JSObject } from '../../../../../utils';
 import { SelectableControlItems, SelectInput } from '../../../core';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { DOCUMENT } from '@angular/common';
+import { FetchOptionsDirective } from '../../directives';
 @Component({
   selector: 'ngx-smart-select-input',
   templateUrl: './select-input.component.html',
@@ -41,7 +45,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectInputComponent implements OnDestroy {
+export class SelectInputComponent {
   private _control!: FormControl;
   @Input() set control(value: FormControl) {
     this._control = value;
@@ -84,51 +88,27 @@ export class SelectInputComponent implements OnDestroy {
   // tslint:disable-next-line: variable-name
   _controlFocusEvent$ = new Subject<{ state: any[] }>();
 
-  // tslint:disable-next-line: variable-name
-  private _destroy$ = new Subject<void>();
+  private _handleFetchOnFocus: boolean = false;
 
-  constructor(public readonly inputType: InputTypeHelper) {
-    // this._controlFocusEvent$
-    //   .pipe(
-    //     tap((state) => {
-    //       this._inputItems$.next({ ...state, performingAction: true });
-    //       this._actionSubject$.next(true);
-    //     }),
-    //     switchMap(() =>
-    //       this.client
-    //         .get(`${httpHost(host)}/${path}`, {
-    //           params: {
-    //             table_config: this._inputConfig.serverBindings,
-    //           },
-    //         })
-    //         .pipe(
-    //           doLog('Load binding result: '),
-    //           map((state) => {
-    //             const data = getResponseDataFromHttpResponse(state);
-    //             if (data && Array.isArray(data)) {
-    //               return controlBindingsSetter(data)(this._inputConfig)
-    //                 .items as any[];
-    //             }
-    //             return [];
-    //           }),
-    //           takeUntil(this._destroy$),
-    //           tap((state) => {
-    //             this._inputItems$.next({ performingAction: false, state });
-    //           })
-    //         )
-    //     )
-    //   )
-    //   .subscribe();
+  @ViewChild('prefetchOptionsDirective', { static: false })
+  prefetchOptionsDirective!: FetchOptionsDirective;
+
+  constructor(
+    public readonly inputType: InputTypeHelper,
+    @Inject(DOCUMENT) private document: Document
+  ) {
+    const { defaultView } = this.document;
+    this._handleFetchOnFocus = !(
+      defaultView !== null &&
+      'IntersectionObserver' in defaultView &&
+      'IntersectionObserverEntry' in defaultView &&
+      'intersectionRatio' in defaultView.IntersectionObserverEntry.prototype
+    );
   }
 
   onFocus(): void {
-    const { state } = this._inputItems$.getValue();
-    if (
-      !(typeof state !== 'undefined' && state !== null) ||
-      (JSObject.isEmpty(state) && this._inputConfig.serverBindings)
-    ) {
-      // Load the data from the remote server
-      this._controlFocusEvent$.next({ state });
+    if (this.prefetchOptionsDirective && this._handleFetchOnFocus) {
+      this.prefetchOptionsDirective.executeQuery();
     }
   }
 
@@ -140,9 +120,5 @@ export class SelectInputComponent implements OnDestroy {
   onItemsChange(state: SelectableControlItems[]) {
     const value = this._inputItems$.getValue();
     this._inputItems$.next({ ...value, state });
-  }
-
-  ngOnDestroy(): void {
-    this._destroy$.next();
   }
 }

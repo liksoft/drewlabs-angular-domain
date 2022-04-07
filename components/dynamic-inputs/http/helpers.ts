@@ -28,7 +28,7 @@ export function rxRequest<T>(
     | {
         url: string;
         method: HTTPRequestMethods;
-        body: unknown;
+        body: any;
         headers?: HeadersInit;
         responseType?: HTTPResponseType; // -> default=json
       }
@@ -40,7 +40,7 @@ export function rxRequest<T>(
       method: 'GET',
       body: undefined,
       headers: {
-        'content-type': 'application/json;charset=UTF-8',
+        'Content-Type': 'application/json;charset=UTF-8',
       },
       responseType: 'json',
     };
@@ -67,24 +67,30 @@ export function rxRequest<T>(
   let _headers: Headers;
   if (typeof headers === 'undefined' || headers == null) {
     _headers = new Headers({
-      'content-type': 'application/json;charset=UTF-8',
+      'Content-Type': 'application/json;charset=UTF-8',
     });
   } else {
     _headers = new Headers(headers);
   }
-  return fromFetch(
-    {
-      method,
-      url,
-      body:
-        _headers.get('content-type')?.includes('application/json') &&
-        typeof body === 'object'
-          ? JSON.stringify(body)
-          : body,
-      headers: _headers,
-    } as any,
-    {
-      selector,
+  if (['GET', 'HEAD', 'OPTION'].includes(method.toUpperCase())) {
+    const _query = body ?? {};
+    if (_query) {
+      url = `${url.includes('?') ? url : `${url}?`}${new URLSearchParams(
+        body as Record<string, string>
+      ).toString()}`;
     }
-  );
+    body = null;
+  }
+  return fromFetch(url, {
+    method,
+    body:
+      _headers.get('content-type')?.includes('application/json') &&
+      typeof body === 'object' &&
+      body !== null
+        ? JSON.stringify(body)
+        : body,
+    headers: _headers,
+    credentials: 'include',
+    selector,
+  });
 }

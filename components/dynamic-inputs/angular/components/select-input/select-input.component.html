@@ -13,6 +13,7 @@
 </label>
 <ng-container *ngIf="inputItems$ | async as vm">
   <div
+    #prefetchOptionsDirective
     prefetchOptions
     [params]="inputType.asSelectInput(inputConfig).serverBindings"
     [loaded]="vm.loaded"

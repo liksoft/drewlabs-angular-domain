@@ -56,7 +56,7 @@ export function createSubmitHttpHandler(host?: string) {
         responseType?: HTTPResponseType;
       }
     ) => {
-      _request<T>(path, method, body, options);
+      return _request<T>(path, method, body, options);
     },
   }) as _RequestFunction & RequestClient;
 }

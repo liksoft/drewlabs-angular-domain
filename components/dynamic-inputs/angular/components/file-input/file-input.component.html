@@ -12,17 +12,31 @@
       (*)
     </small>
   </label>
-  <app-dropzone
-    *ngIf="dropzoneConfigs"
-    #dropzoneContainer
-    [dropzoneConfig]="dropzoneConfigs"
-    [class]="inputConfig.classes"
-    (removedFile)="onDropzoneFileRemoved($event)"
-    (addedFile)="onDropzoneFileAdded()"
-    [uploadFileText]="'uploadFileLabel' | translate"
-    [dragFileText]="'dragFileLabel' | translate"
-    [defaultMessage]="'upload' | translate"
-  ></app-dropzone>
+  <ng-container *ngIf="inputType.asFileInput(inputConfig).multiple">
+    <app-dropzone
+      #dropzoneContainer
+      *ngIf="dropzoneConfigs"
+      [dropzoneConfig]="dropzoneConfigs"
+      [class]="inputConfig.classes"
+      (removedFile)="onDropzoneFileRemoved($event)"
+      (addedFile)="onDropzoneFileAdded()"
+      [uploadFileText]="'uploadFileLabel' | translate"
+      [dragFileText]="'dragFileLabel' | translate"
+      [defaultMessage]="'upload' | translate"
+    ></app-dropzone>
+  </ng-container>
+  <ng-container *ngIf="!inputType.asFileInput(inputConfig).multiple">
+    <input
+      type="file"
+      fileInput
+      [class]="inputConfig.classes"
+      [maxFileSize]="dropzoneConfigs.maxFilesize || 10"
+      [maxFiles]="1"
+      (sizeError)="onHTMLInputLargeFileEvent($event)"
+      (acceptedFilesChange)="onHTMLInputAcceptFilesChange($event)"
+      (reset)="onResetControlValue()"
+    />
+  </ng-container>
   <clr-control-error
     class="field-has-error"
     *ngIf="control.hasError('required') && control.touched"

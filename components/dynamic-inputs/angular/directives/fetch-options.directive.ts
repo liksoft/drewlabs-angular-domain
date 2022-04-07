@@ -48,13 +48,13 @@ export class FetchOptionsDirective implements AfterViewInit, OnDestroy {
     this._observer.observe(this.elemRef.nativeElement);
   }
 
-  private executeQuery() {
+  executeQuery() {
     if (!this.loaded && this.params) {
       // Query select options
       this.client.request(this.params).pipe(
         first(),
-        tap((state) => this.itemsChange.emit(state))
-      );
+        tap((state) => this.itemsChange.emit(state)),
+      ).subscribe();
     }
   }
 

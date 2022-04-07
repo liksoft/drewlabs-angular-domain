@@ -3,8 +3,8 @@ import { SelectOptionsClient } from '../core';
 import { getHost, rxRequest } from './helpers';
 
 type _OptionsRequestFunction = <T>(
-  url: string,
-  param: string
+  param: string,
+  url?: string
 ) => ObservableInput<T>;
 
 export function createSelectOptionsQuery(endpoint?: string, path?: string) {
@@ -23,8 +23,8 @@ export function createSelectOptionsQuery(endpoint?: string, path?: string) {
 
   const _request = queryOptions;
   return Object.defineProperty(_request, 'request', {
-    value: <T>(url: string, param: string) => {
-      _request<T>(url, param);
+    value: <T>(param: string, path?: string) => {
+      return _request<T>(path ? `${endpoint}/${path}` : `${endpoint}`, param);
     },
   }) as any as _OptionsRequestFunction & SelectOptionsClient;
 }
