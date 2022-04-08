@@ -3,15 +3,12 @@ import {
   Input,
   Output,
   EventEmitter,
-  OnDestroy,
-  ChangeDetectionStrategy,
   Inject,
   ViewChild,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { InputTypeHelper } from '../../services/input-type';
 import { InputEventArgs } from '../../types/input';
-import { JSObject } from '../../../../../utils';
 import { SelectableControlItems, SelectInput } from '../../../core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
@@ -43,16 +40,9 @@ import { FetchOptionsDirective } from '../../directives';
       }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectInputComponent {
-  private _control!: FormControl;
-  @Input() set control(value: FormControl) {
-    this._control = value;
-  }
-  get control(): FormControl {
-    return this._control as FormControl;
-  }
+  @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name
   _inputItems$ = new BehaviorSubject<{

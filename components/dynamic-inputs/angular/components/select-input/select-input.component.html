@@ -57,14 +57,13 @@
     </ng-select>
   </div>
 </ng-container>
-<clr-control-error
-  class="field-has-error"
+<span
   *ngIf="control.hasError('required') && control.touched"
->
-  <span [translate]="'validation.required'"></span>
-</clr-control-error>
-<clr-control-helper
+  [class]="'input__subtext input__error_text'"
+  [translate]="'validation.required'"
+></span>
+<span
   *ngIf="inputConfig.descriptionText && showLabelAndDescription"
->
-  <span [innerHTML]="inputConfig.descriptionText | safeHtml"></span>
-</clr-control-helper>
+  class="input__subtext"
+  [innerHTML]="inputConfig.descriptionText | safeHtml"
+></span>

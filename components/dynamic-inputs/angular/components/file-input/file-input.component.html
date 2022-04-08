@@ -36,11 +36,15 @@
       (acceptedFilesChange)="onHTMLInputAcceptFilesChange($event)"
       (reset)="onResetControlValue()"
     />
+    <span
+      [class]="'input__subtext input__error_text'"
+      *ngIf="control.hasError('required') && control.touched"
+      [translate]="'validation.required'"
+    ></span>
+    <span
+      [class]="'input__subtext'"
+      *ngIf="inputConfig.descriptionText && showLabelAndDescription"
+      [innerHTML]="inputConfig.descriptionText | safeHtml"
+    ></span>
   </ng-container>
-  <clr-control-error
-    class="field-has-error"
-    *ngIf="control.hasError('required') && control.touched"
-  >
-    <span [translate]="'validation.required'"></span>
-  </clr-control-error>
 </ng-container>

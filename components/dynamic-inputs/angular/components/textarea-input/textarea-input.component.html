@@ -48,26 +48,23 @@
       [rows]="inputType.asTextAreaInput(inputConfig)?.rows"
     ></textarea>
   </div>
-</div>
-<clr-control-error
-  class="field-has-error"
-  *ngIf="control?.hasError('required') && control?.touched"
->
-  <span [translate]="'validation.required'"></span>
-</clr-control-error>
-<clr-control-error
-  class="field-has-error"
-  *ngIf="control?.hasError('maxLength') && control?.touched"
->
   <span
+    *ngIf="control?.hasError('required') && control?.touched"
+    [translate]="'validation.required'"
+  >
+    <span></span>
+  </span>
+  <span
+    [class]="'input__subtext input__error_text'"
+    *ngIf="control?.hasError('maxLength') && control?.touched"
     [translate]="'validation.maxValue'"
     [translateParams]="{
       value: inputType.asTextAreaInput(inputConfig).maxLength
     }"
   ></span>
-</clr-control-error>
-<clr-control-helper
-  *ngIf="inputConfig.descriptionText && showLabelAndDescription"
->
-  <span [innerHTML]="inputConfig.descriptionText | safeHtml"></span>
-</clr-control-helper>
+  <span
+    [class]="'input__subtext'"
+    *ngIf="inputConfig.descriptionText && showLabelAndDescription"
+    [innerHTML]="inputConfig.descriptionText | safeHtml"
+  ></span>
+</div>

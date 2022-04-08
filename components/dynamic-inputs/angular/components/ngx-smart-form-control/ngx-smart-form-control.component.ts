@@ -11,7 +11,6 @@ import {
   EventEmitter,
   OnDestroy,
   OnInit,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { InputEventArgs } from '../../types';
 import { takeUntil, tap } from 'rxjs/operators';
@@ -21,8 +20,26 @@ import { InputTypeHelper } from '../../services';
 @Component({
   selector: 'ngx-smart-form-control',
   templateUrl: './ngx-smart-form-control.component.html',
-  styles: [],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [
+    `
+      :host ::ng-deep span.input__subtext, :host ::ng-deep .input__subtext {
+        display: block;
+        margin-top: 0.3rem;
+        font-size: 0.55rem;
+        line-height: 0.6rem;
+      }
+
+      :host ::ng-deep span.input__error_text, :host ::ng-deep .input__error_text {
+        line-height: .6rem;
+        left: 0;
+        /* background: #ff494f; */
+        border-radius: 5px;
+        color: #ff494f; /** Previous value : #fff */
+        /* padding: 2px 10px; */
+        font-size: .55rem;
+      }
+    `,
+  ],
 })
 export class NgxSmartFormControlComponent implements OnDestroy, OnInit {
   // Component properties
@@ -35,14 +52,7 @@ export class NgxSmartFormControlComponent implements OnDestroy, OnInit {
   @Input() showLabelAndDescription = true;
   @Input() inputConfig!: InputInterface;
   @Input() listItems!: SelectableControlItems;
-  private _control!: AbstractControl & FormControl;
-  @Input() set control(value: AbstractControl & FormControl) {
-    this._control = value;
-  }
-  get control() {
-    return this._control as AbstractControl & FormControl;
-  }
-  @Input() name!: string;
+  @Input() control!: AbstractControl & FormControl;
   //#endregion Component inputs
 
   //#region Component outputs
@@ -62,7 +72,7 @@ export class NgxSmartFormControlComponent implements OnDestroy, OnInit {
   constructor(public readonly inputType: InputTypeHelper) {}
 
   ngOnInit() {
-    this._control?.valueChanges
+    this.control.valueChanges
       .pipe(
         takeUntil(this._destroy$),
         tap((source) =>

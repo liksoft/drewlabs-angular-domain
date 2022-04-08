@@ -44,21 +44,19 @@
         [for]="inputType.asCheckBoxInput(inputConfig).formControlName + '_' + i"
         class="clr-control-label"
         *ngIf="showLabelAndDescription"
-        [for]="'clr-checkbox-control-' + i"
       >
         {{ inputType.asCheckBoxInput(inputConfig).items[i].description }}
       </label>
     </div>
   </div>
-  <clr-control-error
-    class="field-has-error"
+  <span
+    [class]="'input__subtext input__error_text'"
     *ngIf="control.hasError('required') && control.touched"
-  >
-    <span [translate]="'validation.required'"></span>
-  </clr-control-error>
-  <clr-control-helper
+    [translate]="'validation.required'"
+  ></span>
+  <span
+    [class]="'input__subtext'"
     *ngIf="inputConfig.descriptionText && showLabelAndDescription"
-  >
-    <span [innerHTML]="inputConfig.descriptionText | safeHtml"></span>
-  </clr-control-helper>
+    [innerHTML]="inputConfig.descriptionText | safeHtml"
+  ></span>
 </div>

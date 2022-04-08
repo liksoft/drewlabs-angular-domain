@@ -12,15 +12,6 @@
     <ng-container *ngSwitchCase="inputTypes.HTML_INPUT">
       <div [innerHTML]="inputConfig.value | safeHtml"></div>
     </ng-container>
-    <ng-container *ngSwitchCase="inputTypes.HIDDEN_INPUT">
-      <input
-        [tabIndex]="-1"
-        type="hidden"
-        [class]="inputConfig.classes"
-        [formControl]="control"
-        [value]="inputConfig.value"
-      />
-    </ng-container>
     <ng-container *ngSwitchCase="inputTypes.SELECT_INPUT">
       <ngx-smart-select-input
         [control]="control"

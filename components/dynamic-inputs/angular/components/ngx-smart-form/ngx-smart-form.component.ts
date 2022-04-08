@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ContentChild,
   EventEmitter,
@@ -86,7 +87,7 @@ export class NgxSmartFormComponent
   @Input() addTemplate!: TemplateRef<Node>;
   @Input() performingAction = false;
   @Input() disabled = false;
-  @Input() submitable = true;
+  @Input() submitable = false;
   @Input() set form(value: IDynamicForm) {
     this.setComponentForm(value);
   }
@@ -127,6 +128,7 @@ export class NgxSmartFormComponent
   public constructor(
     @Inject(ANGULAR_REACTIVE_FORM_BRIDGE)
     private builder: AngularReactiveFormBuilderBridge,
+    private cdRef: ChangeDetectorRef,
     @Inject(HTTP_REQUEST_CLIENT) @Optional() private client?: RequestClient
   ) {}
 
@@ -169,6 +171,8 @@ export class NgxSmartFormComponent
     // Validate the formgroup object to ensure it passes
     // validation before submitting
     this.validateForm();
+    this.cdRef.detectChanges();
+    console.log(this.formGroup.valid, this.formGroup);
 
     // We simply return without performing any further action
     // if the validation fails

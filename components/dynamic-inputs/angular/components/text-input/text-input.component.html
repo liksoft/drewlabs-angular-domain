@@ -63,60 +63,51 @@
       "
     />
   </div>
-  <clr-control-error
-    class="field-has-error"
+  <span
+    [class]="'input__subtext input__error_text'"
     *ngIf="control.hasError('required') && control.touched"
-  >
-    <span [translate]="'validation.required'"></span>
-  </clr-control-error>
-  <clr-control-error
-    class="field-has-error"
+    [translate]="'validation.required'"
+  ></span>
+  <span
+    [class]="'input__subtext input__error_text'"
     *ngIf="control.hasError('maxLength') && control.touched"
-  >
-    <span
-      [translate]="'validation.maxValue'"
-      [translateParams]="{
-        value: inputType.asTextInput(inputConfig).maxLength
-      }"
-    ></span>
-  </clr-control-error>
-  <clr-control-error
-    class="field-has-error"
+    [translate]="'validation.maxValue'"
+    [translateParams]="{
+      value: inputType.asTextInput(inputConfig).maxLength
+    }"
+  ></span>
+  <span
+    [class]="'input__subtext input__error_text'"
     *ngIf="control.hasError('minLength') && control.touched"
-  >
-    <span
-      [translate]="'validation.minValue'"
-      [translateParams]="{
-        value: inputType.asTextInput(inputConfig).minLength
-          ? inputType.asTextInput(inputConfig).minLength
-          : getErrorAsNumber(
-              control.errors ? control.errors['minLength'] : '',
-              'minLength'
-            )
-      }"
-    ></span>
-  </clr-control-error>
-  <clr-control-error
-    class="field-has-error"
+    [translate]="'validation.minValue'"
+    [translateParams]="{
+      value: inputType.asTextInput(inputConfig).minLength
+        ? inputType.asTextInput(inputConfig).minLength
+        : getErrorAsNumber(
+            control.errors ? control.errors['minLength'] : '',
+            'minLength'
+          )
+    }"
+  ></span>
+  <span
+    [class]="'input__subtext input__error_text'"
     *ngIf="control.hasError('pattern') && control.touched"
-  >
-    <span [translate]="'validation.pattern'"></span>
-  </clr-control-error>
-  <clr-control-error
-    class="field-has-error"
+    [translate]="'validation.pattern'"
+  ></span>
+  <span
+    [class]="'input__subtext input__error_text'"
     *ngIf="control.hasError('email') && control.touched"
-  >
-    <span [translate]="'validation.email'"></span>
-  </clr-control-error>
-  <clr-control-error
-    class="field-has-error"
+    [translate]="'validation.email'"
+  ></span>
+  <span
+    [class]="'input__subtext input__error_text'"
     *ngIf="control.hasError('notUnique') && control.touched"
-  >
-    <span [translate]="'validation.unique'"></span>
-  </clr-control-error>
-  <clr-control-helper
+    ,
+    [translate]="'validation.unique'"
+  ></span>
+  <span
+    [class]="'input__subtext'"
     *ngIf="inputConfig.descriptionText && showLabelAndDescription"
-  >
-    <span [innerHTML]="inputConfig.descriptionText | safeHtml"></span>
-  </clr-control-helper>
+    [innerHTML]="inputConfig.descriptionText | safeHtml"
+  ></span>
 </div>
