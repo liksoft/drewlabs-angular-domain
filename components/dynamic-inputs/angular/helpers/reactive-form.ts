@@ -140,6 +140,11 @@ export class ComponentReactiveFormHelpers {
         : // tslint:disable-next-line:no-unused-expression
           null;
     }
+
+    // We add an email validator if the input type is email
+    if (config.type === InputTypes.EMAIL_INPUT) {
+      validators.push(Validators.email);
+    }
     // Check for min an max rules on number inputs and apply validation to the input
     if (config.type === InputTypes.NUMBER_INPUT) {
       config.rules && config.rules.min

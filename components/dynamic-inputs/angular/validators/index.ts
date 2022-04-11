@@ -1,2 +1,1 @@
-export { EmailValidator } from "./email";
-export { CustomValidators } from "./validators";
+export { CustomValidators } from './validators';
