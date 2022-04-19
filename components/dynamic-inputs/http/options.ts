@@ -40,7 +40,7 @@ export function queryOptions<T = Observable<{ [prop: string]: any }[]>>(
       table_config: param,
     },
     headers: {
-      'content-type': 'application/json;charset=UTF-8',
+      'Content-Type': 'application/json;charset=UTF-8',
     },
     responseType: 'json',
   });

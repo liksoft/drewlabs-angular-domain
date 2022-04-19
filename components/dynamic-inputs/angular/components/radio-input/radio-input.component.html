@@ -1,26 +1,10 @@
-<clr-radio-container [clrInline]="inline">
+<clr-radio-container prefetchOptions (itemsChange)="onItemsChange($event)" [clrInline]="inline">
   <label>
     {{ inputConfig.label }}
     <span class="required-text" *ngIf="inputConfig.rules?.isRequired">
       (*)
     </span>
   </label>
-  <clr-radio-wrapper
-    *ngFor="
-      let item of inputType.asRadioInput(inputConfig).items;
-      let i = index
-    "
-  >
-    <input
-      [tabIndex]="inputConfig?.formControlIndex"
-      type="radio"
-      required
-      [checked]="control.value == item.value"
-      [value]="inputValue(inputConfig.formControlName, item?.value)"
-      (change)="onValueChanges(item.value)"
-    />
-    <label>{{ item.description }}</label>
-  </clr-radio-wrapper>
   <span
     [class]="'input__subtext input__error_text'"
     *ngIf="control.hasError('required') && control.touched"
@@ -32,3 +16,17 @@
     [innerHTML]="inputConfig.descriptionText | safeHtml"
   ></span>
 </clr-radio-container>
+
+<ng-template #listTemplate let-items>
+  <clr-radio-wrapper *ngFor="let item of items">
+    <input
+      [tabIndex]="inputConfig?.formControlIndex"
+      type="radio"
+      required
+      [checked]="control.value == item.value"
+      [value]="inputValue(inputConfig.formControlName, item?.value)"
+      (change)="onValueChanges(item.value)"
+    />
+    <label>{{ item.description }}</label>
+  </clr-radio-wrapper>
+</ng-template>
