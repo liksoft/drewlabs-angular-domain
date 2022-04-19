@@ -172,8 +172,6 @@ export class NgxSmartFormComponent
     // validation before submitting
     this.validateForm();
     this.cdRef.detectChanges();
-    console.log(this.formGroup.valid, this.formGroup);
-
     // We simply return without performing any further action
     // if the validation fails
     if (!this.formGroup.valid) {

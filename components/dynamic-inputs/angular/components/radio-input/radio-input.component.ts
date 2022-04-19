@@ -1,6 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { InputInterface, InputTypes } from '../../../core';
+import {
+  InputInterface,
+  InputTypes,
+  RadioInput,
+  SelectableControlItems,
+  SelectInput,
+} from '../../../core';
+import { controlBindingsSetter } from '../../../core/helpers';
 import { InputTypeHelper } from '../../services/input-type';
 
 @Component({
@@ -31,7 +38,10 @@ export class RadioInputComponent {
 
   public inputTypes = InputTypes;
 
-  constructor(public readonly inputType: InputTypeHelper) {}
+  constructor(
+    public readonly inputType: InputTypeHelper,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
   onValueChanges(event: any) {
     this.control.setValue(event);
@@ -39,5 +49,13 @@ export class RadioInputComponent {
 
   inputValue(name: string, value: string) {
     return `${name}_${value}`;
+  }
+
+  onItemsChange(state: SelectableControlItems[]) {
+    console.log(this._inputConfig);
+    // this._inputConfig = controlBindingsSetter(state)(
+    //   this._inputConfig
+    // ) as RadioInput;
+    // this.cdRef.detectChanges();
   }
 }
