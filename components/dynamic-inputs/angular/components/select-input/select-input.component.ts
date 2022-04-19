@@ -13,6 +13,7 @@ import { SelectableControlItems, SelectInput } from '../../../core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { FetchOptionsDirective } from '../../directives';
+import { controlBindingsSetter } from '../../../core/helpers';
 @Component({
   selector: 'ngx-smart-select-input',
   templateUrl: './select-input.component.html',
@@ -108,7 +109,10 @@ export class SelectInputComponent {
   }
 
   onItemsChange(state: SelectableControlItems[]) {
+    this._inputConfig = controlBindingsSetter(state)(
+      this._inputConfig
+    ) as SelectInput;
     const value = this._inputItems$.getValue();
-    this._inputItems$.next({ ...value, state });
+    this._inputItems$.next({ ...value, state: this._inputConfig.items ?? [] });
   }
 }
