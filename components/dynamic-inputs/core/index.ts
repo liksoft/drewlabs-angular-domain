@@ -18,7 +18,7 @@ export {
   InputRequireIfConfig,
   SelectableControlItems,
   SelectOptionsClient,
-  LazyBindingControl
+  LazyBindingControl,
 } from './types';
 
 // Input types defintions
@@ -46,6 +46,7 @@ export {
   copyform,
   groupControlsBy,
   setControlChildren,
+  setControlOptions,
 } from './helpers';
 
 // Models

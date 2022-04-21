@@ -1,47 +1,36 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import {
   InputInterface,
   InputTypes,
   RadioInput,
   SelectableControlItems,
-  SelectInput,
+  setControlOptions,
 } from '../../../core';
-import { controlBindingsSetter } from '../../../core/helpers';
-import { InputTypeHelper } from '../../services/input-type';
 
 @Component({
   selector: 'ngx-smart-radio-input',
   templateUrl: './radio-input.component.html',
   styles: [],
 })
-export class RadioInputComponent {
-  @Input() inline: boolean = true;
-
+export class RadioInputComponent implements OnInit {
   // tslint:disable-next-line: variable-name
-  private _control!: AbstractControl;
-  @Input() set control(value: AbstractControl) {
-    this._control = value;
-  }
-  get control() {
-    return this._control;
-  }
+  @Input() control!: AbstractControl;
   // tslint:disable-next-line: variable-name
-  private _inputConfig!: InputInterface;
-  @Input() set inputConfig(value: InputInterface) {
-    this._inputConfig = value;
-  }
-  get inputConfig() {
-    return this._inputConfig;
-  }
+  @Input() inputConfig!: RadioInput;
   @Input() showLabelAndDescription = true;
 
   public inputTypes = InputTypes;
+  public loaded: boolean = false;
 
-  constructor(
-    public readonly inputType: InputTypeHelper,
-    private cdRef: ChangeDetectorRef
-  ) {}
+  constructor(private cdRef: ChangeDetectorRef) {}
+
+  //
+  ngOnInit(): void {
+    if (this.inputConfig) {
+      this.loaded = this.inputConfig.items!.length !== 0;
+    }
+  }
 
   onValueChanges(event: any) {
     this.control.setValue(event);
@@ -52,9 +41,8 @@ export class RadioInputComponent {
   }
 
   onItemsChange(state: SelectableControlItems[]) {
-    this._inputConfig = controlBindingsSetter(state)(
-      this._inputConfig
-    ) as RadioInput;
+    this.loaded = true;
+    this.inputConfig = setControlOptions(this.inputConfig, state);
     this.cdRef.detectChanges();
   }
 }

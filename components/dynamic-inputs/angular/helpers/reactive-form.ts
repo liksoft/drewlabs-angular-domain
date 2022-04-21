@@ -63,16 +63,9 @@ export class ComponentReactiveFormHelpers {
         group.addControl(input.formControlName, formgroup);
         continue;
       }
-      if (config.type !== InputTypes.CHECKBOX_INPUT) {
-        group.addControl(
-          config.formControlName,
-          ComponentReactiveFormHelpers.buildControl(builder, config)
-        );
-        continue;
-      }
       group.addControl(
         config.formControlName,
-        ComponentReactiveFormHelpers.buildArray(builder, config)
+        ComponentReactiveFormHelpers.buildControl(builder, config)
       );
     }
     return group;

@@ -30,13 +30,7 @@ export class FetchOptionsDirective implements AfterViewInit, OnDestroy {
   //#endregion Directive outputs
 
   // Directive properties
-  private _observer = createIntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        this.executeQuery();
-      }
-    });
-  });
+  private observer!: IntersectionObserver;
 
   // Directive constructor
   constructor(
@@ -45,21 +39,46 @@ export class FetchOptionsDirective implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit() {
-    this._observer.observe(this.elemRef.nativeElement);
+    if (
+      !('IntersectionObserver' in window) &&
+      !('IntersectionObserverEntry' in window) &&
+      !('intersectionRatio' in window.IntersectionObserverEntry.prototype)
+    ) {
+      // If The intersection API is missing we execute the load query
+      // When the view initialize
+      this.executeQuery();
+    } else {
+      if (this.observer) {
+        this.observer.disconnect();
+      }
+      // We create an intersection observer that execute load query
+      // when the HTML element is intersecting
+      this.observer = createIntersectionObserver((entries, _) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            this.executeQuery();
+          }
+        });
+      });
+      this.observer.observe(this.elemRef.nativeElement);
+    }
   }
 
   executeQuery() {
     if (!this.loaded && this.params) {
       // Query select options
-      this.client.request(this.params).pipe(
-        first(),
-        tap((state) => this.itemsChange.emit(state)),
-      ).subscribe();
+      this.client
+        .request(this.params)
+        .pipe(
+          first(),
+          tap((state) => this.itemsChange.emit(state))
+        )
+        .subscribe();
     }
   }
 
   ngOnDestroy(): void {
     // Disconnect from the observer
-    this._observer.disconnect();
+    this.observer.disconnect();
   }
 }

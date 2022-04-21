@@ -130,16 +130,15 @@
     </ng-container>
     <ng-container *ngSwitchCase="inputTypes.RADIO_INPUT">
       <ngx-smart-radio-input
-        [inline]="inline"
         [control]="control"
-        [inputConfig]="inputConfig"
+        [inputConfig]="inputType.asRadioInput(inputConfig)"
         [showLabelAndDescription]="showLabelAndDescription"
       ></ngx-smart-radio-input>
     </ng-container>
     <ng-container *ngSwitchCase="inputTypes.CHECKBOX_INPUT">
       <ngx-smart-checkox-input
         [control]="control"
-        [inputConfig]="inputConfig"
+        [inputConfig]="inputType.asCheckBoxInput(inputConfig)"
         [showLabelAndDescription]="showLabelAndDescription"
       ></ngx-smart-checkox-input>
     </ng-container>

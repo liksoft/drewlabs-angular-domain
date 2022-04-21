@@ -1,6 +1,6 @@
 import { ControlInterface } from '../compact';
 import { InputValidationRule } from '../types';
-import { controlBindingsSetter } from './bindings';
+import { setControlOptions } from './bindings';
 import { parseControlItemsConfigs } from './parsers';
 
 export const buildRequiredIfConfig = (str: string) => {
@@ -35,7 +35,7 @@ export function buildSelectableInput(source: Partial<ControlInterface>) {
   keyfield = source.keyfield || keyfield;
   valuefield = source.valuefield || valuefield;
   groupfield = source.groupfield || groupfield;
-  return controlBindingsSetter(source.options || [])({
+  const input = {
     ...{ keyfield, valuefield, groupfield },
     label: source.label,
     type: source.type,
@@ -60,5 +60,6 @@ export function buildSelectableInput(source: Partial<ControlInterface>) {
     multiple: Boolean(source.multiple),
     serverBindings: source.selectableModel,
     clientBindings: source.selectableValues,
-  });
+  };
+  return setControlOptions(input, source.options || []);
 }

@@ -1,9 +1,10 @@
 <div
   prefetchOptions
   (itemsChange)="onItemsChange($event)"
-  [params]="inputType.asSelectInput(inputConfig).serverBindings"
+  [loaded]="loaded"
+  [params]="inputConfig.serverBindings"
 >
-  <ng-container *ngIf="inputType.asSelectInput(inputConfig).items as items">
+  <ng-container *ngIf="inputConfig.items as items">
     <ng-container *ngIf="items!.length > 0">
       <clr-radio-container clrInline>
         <label>

@@ -16,4 +16,4 @@ export {
 export { buildControl } from './input-types';
 
 export { parseControlItemsConfigs } from './parsers';
-export { controlBindingsSetter } from './bindings';
+export { setControlOptions } from './bindings';

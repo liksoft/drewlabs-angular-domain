@@ -2,7 +2,7 @@ import { ControlInterface } from '../compact/types';
 import { InputValidationRule } from '../types';
 import { BindingControlInterface } from '../types';
 import { buildRequiredIfConfig } from '../helpers/builders';
-import { controlBindingsSetter } from '../helpers/bindings';
+import { setControlOptions } from '../helpers/bindings';
 import { parseControlItemsConfigs } from '../helpers/parsers';
 
 export interface SelectInput extends BindingControlInterface {
@@ -25,7 +25,7 @@ export function buildSelectInput(source: Partial<ControlInterface>) {
   keyfield = source.keyfield || keyfield;
   valuefield = source.valuefield || valuefield;
   groupfield = source.groupfield || groupfield;
-  return controlBindingsSetter(source.options || [])({
+  const input = {
     ...{ keyfield, valuefield, groupfield },
     label: source.label,
     type: source.type,
@@ -53,5 +53,6 @@ export function buildSelectInput(source: Partial<ControlInterface>) {
     multiple: Boolean(source.multiple),
     serverBindings: source.selectableModel,
     clientBindings: source.selectableValues,
-  } as SelectInput);
+  };
+  return setControlOptions(input, source.options || []);
 }

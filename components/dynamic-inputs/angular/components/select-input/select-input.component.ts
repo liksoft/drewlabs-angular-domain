@@ -10,11 +10,14 @@ import {
 import { FormControl } from '@angular/forms';
 import { InputTypeHelper } from '../../services/input-type';
 import { InputEventArgs } from '../../types/input';
-import { SelectableControlItems, SelectInput } from '../../../core';
+import {
+  SelectableControlItems,
+  SelectInput,
+  setControlOptions,
+} from '../../../core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { FetchOptionsDirective } from '../../directives';
-import { controlBindingsSetter } from '../../../core/helpers';
 @Component({
   selector: 'ngx-smart-select-input',
   templateUrl: './select-input.component.html',
@@ -113,9 +116,7 @@ export class SelectInputComponent implements AfterViewInit {
   }
 
   onItemsChange(state: SelectableControlItems[]) {
-    this._inputConfig = controlBindingsSetter(state)(
-      this._inputConfig
-    ) as SelectInput;
+    this._inputConfig = setControlOptions(this._inputConfig, state);
     const value = this._inputItems$.getValue();
     this._inputItems$.next({ ...value, state: this._inputConfig.items ?? [] });
   }

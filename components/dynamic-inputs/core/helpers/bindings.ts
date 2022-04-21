@@ -5,43 +5,44 @@ import {
   SelectSourceInterface,
 } from '../types';
 
-export const controlBindingsSetter = (values: { [prop: string]: any }[]) => {
-  return <T extends BindingControlInterface>(control: Partial<T>) => {
-    let result: any[] = [];
-    if (control.clientBindings) {
-      const items = control.clientBindings?.split('|') || [];
-      switch (control.type) {
-        case InputTypes.CHECKBOX_INPUT:
-          result = checkboxInputItems(items);
-          break;
-        case InputTypes.RADIO_INPUT:
-          result = radioInputOptions(items);
-          break;
-        case InputTypes.SELECT_INPUT:
-          result = selectInputOptions(items);
-          break;
-      }
-    } else if (control.serverBindings) {
-      result = [
-        ...(values
-          ? values.map((v) => {
-              return {
-                value: getObjectProperty(v, control.keyfield || ''),
-                description: getObjectProperty(v, control.valuefield || ''),
-                name: getObjectProperty(v, control.valuefield || ''),
-                type:
-                  control.groupfield &&
-                  control.keyfield !== control.groupfield &&
-                  control.valuefield !== control.groupfield
-                    ? v[control.groupfield]
-                    : null,
-              } as SelectSourceInterface;
-            })
-          : []),
-      ];
+export const setControlOptions = <
+  T extends BindingControlInterface = BindingControlInterface
+>(
+  control: Partial<T>,
+  values: { [prop: string]: any }[]
+) => {
+  let result: any[] = [];
+  if (control.clientBindings) {
+    const items = control.clientBindings?.split('|') || [];
+    switch (control.type) {
+      case InputTypes.CHECKBOX_INPUT:
+        result = checkboxInputItems(items);
+        break;
+      case InputTypes.RADIO_INPUT:
+        result = radioInputOptions(items);
+        break;
+      case InputTypes.SELECT_INPUT:
+        result = selectInputOptions(items);
+        break;
     }
-    return { ...control, items: result } as T;
-  };
+  } else if (control.serverBindings) {
+    result = values
+      ? values.map((v) => {
+          return {
+            value: getObjectProperty(v, control.keyfield || ''),
+            description: getObjectProperty(v, control.valuefield || ''),
+            name: getObjectProperty(v, control.valuefield || ''),
+            type:
+              control.groupfield &&
+              control.keyfield !== control.groupfield &&
+              control.valuefield !== control.groupfield
+                ? v[control.groupfield]
+                : null,
+          } as SelectSourceInterface;
+        })
+      : [];
+  }
+  return { ...control, items: result } as T;
 };
 
 function checkboxInputItems(items: string[]) {
