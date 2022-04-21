@@ -69,6 +69,7 @@ export class NgxSmartFormArrayComponent implements OnInit, OnDestroy {
   }
   @Input() template!: TemplateRef<any>;
   @Input() addGroupRef!: TemplateRef<Node>;
+  @Input() name!: string;
   //#endregion Component inputs definitions
 
   //@internal
@@ -93,17 +94,24 @@ export class NgxSmartFormArrayComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.formGroup = this.builder.group(this._controls) as FormGroup;
-    this.addNewComponent(this.childCount);
+    if (this.formArray.getRawValue().length === 0) {
+      this.addNewComponent(this.childCount);
+    } else {
+      // Add elements
+      let index = 0;
+      for (const control of this.formArray.controls) {
+        this.addComponent(control as FormGroup, index);
+        index++;
+      }
+    }
 
     // Simulate form array
-    console.log(this.formArray);
     this.formArray.valueChanges
       .pipe(tap((state) => this.formArrayChange.emit(state)))
       .subscribe();
   }
 
   onTemplateButtonClicked(event: Event) {
-    console.log(event);
     this.childCount++;
     this.addNewComponent(this.childCount);
     event.preventDefault();
@@ -111,10 +119,15 @@ export class NgxSmartFormArrayComponent implements OnInit, OnDestroy {
 
   // tslint:disable-next-line: typedef
   addNewComponent(index: number) {
+    const formGroup = cloneAbstractControl(this.formGroup) as FormGroup;
+    this.addComponent(formGroup, index);
+    this.formArray.push(formGroup);
+  }
+
+  addComponent(formGroup: FormGroup, index: number) {
     const componentRef = this.viewContainerRef.createComponent(
       NgxSmartFormArrayChildComponent
     );
-    const formGroup = cloneAbstractControl(this.formGroup) as FormGroup;
     formGroup.addControl('__FORM_ARRAY__INDEX__', new FormControl(index));
     // Initialize child component input properties
     componentRef.instance.controls = [...this._controls];
@@ -148,7 +161,6 @@ export class NgxSmartFormArrayComponent implements OnInit, OnDestroy {
           this.formArray.updateValueAndValidity();
         }
       });
-    this.formArray.push(formGroup);
     this.children.push(componentRef);
   }
 

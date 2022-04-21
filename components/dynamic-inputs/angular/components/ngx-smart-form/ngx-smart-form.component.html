@@ -29,6 +29,7 @@
               [controls]="value.children || []"
               [template]="template ? template : defaultFormControl"
               [addGroupRef]="addTemplate"
+              [name]="value.formControlName"
             ></ngx-smart-form-array>
           </ng-container>
           <!--\ REPEATABLE INPUTS GROUP -->
@@ -70,11 +71,14 @@
 <ng-template #formTemplate let-group="group" let-value="value">
   <!-- REPEATABLE INPUTS -->
   <ng-container *ngIf="value!.isRepeatable === true">
+    <pre>{{ group.get(value.formControlName).getRawValue() | json }}</pre>
+    <pre>{{ value.formControlName | json }}</pre>
     <ngx-smart-form-array
       [formArray]="group"
       [controls]="value"
       [template]="template ? template : defaultFormControl"
       [addGroupRef]="addTemplate"
+      [name]="value.formControlName"
     ></ngx-smart-form-array>
   </ng-container>
   <!--\ REPEATABLE INPUTS -->

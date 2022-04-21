@@ -10,9 +10,7 @@ export {
 
 export {
   buildRequiredIfConfig,
-  buildCheckboxItems,
-  buildSelectItems,
-  buildRadioInputItems,
+  buildSelectableInput,
 } from './builders';
 
 export { buildControl } from './input-types';

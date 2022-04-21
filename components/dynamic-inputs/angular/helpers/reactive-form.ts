@@ -13,6 +13,7 @@ import {
   IDynamicForm,
   InputInterface,
   InputTypes,
+  SelectableControlItems,
 } from '../../core';
 import {
   CheckBoxInput,
@@ -216,10 +217,12 @@ export class ComponentReactiveFormHelpers {
     observableOf((config as CheckBoxInput).items)
       .pipe(
         tap((items) => {
-          items.map((it: CheckboxItem, index: number) => {
-            // Added validation rule to checkbox array
-            (array as FormArray).push(builder.control(it.checked));
-          });
+          (items as any[] as CheckboxItem[]).map(
+            (current: CheckboxItem, index: number) => {
+              // Added validation rule to checkbox array
+              (array as FormArray).push(builder.control(current.checked));
+            }
+          );
         })
       )
       .subscribe();

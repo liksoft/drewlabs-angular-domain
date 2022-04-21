@@ -1,12 +1,11 @@
 import { ControlInterface } from '../compact/types';
 import { InputValidationRule } from '../types';
-import { BindingControlInterface, InputInterface } from '../types';
+import { BindingControlInterface } from '../types';
 import { buildRequiredIfConfig } from '../helpers/builders';
 import { controlBindingsSetter } from '../helpers/bindings';
 import { parseControlItemsConfigs } from '../helpers/parsers';
 
-export interface SelectInput extends InputInterface, BindingControlInterface {
-  items: any[];
+export interface SelectInput extends BindingControlInterface {
   optionsLabel?: string;
   optionsValueIndex?: string | number;
   multiple?: boolean;
@@ -26,7 +25,7 @@ export function buildSelectInput(source: Partial<ControlInterface>) {
   keyfield = source.keyfield || keyfield;
   valuefield = source.valuefield || valuefield;
   groupfield = source.groupfield || groupfield;
-  return controlBindingsSetter<SelectInput>(source.options || [])({
+  return controlBindingsSetter(source.options || [])({
     ...{ keyfield, valuefield, groupfield },
     label: source.label,
     type: source.type,

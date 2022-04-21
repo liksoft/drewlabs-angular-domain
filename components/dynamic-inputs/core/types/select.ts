@@ -1,4 +1,4 @@
-import { InputInterface } from "./input";
+import { BindingControlInterface, InputInterface } from './input';
 
 type MultiControlItem = { id: string; label: string; template?: string };
 
@@ -9,8 +9,7 @@ type ServerSideControlItemConfig = {
 };
 
 // @internal
-export interface SelectableControl extends InputInterface {
-  items: MultiControlItem[];
+export interface SelectableControl extends InputInterface, BindingControlInterface {
   optionsLabel?: string;
   optionsValue?: string | number;
   multiple?: boolean;

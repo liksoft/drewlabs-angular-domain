@@ -1,32 +1,26 @@
 import { getObjectProperty } from '../../../../utils';
-import { SelectSourceInterface } from '../types';
-import { BindingControlInterface } from '../types/input';
+import {
+  BindingControlInterface,
+  InputTypes,
+  SelectSourceInterface,
+} from '../types';
 
-export const controlBindingsSetter = <T extends BindingControlInterface>(
-  values: { [prop: string]: any }[]
-) => {
-  return (control: Partial<T>) => {
+export const controlBindingsSetter = (values: { [prop: string]: any }[]) => {
+  return <T extends BindingControlInterface>(control: Partial<T>) => {
     let result: any[] = [];
     if (control.clientBindings) {
       const items = control.clientBindings?.split('|') || [];
-      result = [
-        ...items.map((v, i) => {
-          if (v.indexOf(':') !== -1) {
-            const idValueFields = v.split(':');
-            return {
-              value: idValueFields[0].trim(),
-              name: idValueFields[1].trim(),
-              description: idValueFields[1].trim(),
-            } as SelectSourceInterface;
-          } else {
-            return {
-              value: isNaN(+v.trim()) ? v.trim() : +v.trim(),
-              name: v.trim(),
-              description: v.trim(),
-            } as SelectSourceInterface;
-          }
-        }),
-      ];
+      switch (control.type) {
+        case InputTypes.CHECKBOX_INPUT:
+          result = checkboxInputItems(items);
+          break;
+        case InputTypes.RADIO_INPUT:
+          result = radioInputOptions(items);
+          break;
+        case InputTypes.SELECT_INPUT:
+          result = selectInputOptions(items);
+          break;
+      }
     } else if (control.serverBindings) {
       result = [
         ...(values
@@ -49,3 +43,60 @@ export const controlBindingsSetter = <T extends BindingControlInterface>(
     return { ...control, items: result } as T;
   };
 };
+
+function checkboxInputItems(items: string[]) {
+  return items?.map((current, index) => {
+    if (current.indexOf(':') !== -1) {
+      const idValueFields = current.split(':');
+      return {
+        value: idValueFields[0].trim(),
+        checked: index === 0,
+        description: idValueFields[1].trim(),
+      };
+    } else {
+      return {
+        value: isNaN(+current.trim()) ? current.trim() : +current.trim(),
+        checked: index === 0,
+        description: current.trim(),
+      };
+    }
+  });
+}
+
+function radioInputOptions(items: string[]) {
+  return items.map((current, index) => {
+    if (current.indexOf(':') !== -1) {
+      const idValueFields = current.split(':');
+      return {
+        value: idValueFields[0].trim(),
+        checked: index === 0,
+        description: idValueFields[1].trim(),
+      };
+    } else {
+      return {
+        value: isNaN(+current.trim()) ? current.trim() : +current.trim(),
+        checked: index === 0,
+        description: current.trim(),
+      };
+    }
+  });
+}
+
+function selectInputOptions(items: string[]) {
+  return items.map((current: string, index) => {
+    if (current.indexOf(':') !== -1) {
+      const idValueFields = current.split(':');
+      return {
+        value: idValueFields[0].trim(),
+        name: idValueFields[1].trim(),
+        description: idValueFields[1].trim(),
+      } as SelectSourceInterface;
+    } else {
+      return {
+        value: isNaN(+current.trim()) ? current.trim() : +current.trim(),
+        name: current.trim(),
+        description: current.trim(),
+      } as SelectSourceInterface;
+    }
+  });
+}

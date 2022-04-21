@@ -1,6 +1,6 @@
-import { getObjectProperty } from '../../../../utils';
 import { ControlInterface } from '../compact';
-import { CheckboxItem, RadioItem, SelectSourceInterface } from '../types';
+import { InputValidationRule } from '../types';
+import { controlBindingsSetter } from './bindings';
 import { parseControlItemsConfigs } from './parsers';
 
 export const buildRequiredIfConfig = (str: string) => {
@@ -22,123 +22,43 @@ export const buildRequiredIfConfig = (str: string) => {
   return undefined;
 };
 
-export const buildCheckboxItems = (model: Partial<ControlInterface>) => {
-  if (model.selectableValues) {
-    const items = model.selectableValues?.split('|') || [];
-    return items?.map((v, i) => {
-      if (v.indexOf(':') !== -1) {
-        const idValueFields = v.split(':');
-        return {
-          value: idValueFields[0].trim(),
-          checked: i === 0,
-          description: idValueFields[1].trim(),
-        };
-      } else {
-        return {
-          value: isNaN(+v.trim()) ? v.trim() : +v.trim(),
-          checked: i === 0,
-          description: v.trim(),
-        };
-      }
-    });
-  } else if (model.selectableModel) {
-    let { keyfield, valuefield, groupfield } = parseControlItemsConfigs(model);
-    keyfield = model.keyfield || keyfield;
-    valuefield = model.valuefield || valuefield;
-    groupfield = model.groupfield || groupfield;
-    return model.options
-      ? model.options.map((v, index) => {
-          return {
-            value: getObjectProperty(v, keyfield || ''),
-            checked: index === 0,
-            description: getObjectProperty(v, valuefield || ''),
-          } as CheckboxItem;
-        })
-      : [];
-  } else {
-    return [];
-  }
-};
-
 /**
- * @deprecated
+ * Creates an instance of {@see BindingControlInterface} interface
+ *
+ * @param source
  */
-export const buildSelectItems = (model: Partial<ControlInterface>) => {
-  if (model.selectableValues) {
-    const items = model.selectableValues?.split('|') || [];
-    return items.map((v, i) => {
-      if (v.indexOf(':') !== -1) {
-        const idValueFields = v.split(':');
-        return {
-          value: idValueFields[0].trim(),
-          name: idValueFields[1].trim(),
-          description: idValueFields[1].trim(),
-        } as SelectSourceInterface;
-      } else {
-        return {
-          value: isNaN(+v.trim()) ? v.trim() : +v.trim(),
-          name: v.trim(),
-          description: v.trim(),
-        } as SelectSourceInterface;
-      }
-    });
-  } else if (model.selectableModel) {
-    let { keyfield, valuefield, groupfield } = parseControlItemsConfigs(model);
-    keyfield = model.keyfield || keyfield;
-    valuefield = model.valuefield || valuefield;
-    groupfield = model.groupfield;
-    return model.options
-      ? model.options.map((v) => {
-          return {
-            value: getObjectProperty(v, keyfield || ''),
-            description: getObjectProperty(v, valuefield || ''),
-            name: getObjectProperty(v, valuefield || ''),
-            type:
-              groupfield && keyfield !== groupfield && valuefield !== groupfield
-                ? getObjectProperty(v, groupfield || '')
-                : undefined,
-          } as SelectSourceInterface;
-        })
-      : [];
-  } else {
-    return [];
-  }
-};
-
-export const buildRadioInputItems = (model: Partial<ControlInterface>) => {
-  if (model.selectableValues) {
-    const items = model.selectableValues?.split('|') || [];
-    return items.map((v, i) => {
-      if (v.indexOf(':') !== -1) {
-        const idValueFields = v.split(':');
-        return {
-          value: idValueFields[0].trim(),
-          checked: i === 0,
-          description: idValueFields[1].trim(),
-        };
-      } else {
-        return {
-          value: isNaN(+v.trim()) ? v.trim() : +v.trim(),
-          checked: i === 0,
-          description: v.trim(),
-        };
-      }
-    });
-  } else if (model.selectableModel) {
-    let { keyfield, valuefield, groupfield } = parseControlItemsConfigs(model);
-    keyfield = model.keyfield || keyfield;
-    valuefield = model.valuefield || valuefield;
-    groupfield = model.groupfield || groupfield;
-    return model.options
-      ? model.options.map((v, index) => {
-          return {
-            value: getObjectProperty(v, keyfield || ''),
-            description: getObjectProperty(v, valuefield || ''),
-            checked: index === 0,
-          } as RadioItem;
-        })
-      : [];
-  } else {
-    return [];
-  }
-};
+export function buildSelectableInput(source: Partial<ControlInterface>) {
+  // Parse the model fields
+  let { keyfield, valuefield, groupfield } = source.selectableModel
+    ? parseControlItemsConfigs(source)
+    : source;
+  keyfield = source.keyfield || keyfield;
+  valuefield = source.valuefield || valuefield;
+  groupfield = source.groupfield || groupfield;
+  return controlBindingsSetter(source.options || [])({
+    ...{ keyfield, valuefield, groupfield },
+    label: source.label,
+    type: source.type,
+    formControlName: source.controlName,
+    value: source.value,
+    classes: source.classes,
+    uniqueCondition: source.uniqueOn,
+    isRepeatable: Boolean(source.isRepeatable),
+    containerClass: source.dynamicControlContainerClass,
+    requiredIf: source.requiredIf
+      ? buildRequiredIfConfig(source.requiredIf)
+      : undefined,
+    formControlIndex: source.controlIndex,
+    formControlGroupKey: source.controlGroupKey,
+    rules: {
+      isRequired: Boolean(source.required),
+    } as InputValidationRule,
+    placeholder: source.placeholder,
+    disabled: Boolean(source.disabled),
+    readOnly: Boolean(source.readonly),
+    descriptionText: source.description,
+    multiple: Boolean(source.multiple),
+    serverBindings: source.selectableModel,
+    clientBindings: source.selectableValues,
+  });
+}

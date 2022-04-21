@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Inject,
   ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { InputTypeHelper } from '../../services/input-type';
@@ -42,7 +43,7 @@ import { controlBindingsSetter } from '../../../core/helpers';
     `,
   ],
 })
-export class SelectInputComponent {
+export class SelectInputComponent implements AfterViewInit {
   @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name
@@ -55,13 +56,6 @@ export class SelectInputComponent {
     state: [],
     loaded: false,
   });
-  @Input() set inputItems(value: { [index: string]: any }[]) {
-    this._inputItems$.next({
-      performingAction: false,
-      state: value,
-      loaded: value.length !== 0,
-    });
-  }
   inputItems$ = this._inputItems$.asObservable();
 
   // tslint:disable-next-line: variable-name
@@ -95,6 +89,16 @@ export class SelectInputComponent {
       'IntersectionObserverEntry' in defaultView &&
       'intersectionRatio' in defaultView.IntersectionObserverEntry.prototype
     );
+  }
+  ngAfterViewInit(): void {
+    if (this._inputConfig) {
+      const values = this.inputType.asSelectInput(this._inputConfig).items;
+      this._inputItems$.next({
+        ...this._inputItems$.getValue(),
+        state: values,
+        loaded: values.length !== 0,
+      });
+    }
   }
 
   onFocus(): void {

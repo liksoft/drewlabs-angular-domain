@@ -17,7 +17,8 @@ export {
   InputInterface,
   InputRequireIfConfig,
   SelectableControlItems,
-  SelectOptionsClient
+  SelectOptionsClient,
+  LazyBindingControl
 } from './types';
 
 // Input types defintions

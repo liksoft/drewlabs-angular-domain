@@ -17,7 +17,6 @@
     prefetchOptions
     [params]="inputType.asSelectInput(inputConfig).serverBindings"
     [loaded]="vm.loaded"
-    (loadedChange)="onLoadedChange($event)"
     (itemsChange)="onItemsChange($event)"
   >
     <ng-select

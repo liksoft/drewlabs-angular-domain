@@ -1,14 +1,14 @@
 import { ControlGroupInterface, ControlInterface } from '../compact';
-import { buildRequiredIfConfig } from '../helpers/builders';
-import { buildCheckboxInput } from '../input-types/checkbox';
+import {
+  buildRequiredIfConfig,
+  buildSelectableInput,
+} from '../helpers/builders';
 import { buildDateInput } from '../input-types/date';
 import { buildFileInput } from '../input-types/file';
 import { buildHTMLInput } from '../input-types/header';
 import { buildHiddenInput } from '../input-types/hidden';
 import { InputGroup } from '../input-types/input-group';
 import { buildNumberInput } from '../input-types/number';
-import { buildRadioInput } from '../input-types/radio';
-import { buildSelectInput } from '../input-types/select';
 import { buildTextInput } from '../input-types/text';
 import { buildTextAreaInput } from '../input-types/textarea';
 import { InputInterface, InputTypes } from '../types';
@@ -20,7 +20,7 @@ export function buildControl(
     case InputTypes.DATE_INPUT:
       return buildDateInput(model);
     case InputTypes.SELECT_INPUT:
-      return buildSelectInput(model);
+      return buildSelectableInput(model);
     case InputTypes.TEXTAREA_INPUT:
       return buildTextAreaInput(model);
     case InputTypes.NUMBER_INPUT:
@@ -30,9 +30,9 @@ export function buildControl(
     case InputTypes.PASSWORD_INPUT:
       return buildTextInput(model);
     case InputTypes.CHECKBOX_INPUT:
-      return buildCheckboxInput(model);
+      return buildSelectableInput(model);
     case InputTypes.RADIO_INPUT:
-      return buildRadioInput(model);
+      return buildSelectableInput(model);
     case InputTypes.EMAIL_INPUT:
       return buildTextInput(model);
     case InputTypes.HIDDEN_INPUT:

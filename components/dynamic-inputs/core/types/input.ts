@@ -1,5 +1,5 @@
 import { InputValidationRule } from './input-rules';
-import { SelectableControl } from './select';
+import { SelectableControlItems } from './items';
 
 // @internal
 /**
@@ -12,14 +12,19 @@ export interface HTMLFormControlRequireIfConfig extends InputRequireIfConfig {}
  */
 export interface IHTMLFormControl extends InputInterface {}
 
-// @internal
-export interface BindingControlInterface {
+export interface LazyBindingControl {
   serverBindings?: string;
   clientBindings?: string;
+}
+
+// @internal
+export interface BindingControlInterface
+  extends InputInterface,
+    LazyBindingControl {
   groupfield: string;
   valuefield: string;
   keyfield: string;
-  items: SelectableControl[];
+  items: SelectableControlItems;
 }
 
 /**
@@ -35,19 +40,19 @@ export interface InputInterface {
   formControlName: string;
   classes: string;
   requiredIf?: InputRequireIfConfig;
-  items?: any[];
   rules?: InputValidationRule;
   placeholder?: string;
   value?: string | any;
   disabled?: boolean;
   readOnly?: boolean;
   descriptionText?: string;
-  formControlGroupKey?: string;
+  formControlGroupKey?: string | number;
   formControlIndex?: number;
   hidden?: boolean;
   isRepeatable: boolean;
   uniqueCondition?: string;
   containerClass: string;
+  multiple?: boolean;
 }
 
 export interface InputRequireIfConfig {

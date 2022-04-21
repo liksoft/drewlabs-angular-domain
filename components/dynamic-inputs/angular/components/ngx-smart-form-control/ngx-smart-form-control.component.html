@@ -19,7 +19,6 @@
         [showLabelAndDescription]="showLabelAndDescription"
         (multiSelectItemRemove)="selectItemRemoved.emit($event)"
         (selected)="selected?.emit($event)"
-        [inputItems]="inputConfig.items || []"
       ></ngx-smart-select-input>
     </ng-container>
     <ng-container *ngSwitchCase="inputTypes.PHONE_INPUT">

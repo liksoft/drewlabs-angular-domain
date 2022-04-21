@@ -7,9 +7,7 @@ export {
 } from './input-rules';
 
 // Options provider client
-export {
-  SelectOptionsClient
-} from './client';
+export { SelectOptionsClient } from './client';
 
 // Form interface
 export { IDynamicForm, FormsClient } from './form';
@@ -29,6 +27,7 @@ export {
   InputInterface,
   InputRequireIfConfig,
   HTMLFormControlRequireIfConfig,
+  LazyBindingControl,
 } from './input';
 
 // Forms provider

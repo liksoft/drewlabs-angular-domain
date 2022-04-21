@@ -52,10 +52,9 @@ export class RadioInputComponent {
   }
 
   onItemsChange(state: SelectableControlItems[]) {
-    console.log(this._inputConfig);
-    // this._inputConfig = controlBindingsSetter(state)(
-    //   this._inputConfig
-    // ) as RadioInput;
-    // this.cdRef.detectChanges();
+    this._inputConfig = controlBindingsSetter(state)(
+      this._inputConfig
+    ) as RadioInput;
+    this.cdRef.detectChanges();
   }
 }
