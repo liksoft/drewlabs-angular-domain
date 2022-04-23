@@ -1,6 +1,5 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { JSDate } from '../../../../utils';
-import { EmailValidator } from './email';
 
 export class CustomValidators {
   static match(control: string, other: string) {
@@ -124,19 +123,5 @@ export class CustomValidators {
       }
       return null;
     };
-  }
-
-  static validateEmail(control: AbstractControl) {
-    if (control.validator && control.value) {
-      const validator = control.validator({} as AbstractControl);
-      if (validator && !validator['required']) {
-        return null;
-      }
-      if (EmailValidator.validate(control.value)) {
-        return null;
-      }
-      return { email: true };
-    }
-    return null;
   }
 }

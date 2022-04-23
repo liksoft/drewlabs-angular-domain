@@ -22,4 +22,4 @@ export {
 export { DYNAMIC_FORM_LOADER, FormHttpLoader } from './services';
 
 // Validators
-export { CustomValidators, EmailValidator } from './validators';
+export { CustomValidators } from './validators';
