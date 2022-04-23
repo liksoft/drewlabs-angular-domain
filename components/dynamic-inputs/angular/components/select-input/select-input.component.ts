@@ -50,7 +50,7 @@ export class SelectInputComponent implements AfterViewInit {
   @Input() control!: FormControl;
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name
-  _inputItems$ = new BehaviorSubject<{
+  _state$ = new BehaviorSubject<{
     performingAction: boolean;
     state: any[];
     loaded: boolean;
@@ -59,7 +59,7 @@ export class SelectInputComponent implements AfterViewInit {
     state: [],
     loaded: false,
   });
-  inputItems$ = this._inputItems$.asObservable();
+  state$ = this._state$.asObservable();
 
   // tslint:disable-next-line: variable-name
   private _inputConfig!: SelectInput;
@@ -70,7 +70,7 @@ export class SelectInputComponent implements AfterViewInit {
   get inputConfig() {
     return this._inputConfig;
   }
-  @Output() multiSelectItemRemove = new EventEmitter<any>();
+  @Output() remove = new EventEmitter<any>();
   @Output() selected = new EventEmitter<InputEventArgs>();
 
   // tslint:disable-next-line: variable-name
@@ -96,8 +96,8 @@ export class SelectInputComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     if (this._inputConfig) {
       const values = this.inputType.asSelectInput(this._inputConfig).items;
-      this._inputItems$.next({
-        ...this._inputItems$.getValue(),
+      this._state$.next({
+        ...this._state$.getValue(),
         state: values,
         loaded: values.length !== 0,
       });
@@ -111,13 +111,18 @@ export class SelectInputComponent implements AfterViewInit {
   }
 
   onLoadedChange(loaded: boolean) {
-    const value = this._inputItems$.getValue();
-    this._inputItems$.next({ ...value, loaded });
+    const value = this._state$.getValue();
+    this._state$.next({ ...value, loaded });
   }
 
-  onItemsChange(state: SelectableControlItems[]) {
+  onItemsChange(state: SelectableControlItems) {
     this._inputConfig = setControlOptions(this._inputConfig, state);
-    const value = this._inputItems$.getValue();
-    this._inputItems$.next({ ...value, state: this._inputConfig.items ?? [] });
+    const value = this._state$.getValue();
+    this._state$.next({ ...value, state: this._inputConfig.items ?? [] });
+  }
+
+  onLoadingChange(value: boolean) {
+    const state = this._state$.getValue();
+    this._state$.next({ ...state, performingAction: value ?? false });
   }
 }

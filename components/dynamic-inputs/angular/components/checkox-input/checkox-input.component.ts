@@ -61,7 +61,7 @@ export class CheckoxInputComponent implements OnInit, OnDestroy {
     this._destroy$.next();
   }
 
-  onItemsChange(state: SelectableControlItems[]) {
+  onItemsChange(state: SelectableControlItems) {
     this.loaded = true;
     this.inputConfig = setControlOptions(this.inputConfig, state);
     this.initializeFormArray();

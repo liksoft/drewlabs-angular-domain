@@ -17,7 +17,7 @@
         [control]="control"
         [inputConfig]="inputType.asSelectInput(inputConfig)"
         [showLabelAndDescription]="showLabelAndDescription"
-        (multiSelectItemRemove)="selectItemRemoved.emit($event)"
+        (remove)="remove.emit($event)"
         (selected)="selected?.emit($event)"
       ></ngx-smart-select-input>
     </ng-container>

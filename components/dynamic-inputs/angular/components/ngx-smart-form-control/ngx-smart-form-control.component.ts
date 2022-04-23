@@ -56,7 +56,7 @@ export class NgxSmartFormControlComponent implements OnDestroy, OnInit {
   //#endregion Component inputs
 
   //#region Component outputs
-  @Output() selectItemRemoved = new EventEmitter<any>();
+  @Output() remove = new EventEmitter<any>();
   @Output() selected = new EventEmitter<InputEventArgs>();
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();

@@ -1,23 +1,21 @@
-<label
-  class="clr-control-label"
-  *ngIf="showLabelAndDescription"
-  [for]="inputType.asSelectInput(inputConfig).formControlName"
->
-  {{ inputType.asSelectInput(inputConfig).label }}
-  <small
-    class="required-text"
-    *ngIf="inputType.asSelectInput(inputConfig).rules?.isRequired"
+<ng-container *ngIf="state$ | async as vm">
+  <label
+    class="clr-control-label"
+    *ngIf="showLabelAndDescription"
+    [for]="inputConfig.formControlName"
   >
-    (*)
-  </small>
-</label>
-<ng-container *ngIf="inputItems$ | async as vm">
+    {{ inputConfig.label }}
+    <small class="required-text" *ngIf="inputConfig.rules?.isRequired">
+      (*)
+    </small>
+  </label>
   <div
     #prefetchOptionsDirective
     prefetchOptions
-    [params]="inputType.asSelectInput(inputConfig).serverBindings"
+    [params]="inputConfig.serverBindings"
     [loaded]="vm.loaded"
     (itemsChange)="onItemsChange($event)"
+    (loadingChange)="onLoadingChange($event)"
   >
     <ng-select
       [class]="inputConfig?.multiple ? '' : 'not-multiple'"
@@ -33,7 +31,7 @@
       [formControl]="control"
       [groupBy]="'type'"
       [clearable]="true"
-      (remove)="multiSelectItemRemove.emit($event)"
+      (remove)="remove.emit($event)"
       (change)="
         selected.emit({
           name: inputConfig.formControlName,
@@ -41,12 +39,7 @@
         })
       "
     >
-      <ng-template
-        ng-option-tmp
-        let-item="item"
-        let-index="index"
-        let-item$="item$"
-      >
+      <ng-template ng-option-tmp let-item="item">
         <div>
           <label class="form-check-label ml-2">
             {{ item?.name | uppercase }}

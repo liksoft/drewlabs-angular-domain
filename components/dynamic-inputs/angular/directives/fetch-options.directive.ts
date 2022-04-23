@@ -26,7 +26,8 @@ export class FetchOptionsDirective implements AfterViewInit, OnDestroy {
 
   //#region Directive outputs
   @Output() loadedChange = new EventEmitter<boolean>();
-  @Output() itemsChange = new EventEmitter<SelectableControlItems[]>();
+  @Output() itemsChange = new EventEmitter<SelectableControlItems>();
+  @Output() loadingChange = new EventEmitter<boolean>();
   //#endregion Directive outputs
 
   // Directive properties
@@ -66,12 +67,16 @@ export class FetchOptionsDirective implements AfterViewInit, OnDestroy {
 
   executeQuery() {
     if (!this.loaded && this.params) {
+      this.loadingChange.emit(true);
       // Query select options
       this.client
         .request(this.params)
         .pipe(
           first(),
-          tap((state) => this.itemsChange.emit(state))
+          tap((state) => {
+            this.loadingChange.emit(false);
+            this.itemsChange.emit(state);
+          })
         )
         .subscribe();
     }

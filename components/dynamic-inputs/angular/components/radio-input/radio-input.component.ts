@@ -40,7 +40,7 @@ export class RadioInputComponent implements OnInit {
     return `${name}_${value}`;
   }
 
-  onItemsChange(state: SelectableControlItems[]) {
+  onItemsChange(state: SelectableControlItems) {
     this.loaded = true;
     this.inputConfig = setControlOptions(this.inputConfig, state);
     this.cdRef.detectChanges();

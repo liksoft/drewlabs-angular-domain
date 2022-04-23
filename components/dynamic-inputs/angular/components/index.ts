@@ -16,6 +16,7 @@ import { NgxSmartFormControlComponent } from './ngx-smart-form-control/ngx-smart
 import { NgxSmartFormGroupHeaderPipe } from './ngx-smart-form-group/ngx-smart-form-group-header.pipe';
 
 export const DECLARATIONS = [
+  // Inputs
   FileInputComponent,
   SelectInputComponent,
   PhoneInputComponent,
