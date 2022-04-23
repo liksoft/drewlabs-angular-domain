@@ -13,7 +13,6 @@ import {
   IDynamicForm,
   InputInterface,
   InputTypes,
-  SelectableControlItems,
 } from '../../core';
 import {
   CheckBoxInput,

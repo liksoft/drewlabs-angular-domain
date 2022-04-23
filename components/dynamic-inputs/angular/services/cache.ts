@@ -9,7 +9,7 @@ import {
   sortRawFormControls,
 } from '../../core';
 import { FormInterface } from '../../core/compact';
-import { DYNAMIC_FORM_LOADER } from './forms-loader';
+import { DYNAMIC_FORM_LOADER } from './loader';
 
 export const CACHE_PROVIDER = new InjectionToken<CacheProvider>(
   'PROVIDES AN INSTANCE OF CacheProvider::Interface'

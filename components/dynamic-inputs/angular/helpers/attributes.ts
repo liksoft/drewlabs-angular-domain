@@ -1,6 +1,6 @@
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { BindingInterface } from '../types';
-import { ComponentReactiveFormHelpers } from './reactive-form';
+import { ComponentReactiveFormHelpers } from './builders';
 import { isNumber } from '../../../../utils';
 import { InputInterface } from '../../core';
 

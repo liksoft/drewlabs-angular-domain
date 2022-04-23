@@ -4,7 +4,7 @@ export { InputEventArgs, MultiSelectItemRemoveEvent } from './input';
 export { BindingInterface } from './bindings';
 
 // Ng Forms Bridge
-export { AngularReactiveFormBuilderBridge, Builder } from './reactive-forms';
+export { AngularReactiveFormBuilderBridge, Builder } from './bridge';
 
 export {
   FORM_CLIENT,
@@ -16,4 +16,4 @@ export {
 } from './tokens';
 
 // Smart component interface
-export { ControlsStateMap, FormComponentInterface } from './form-component';
+export { ControlsStateMap, FormComponentInterface } from './component';

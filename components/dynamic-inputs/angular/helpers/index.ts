@@ -1,15 +1,15 @@
-export { cloneAbstractControl } from './abstract-controls';
+export { cloneAbstractControl } from './clone';
 
 // Reactive forms helpers
 export {
   ComponentReactiveFormHelpers,
   createAngularAbstractControl,
-} from './reactive-form';
+} from './builders';
 
 export {
   controlAttributesDataBindings,
   createHiddenAttributeSetter,
   setControlsAttributes,
-} from './attributes-bindings';
+} from './attributes';
 
 export { createIntersectionObserver } from './native';

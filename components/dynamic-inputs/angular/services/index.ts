@@ -1,5 +1,5 @@
-export { DynamicFormBuilder } from './form-builder';
+export { DynamicFormBuilder } from './builder';
 export { InputTypeHelper } from './input-type';
-export { FormHttpLoader, DYNAMIC_FORM_LOADER } from './forms-loader';
-export { ReactiveFormBuilderBrige } from './reactive-form';
-export { CACHE_PROVIDER, FormsCacheProvider } from './cache-provider';
+export { FormHttpLoader, DYNAMIC_FORM_LOADER } from './loader';
+export { ReactiveFormBuilderBrige } from './bridge';
+export { CACHE_PROVIDER, FormsCacheProvider } from './cache';

@@ -6,7 +6,7 @@ import {
   FormsClient,
   IDynamicForm,
 } from '../../core';
-import { CACHE_PROVIDER } from './cache-provider';
+import { CACHE_PROVIDER } from './cache';
 import { map } from 'rxjs/operators';
 
 @Injectable()
