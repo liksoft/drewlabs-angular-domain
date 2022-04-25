@@ -47,12 +47,6 @@ span.dial-code {
   overflow-x: hidden;
 }
 
-
-/* .dropdown-menu .btn, .dropdown-menu .dropdown-item {
-  padding: .1rem 1rem 1rem 1rem !important;
-} */
-
-
 :focus {
   outline: none;
 }

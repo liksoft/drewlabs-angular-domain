@@ -1,22 +1,27 @@
 import { Inject, Injectable } from '@angular/core';
-import { Country } from './country.model';
-import { PhoneNumberUtil, PhoneNumberFormat, PhoneNumber } from 'google-libphonenumber';
-import { isDefined } from '../../utils';
-import { getPhoneNumberPlaceHolder, phoneNumberAsString, safeValidatePhoneNumber } from './helpers';
+import { Country } from './model';
+import {
+  PhoneNumberUtil,
+  PhoneNumberFormat,
+  PhoneNumber,
+} from 'google-libphonenumber';
+import {
+  getPhoneNumberPlaceHolder,
+  phoneNumberAsString,
+  safeValidatePhoneNumber,
+} from './helpers';
+import { COUNTRIES } from './types';
 
 @Injectable()
 export class IntlTelInputService {
-
   private googlePhoneUtilInstance: PhoneNumberUtil;
 
-  constructor(
-    @Inject('TELINPUT_COUNTRIES') private _countries: Country[]
-  ) {
+  constructor(@Inject(COUNTRIES) private countries: Country[]) {
     this.googlePhoneUtilInstance = PhoneNumberUtil.getInstance();
   }
 
   public fetchCountries(): Array<Country> {
-    return this._countries;
+    return this.countries;
   }
 
   public getCountryCode(input: string): number | undefined {
@@ -28,11 +33,14 @@ export class IntlTelInputService {
 
   // tslint:disable-next-line: typedef
   public parse(input: string) {
-    if (!isDefined(input)) {
+    if (typeof input === 'undefined' || input === null) {
       return undefined;
     }
     try {
-      const tmpInput = input.toString().startsWith('+') || input.toString().startsWith('00') ? input : `+${input}`;
+      const tmpInput =
+        input.toString().startsWith('+') || input.toString().startsWith('00')
+          ? input
+          : `+${input}`;
       return this.googlePhoneUtilInstance.parseAndKeepRawInput(tmpInput);
     } catch (e) {
       return undefined;
@@ -42,9 +50,12 @@ export class IntlTelInputService {
     return this.googlePhoneUtilInstance.isValidNumber(n);
   }
 
-  public format = (phoneNumber: PhoneNumber, format: PhoneNumberFormat) => phoneNumberAsString(phoneNumber, format);
+  public format = (phoneNumber: PhoneNumber, format: PhoneNumberFormat) =>
+    phoneNumberAsString(phoneNumber, format);
 
-  public isSafeValidPhoneNumber = (_phoneNumber: string): boolean => safeValidatePhoneNumber(_phoneNumber);
+  public isSafeValidPhoneNumber = (_phoneNumber: string): boolean =>
+    safeValidatePhoneNumber(_phoneNumber);
 
-  protected getPhoneNumberPlaceHolder = (countryCode: string) => getPhoneNumberPlaceHolder(countryCode, PhoneNumberFormat.NATIONAL);
+  protected getPhoneNumberPlaceHolder = (countryCode: string) =>
+    getPhoneNumberPlaceHolder(countryCode, PhoneNumberFormat.NATIONAL);
 }

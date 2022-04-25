@@ -7,55 +7,19 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
-} from "@angular/core";
-import { Country } from "./country.model";
-import { IntlTelInputService } from "./intl-tel-input.service";
-import {
-  FormControl,
-  Validators,
-  ValidatorFn,
-  AbstractControl,
-} from "@angular/forms";
-import * as _ from "google-libphonenumber";
-import { PhoneNumberUtils } from "./phone-number-utils";
-import { isDefined, JSObject } from "../../utils";
-import { createSubject } from "../../rxjs/helpers";
-import { takeUntil, tap, distinctUntilChanged } from "rxjs/operators";
-import { createStateful } from "../../rxjs/helpers/creator-functions";
+} from '@angular/core';
+import { Country } from './model';
+import { IntlTelInputService } from './intl-tel-input.service';
+import { FormControl, Validators, ValidatorFn } from '@angular/forms';
+import { JSObject } from '../../utils';
+import { takeUntil, tap, distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { PhoneNumberValidator } from './validators';
 
-export class PhoneNumberValidator {
-  // tslint:disable-next-line: typedef
-  static ValidatePhoneNumber(control: AbstractControl) {
-    if (control.validator) {
-      const validator = control.validator({} as AbstractControl);
-      if (validator && !validator["required"]) {
-        return null;
-      }
-    }
-    const googlePhonelibInstance = _.PhoneNumberUtil.getInstance();
-    try {
-      let threatedInput: string;
-      if (!isDefined(control.value)) {
-        return null;
-      }
-      threatedInput = PhoneNumberUtils.sanitize(
-        String(control.value) as string
-      );
-      const phoneNumber =
-        googlePhonelibInstance.parseAndKeepRawInput(threatedInput);
-      if (!googlePhonelibInstance.isValidNumber(phoneNumber)) {
-        return { invalidPhoneNumber: true };
-      }
-      return null;
-    } catch (e) {
-      return { invalidPhoneNumber: true };
-    }
-  }
-}
 @Component({
-  selector: "app-intl-tel-input",
-  templateUrl: "./intl-tel-input.component.html",
-  styleUrls: ["./intl-tel-input.component.css"],
+  selector: 'app-intl-tel-input',
+  templateUrl: './intl-tel-input.component.html',
+  styleUrls: ['./intl-tel-input.component.css'],
   providers: [],
 })
 export class IntlTelInputComponent implements OnInit, OnDestroy {
@@ -67,43 +31,43 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   @Input() initialCountry!: string;
   @Input() controlClass!: string;
   @Input() preferredCountries: Array<string> = [];
-  @ViewChild("phoneControlElement", { static: true })
+  @ViewChild('phoneControlElement', { static: true })
   phoneControlElement!: ElementRef;
-  @ViewChild("clrDropdown", { static: true }) clrDropdown!: ElementRef;
+  @ViewChild('clrDropdown', { static: true }) clrDropdown!: ElementRef;
 
   @Input() tabIndex?: number;
   @Input() label?: string;
 
   allCountries: Array<Country> = [];
   preferredCountriesInDropDown: Array<Country> = [];
-  selectedCountry: Country = new Country();
+  selectedCountry: Country = {} as Country;
 
-  private _destroy$ = createSubject<void>();
+  private _destroy$ = new Subject<void>();
 
   @Input() set disabled(value: boolean) {
     this._disableState$.next({ disabled: value || false });
   }
-  private _disableState$ = createStateful({ disabled: false });
+  private _disableState$ = new BehaviorSubject({ disabled: false });
   disableState$ = this._disableState$.pipe(
     tap((state) => {
       if (
         state.disabled &&
-        this.phoneControl.status.toLowerCase() !== "disabled"
+        this.phoneControl.status.toLowerCase() !== 'disabled'
       ) {
         this.phoneControl.disable({ onlySelf: true });
       }
       if (
         !state.disabled &&
-        this.phoneControl.status.toLowerCase() === "disabled"
+        this.phoneControl.status.toLowerCase() === 'disabled'
       ) {
         this.phoneControl.enable({ onlySelf: true });
       }
     })
   );
 
-  constructor(private intelInputService: IntlTelInputService) {
-    this.allCountries = this.intelInputService.fetchCountries()
-      ? this.intelInputService.fetchCountries()
+  constructor(private service: IntlTelInputService) {
+    this.allCountries = this.service.fetchCountries()
+      ? this.service.fetchCountries()
       : [];
   }
 
@@ -120,9 +84,9 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
             null;
       });
     }
-    const isControlDisabled = this.control.status.toLowerCase() === "disabled";
+    const isControlDisabled = this.control.status.toLowerCase() === 'disabled';
     this._initializePhoneNumberControl(isControlDisabled);
-    if (this.control.status.toLowerCase() === "disabled") {
+    if (this.control.status.toLowerCase() === 'disabled') {
       this._disableState$.next({ disabled: true });
     }
     // Set the preferred countries
@@ -141,12 +105,12 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
     this.control.valueChanges
       .pipe(distinctUntilChanged(), takeUntil(this._destroy$))
       .subscribe((state) => {
-        if (this.control.status.toLowerCase() === "disabled") {
+        if (this.control.status.toLowerCase() === 'disabled') {
           this._disableState$.next({ disabled: true });
         } else {
           this._disableState$.next({ disabled: false });
         }
-        if (isDefined(state)) {
+        if (typeof state !== 'undefined' && state !== null) {
           this.setPhoneControlValue(state);
         } else {
           this.phoneControl.setValue(null);
@@ -158,7 +122,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
     this.selectedCountry = country;
     this.setControlValue(
       country.dialCode,
-      this.phoneControl.value ? this.phoneControl.value : ""
+      this.phoneControl.value ? this.phoneControl.value : ''
     );
     this.phoneControlElement.nativeElement.focus();
   }
@@ -177,7 +141,10 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       disabled: isControlDisabled,
     });
     // Set the initial country to show
-    if (isDefined(this.control.value)) {
+    if (
+      typeof this.control.value !== 'undefined' &&
+      this.control.value !== null
+    ) {
       this.setPhoneControlValue(this.control.value.toString());
     } else if (this.initialCountry) {
       const initCountry = this.allCountries.filter((c: Country) => {
@@ -207,13 +174,13 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       return;
     }
     this.control.setValue(
-      `${dialCode}${phoneNumber?.replace(/[\s\t\/\+\-]/g, "")}`
+      `${dialCode}${phoneNumber?.replace(/[\s\t\/\+\-]/g, '')}`
     );
   }
 
   setPhoneControlValue(value: string): void {
     const controlState = value;
-    const tmpCountryCode = this.intelInputService.getCountryCode(controlState);
+    const tmpCountryCode = this.service.getCountryCode(controlState);
     if (tmpCountryCode) {
       this.selectedCountry = this.allCountries.filter((c: Country) => {
         return c.dialCode === tmpCountryCode.toString();
@@ -224,7 +191,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
         );
         const phoneControlValue = this.phoneControl.value?.replace(
           /[\s\t\/\+\-]/g,
-          ""
+          ''
         );
         // Update the phone control value only
         // if it previous value is not equals to the new value
