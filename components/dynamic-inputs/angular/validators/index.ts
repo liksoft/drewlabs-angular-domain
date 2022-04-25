@@ -1,1 +1,1 @@
-export { CustomValidators } from "./validators";
+export { CustomValidators } from './validators';
