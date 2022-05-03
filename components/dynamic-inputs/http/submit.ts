@@ -1,6 +1,6 @@
-import { ObservableInput } from 'rxjs';
-import { getHost, rxRequest } from './helpers';
-import { HTTPResponseType, HTTPStatefulMethod, RequestClient } from './types';
+import { ObservableInput } from "rxjs";
+import { getHost, rxRequest } from "./helpers";
+import { HTTPResponseType, HTTPStatefulMethod, RequestClient } from "./types";
 
 type _RequestFunction = <T>(
   path: string,
@@ -37,7 +37,7 @@ export function createSubmitHttpHandler(host?: string) {
     }
   ) {
     const url = host
-      ? `${host}/${path.startsWith('/') ? path.slice(1) : path}`
+      ? `${host}/${path.startsWith("/") ? path.slice(1) : path}`
       : path;
     return rxRequest<T>({
       url,
@@ -46,7 +46,7 @@ export function createSubmitHttpHandler(host?: string) {
       ...options,
     });
   };
-  return Object.defineProperty(_request, 'request', {
+  return Object.defineProperty(_request, "request", {
     value: <T>(
       path: string,
       method: HTTPStatefulMethod,
@@ -58,5 +58,5 @@ export function createSubmitHttpHandler(host?: string) {
     ) => {
       return _request<T>(path, method, body, options);
     },
-  }) as _RequestFunction & RequestClient;
+  }) as _RequestFunction as any & RequestClient;
 }
