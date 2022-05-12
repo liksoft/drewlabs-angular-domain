@@ -1,6 +1,6 @@
 import { AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { IDynamicForm } from '../../core';
+import { IDynamicForm, InputInterface } from '../../core';
 
 export type ControlsStateMap = {
   [index: string]: { onlySelf: boolean; emitEvent: boolean } | undefined;
@@ -91,6 +91,13 @@ export interface FormComponentInterface {
    * @param value
    */
   setComponentForm(value: IDynamicForm): void;
+
+  /**
+   *
+   * @param config
+   * @param name
+   */
+  setControlConfig(config?: InputInterface, name?: string): void;
 
   /**
    * Call the curren function to validate the internal

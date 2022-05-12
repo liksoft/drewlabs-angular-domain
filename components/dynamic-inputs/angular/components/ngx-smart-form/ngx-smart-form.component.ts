@@ -21,25 +21,25 @@ import { IDynamicForm, InputGroup, InputInterface } from '../../../core';
 import {
   AngularReactiveFormBuilderBridge,
   HTTP_REQUEST_CLIENT,
-} from "../../types";
+} from '../../types';
 import {
   cloneAbstractControl,
   ComponentReactiveFormHelpers,
   controlAttributesDataBindings,
   createHiddenAttributeSetter,
   setControlsAttributes,
-} from "../../helpers";
+} from '../../helpers';
 import {
   ANGULAR_REACTIVE_FORM_BRIDGE,
   BindingInterface,
   ControlsStateMap,
   FormComponentInterface,
-} from "../../types";
-import { RequestClient } from "../../../http";
+} from '../../types';
+import { RequestClient } from '../../../http';
 
 @Component({
-  selector: "ngx-smart-form",
-  templateUrl: "./ngx-smart-form.component.html",
+  selector: 'ngx-smart-form',
+  templateUrl: './ngx-smart-form.component.html',
   styles: [
     `
       :host ::ng-deep .clr-input,
@@ -105,7 +105,7 @@ export class NgxSmartFormComponent
   // @internal
   private _destroy$ = new Subject<void>();
 
-  @HostListener("keyup.enter", ["$event"])
+  @HostListener('keyup.enter', ['$event'])
   onEnterButtonCliked(event: KeyboardEvent) {
     if (!this.performingAction) {
       this.onSubmit(event);
@@ -113,7 +113,7 @@ export class NgxSmartFormComponent
   }
 
   //#region Content
-  @ContentChild("submitButton") submitButtonRef!: TemplateRef<Node>;
+  @ContentChild('submitButton') submitButtonRef!: TemplateRef<Node>;
   //#endregion Component Injected Templates
 
   public constructor(
@@ -178,15 +178,15 @@ export class NgxSmartFormComponent
     const path = this.path || this.form.endpointURL;
     if (
       this.autoSubmit &&
-      typeof this.client !== "undefined" &&
+      typeof this.client !== 'undefined' &&
       this.client !== null &&
       path !== null &&
-      path !== "undefined"
+      path !== 'undefined'
     ) {
       from(
         this.client.request(
-          path || "http://127.0.0.1", // The path will never be equal to 'http://127.0.0.1' because of the if branch on this.form.endpointURL
-          "POST",
+          path || 'http://127.0.0.1', // The path will never be equal to 'http://127.0.0.1' because of the if branch on this.form.endpointURL
+          'POST',
           this.formGroup.getRawValue()
         )
       )
@@ -194,12 +194,12 @@ export class NgxSmartFormComponent
         .subscribe((response) => this.complete.emit(response));
     } else if (
       (this.autoSubmit &&
-        (typeof this.client === "undefined" || this.client === null)) ||
-      (this.autoSubmit && (path !== null || path !== "undefined"))
+        (typeof this.client === 'undefined' || this.client === null)) ||
+      (this.autoSubmit && (path !== null || path !== 'undefined'))
     ) {
       // We throw an error if developper misconfigured the smart form component
       throw new Error(
-        "autoSubmit input property must only be true if the form endpointURL is configured or an Http Client has been registered!"
+        'autoSubmit input property must only be true if the form endpointURL is configured or an Http Client has been registered!'
       );
     } else {
       this.submit.emit(this.formGroup.getRawValue());
@@ -212,8 +212,8 @@ export class NgxSmartFormComponent
       const controls = (value.controlConfigs ?? []).map((current) => ({
         ...current,
         containerClass: false
-          ? "clr-col-md-12"
-          : current.containerClass ?? "clr-col-md-12",
+          ? 'clr-col-md-12'
+          : current.containerClass ?? 'clr-col-md-12',
         isRepeatable: current.isRepeatable ?? false,
       }));
       //
@@ -259,6 +259,21 @@ export class NgxSmartFormComponent
     }
   }
   //#endregion FormComponent interface Methods definitions
+
+  setControlConfig(config?: InputInterface, name?: string) {
+    if (config) {
+      name = name ?? config.formControlName;
+      const controls = [...(this.form.controlConfigs ?? [])];
+      const index = controls.findIndex(
+        (current) => current.formControlName === name
+      );
+      controls.splice(index, 1, config);
+      this.form = { ...this.form, controlConfigs: controls };
+      // We trigger the change detector to detect changes after updating
+      // the form controlConfigs
+      this.cdRef.detectChanges();
+    }
+  }
 
   setBindings() {
     if (this.form && this.formGroup) {
