@@ -1,4 +1,4 @@
-import { isPrimitive } from "./type-utils";
+import { isObject, isPrimitive, isDefined } from "./type-utils";
 import { cloneDeep, isEmpty as lodashIsEmpty } from "lodash";
 
 /**
@@ -66,16 +66,14 @@ export class JSObject extends Object {
    * @param value
    * @returns
    */
-  static isDefined = (value: any) =>
-    typeof value !== "undefined" && value !== null && value !== undefined;
+  static isDefined = (value: any) => isDefined(value);
 
   /**
    * Check if value is an instance of Javascript object
    * @param item
    * @returns
    */
-  static isJsObject = (item: any) =>
-    item && typeof item === "object" && !Array.isArray(item);
+  static isJsObject = (item: any) => isObject(item);
 
   /**
    * Set property value of a JS Object
