@@ -146,9 +146,7 @@ export class DrewlabsRessourceServerClient
    * {@inheritdoc}
    */
   // tslint:disable-next-line: typedef
-  handleErrorResponse(
-    error: HttpErrorResponse
-  ):
+  handleErrorResponse(error: HttpErrorResponse):
     | HttpErrorResponse
     | {
         status: ResponseStatusCode;
