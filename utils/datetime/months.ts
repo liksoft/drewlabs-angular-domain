@@ -1,8 +1,5 @@
-export interface Month {
-  id: number;
-  label: string;
-  enLabel: string;
-}
+import { MONTHS } from './lang/months';
+import { Month } from './types';
 
 export class MonthProvider {
   /**
@@ -11,81 +8,9 @@ export class MonthProvider {
    */
   public static parseMonth(
     value: number,
-    lang: string = "fr"
+    lang: string = 'fr'
   ): string | number {
-    const filteredMonth = MONTHS.filter((v: Month) => {
-      return +v.id === +value;
-    });
-    return filteredMonth.length > 0
-      ? lang !== "fr"
-        ? filteredMonth[0].enLabel
-        : filteredMonth[0].label
-      : value;
+    const result = MONTHS.filter((month: Month) => +month.id === +value);
+    return result.length !== 0 ? result[0][lang] : value;
   }
 }
-
-/**
- * @description List of [[Month]] instances
- */
-export const MONTHS: Month[] = [
-  {
-    id: 1,
-    label: "Janvier",
-    enLabel: "January",
-  },
-  {
-    id: 2,
-    label: "Février",
-    enLabel: "February",
-  },
-  {
-    id: 3,
-    label: "Mars",
-    enLabel: "March",
-  },
-  {
-    id: 4,
-    label: "Avril",
-    enLabel: "April",
-  },
-  {
-    id: 5,
-    label: "Mai",
-    enLabel: "May",
-  },
-  {
-    id: 6,
-    label: "Juin",
-    enLabel: "June",
-  },
-  {
-    id: 7,
-    label: "Juillet",
-    enLabel: "July",
-  },
-  {
-    id: 8,
-    label: "Août",
-    enLabel: "August",
-  },
-  {
-    id: 9,
-    label: "Septembre",
-    enLabel: "September",
-  },
-  {
-    id: 10,
-    label: "Octobre",
-    enLabel: "October",
-  },
-  {
-    id: 11,
-    label: "Novembre",
-    enLabel: "November",
-  },
-  {
-    id: 12,
-    label: "Décembre",
-    enLabel: "December",
-  },
-];
