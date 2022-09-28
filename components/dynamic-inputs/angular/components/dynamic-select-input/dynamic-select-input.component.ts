@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { createStateful, createSubject } from "../../../../../rxjs/helpers";
-import { DrewlabsRessourceServerClient } from "../../../../../http/core";
+import { DrewlabsRessourceServerClient, HttpClient } from "../../../../../http/core";
 import { map, switchMap, takeUntil, tap } from "rxjs/operators";
 import {
   getResponseDataFromHttpResponse,
@@ -20,6 +20,7 @@ import { DynamicInputTypeHelper } from "../../services/input-type.service";
 import { SelectInput } from "../../../core/types/select";
 import { InputEventArgs } from "../../types/dynamic-inputs";
 import { JSObject } from "../../../../../utils";
+import { getResponseFromAPI } from "src/app/bloc/response";
 @Component({
   selector: "app-dynamic-select-input",
   templateUrl: "./dynamic-select-input.component.html",
@@ -102,11 +103,13 @@ export class DynamicSelectInputComponent implements OnDestroy {
   // tslint:disable-next-line: variable-name
   private _destroy$ = createSubject();
 
+
   constructor(
     public readonly inputType: DynamicInputTypeHelper,
     private client: DrewlabsRessourceServerClient,
     @Inject("CONTROL_BINDINGS_RESOURCES_PATH") path: string,
-    @Inject("FORM_SERVER_HOST") host: string
+    @Inject("FORM_SERVER_HOST") host: string,
+    private client2: HttpClient
   ) {
     this._controlFocusEvent$
       .pipe(
@@ -142,8 +145,39 @@ export class DynamicSelectInputComponent implements OnDestroy {
       .subscribe();
   }
 
+  ngOnInit(): void {
+    if (this.inputConfig?.remote?.focus === true) {
+      this.getDataV2();
+    }
+  }
+
+  getDataV2() {
+    this._inputItems$.next({ performingAction: true, state: [] });
+    this.client2.get(this.inputConfig.remote.url)
+      .pipe(
+        takeUntil(this._destroy$),
+      )
+      .subscribe((response: any) => {
+        let data: any[] = getResponseFromAPI(response);
+        data = data.map(v => {
+          return { name: this.getDisplayValue(v), value: v[this.inputConfig.remote.value] };
+        })
+        this._inputItems$.next({ performingAction: false, state: data });
+      });
+  }
+
+  getDisplayValue(data: any) {
+    let displayValueArray = this.inputConfig.remote.display_value.split('|');
+    return displayValueArray.map((v) => data[v]).join('-');
+  }
+
   onFocus(): void {
     const { state } = this._inputItems$.getValue();
+    if (this.inputConfig?.remote?.url && JSObject.isEmpty(state)) {
+      this.getDataV2();
+      return;
+    }
+
     if (
       !(typeof state !== "undefined" && state !== null) ||
       (JSObject.isEmpty(state) && this._inputConfig.serverBindings)

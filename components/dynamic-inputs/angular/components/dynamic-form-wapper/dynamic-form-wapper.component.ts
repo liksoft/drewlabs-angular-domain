@@ -5,10 +5,10 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
+import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import { createform, sortformbyindex } from "../../../core/helpers";
 import { createStateful } from "../../../../../rxjs/helpers/creator-functions";
-import { IDynamicForm, IHTMLFormControl } from "../../../core/contracts";
+import { IDynamicForm, IHTMLFormControl, InputTypes } from "../../../core/contracts";
 import {
   ControlBindings,
   InputEventArgs,
@@ -61,11 +61,13 @@ export class DynamicFormWapperComponent {
   @Output() keydown = new EventEmitter<InputEventArgs>();
   @Output() keypress = new EventEmitter<InputEventArgs>();
   @Output() blur = new EventEmitter<InputEventArgs>();
+  @Output() change = new EventEmitter<any>();
 
   @Input("singleColumnControl")
   singleColumn = false;
   @Input("controlContainerClass")
   containerClass = "clr-col-12";
+  public inputTypes = InputTypes;
 
   private _bindings$ = createStateful<ControlBindings>({} as ControlBindings);
   get bindings$() {
@@ -97,6 +99,10 @@ export class DynamicFormWapperComponent {
 
   // tslint:disable-next-line: typedef
   handleControlChanges(event: any, name: string, bindings: ControlBindings) {
+    // console.log(event, name, bindings)
+    // console.log(name)
+    // console.log(bindings)
+    this.change.emit({ event, name })
     const configs = Object.values(bindings).filter(
       (controlBinding) =>
         controlBinding.binding?.formControlName.toString() === name.toString()
@@ -128,6 +134,6 @@ export class DynamicFormWapperComponent {
   }
 
   asFormControl(control: AbstractControl) {
-    return control as FormControl;
+    return control as FormControl & FormArray;
   }
 }

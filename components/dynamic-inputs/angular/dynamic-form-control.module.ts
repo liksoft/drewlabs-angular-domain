@@ -21,6 +21,8 @@ import { DynamicRadioInputComponent } from "./components/dynamic-radio-input/dyn
 import { SimpleDynamicFormComponent } from "./components/simple-dynamic-form/simple-form.component";
 import { DropzoneModule, DROPZONE_CONFIG } from "../../dropzone";
 import { IntlTelInputModule } from "../../intl-tel-input";
+import { DynamicRepetableGroupV2Component } from './components/dynamic-repetable-group-v2/dynamic-repetable-group-v2.component';
+
 import {
   DynamicFormService,
   DYNAMIC_FORM_LOADER,
@@ -55,6 +57,7 @@ export const DECLARATIONS = [
   DynamicCheckoxInputComponent,
   DynamicRadioInputComponent,
   SimpleDynamicFormComponent,
+  DynamicRepetableGroupV2Component
 ];
 
 @NgModule({

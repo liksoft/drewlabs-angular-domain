@@ -12,5 +12,6 @@ export enum InputTypes {
   HIDDEN_INPUT = 'hidden',
   FILE_INPUT = 'file',
   HTML_INPUT = 'html',
-  CONTROL_GROUP = 'control_group'
+  CONTROL_GROUP = 'control_group',
+  REPETABLE_GROUP = 'repetable',
 }

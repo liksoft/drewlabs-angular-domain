@@ -27,6 +27,13 @@ export interface IHTMLFormControl {
   isRepeatable: boolean;
   uniqueCondition?: string;
   containerClass: string;
+  remote?: {
+    url: string;
+    value: string;
+    display_value: string;
+    focus?: boolean;
+  },
+  children?: IHTMLFormControl[]
 }
 
 export interface BindingControlInterface {

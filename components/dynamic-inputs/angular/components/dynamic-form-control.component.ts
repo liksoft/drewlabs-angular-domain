@@ -1,5 +1,5 @@
-import { IHTMLFormControl, InputTypes } from "../../core";
-import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
+import { IDynamicForm, IHTMLFormControl, InputTypes } from "../../core";
+import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import {
   Component,
   Input,
@@ -25,15 +25,16 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
   @Input() inline: boolean = false;
   @Input() showLabelAndDescription = true;
   // tslint:disable-next-line: variable-name
+  @Input() form!: IDynamicForm;
   @Input() inputConfig!: IHTMLFormControl;
   @Input() listItems!: SelectableControlItems;
   @Input() listenForChanges!: boolean;
   private _control!: AbstractControl&FormControl;
-  @Input() set control(value: AbstractControl&FormControl) {
+  @Input() set control(value: AbstractControl&FormControl&FormArray) {
     this._control = value;
   }
   get control() {
-    return this._control as AbstractControl&FormControl;
+    return this._control as AbstractControl&FormControl&FormArray;
   }
   @Input() name!: string;
 
@@ -56,7 +57,7 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
 
   // Value changes emitters
   @Output() valueChange = new EventEmitter<any>();
-
+  
   constructor(
     public readonly inputType: DynamicInputTypeHelper,
   ) {}

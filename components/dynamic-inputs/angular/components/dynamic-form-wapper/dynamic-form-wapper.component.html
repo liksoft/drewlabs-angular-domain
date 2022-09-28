@@ -6,7 +6,7 @@
           [class]="getContainerClass(value?.containerClass)"
           *ngFor="let value of form?.controlConfigs"
         >
-          <ng-container *ngIf="formgroup.get(value.formControlName) as control">
+          <ng-container *ngIf="formgroup.get(value.formControlName) as control ">
             <app-dynamic-inputs
               [listenForChanges]="
                 shouldListenforChange(value.formControlName, bindings)
@@ -27,6 +27,7 @@
               [hidden]="value.hidden"
               [control]="asFormControl(control)"
               [inputConfig]="value"
+              [form]="form"
               [listItems]="value.items"
             ></app-dynamic-inputs>
           </ng-container>

@@ -26,6 +26,9 @@ export class SelectInput
   valuefield: string;
   keyfield: string;
 
+  // Added by ben
+  remote!: {url: string, display_value: string, value: string, focus: boolean}
+
   /**
    * @description Instance initializer
    * @param value Required input configuration object
@@ -42,6 +45,7 @@ export class SelectInput
     this.groupfield = value.groupfield ?? "id";
     this.valuefield = value.valuefield ?? "label";
     this.keyfield = value.keyfield ?? "id";
+    this.remote.focus ?? false;
   }
 
   /**

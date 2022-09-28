@@ -35,7 +35,7 @@ export class ComponentReactiveFormHelpers {
   ) => {
     const group = builder.group({});
     input.map((config: IHTMLFormControl) => {
-      if (config.type !== InputTypes.CHECKBOX_INPUT) {
+      if (config.type !== InputTypes.CHECKBOX_INPUT && config.type !== InputTypes.REPETABLE_GROUP) {
         const validators = [
           config.rules && config.rules.isRequired
             ? Validators.required
@@ -134,6 +134,8 @@ export class ComponentReactiveFormHelpers {
               : // tslint:disable-next-line:no-unused-expression
                 null;
         }
+
+        
         // Add formControl to the form group with the generated validation rules
         const control = builder.control(
           {
@@ -155,7 +157,7 @@ export class ComponentReactiveFormHelpers {
           control
           // Add other necessary validators
         );
-      } else {
+      } else if(config.type === InputTypes.CHECKBOX_INPUT) {
         // Build list of checkboxes
         const array: FormArray = new FormArray([]);
         observableOf((config as CheckBoxInput).items)
@@ -174,7 +176,15 @@ export class ComponentReactiveFormHelpers {
         }
         group.addControl(config.formControlName, array);
       }
+
+      if (config.type === InputTypes.REPETABLE_GROUP) {
+        const repetableGroup = this.buildFormGroupFromInputConfig(builder, config.children || [])
+        // console.log(repetableGroup)
+        const array: FormArray = new FormArray([repetableGroup]);
+        group.addControl(config.formControlName, array);
+      }
     });
+    // console.log(group)
     return group;
   };
 
