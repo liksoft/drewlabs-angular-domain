@@ -10,4 +10,5 @@ export {
   mapPaginableTo,
   addPaginableValue,
   updatePaginableValue,
+  mapToPaginationQuery
 } from './helpers';

@@ -1,5 +1,5 @@
 import { Paginable } from '.';
-import { JSArray } from '../utils';
+import { JSArray, JSDate } from '../utils';
 import { isArray } from '../utils/types/type-utils';
 import {
   MapToPaginationQueryInputType,
@@ -7,7 +7,6 @@ import {
   PaginableValue,
   QueryFiltersType,
 } from './types';
-
 
 /**
  * Transformation function that takes in frameworks specific pagination
@@ -34,16 +33,27 @@ export function mapToPaginationQuery<T = any>(filters: QueryFiltersType = []) {
     let query: { [prop: string]: any } = {};
     if (state.filters) {
       for (const filter of state.filters) {
-        const { property, value } = filter as {
+        let { property, value } = filter as {
           property: string;
           value: string;
         };
+        if (property && property.startsWith('date:')) {
+          try {
+            property = property.substring('date:'.length);
+            console.log('Before converting', value);
+            value = JSDate.format(JSDate.create(value, 'DD/MM/YYYY'), 'YYYY-MM-DD');
+            console.log('After converting', value);
+          } catch (err) {
+            console.log(err);
+          }
+        }
         query[property] = [value];
       }
     }
     //#region Add sort filters to the list of query filters
     if (state?.sort) {
       query = {
+        ...query,
         _query: JSON.stringify({
           orderBy: {
             order: state?.sort?.reverse ? 'DESC' : 'ASC',
@@ -53,6 +63,7 @@ export function mapToPaginationQuery<T = any>(filters: QueryFiltersType = []) {
       };
     } else {
       query = {
+        ...query,
         _query: JSON.stringify({
           orderBy: {
             order: 'DESC',
