@@ -8,8 +8,16 @@ export const mapPaginatorStateWith =
   (params: { [index: string]: any }[] | { [index: string]: any } = []) =>
   (state: ClrDatagridStateInterface) => {
     // 'order' => 'desc', 'by' => 'updated_at'
-    const filters: { [prop: string]: any[] } = {};
     let query: { [prop: string]: any } = {};
+    if (state.filters) {
+      for (const filter of state.filters) {
+        const { property, value } = filter as {
+          property: string;
+          value: string;
+        };
+        query[property] = [value];
+      }
+    }
     //#region Add sort filters to the list of query filters
     if (state?.sort) {
       query = {
@@ -31,27 +39,18 @@ export const mapPaginatorStateWith =
       };
     }
     //#endregion Add sort filters to the list of query filters
-    if (state.filters) {
-      for (const filter of state.filters) {
-        const { property, value } = filter as {
-          property: string;
-          value: string;
-        };
-        filters[property] = [value];
-      }
-    }
     let currenState = {
-      ...filters,
+      ...query,
       page: state?.page?.current ?? 1,
       per_page: state?.page?.size ?? 20,
-      ...query,
     };
     if (isArray(params)) {
       params.map((p: object) => {
         currenState = { ...currenState, ...p };
       });
     }
-    return { ...filters, ...currenState } as any;
+    const value = {...currenState };
+    return {...currenState } as any;
   };
 
 export const mapPaginableTo =
