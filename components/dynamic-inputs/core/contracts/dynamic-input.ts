@@ -33,7 +33,8 @@ export interface IHTMLFormControl {
     display_value: string;
     focus?: boolean;
   },
-  children?: IHTMLFormControl[]
+  children?: IHTMLFormControl[],
+  pattern?: string,
 }
 
 export interface BindingControlInterface {
