@@ -36,7 +36,8 @@ export class DynamicRepetableGroupV2Component implements OnInit {
       this.fb, this.parentForm.controlConfigs as IHTMLFormControl[]
     ) as FormGroup;
   }
-  constructor(public readonly inputType: DynamicInputTypeHelper, private fb: FormBuilder) {}
+
+  constructor(public readonly inputType: DynamicInputTypeHelper, private fb: FormBuilder) { }
 
   ngOnInit(): void {
   }
@@ -48,7 +49,7 @@ export class DynamicRepetableGroupV2Component implements OnInit {
   /**
    * add a new row to formArray
    */
-   add() {
+  add() {
     this.formArray.push(this.formGroup)
   }
 
@@ -58,6 +59,14 @@ export class DynamicRepetableGroupV2Component implements OnInit {
    */
   remove(i: number) {
     this.formArray.removeAt(i);
+  }
+
+  getErrors(): {index: string, value: any}[] {
+    const errorsObj = this.formArray.errors ?? {};
+    let errors = Object.keys(errorsObj)
+    .map(key => ({index: key, value: errorsObj[key]}))
+    .filter(value => value.index.startsWith('custom'));
+    return errors;
   }
 
 

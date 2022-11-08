@@ -20,11 +20,17 @@
                     </div>
 
                 </div>
-               
+
             </ng-container>
         </ng-container>
     </ng-container>
     <button class="btn btn-sm btn-primary add-button" type="button" (click)="add()">
         AJOUTER
     </button>
+</div>
+
+<div *ngIf="formArray.errors">
+    <div *ngFor="let error of getErrors()">
+        <div class="" style="color: red; font-size: 10px;">{{error.value}}</div>
+    </div>
 </div>
