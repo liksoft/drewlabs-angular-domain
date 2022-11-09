@@ -14,7 +14,7 @@
 
                     <div class="clr-col-1 delete-button">
                         <button class="btn btn-sm btn-danger" type="button" (click)="remove(i)"
-                            [disabled]="formArray.length === 1 ">
+                            [disabled]="formArray.disabled || formArray.length === 1 ">
                             <clr-icon shape="trash"></clr-icon>
                         </button>
                     </div>
@@ -24,7 +24,8 @@
             </ng-container>
         </ng-container>
     </ng-container>
-    <button class="btn btn-sm btn-primary add-button" type="button" (click)="add()">
+    
+    <button class="btn btn-sm btn-primary add-button" type="button" (click)="add()" [disabled]="formArray.disabled">
         AJOUTER
     </button>
 </div>
