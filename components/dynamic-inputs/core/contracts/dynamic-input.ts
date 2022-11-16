@@ -34,6 +34,7 @@ export interface IHTMLFormControl {
     focus?: boolean;
   },
   children?: IHTMLFormControl[],
+  childrenParams?: IChildreenParams,
   pattern?: string,
 }
 
@@ -44,4 +45,8 @@ export interface BindingControlInterface {
   valuefield: string;
   keyfield: string;
   items: SelectableControl[];
+}
+
+interface IChildreenParams {
+  length: number;
 }

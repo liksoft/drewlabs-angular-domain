@@ -14,7 +14,7 @@
 
                     <div class="clr-col-1 delete-button">
                         <button class="btn btn-sm btn-danger" type="button" (click)="remove(i)"
-                            [disabled]="formArray.disabled || formArray.length === 1 ">
+                            [disabled]="formArray.disabled || formArray.length === getFormArrayLenght() ">
                             <clr-icon shape="trash"></clr-icon>
                         </button>
                     </div>

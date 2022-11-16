@@ -40,6 +40,9 @@ export class DynamicRepetableGroupV2Component implements OnInit {
   constructor(public readonly inputType: DynamicInputTypeHelper, private fb: FormBuilder) { }
 
   ngOnInit(): void {
+    for (let i = 0; i < this.getFormArrayLenght(); i++) {      
+      this.formArray.push(this.formGroup);
+    }
   }
 
   getFormGroup(control: AbstractControl) {
@@ -69,5 +72,9 @@ export class DynamicRepetableGroupV2Component implements OnInit {
     return errors;
   }
 
+
+  getFormArrayLenght(): number {
+    return this.inputConfig?.childrenParams?.length ?? 0;
+  }
 
 }

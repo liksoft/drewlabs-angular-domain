@@ -178,10 +178,7 @@ export class ComponentReactiveFormHelpers {
       }
 
       if (config.type === InputTypes.REPETABLE_GROUP) {
-        const repetableGroup = this.buildFormGroupFromInputConfig(builder, config.children || [])
-        // console.log(repetableGroup)
-        const array: FormArray = new FormArray([repetableGroup]);
-        group.addControl(config.formControlName, array);
+        group.addControl(config.formControlName, new FormArray([]));
       }
     });
     // console.log(group)
