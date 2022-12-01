@@ -42,12 +42,12 @@ import { RequestClient } from '../../../http';
   templateUrl: './ngx-smart-form.component.html',
   styles: [
     `
-      :host ::ng-deep .clr-input,
+      /* :host ::ng-deep .clr-input,
       :host ::ng-deep .clr-control-container,
       :host ::ng-deep .clr-input-wrapper {
         width: 100%;
-      }
-
+      } */
+/*
       div.control__group__header,
       :host ::ng-deep div.control__group__header {
         font-size: 1rem;
@@ -70,7 +70,7 @@ import { RequestClient } from '../../../http';
         margin: 0;
         padding: 0;
         margin-top: 1rem;
-      }
+      } */
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

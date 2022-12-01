@@ -93,7 +93,7 @@ export const isPrimitive = (param: any) => {
     case "boolean":
       return true;
   }
-  return !!(
+  return !(
     param instanceof String ||
     param === String ||
     param instanceof Number ||

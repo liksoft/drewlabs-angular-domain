@@ -114,7 +114,7 @@
 //     this.intersectionRect = ensureDOMRect(
 //       entry.intersectionRect || getEmptyRect()
 //     );
-//     this.isIntersecting = !!entry.intersectionRect;
+//     this.isIntersecting = !entry.intersectionRect;
 
 //     // Calculates the intersection ratio.
 //     var targetRect = this.boundingClientRect;
