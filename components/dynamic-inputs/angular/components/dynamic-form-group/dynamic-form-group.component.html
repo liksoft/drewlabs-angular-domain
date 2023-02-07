@@ -1,0 +1,12 @@
+<ng-container [formGroup]="parentFormGroup">
+    <div class="form-array">
+        <label [for]="inputConfig.formControlName" class="clr-control-label" *ngIf="showLabelAndDescription">
+            {{ inputType.asTextInput(inputConfig).label }}
+            <small class="required-text" *ngIf="inputType.asTextInput(inputConfig).rules?.isRequired">(*)</small>
+        </label>
+        <ng-container [formGroupName]="inputConfig.formControlName">
+            <app-dynamic-form-wapper class="clr-col-12" [form]="form" [componentFormGroup]="control">
+            </app-dynamic-form-wapper>
+        </ng-container>
+    </div>
+</ng-container>

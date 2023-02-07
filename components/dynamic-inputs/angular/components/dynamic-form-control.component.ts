@@ -29,12 +29,12 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
   @Input() inputConfig!: IHTMLFormControl;
   @Input() listItems!: SelectableControlItems;
   @Input() listenForChanges!: boolean;
-  private _control!: AbstractControl&FormControl;
-  @Input() set control(value: AbstractControl&FormControl&FormArray) {
+  private _control!: AbstractControl & FormControl;
+  @Input() set control(value: AbstractControl & FormControl & FormArray & FormGroup) {
     this._control = value;
   }
   get control() {
-    return this._control as AbstractControl&FormControl&FormArray;
+    return this._control as AbstractControl & FormControl & FormArray & FormGroup;
   }
   @Input() name!: string;
 
@@ -42,8 +42,6 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
   @Output() selected = new EventEmitter<InputEventArgs>();
 
   public inputTypes = InputTypes;
-  // String representation of today
-  public formArrayGroup!: FormGroup;
 
   @Output() fileAdded = new EventEmitter<any>();
   @Output() fileRemoved = new EventEmitter<any>();
@@ -57,10 +55,10 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
 
   // Value changes emitters
   @Output() valueChange = new EventEmitter<any>();
-  
+
   constructor(
     public readonly inputType: DynamicInputTypeHelper,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._control?.valueChanges
@@ -80,8 +78,7 @@ export class DynamicFormControlComponent implements OnDestroy, OnInit {
     };
   }
 
-  getControlContainerClass = () =>
-    this.inline ? `clr-form-control inline` : `clr-form-control`;
+  getControlContainerClass = () => this.inline ? `clr-form-control inline` : `clr-form-control`;
 
   ngOnDestroy() {
     this._destroy$.next();

@@ -35,7 +35,7 @@ export class ComponentReactiveFormHelpers {
   ) => {
     const group = builder.group({});
     input.map((config: IHTMLFormControl) => {
-      if (config.type !== InputTypes.CHECKBOX_INPUT && config.type !== InputTypes.REPETABLE_GROUP) {
+      if (config.type !== InputTypes.CHECKBOX_INPUT && config.type !== InputTypes.REPETABLE_GROUP && config.type !== InputTypes.CONTROL_GROUP) {
         const validators = [
           config.rules && config.rules.isRequired
             ? Validators.required
@@ -179,6 +179,11 @@ export class ComponentReactiveFormHelpers {
 
       if (config.type === InputTypes.REPETABLE_GROUP) {
         group.addControl(config.formControlName, new FormArray([]));
+      }
+      if (config.type === InputTypes.CONTROL_GROUP) {
+        // console.log("x")
+        const nestedFormGroup = ComponentReactiveFormHelpers.buildFormGroupFromInputConfig(builder, config.children || []);
+        group.addControl(config.formControlName,  nestedFormGroup);
       }
     });
     // console.log(group)

@@ -134,6 +134,6 @@ export class DynamicFormWapperComponent {
   }
 
   asFormControl(control: AbstractControl) {
-    return control as FormControl & FormArray;
+    return control as FormControl & FormArray & FormGroup;
   }
 }

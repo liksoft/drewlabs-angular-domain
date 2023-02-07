@@ -192,6 +192,9 @@
   <ng-container *ngSwitchCase="inputTypes.REPETABLE_GROUP">    
     <app-dynamic-repetable-group-v2 [control]="control" [parentForm]="form" [inputConfig]="inputConfig" ></app-dynamic-repetable-group-v2>
   </ng-container>
+  <ng-container *ngSwitchCase="inputTypes.CONTROL_GROUP">
+    <app-dynamic-form-group [control]="control"  [parentForm]="form" [inputConfig]="inputConfig" ></app-dynamic-form-group>
+  </ng-container>
   <ng-container *ngSwitchDefault>
     <app-dynamic-text-input
       [controlDivContainerClass]="getControlContainerClass()"

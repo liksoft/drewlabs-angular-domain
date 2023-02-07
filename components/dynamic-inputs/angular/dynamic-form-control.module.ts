@@ -40,6 +40,7 @@ import {
 import { JSONFormsClient } from "./services/client";
 import { initializeDynamicFormContainer } from "./helpers/module";
 import { FormsProvider } from "../core";
+import { DynamicFormGroupComponent } from './components/dynamic-form-group/dynamic-form-group.component';
 
 export const DECLARATIONS = [
   DynamicFormControlComponent,
@@ -72,7 +73,7 @@ export const DECLARATIONS = [
     DropzoneModule,
     HttpModule,
   ],
-  declarations: [...DECLARATIONS, SafeHTMLPipe],
+  declarations: [...DECLARATIONS, SafeHTMLPipe, DynamicFormGroupComponent],
   exports: [...DECLARATIONS],
   providers: [],
 })

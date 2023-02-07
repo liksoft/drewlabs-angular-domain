@@ -36,6 +36,8 @@ export interface IHTMLFormControl {
   children?: IHTMLFormControl[],
   childrenParams?: IChildreenParams,
   pattern?: string,
+  maxLength?: number;
+  minLength?: number;
 }
 
 export interface BindingControlInterface {
