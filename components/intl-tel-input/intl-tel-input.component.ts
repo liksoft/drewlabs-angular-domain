@@ -67,8 +67,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
   @Input() initialCountry!: string;
   @Input() controlClass!: string;
   @Input() preferredCountries: Array<string> = [];
-  @ViewChild("phoneControlElement", { static: true })
-  phoneControlElement!: ElementRef;
+  @ViewChild("phoneControlElement", { static: true }) phoneControlElement!: ElementRef;
   @ViewChild("clrDropdown", { static: true }) clrDropdown!: ElementRef;
 
   @Input() tabIndex?: number;
@@ -160,7 +159,7 @@ export class IntlTelInputComponent implements OnInit, OnDestroy {
       country.dialCode,
       this.phoneControl.value ? this.phoneControl.value : ""
     );
-    this.phoneControlElement.nativeElement.focus();
+    // this.phoneControlElement.nativeElement.focus();
   }
 
   public onInputKeyPress(event: any): void {

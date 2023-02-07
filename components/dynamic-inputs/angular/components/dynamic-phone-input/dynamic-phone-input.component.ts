@@ -21,9 +21,9 @@ import { DynamicInputTypeHelper } from "../../services/input-type.service";
         margin-top: 1rem !important;
         /* margin-left: 3.5rem; */
       }
-      .clr-control-label {
+      /* .clr-control-label {
         margin-bottom: 12px;
-      }
+      } */
     `,
   ],
 })
