@@ -57,7 +57,7 @@ export class ComponentReactiveFormHelpers {
                 )
               )
             : // tslint:disable-next-line:no-unused-expression
-              null,
+              null;
             // Checks if maxlength rule is set to true and apply the rule to the input
             config.rules && config.rules.minLength
               ? validators.push(
