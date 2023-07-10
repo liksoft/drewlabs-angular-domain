@@ -38,6 +38,7 @@ export interface IHTMLFormControl {
   pattern?: string,
   maxLength?: number;
   minLength?: number;
+  multiple?: boolean;
 }
 
 export interface BindingControlInterface {
